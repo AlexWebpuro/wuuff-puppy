@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-40CYS06P8Y"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-40CYS06P8Y');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wuuff Puppy — Accesorios de goma para tu perrihijo 🐾</title>
+<link rel="icon" type="image/png" href="images/wuuff-puppy.png">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blue:#4964af; --lime:#d5d50c; --coral:#f17d57;
+  --navy:#2d4375; --cream:#f9f0ee; --pink:#cc8d9f;
+  --sky:#b8d8f5; --white:#ffffff; --lblue:#e8f0fb;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Nunito',sans-serif;background:var(--white);color:var(--navy);overflow-x:hidden;}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  background:rgba(255,255,255,0.96);backdrop-filter:blur(12px);
+  padding:12px 32px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:2px solid var(--lblue);
+}
+.nav-logo{display:flex;align-items:center;gap:10px;}
+.nav-logo img{height:36px;object-fit:contain;}
+.nav-links{display:flex;gap:28px;}
+.nav-links a{font-size:13px;font-weight:800;color:var(--navy);text-decoration:none;opacity:0.7;transition:opacity .2s;}
+.nav-links a:hover{opacity:1;color:var(--blue);}
+.nav-cta{background:var(--blue);color:#fff;font-weight:900;font-size:13px;padding:10px 24px;border-radius:30px;text-decoration:none;transition:transform .2s;box-shadow:0 4px 14px rgba(73,100,175,.3);}
+.nav-cta:hover{transform:translateY(-2px);}
+
+/* HERO */
+.hero{
+  min-height:640px;padding-top:72px;
+  display:flex;align-items:center;position:relative;overflow:hidden;
+}
+.hero-bg-carousel{position:absolute;inset:0;z-index:0;}
+.hero-bg-slide{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;opacity:0;transition:opacity 1.2s ease;}
+.hero-bg-slide.active{opacity:1;}
+.hero-inner{position:relative;z-index:2;max-width:1100px;margin:0 auto;padding:60px 32px;width:100%;}
+.hero-text{position:relative;z-index:2;max-width:560px;text-align:left;}
+.hero-title{font-family:'Fredoka One',cursive;font-size:clamp(42px,6vw,72px);color:var(--navy);line-height:1.35;margin-bottom:28px;}
+.hero-title .t-highlight{background:var(--navy);color:#fff;padding:4px 22px;border-radius:26px;box-decoration-break:clone;-webkit-box-decoration-break:clone;}
+.hero-title .t-coral{background:var(--coral);color:#fff;}
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap;}
+.btn-primary{background:var(--blue);color:#fff;font-weight:900;font-size:15px;padding:15px 32px;border-radius:50px;text-decoration:none;box-shadow:0 8px 24px rgba(73,100,175,.35);transition:transform .2s;display:inline-flex;align-items:center;gap:8px;}
+.btn-primary:hover{transform:translateY(-3px);}
+.btn-outline{background:#fff;color:var(--navy);font-weight:800;font-size:15px;padding:13px 28px;border-radius:50px;text-decoration:none;border:2.5px solid var(--navy);transition:all .2s;}
+.btn-outline:hover{background:var(--navy);color:#fff;}
+
+/* MODAL ENVÍO */
+.hp-field{position:absolute;left:-9999px;}
+.shipping-modal-overlay{display:none;position:fixed;inset:0;background:rgba(45,67,117,.55);z-index:1000;align-items:center;justify-content:center;padding:20px;overflow-y:auto;}
+.shipping-modal-overlay.open{display:flex;}
+.shipping-modal{background:#fff;border-radius:24px;padding:32px 26px;max-width:380px;width:100%;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.25);margin:auto;}
+.shipping-modal h3{font-family:'Fredoka One',cursive;font-size:20px;color:var(--navy);margin-bottom:8px;}
+.shipping-modal-sub{font-size:13px;font-weight:600;color:var(--navy);opacity:.65;margin-bottom:22px;}
+.shipping-talla-display{display:none;background:var(--lime);color:var(--navy);font-weight:900;font-size:13px;padding:8px 14px;border-radius:12px;margin-bottom:14px;}
+.shipping-modal form{display:flex;flex-direction:column;gap:12px;}
+.shipping-input{width:100%;padding:13px 16px;border-radius:14px;border:1.5px solid var(--lblue);font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;color:var(--navy);outline:none;box-sizing:border-box;background:var(--cream);}
+.shipping-input:focus{border-color:var(--blue);}
+.shipping-input::placeholder{color:rgba(45,67,117,.5);}
+.shipping-select{appearance:none;-webkit-appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232d4375' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;background-size:16px;padding-right:40px;}
+.shipping-modal .btn-buy{border:none;cursor:pointer;margin-top:6px;}
+.promo-feedback{font-size:12px;font-weight:800;margin-top:-6px;min-height:16px;}
+.promo-feedback.valido{color:#2b8a3e;}
+.promo-feedback.invalido{color:#c0392b;}
+.shipping-modal-cancel{background:none;border:none;color:var(--navy);opacity:.5;font-weight:700;font-size:13px;cursor:pointer;margin-top:14px;font-family:'Nunito',sans-serif;}
+
+/* WHATSAPP FLOTANTE */
+.whatsapp-float{
+  position:fixed;bottom:24px;left:24px;z-index:300;
+  width:56px;height:56px;
+  background:#25D366;border-radius:50%;
+  box-shadow:0 6px 24px rgba(37,211,102,.4);
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .2s;cursor:pointer;
+  text-decoration:none;
+}
+.whatsapp-float:hover{transform:scale(1.12);}
+
+/* TICKER */
+.ticker{background:var(--blue);padding:14px 0;overflow:hidden;border-top:3px solid var(--navy);border-bottom:3px solid var(--navy);}
+.ticker-inner{display:flex;gap:48px;animation:ticker 22s linear infinite;width:max-content;}
+.ticker-item{display:flex;align-items:center;gap:12px;font-family:'Fredoka One',cursive;font-size:16px;color:#fff;white-space:nowrap;}
+.ticker-dot{width:8px;height:8px;background:var(--lime);border-radius:50%;flex-shrink:0;}
+@keyframes ticker{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+/* CHARACTERS */
+.characters{padding:90px 20px;background:var(--lblue);}
+.characters h2{font-family:'Fredoka One',cursive;font-size:clamp(32px,5vw,52px);text-align:center;color:var(--navy);margin-bottom:8px;}
+.characters h2 span{color:var(--blue);}
+.chars-sub{text-align:center;font-size:17px;font-weight:600;color:var(--navy);opacity:.65;margin-bottom:56px;}
+.chars-grid{display:flex;gap:24px;justify-content:center;flex-wrap:wrap;max-width:1000px;margin:0 auto;}
+.char-card{background:#fff;border-radius:28px;padding:32px 24px;text-align:center;width:210px;transition:transform .25s,box-shadow .25s;box-shadow:0 6px 24px rgba(73,100,175,.1);border:2px solid var(--lblue);}
+.char-card:hover{transform:translateY(-8px) rotate(-1deg);box-shadow:0 20px 50px rgba(73,100,175,.18);}
+.char-card img{width:130px;height:130px;object-fit:contain;margin-bottom:14px;}
+.char-name{font-family:'Fredoka One',cursive;font-size:18px;color:var(--navy);margin-bottom:4px;}
+.char-desc{font-size:12px;font-weight:700;color:var(--navy);opacity:.6;}
+
+/* PRODUCTS */
+.products{padding:90px 20px;background:var(--cream);}
+.products h2{font-family:'Fredoka One',cursive;font-size:clamp(32px,5vw,52px);text-align:center;color:var(--navy);margin-bottom:8px;}
+.products h2 span{color:var(--coral);}
+.prod-sub{text-align:center;font-size:17px;font-weight:600;color:var(--navy);opacity:.65;margin-bottom:56px;}
+.products-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:24px;max-width:1040px;margin:0 auto;}
+.prod-card{background:#fff;border-radius:28px;overflow:hidden;box-shadow:0 8px 32px rgba(73,100,175,.1);transition:transform .25s,box-shadow .25s;border:2px solid transparent;}
+.prod-card:hover{transform:translateY(-6px);box-shadow:0 24px 60px rgba(73,100,175,.18);border-color:var(--sky);}
+.prod-card.featured{border:3px solid var(--lime);}
+.prod-img{background:linear-gradient(135deg,var(--lblue),var(--cream));height:220px;display:flex;align-items:center;justify-content:center;padding:20px;}
+.prod-img.carousel{position:relative;overflow:hidden;padding:0;height:380px;}
+.carousel-track{width:100%;height:100%;position:relative;}
+.carousel-slide{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;object-position:center;padding:0;box-sizing:border-box;opacity:0;transition:opacity .3s ease;pointer-events:none;max-height:none;}
+.carousel-slide.active{opacity:1;pointer-events:auto;}
+.carousel-arrow{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.9);border:none;width:28px;height:28px;border-radius:50%;font-size:16px;font-weight:900;color:var(--navy);cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;box-shadow:0 2px 8px rgba(0,0,0,.15);line-height:1;padding:0;}
+.carousel-prev{left:8px;}
+.carousel-next{right:8px;}
+.carousel-dots{position:absolute;bottom:8px;left:0;right:0;display:flex;justify-content:center;gap:6px;z-index:2;}
+.carousel-dot{width:6px;height:6px;border-radius:50%;background:rgba(45,67,117,.35);cursor:pointer;transition:background .2s,width .2s;padding:0;border:none;}
+.carousel-dot.active{background:var(--blue);width:16px;border-radius:4px;}
+.prod-body{padding:22px;}
+.prod-tag{display:inline-block;font-size:10px;font-weight:900;letter-spacing:2px;text-transform:uppercase;padding:3px 12px;border-radius:20px;margin-bottom:10px;}
+.tag-blue{background:var(--lime);color:var(--navy);}
+.tag-coral{background:var(--coral);color:#fff;}
+.prod-name{font-family:'Fredoka One',cursive;font-size:20px;color:var(--navy);margin-bottom:6px;}
+.prod-desc{font-size:13px;font-weight:600;color:var(--navy);opacity:.65;margin-bottom:14px;line-height:1.5;}
+.prod-price{font-family:'Fredoka One',cursive;font-size:24px;color:var(--blue);margin-bottom:4px;}
+.payment-note{display:inline-block;background-color:#e6f7ec;color:#2b8a3e;font-size:11px;font-weight:800;padding:5px 10px;border-radius:8px;margin-bottom:14px;opacity:1;}
+.prod-price small{font-size:13px;font-weight:700;color:var(--navy);opacity:.5;font-family:'Nunito',sans-serif;}
+.size-row{display:flex;gap:6px;margin-bottom:18px;}
+.size-medidas{display:none;background:var(--lblue);border-radius:10px;padding:8px 12px;font-size:11px;font-weight:800;color:var(--navy);margin-top:-10px;margin-bottom:18px;}
+.qty-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+.qty-label{font-size:12px;font-weight:800;color:var(--navy);opacity:.6;text-transform:uppercase;letter-spacing:.5px;}
+.qty-control{display:flex;align-items:center;gap:12px;background:var(--lblue);border-radius:12px;padding:4px 8px;}
+.qty-btn{background:#fff;border:none;width:24px;height:24px;border-radius:8px;font-size:16px;font-weight:900;color:var(--blue);cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;box-shadow:0 2px 6px rgba(0,0,0,.08);}
+.qty-btn:hover{background:var(--blue);color:#fff;}
+.qty-value{font-size:14px;font-weight:900;color:var(--navy);min-width:16px;text-align:center;}
+.size-chip{background:var(--lblue);border-radius:8px;padding:4px 10px;font-size:11px;font-weight:800;color:var(--navy);cursor:pointer;border:1.5px solid transparent;transition:background .2s,color .2s,border-color .2s;}
+.size-chip:hover{border-color:var(--blue);}
+.size-chip.selected{background:var(--blue);color:#fff;}
+.btn-buy{width:100%;background:var(--blue);color:#fff;font-weight:900;font-size:14px;padding:13px;border-radius:16px;border:none;cursor:pointer;transition:background .2s,transform .1s;font-family:'Nunito',sans-serif;}
+.btn-buy:hover{background:var(--navy);transform:scale(1.02);}
+.btn-buy.coral{background:var(--coral);}
+.btn-buy.coral:hover{background:#d4603a;}
+
+/* TOOLS */
+.tools-section{padding:70px 20px;background:#fff;}
+.tools-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;max-width:940px;margin:0 auto;}
+.tool-card{background:var(--lblue);border-radius:28px;padding:34px 28px;}
+.tool-card h3{font-family:'Fredoka One',cursive;font-size:19px;color:var(--navy);margin-bottom:6px;}
+.tool-sub{font-size:13px;font-weight:600;color:var(--navy);opacity:.65;margin-bottom:24px;}
+.size-slider-wrap{margin-bottom:18px;}
+.size-slider{width:100%;accent-color:var(--blue);height:6px;}
+.size-weight-label{text-align:center;font-family:'Fredoka One',cursive;font-size:22px;color:var(--blue);margin-top:10px;}
+.size-result{background:#fff;border-radius:18px;padding:16px 18px;display:flex;align-items:center;gap:14px;margin-bottom:14px;flex-wrap:wrap;}
+.size-result-badge{background:var(--blue);color:#fff;font-weight:900;font-size:14px;padding:8px 16px;border-radius:14px;white-space:nowrap;}
+.size-result-text{font-size:13px;font-weight:700;color:var(--navy);opacity:.75;}
+.size-disclaimer{font-size:11px;color:var(--navy);opacity:.5;font-weight:600;line-height:1.5;}
+.combo-list{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;}
+.combo-item{display:flex;align-items:center;gap:12px;background:#fff;border-radius:14px;padding:12px 16px;cursor:pointer;border:2px solid transparent;transition:border-color .2s;}
+.combo-item.is-checked{border-color:var(--blue);}
+.combo-check{width:18px;height:18px;accent-color:var(--blue);flex-shrink:0;}
+.combo-item-name{flex:1;font-size:13px;font-weight:800;color:var(--navy);}
+.combo-item-price{font-size:13px;font-weight:900;color:var(--blue);}
+.combo-total-row{display:flex;justify-content:space-between;align-items:center;background:#fff;border-radius:14px;padding:14px 18px;margin-bottom:12px;}
+.combo-total-row span:first-child{font-size:12px;font-weight:800;color:var(--navy);opacity:.6;text-transform:uppercase;letter-spacing:1px;}
+.combo-total{font-family:'Fredoka One',cursive;font-size:22px;color:var(--blue);}
+.combo-savings{background:var(--lime);color:var(--navy);font-size:12px;font-weight:800;padding:10px 14px;border-radius:12px;margin-bottom:16px;line-height:1.4;}
+
+/* FEATURES */
+.features{padding:80px 20px;background:#fff;}
+.features h2{font-family:'Fredoka One',cursive;font-size:clamp(30px,5vw,48px);text-align:center;color:var(--navy);margin-bottom:8px;}
+.features h2 span{color:var(--blue);}
+.feat-sub{text-align:center;font-size:17px;font-weight:600;color:var(--navy);opacity:.65;margin-bottom:52px;}
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;max-width:880px;margin:0 auto;}
+.feat-card{background:var(--cream);border-radius:24px;padding:32px 22px;text-align:center;position:relative;overflow:hidden;transition:transform .2s;}
+.feat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;border-radius:5px 5px 0 0;}
+.feat-card.c1::before{background:var(--blue);}
+.feat-card.c2::before{background:var(--coral);}
+.feat-card.c3::before{background:var(--lime);}
+.feat-card.c4::before{background:var(--pink);}
+.feat-card:hover{transform:translateY(-5px);}
+.feat-icon{font-size:42px;margin-bottom:14px;display:block;}
+.feat-title{font-family:'Fredoka One',cursive;font-size:17px;color:var(--navy);margin-bottom:8px;}
+.feat-desc{font-size:13px;font-weight:600;color:var(--navy);opacity:.7;line-height:1.5;}
+
+/* VIDEO SECTION */
+.video-section{padding:90px 20px;background:var(--lblue);text-align:center;}
+.video-section h2{font-family:'Fredoka One',cursive;font-size:clamp(30px,5vw,48px);color:var(--navy);margin-bottom:8px;}
+.video-section h2 span{color:var(--coral);}
+.video-sub{font-size:17px;font-weight:600;color:var(--navy);opacity:.65;margin-bottom:44px;}
+.video-wrap{
+  max-width:400px;margin:0 auto;
+  border-radius:24px;overflow:hidden;
+  box-shadow:0 20px 60px rgba(73,100,175,.2);
+  border:3px solid var(--blue);
+  position:relative;
+  aspect-ratio:9/16;
+}
+.video-wrap iframe{width:100%;height:100%;border:none;}
+
+/* PRODUCT VIDEO */
+/* INSTAGRAM */
+.instagram-section{padding:90px 20px;background:#fff;text-align:center;}
+.instagram-section h2{font-family:'Fredoka One',cursive;font-size:clamp(30px,5vw,48px);color:var(--navy);margin-bottom:8px;}
+.instagram-section h2 span{color:var(--coral);}
+.instagram-carousel{max-width:1100px;margin:0 auto 28px;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.instagram-track{display:flex;gap:16px;padding:8px 4px 16px;width:max-content;}
+.instagram-slide{flex:0 0 220px;width:220px;height:220px;border-radius:16px;overflow:hidden;display:block;box-shadow:0 8px 20px rgba(73,100,175,.12);}
+.instagram-slide img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s;}
+.instagram-slide:hover img{transform:scale(1.06);}
+
+/* CAUSE */
+.cause{padding:90px 20px;background:linear-gradient(135deg,var(--blue) 0%,#3a52a0 100%);text-align:center;position:relative;overflow:hidden;}
+.cause-blob{position:absolute;border-radius:50%;background:rgba(255,255,255,.07);}
+.cause h2{font-family:'Fredoka One',cursive;font-size:clamp(30px,5vw,48px);color:#fff;margin-bottom:16px;}
+.cause h2 em{font-style:normal;color:var(--lime);}
+.cause-box{max-width:660px;margin:0 auto;background:rgba(255,255,255,.12);border-radius:28px;padding:40px 36px;border:1.5px solid rgba(255,255,255,.2);}
+.cause-box p{color:rgba(255,255,255,.9);font-size:18px;font-weight:700;line-height:1.7;margin-bottom:6px;}
+.cause-box .big{font-family:'Fredoka One',cursive;font-size:26px;color:var(--lime);margin:16px 0;}
+.cause-dog{margin-top:40px;}
+.cause-dog img{height:160px;object-fit:contain;filter:drop-shadow(0 10px 30px rgba(0,0,0,.2));animation:float 3.5s ease-in-out infinite;}
+
+/* STORY */
+.story{padding:90px 20px;background:var(--cream);}
+.story-inner{max-width:760px;margin:0 auto;text-align:center;}
+.story-inner .story-dog{max-height:260px;width:auto;max-width:100%;object-fit:contain;margin-bottom:28px;filter:drop-shadow(0 12px 30px rgba(73,100,175,.25));}
+.story-quote{font-family:'Fredoka One',cursive;font-size:clamp(22px,4vw,30px);color:var(--navy);line-height:1.3;margin-bottom:20px;}
+.story-quote em{font-style:normal;color:var(--blue);}
+.story-by{font-size:14px;font-weight:700;color:var(--navy);opacity:.6;margin-bottom:32px;}
+.social-row{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;}
+.social-btn{color:var(--navy);font-weight:800;font-size:14px;padding:11px 22px;border-radius:30px;text-decoration:none;border:2px solid var(--navy);transition:all .2s;}
+.social-btn:hover{background:var(--navy);color:#fff;}
+
+/* FAQ */
+.faq-section{padding:80px 20px;background:#fff;}
+.faq-section h2{font-family:'Fredoka One',cursive;font-size:clamp(30px,5vw,48px);text-align:center;color:var(--navy);margin-bottom:44px;}
+.faq-section h2 span{color:var(--coral);}
+.faq-list{max-width:700px;margin:0 auto;display:flex;flex-direction:column;gap:14px;}
+.faq-item{background:var(--cream);border-radius:20px;overflow:hidden;border:2px solid transparent;transition:border-color .2s;}
+.faq-item.is-open{border-color:var(--sky);}
+.faq-question{width:100%;background:none;border:none;cursor:pointer;padding:20px 22px;display:flex;align-items:center;justify-content:space-between;gap:12px;text-align:left;font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;color:var(--navy);}
+.faq-icon{font-family:'Fredoka One',cursive;font-size:20px;color:var(--blue);flex-shrink:0;transition:transform .25s;}
+.faq-item.is-open .faq-icon{transform:rotate(45deg);}
+.faq-answer{max-height:0;overflow:hidden;transition:max-height .3s ease;}
+.faq-answer p{padding:0 22px 20px;font-size:14px;font-weight:600;color:var(--navy);opacity:.75;line-height:1.6;}
+.faq-answer strong{color:var(--blue);}
+
+/* CTA */
+.cta-section{padding:90px 20px;background:linear-gradient(160deg,var(--lblue),var(--cream));text-align:center;}
+.cta-section h2{font-family:'Fredoka One',cursive;font-size:clamp(30px,5vw,48px);color:var(--navy);margin-bottom:10px;}
+.cta-section h2 span{color:var(--coral);}
+.cta-sub{font-size:17px;font-weight:600;color:var(--navy);opacity:.65;margin-bottom:48px;}
+.cta-box{background:#fff;border-radius:36px;padding:50px 44px;max-width:560px;margin:0 auto;box-shadow:0 24px 70px rgba(73,100,175,.15);}
+.cta-emoji{font-size:56px;margin-bottom:8px;}
+.cta-box h3{font-family:'Fredoka One',cursive;font-size:26px;color:var(--navy);margin-bottom:6px;}
+.cta-sub2{font-size:14px;font-weight:700;color:var(--navy);opacity:.55;margin-bottom:28px;}
+.cta-list{text-align:left;margin-bottom:28px;display:flex;flex-direction:column;gap:11px;}
+.cta-item{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:700;color:var(--navy);}
+.cta-item span{font-size:18px;}
+.btn-ig{width:100%;background:var(--blue);color:#fff;font-weight:900;font-size:17px;padding:18px;border-radius:20px;border:none;cursor:pointer;text-decoration:none;display:block;box-shadow:0 8px 24px rgba(73,100,175,.35);transition:transform .2s;font-family:'Nunito',sans-serif;}
+.btn-ig:hover{transform:translateY(-2px);}
+.cta-note{margin-top:14px;font-size:12px;color:var(--navy);opacity:.45;font-weight:700;}
+
+/* FOOTER */
+/* GALERÍA */
+.gallery-section{padding:80px 20px;background:var(--cream);text-align:center;}
+.gallery-section h2{font-family:'Fredoka One',cursive;font-size:clamp(30px,5vw,48px);color:var(--navy);margin-bottom:8px;}
+.gallery-section h2 span{color:var(--blue);}
+.gallery-sub{font-size:15px;font-weight:600;color:var(--navy);opacity:.65;margin-bottom:40px;}
+.gallery-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;max-width:1100px;margin:0 auto;}
+.gallery-img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:20px;box-shadow:0 8px 24px rgba(73,100,175,.12);transition:transform .3s;display:block;}
+.gallery-img:hover{transform:scale(1.03);}
+
+footer{background:var(--navy);padding:48px 20px 36px;text-align:center;}
+.footer-logo img{height:44px;object-fit:contain;margin-bottom:8px;filter:brightness(0) invert(1);}
+.footer-tag{font-size:13px;font-weight:700;color:rgba(255,255,255,.5);margin-bottom:24px;font-style:italic;}
+.footer-social{display:flex;justify-content:center;gap:14px;margin-bottom:28px;flex-wrap:wrap;}
+.footer-social a{color:rgba(255,255,255,.75);font-size:13px;font-weight:800;text-decoration:none;padding:7px 18px;border-radius:22px;border:1.5px solid rgba(255,255,255,.2);transition:all .2s;}
+.footer-social a:hover{background:#fff;color:var(--navy);}
+.footer-copy{font-size:12px;color:rgba(255,255,255,.35);font-weight:600;}
+
+/* ISOTIPO FLOTANTE */
+.isotipo-float{
+  position:fixed;bottom:24px;right:24px;z-index:300;
+  width:56px;height:56px;
+  background:#fff;border-radius:50%;
+  box-shadow:0 6px 24px rgba(73,100,175,.3);
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .2s;cursor:pointer;
+  text-decoration:none;
+}
+.isotipo-float:hover{transform:scale(1.12);}
+.isotipo-float img{width:38px;height:38px;object-fit:contain;}
+
+@media(max-width:768px){
+  .hero{min-height:560px;}
+  .hero-text{text-align:center;margin:0 auto;}
+  .hero-title{font-size:28px;line-height:1.5;margin-bottom:20px;}
+  .hero-title .t-highlight{padding:2px 14px;border-radius:18px;}
+  .hero-btns{justify-content:center;}
+  .nav-links{display:none;}
+  .cta-box{padding:32px 20px;}
+}
+</style>
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '1681628992892925');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
+<script type="text/javascript" src="https://checkout.wompi.co/widget.js"></script>
+<!-- Script Tracking Claritify -->
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ynyc2e4h8h");
+</script>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <img src="images/wuuff-puppy.png" alt="Wuuff Puppy">
+  </div>
+  <div class="nav-links">
+    <a href="#productos">Productos</a>
+    <a href="#por-que">¿Por qué goma?</a>
+    <a href="#nosotros">Nosotros</a>
+  </div>
+  <a href="#comprar" class="nav-cta">Quiero el mío 🐾</a>
+</nav>
+
+<!-- ISOTIPO FLOTANTE -->
+<a href="#comprar" class="isotipo-float">
+  <img src="images/wuuff-puppy-2.png" alt="Wuuff Puppy">
+</a>
+
+<!-- WHATSAPP FLOTANTE -->
+<a href="https://wa.me/573176431286?text=Hola%2C%20quiero%20más%20información%20sobre%20Wuuff%20Puppy%20🐾" target="_blank" class="whatsapp-float" aria-label="Escríbenos por WhatsApp">
+  <svg viewBox="0 0 32 32" width="30" height="30" fill="#fff"><path d="M16.001 3C9.373 3 4 8.373 4 15c0 2.386.699 4.611 1.902 6.475L4 29l7.727-1.86A11.94 11.94 0 0 0 16.001 27C22.629 27 28 21.627 28 15S22.629 3 16.001 3zm0 21.818c-1.95 0-3.85-.523-5.5-1.51l-.394-.233-4.587 1.104 1.127-4.474-.257-.408A9.77 9.77 0 0 1 5.182 15c0-5.964 4.855-10.818 10.819-10.818S26.818 9.036 26.818 15 21.965 24.818 16.001 24.818zm5.977-8.137c-.328-.164-1.94-.957-2.241-1.066-.301-.11-.52-.164-.738.164-.219.328-.848 1.066-1.04 1.285-.191.219-.383.246-.71.082-.328-.164-1.384-.51-2.637-1.627-.975-.869-1.633-1.943-1.824-2.271-.191-.328-.02-.505.144-.668.148-.147.328-.383.492-.574.164-.191.219-.328.328-.547.109-.219.055-.41-.027-.574-.082-.164-.738-1.78-1.012-2.44-.267-.64-.538-.553-.738-.563l-.629-.011c-.219 0-.574.082-.875.41-.301.328-1.148 1.123-1.148 2.74s1.176 3.176 1.34 3.395c.164.219 2.316 3.535 5.61 4.958.784.339 1.396.541 1.873.692.787.25 1.503.215 2.07.13.631-.094 1.94-.793 2.213-1.559.273-.766.273-1.422.191-1.559-.082-.137-.301-.219-.629-.383z"/></svg>
+</a>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-carousel">
+    <img src="images/banner-hero-bg.jpg" class="hero-bg-slide active" alt="Wuuff Puppy — accesorios de goma">
+    <img src="images/banner-hero-bg-2.jpg" class="hero-bg-slide" alt="Wuuff Puppy — perrihijo con accesorios de goma">
+  </div>
+  <div class="hero-inner">
+    <div class="hero-text">
+      <h1 class="hero-title">
+        <span class="t-highlight">Accesorios</span><br>
+        <span class="t-highlight">de goma</span><br>
+        <span class="t-highlight">para tu</span><br>
+        <span class="t-highlight t-coral">perrihijo</span>
+      </h1>
+      <div class="hero-btns">
+        <a href="#comprar" class="btn-primary">💙 Quiero el mío</a>
+        <a href="#productos" class="btn-outline">Ver productos</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-inner">
+    <div class="ticker-item"><div class="ticker-dot"></div>Resistente al agua</div><div class="ticker-item"><div class="ticker-dot"></div>Hecho con amor 🐾</div><div class="ticker-item"><div class="ticker-dot"></div>Antiolor y duradero</div><div class="ticker-item"><div class="ticker-dot"></div>Hipoalergénico</div><div class="ticker-item"><div class="ticker-dot"></div>Envíos Colombia 🇨🇴</div><div class="ticker-item"><div class="ticker-dot"></div>Tallas S y M</div><div class="ticker-item"><div class="ticker-dot"></div>Perrihijos felices ✨</div><div class="ticker-item"><div class="ticker-dot"></div>Resistente al agua</div><div class="ticker-item"><div class="ticker-dot"></div>Hecho con amor 🐾</div><div class="ticker-item"><div class="ticker-dot"></div>Antiolor y duradero</div><div class="ticker-item"><div class="ticker-dot"></div>Hipoalergénico</div><div class="ticker-item"><div class="ticker-dot"></div>Envíos Colombia 🇨🇴</div><div class="ticker-item"><div class="ticker-dot"></div>Tallas S y M</div><div class="ticker-item"><div class="ticker-dot"></div>Perrihijos felices ✨</div><div class="ticker-item"><div class="ticker-dot"></div>Resistente al agua</div><div class="ticker-item"><div class="ticker-dot"></div>Hecho con amor 🐾</div><div class="ticker-item"><div class="ticker-dot"></div>Antiolor y duradero</div><div class="ticker-item"><div class="ticker-dot"></div>Hipoalergénico</div><div class="ticker-item"><div class="ticker-dot"></div>Envíos Colombia 🇨🇴</div><div class="ticker-item"><div class="ticker-dot"></div>Tallas S y M</div><div class="ticker-item"><div class="ticker-dot"></div>Perrihijos felices ✨</div>
+  </div>
+</div>
+
+<!-- PRODUCTS -->
+<section class="products" id="productos">
+  <h2>Nuestros <span>productos</span></h2>
+  <p class="prod-sub">Azul cielo · Hipoalergénico · Tallas S y M</p>
+  <div class="products-grid">
+
+    <div class="prod-card">
+      <div class="prod-img carousel">
+        <div class="carousel-track">
+          <img src="images/collar-nuevo.jpg" alt="Collar de goma" class="carousel-slide active">
+          <img src="images/montaje-perro-1.jpg" alt="Collar de goma en uso" class="carousel-slide">
+          <img src="images/montaje-perro-2.jpg" alt="Collar de goma en uso" class="carousel-slide">
+          <img src="images/montaje-perro-3.jpg" alt="Collar de goma en uso" class="carousel-slide">
+        </div>
+        <button class="carousel-arrow carousel-prev" onclick="moveCarousel(this,-1)" aria-label="Anterior">‹</button>
+        <button class="carousel-arrow carousel-next" onclick="moveCarousel(this,1)" aria-label="Siguiente">›</button>
+        <div class="carousel-dots">
+          <span class="carousel-dot active" onclick="goToSlide(this,0)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,1)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,2)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,3)"></span>
+        </div>
+      </div>
+      <div class="prod-body">
+        <span class="prod-tag tag-blue">Nuevo</span>
+        <div class="prod-name">Collar de goma</div>
+        <div class="prod-desc">Resistente al agua, antiolor e hipoalergénico. Para el cuello más bonito del parque.</div>
+        <div class="prod-price">$58.000 COP <small>+ envío</small></div>
+        <p class="payment-note">💳 4 cuotas sin interés · Pago seguro con Wompi</p>
+        <div class="size-row"><span class="size-chip" onclick="seleccionarTalla(this)">Talla S</span><span class="size-chip" onclick="seleccionarTalla(this)">Talla M</span></div>
+        <div class="size-medidas"></div>
+        <div class="qty-row">
+          <span class="qty-label">Cantidad</span>
+          <div class="qty-control">
+            <button type="button" class="qty-btn" onclick="cambiarCantidad(this,-1)">−</button>
+            <span class="qty-value">1</span>
+            <button type="button" class="qty-btn" onclick="cambiarCantidad(this,1)">+</button>
+          </div>
+        </div>
+        <button class="btn-buy" onclick="comprarProducto(this, 5800000, 'Collar de goma')">Quiero este 🐾</button>
+      </div>
+    </div>
+
+    <div class="prod-card">
+      <div class="prod-img carousel">
+        <div class="carousel-track">
+          <img src="images/arnes-nuevo.jpg" alt="Arnés de goma" class="carousel-slide active">
+          <img src="images/montaje-perro-1.jpg" alt="Arnés de goma en uso" class="carousel-slide">
+          <img src="images/montaje-perro-2.jpg" alt="Arnés de goma en uso" class="carousel-slide">
+          <img src="images/montaje-perro-3.jpg" alt="Arnés de goma en uso" class="carousel-slide">
+        </div>
+        <button class="carousel-arrow carousel-prev" onclick="moveCarousel(this,-1)" aria-label="Anterior">‹</button>
+        <button class="carousel-arrow carousel-next" onclick="moveCarousel(this,1)" aria-label="Siguiente">›</button>
+        <div class="carousel-dots">
+          <span class="carousel-dot active" onclick="goToSlide(this,0)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,1)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,2)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,3)"></span>
+        </div>
+      </div>
+      <div class="prod-body">
+        <span class="prod-tag tag-blue">Más vendido</span>
+        <div class="prod-name">Arnés de goma</div>
+        <div class="prod-desc">Cómodo, seguro y bonito. Distribución perfecta del peso para paseos sin jalones.</div>
+        <div class="prod-price">$72.900 COP <small>+ envío</small></div>
+        <p class="payment-note">💳 4 cuotas sin interés · Pago seguro con Wompi</p>
+        <div class="size-row"><span class="size-chip" onclick="seleccionarTalla(this)">Talla S</span><span class="size-chip" onclick="seleccionarTalla(this)">Talla M</span></div>
+        <div class="size-medidas"></div>
+        <div class="qty-row">
+          <span class="qty-label">Cantidad</span>
+          <div class="qty-control">
+            <button type="button" class="qty-btn" onclick="cambiarCantidad(this,-1)">−</button>
+            <span class="qty-value">1</span>
+            <button type="button" class="qty-btn" onclick="cambiarCantidad(this,1)">+</button>
+          </div>
+        </div>
+        <button class="btn-buy" onclick="comprarProducto(this, 7290000, 'Arnés de goma')">Quiero este 🐾</button>
+      </div>
+    </div>
+
+    <div class="prod-card">
+      <div class="prod-img carousel">
+        <div class="carousel-track">
+          <img src="images/correa-nuevo.jpg" alt="Correa de goma" class="carousel-slide active">
+          <img src="images/montaje-perro-1.jpg" alt="Correa de goma en uso" class="carousel-slide">
+          <img src="images/montaje-perro-2.jpg" alt="Correa de goma en uso" class="carousel-slide">
+          <img src="images/montaje-perro-3.jpg" alt="Correa de goma en uso" class="carousel-slide">
+        </div>
+        <button class="carousel-arrow carousel-prev" onclick="moveCarousel(this,-1)" aria-label="Anterior">‹</button>
+        <button class="carousel-arrow carousel-next" onclick="moveCarousel(this,1)" aria-label="Siguiente">›</button>
+        <div class="carousel-dots">
+          <span class="carousel-dot active" onclick="goToSlide(this,0)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,1)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,2)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,3)"></span>
+        </div>
+      </div>
+      <div class="prod-body">
+        <span class="prod-tag tag-blue">Nuevo</span>
+        <div class="prod-name">Correa de goma</div>
+        <div class="prod-desc">1.8m de longitud. Gancho metálico resistente. El compañero perfecto para cada paseo.</div>
+        <div class="prod-price">$69.000 COP <small>+ envío</small></div>
+        <p class="payment-note">💳 4 cuotas sin interés · Pago seguro con Wompi</p>
+        <div class="size-row"><span class="size-chip selected">Talla única</span></div>
+        <div class="qty-row">
+          <span class="qty-label">Cantidad</span>
+          <div class="qty-control">
+            <button type="button" class="qty-btn" onclick="cambiarCantidad(this,-1)">−</button>
+            <span class="qty-value">1</span>
+            <button type="button" class="qty-btn" onclick="cambiarCantidad(this,1)">+</button>
+          </div>
+        </div>
+        <button class="btn-buy" onclick="comprarProducto(this, 6900000, 'Correa de goma')">Quiero esta 🐾</button>
+      </div>
+    </div>
+
+    <div class="prod-card featured">
+      <div class="prod-img carousel">
+        <div class="carousel-track">
+          <img src="images/set-completo-nuevo.jpg" alt="Set completo Wuuff Puppy" class="carousel-slide active">
+          <img src="images/montaje-perro-1.jpg" alt="Set completo en uso" class="carousel-slide">
+          <img src="images/montaje-perro-2.jpg" alt="Set completo en uso" class="carousel-slide">
+          <img src="images/montaje-perro-3.jpg" alt="Set completo en uso" class="carousel-slide">
+        </div>
+        <button class="carousel-arrow carousel-prev" onclick="moveCarousel(this,-1)" aria-label="Anterior">‹</button>
+        <button class="carousel-arrow carousel-next" onclick="moveCarousel(this,1)" aria-label="Siguiente">›</button>
+        <div class="carousel-dots">
+          <span class="carousel-dot active" onclick="goToSlide(this,0)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,1)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,2)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,3)"></span>
+        </div>
+      </div>
+      <div class="prod-body">
+        <span class="prod-tag tag-coral">⭐ Mejor valor</span>
+        <div class="prod-name">Set completo</div>
+        <div class="prod-desc">Collar + Arnés + Correa Wuuff Puppy. El regalo perfecto para tu perrihijo especial.</div>
+        <div class="prod-price">$159.900 COP <small>+ envío · ahorras $40.000</small></div>
+        <p class="payment-note">💳 4 cuotas sin interés · Pago seguro con Wompi</p>
+        <div class="size-row"><span class="size-chip" onclick="seleccionarTalla(this)">S</span><span class="size-chip" onclick="seleccionarTalla(this)">M</span></div>
+        <div class="size-medidas"></div>
+        <div class="qty-row">
+          <span class="qty-label">Cantidad</span>
+          <div class="qty-control">
+            <button type="button" class="qty-btn" onclick="cambiarCantidad(this,-1)">−</button>
+            <span class="qty-value">1</span>
+            <button type="button" class="qty-btn" onclick="cambiarCantidad(this,1)">+</button>
+          </div>
+        </div>
+        <button class="btn-buy coral" onclick="comprarProducto(this, 15990000, 'Set completo')">Quiero el set 🎁</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- TOOLS: SIZE + COMBO -->
+<section class="tools-section">
+  <div class="tools-grid">
+
+    <div class="tool-card">
+      <h3>¿Qué talla necesita tu perrihijo? 📏</h3>
+      <p class="tool-sub">Mide el contorno de cuello de tu perrihijo con una cinta métrica</p>
+      <div class="size-slider-wrap">
+        <input type="range" min="18" max="40" value="27" id="weight-slider" class="size-slider">
+        <div class="size-weight-label"><span id="weight-value">27</span> cm de cuello</div>
+      </div>
+      <div class="size-result">
+        <span class="size-result-badge" id="size-badge">Talla S</span>
+        <span class="size-result-text" id="size-text">Cuello 20–34 cm · Pecho 23–38 cm</span>
+      </div>
+      <p class="size-disclaimer">*Medida oficial de fábrica. Si tu perrihijo está en el rango límite (24–34 cm), cualquiera de las dos tallas le queda — escríbenos y te ayudamos a elegir 🐾</p>
+    </div>
+
+    <div class="tool-card">
+      <h3>Arma tu combo 🎁</h3>
+      <p class="tool-sub">Elige las piezas que quieres y mira el total</p>
+      <div class="combo-list">
+        <label class="combo-item">
+          <input type="checkbox" class="combo-check" data-price="58000" checked>
+          <span class="combo-item-name">Collar de goma</span>
+          <span class="combo-item-price">$58.000</span>
+        </label>
+        <label class="combo-item">
+          <input type="checkbox" class="combo-check" data-price="72900">
+          <span class="combo-item-name">Arnés de goma</span>
+          <span class="combo-item-price">$72.900</span>
+        </label>
+        <label class="combo-item">
+          <input type="checkbox" class="combo-check" data-price="69000">
+          <span class="combo-item-name">Correa de goma</span>
+          <span class="combo-item-price">$69.000</span>
+        </label>
+      </div>
+      <div class="combo-total-row">
+        <span>Total</span>
+        <span class="combo-total" id="combo-total">$58.000 COP</span>
+      </div>
+      <p class="combo-savings" id="combo-savings" style="display:none;">🎉 ¡Llévate las 3 piezas en el Set completo por $159.900 y ahorra $40.000!</p>
+      <button class="btn-buy" id="combo-buy-btn" onclick="iniciarCompra(window.wuuffComboTotalCents, 'Combo personalizado')">Quiero mi combo 🐾</button>
+    </div>
+
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="por-que">
+  <h2>¿Por qué elegir <span>goma</span>?</h2>
+  <p class="feat-sub">Material premium que resiste todo lo que tu perrihijo le ponga.</p>
+  <div class="feat-grid">
+    <div class="feat-card c1">
+      <span class="feat-icon">💧</span>
+      <div class="feat-title">Resistente al agua</div>
+      <div class="feat-desc">Lluvia, barro, río — da igual. Solo enjuágalo y listo.</div>
+    </div>
+    <div class="feat-card c2">
+      <span class="feat-icon">🌿</span>
+      <div class="feat-title">Hipoalergénico</div>
+      <div class="feat-desc">Suave con la piel de tu perrihijo. No irrita ni causa alergias.</div>
+    </div>
+    <div class="feat-card c3">
+      <span class="feat-icon">✨</span>
+      <div class="feat-title">Fácil de limpiar</div>
+      <div class="feat-desc">No acumula olores ni bacterias. Siempre como nuevo.</div>
+    </div>
+    <div class="feat-card c4">
+      <span class="feat-icon">❤️</span>
+      <div class="feat-title">Hecho con amor</div>
+      <div class="feat-desc">Creado por dueños de perrihijos, para dueños de perrihijos.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CHARACTERS -->
+<section class="characters">
+  <h2>La pandilla <span>Wuuff</span> 🐶</h2>
+  <p class="chars-sub">Cada perrihijo tiene su propio personaje — ¿cuál es el tuyo?</p>
+  <div class="chars-grid">
+    <div class="char-card">
+      <img src="images/chawi.png" alt="Chawi">
+      <div class="char-name">Chawi 🍗</div>
+      <div class="char-desc">Hambriento y siempre feliz</div>
+    </div>
+    <div class="char-card">
+      <img src="images/arecito.png" alt="Arecito">
+      <div class="char-name">Arecito 🧢</div>
+      <div class="char-desc">El más cool del parque</div>
+    </div>
+    <div class="char-card">
+      <img src="images/guardian.png" alt="Guardian">
+      <div class="char-name">Guardian 💙</div>
+      <div class="char-desc">Noble y leal para siempre</div>
+    </div>
+    <div class="char-card">
+      <img src="images/lucas.png" alt="Lucas">
+      <div class="char-name">Lucas 💻</div>
+      <div class="char-desc">El más inteligente del team</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- VIDEO TIKTOK -->
+<section class="video-section">
+  <h2>Wuuff Puppy <span>en acción</span> 🎬</h2>
+  <p class="video-sub">Mira cómo se ven los productos en la vida real</p>
+  <div class="video-wrap">
+    <iframe
+      src="https://www.tiktok.com/embed/v2/7648732489850047765"
+      allowfullscreen
+      allow="autoplay"
+    ></iframe>
+  </div>
+</section>
+
+<!-- INSTAGRAM -->
+<section class="instagram-section">
+  <h2>Síguenos en <span>Instagram</span> 📸</h2>
+  <p class="video-sub">Mira nuestras publicaciones más recientes</p>
+  <div class="instagram-carousel">
+    <div class="instagram-track">
+      <a href="https://instagram.com/wuuffpuppy" target="_blank" class="instagram-slide">
+        <img src="images/montaje-perro-1.jpg" alt="Publicación de Instagram Wuuff Puppy">
+      </a>
+      <a href="https://instagram.com/wuuffpuppy" target="_blank" class="instagram-slide">
+        <img src="images/montaje-perro-2.jpg" alt="Publicación de Instagram Wuuff Puppy">
+      </a>
+      <a href="https://instagram.com/wuuffpuppy" target="_blank" class="instagram-slide">
+        <img src="images/montaje-perro-3.jpg" alt="Publicación de Instagram Wuuff Puppy">
+      </a>
+      <a href="https://instagram.com/wuuffpuppy" target="_blank" class="instagram-slide">
+        <img src="images/banner-hero-bg.jpg" alt="Publicación de Instagram Wuuff Puppy">
+      </a>
+      <a href="https://instagram.com/wuuffpuppy" target="_blank" class="instagram-slide">
+        <img src="images/banner-hero-bg-2.jpg" alt="Publicación de Instagram Wuuff Puppy">
+      </a>
+    </div>
+  </div>
+  <a href="https://instagram.com/wuuffpuppy" target="_blank" class="btn-outline" style="display:inline-block;margin-top:8px;">📱 Ver más en @wuuffpuppy</a>
+</section>
+
+<!-- CAUSE -->
+<section class="cause">
+  <div class="cause-blob" style="width:400px;height:400px;top:-150px;right:-100px;"></div>
+  <div class="cause-blob" style="width:250px;height:250px;bottom:-80px;left:-60px;"></div>
+  <h2>Nuestro <em>propósito</em> 🐾</h2>
+  <div class="cause-box">
+    <p>En Wuuff Puppy creemos que cada perro merece verse tan querido como se siente.</p>
+    <p class="big">"Por cada set vendido,<br>un perrito rescatado recibe el suyo."</p>
+    <p>Pequeños detalles que dicen te quiero — para tu perrihijo y para los que esperan un hogar. 🏠</p>
+  </div>
+  <div class="cause-dog">
+    <img src="images/arecito.png" alt="Arecito Wuuff">
+  </div>
+</section>
+
+<!-- STORY -->
+<section class="story" id="nosotros">
+  <div class="story-inner">
+    <img class="story-dog" src="images/thor-y-zabache-los-perrihijos-de-angie.png" alt="Guardian y Zabache — los perrihijos de Angie">
+    <p class="story-quote">
+      "Wuuff Puppy nació por <em>Guardian y Zabache</em>, mis dos perrihijos.<br>
+      Buscaba accesorios bonitos en Colombia y no los encontraba.<br>
+      Así que decidí crearlos yo misma."
+    </p>
+    <div class="story-by">— Katherine Monroy · Fundadora · Bogotá, Colombia</div>
+    <div class="social-row">
+      <a href="https://instagram.com/wuuffpuppy" target="_blank" class="social-btn">📱 @wuuffpuppy</a>
+      <a href="https://tiktok.com/@wuuff.puppy" target="_blank" class="social-btn">🎵 @wuuff.puppy</a>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq-section" id="faq">
+  <h2>Preguntas <span>frecuentes</span></h2>
+  <div class="faq-list">
+
+    <div class="faq-item">
+      <button class="faq-question">
+        <span>📦 ¿Hacen envíos a toda Colombia?</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>Sí, hacemos envíos a nivel nacional. Los despachos comienzan a partir del lanzamiento oficial en septiembre 2026. El costo y tiempo de entrega varían según tu ciudad — te confirmamos ambos datos antes de que hagas el pedido.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question">
+        <span>📏 ¿Cómo sé qué talla pedir?</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>Usa nuestro selector de talla más arriba: solo mide el contorno de cuello de tu perrihijo con una cinta métrica. Por ahora manejamos <strong>Talla S</strong> (cuello 20–34 cm, pecho 23–38 cm) y <strong>Talla M</strong> (cuello 24–38 cm, pecho 32–53 cm). Si tu perrihijo está en el rango límite, escríbenos por Instagram y te ayudamos a elegir.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question">
+        <span>🔄 ¿Puedo cambiar la talla si no le queda?</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>Sí. Si la talla no le queda bien a tu perrihijo, escríbenos por Instagram con tu pedido y gestionamos el cambio. El accesorio debe estar sin uso y en su empaque original.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question">
+        <span>💳 ¿Qué métodos de pago aceptan?</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>Aceptamos Nequi, Daviplata y PSE. Coordinamos el pago directamente por Instagram al confirmar tu pedido.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="cta-section" id="comprar">
+  <h2>¿Lista para el <span>pedido</span>?</h2>
+  <p class="cta-sub">Stock limitado · Envíos a toda Colombia</p>
+  <div class="cta-box">
+    <div class="cta-emoji">🐾</div>
+    <h3>Escríbenos por DM</h3>
+    <div class="cta-sub2">Reserva el tuyo antes de que se agote</div>
+    <div class="cta-list">
+      <div class="cta-item"><span>🦮</span> Collar de goma — $58.000 COP</div>
+      <div class="cta-item"><span>🎽</span> Arnés de goma — $72.900 COP</div>
+      <div class="cta-item"><span>🐕</span> Correa de goma — $69.000 COP</div>
+      <div class="cta-item"><span>🎁</span> Set completo — $159.900 COP</div>
+      <div class="cta-item"><span>🇨🇴</span> Envíos a toda Colombia</div>
+      <div class="cta-item"><span>💳</span> Nequi · Daviplata · PSE</div>
+    </div>
+    <a href="https://instagram.com/wuuffpuppy" target="_blank" class="btn-ig">💙 Escribir por Instagram</a>
+    <p class="cta-note">También por TikTok · @wuuff.puppy</p>
+  </div>
+</section>
+
+<!-- GALERÍA -->
+<section class="gallery-section">
+  <h2>Perrihijos <span>Wuuff</span> 🐾</h2>
+  <p class="gallery-sub">Así se ven nuestros accesorios en la vida real</p>
+  <div class="gallery-grid">
+    <img src="images/montaje-perro-1.jpg" alt="Perrihijo usando accesorios Wuuff Puppy" class="gallery-img">
+    <img src="images/montaje-perro-2.jpg" alt="Perrihijo usando accesorios Wuuff Puppy" class="gallery-img">
+    <img src="images/montaje-perro-3.jpg" alt="Perrihijo usando accesorios Wuuff Puppy" class="gallery-img">
+    <img src="images/banner-hero-bg.jpg" alt="Accesorios de goma Wuuff Puppy" class="gallery-img">
+    <img src="images/banner-hero-bg-2.jpg" alt="Accesorios de goma Wuuff Puppy" class="gallery-img">
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">
+    <img src="images/wuuff-puppy.png" alt="Wuuff Puppy">
+  </div>
+  <div class="footer-tag">"Pequeños detalles que dicen te quiero."</div>
+  <div class="footer-social">
+    <a href="https://instagram.com/wuuffpuppy" target="_blank">📱 @wuuffpuppy</a>
+    <a href="https://tiktok.com/@wuuff.puppy" target="_blank">🎵 @wuuff.puppy</a>
+    <a href="https://wuuffpuppy.com" target="_blank">🌐 wuuffpuppy.com</a>
+  </div>
+  <div class="footer-copy">Bogotá, Colombia · 2026 · Wuuff Puppy ❤️</div>
+  <div class="footer-copy" style="margin-top:8px;"><a href="politica-de-privacidad.html" style="color:rgba(255,255,255,.5);text-decoration:underline;">Política de Privacidad</a></div>
+</footer>
+
+<script>
+// Selector de talla por contorno de cuello (tabla oficial de fábrica)
+(function(){
+  var slider = document.getElementById('weight-slider');
+  if(!slider) return;
+  var weightValue = document.getElementById('weight-value');
+  var sizeBadge = document.getElementById('size-badge');
+  var sizeText = document.getElementById('size-text');
+  function updateSize(){
+    var n = parseInt(slider.value, 10);
+    weightValue.textContent = n;
+    if(n <= 29){
+      sizeBadge.textContent = 'Talla S';
+      sizeText.textContent = 'Cuello 20–34 cm · Pecho 23–38 cm';
+    } else {
+      sizeBadge.textContent = 'Talla M';
+      sizeText.textContent = 'Cuello 24–38 cm · Pecho 32–53 cm';
+    }
+  }
+  slider.addEventListener('input', updateSize);
+  updateSize();
+})();
+
+// Armador de combo
+(function(){
+  var checks = document.querySelectorAll('.combo-check');
+  if(!checks.length) return;
+  var totalEl = document.getElementById('combo-total');
+  var savingsEl = document.getElementById('combo-savings');
+  function formatCOP(n){
+    return '$' + n.toLocaleString('es-CO') + ' COP';
+  }
+  function update(){
+    var total = 0, count = 0;
+    checks.forEach(function(c){
+      var label = c.closest('.combo-item');
+      if(c.checked){
+        total += parseInt(c.dataset.price, 10);
+        count++;
+        if(label) label.classList.add('is-checked');
+      } else {
+        if(label) label.classList.remove('is-checked');
+      }
+    });
+    if(count === 3){
+      total = 159900; // precio del Set completo, con descuento ya aplicado
+    }
+    totalEl.textContent = formatCOP(total);
+    window.wuuffComboTotalCents = total * 100;
+    savingsEl.style.display = (count === 3) ? 'block' : 'none';
+  }
+  checks.forEach(function(c){ c.addEventListener('change', update); });
+  update();
+})();
+
+// FAQ acordeón
+(function(){
+  var items = document.querySelectorAll('.faq-item');
+  items.forEach(function(item){
+    var btn = item.querySelector('.faq-question');
+    var answer = item.querySelector('.faq-answer');
+    btn.addEventListener('click', function(){
+      var isOpen = item.classList.contains('is-open');
+      items.forEach(function(other){
+        other.classList.remove('is-open');
+        other.querySelector('.faq-answer').style.maxHeight = null;
+      });
+      if(!isOpen){
+        item.classList.add('is-open');
+        answer.style.maxHeight = answer.scrollHeight + 'px';
+      }
+    });
+  });
+})();
+
+// Carrusel del banner hero (rota automáticamente)
+(function(){
+  var slides = document.querySelectorAll('.hero-bg-slide');
+  if(slides.length < 2) return;
+  var current = 0;
+  setInterval(function(){
+    slides[current].classList.remove('active');
+    current = (current + 1) % slides.length;
+    slides[current].classList.add('active');
+  }, 5000);
+})();
+
+// Carrusel de imágenes de producto
+function moveCarousel(btn, dir){
+  var carousel = btn.closest('.carousel');
+  var slides = carousel.querySelectorAll('.carousel-slide');
+  var dots = carousel.querySelectorAll('.carousel-dot');
+  var current = 0;
+  slides.forEach(function(s, i){ if(s.classList.contains('active')) current = i; });
+  var next = (current + dir + slides.length) % slides.length;
+  slides[current].classList.remove('active');
+  dots[current].classList.remove('active');
+  slides[next].classList.add('active');
+  dots[next].classList.add('active');
+}
+
+function goToSlide(dot, index){
+  var carousel = dot.closest('.carousel');
+  var slides = carousel.querySelectorAll('.carousel-slide');
+  var dots = carousel.querySelectorAll('.carousel-dot');
+  slides.forEach(function(s){ s.classList.remove('active'); });
+  dots.forEach(function(d){ d.classList.remove('active'); });
+  slides[index].classList.add('active');
+  dots[index].classList.add('active');
+}
+
+// Paso 1: elegir ciudad (envío) antes de pagar
+var pendingPurchase = null;
+
+// Códigos de descuento activos (código en mayúsculas -> fracción de descuento)
+var CODIGOS_DESCUENTO = {
+  'VIP15': 0.15
+};
+
+document.addEventListener('input', function(e){
+  if(!e.target || e.target.id !== 'envio-codigo') return;
+  var feedback = document.getElementById('promo-feedback');
+  if(!feedback) return;
+  var codigo = e.target.value.trim().toUpperCase();
+  if(!codigo){
+    feedback.textContent = '';
+    feedback.className = 'promo-feedback';
+    return;
+  }
+  if(CODIGOS_DESCUENTO[codigo]){
+    feedback.textContent = '✅ Código válido: ' + (CODIGOS_DESCUENTO[codigo] * 100) + '% de descuento aplicado';
+    feedback.className = 'promo-feedback valido';
+  } else {
+    feedback.textContent = '❌ Código no válido';
+    feedback.className = 'promo-feedback invalido';
+  }
+});
+
+// Selección de talla en cada tarjeta de producto
+function seleccionarTalla(chip){
+  var row = chip.closest('.size-row');
+  if(!row) return;
+  row.querySelectorAll('.size-chip').forEach(function(c){ c.classList.remove('selected'); });
+  chip.classList.add('selected');
+
+  // Muestra la tabla de medidas de la talla elegida
+  var card = chip.closest('.prod-card');
+  var medidas = card ? card.querySelector('.size-medidas') : null;
+  if(!medidas) return;
+  var texto = chip.textContent.trim();
+  var tablaMedidas = {
+    'Talla S': 'Talla S: cuello 20–34 cm · pecho 23–38 cm',
+    'S': 'Talla S: cuello 20–34 cm · pecho 23–38 cm',
+    'Talla M': 'Talla M: cuello 24–38 cm · pecho 32–53 cm',
+    'M': 'Talla M: cuello 24–38 cm · pecho 32–53 cm'
+  };
+  if(tablaMedidas[texto]){
+    medidas.textContent = '📏 ' + tablaMedidas[texto];
+    medidas.style.display = 'block';
+  }
+}
+
+// Selector de cantidad por producto
+function cambiarCantidad(btn, delta){
+  var row = btn.closest('.qty-row');
+  if(!row) return;
+  var span = row.querySelector('.qty-value');
+  var val = parseInt(span.textContent, 10) + delta;
+  if(val < 1) val = 1;
+  if(val > 10) val = 10;
+  span.textContent = val;
+}
+
+function comprarProducto(btn, amountInCents, nombreBase){
+  var card = btn.closest('.prod-card');
+  var chip = card ? card.querySelector('.size-chip.selected') : null;
+  if(!chip){
+    alert('Por favor selecciona una talla antes de continuar.');
+    return;
+  }
+  var qtyEl = card ? card.querySelector('.qty-value') : null;
+  var qty = qtyEl ? parseInt(qtyEl.textContent, 10) : 1;
+  var tallaTexto = chip.textContent.trim();
+  var nombreCompleto = nombreBase + ' (' + tallaTexto + ')';
+  if(qty > 1) nombreCompleto += ' x' + qty;
+  iniciarCompra(amountInCents * qty, nombreCompleto, tallaTexto);
+}
+
+function iniciarCompra(baseAmountInCents, nombreProducto, talla){
+  if(!baseAmountInCents || baseAmountInCents <= 0){
+    alert('Selecciona al menos un producto antes de continuar.');
+    return;
+  }
+  pendingPurchase = { baseAmountInCents: baseAmountInCents, nombreProducto: nombreProducto, talla: talla };
+  var tallaField = document.getElementById('envio-talla');
+  var tallaDisplay = document.getElementById('shipping-talla-display');
+  if(tallaField) tallaField.value = talla || '';
+  if(tallaDisplay){
+    if(talla){
+      tallaDisplay.textContent = 'Talla elegida: ' + talla;
+      tallaDisplay.style.display = 'block';
+    } else {
+      tallaDisplay.style.display = 'none';
+    }
+  }
+  document.getElementById('shipping-modal-overlay').classList.add('open');
+}
+
+// Delegación de eventos: funciona sin importar el orden del HTML
+document.addEventListener('click', function(e){
+  if(e.target && e.target.id === 'shipping-modal-cancel'){
+    var overlay = document.getElementById('shipping-modal-overlay');
+    if(overlay) overlay.classList.remove('open');
+    pendingPurchase = null;
+  }
+});
+
+document.addEventListener('submit', function(e){
+  if(!e.target || e.target.id !== 'datos-envio-form') return;
+  e.preventDefault();
+  if(!pendingPurchase) return;
+
+  var form = e.target;
+  var nombre = document.getElementById('envio-nombre').value;
+  var mascota = document.getElementById('envio-mascota').value;
+  var telefono = document.getElementById('envio-telefono').value;
+  var correo = document.getElementById('envio-correo').value;
+  var direccion = document.getElementById('envio-direccion').value;
+  var ciudadNombre = document.getElementById('envio-ciudad-nombre').value;
+
+  var citySelect = document.getElementById('envio-ciudad');
+  var selectedOption = citySelect.options[citySelect.selectedIndex];
+  var shippingCents = parseInt(selectedOption.dataset.shipping, 10) * 100;
+
+  var codigoInput = document.getElementById('envio-codigo');
+  var codigo = codigoInput ? codigoInput.value.trim().toUpperCase() : '';
+  var descuentoFraccion = CODIGOS_DESCUENTO[codigo] || 0;
+  var baseConDescuento = Math.round(pendingPurchase.baseAmountInCents * (1 - descuentoFraccion));
+
+  var totalCents = baseConDescuento + shippingCents;
+  var nombreProducto = pendingPurchase.nombreProducto;
+  if(descuentoFraccion > 0){
+    nombreProducto += ' [código ' + codigo + ', -' + Math.round(descuentoFraccion * 100) + '%]';
+  }
+
+  var customerData = {
+    fullName: nombre,
+    email: correo,
+    phoneNumber: telefono,
+    phoneNumberPrefix: '+57'
+  };
+
+  // Guardamos correo, mascota y producto en addressLine2 para que viajen
+  // junto con la transacción de Wompi (visibles en su panel y en el webhook) —
+  // así el registro del pedido no depende del navegador del cliente.
+  var shippingAddress = {
+    addressLine1: direccion,
+    addressLine2: 'Correo: ' + correo + ' | Mascota: ' + mascota + ' | Producto: ' + nombreProducto,
+    city: ciudadNombre,
+    region: 'Colombia',
+    country: 'CO',
+    phoneNumber: telefono,
+    name: nombre
+  };
+
+  var overlay = document.getElementById('shipping-modal-overlay');
+  if(overlay) overlay.classList.remove('open');
+  pendingPurchase = null;
+  form.reset();
+
+  pagarConWompi(totalCents, nombreProducto, customerData, shippingAddress);
+});
+
+// Paso 2: pago con Wompi (producción)
+var WOMPI_PUBLIC_KEY = 'pub_prod_bMJoSYDpbi1X897N35gXBmAZ5OArOgJr';
+
+function generarReferenciaWompi(){
+  return 'WP-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8).toUpperCase();
+}
+
+function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddress){
+  if(!amountInCents || amountInCents <= 0){
+    alert('Selecciona al menos un producto antes de continuar.');
+    return;
+  }
+  var reference = generarReferenciaWompi();
+
+  fetch('/.netlify/functions/wompi-signature', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ reference: reference, amountInCents: amountInCents })
+  })
+  .then(function(resp){
+    if(!resp.ok){ throw new Error('No se pudo generar la firma de pago'); }
+    return resp.json();
+  })
+  .then(function(data){
+    var config = {
+      currency: 'COP',
+      amountInCents: amountInCents,
+      reference: reference,
+      publicKey: WOMPI_PUBLIC_KEY,
+      signature: { integrity: data.signature },
+      redirectUrl: window.location.origin + window.location.pathname
+    };
+    if(customerData){ config.customerData = customerData; }
+    if(shippingAddress){ config.shippingAddress = shippingAddress; }
+    var checkout = new WidgetCheckout(config);
+    checkout.open(function(result){
+      // El registro del pedido y el correo de confirmación los maneja
+      // el webhook de Wompi (más confiable que depender de que el
+      // cliente vuelva a esta página). Aquí solo damos aviso inmediato.
+      var transaction = result.transaction;
+      if(transaction && transaction.status === 'APPROVED'){
+        alert('🎉 ¡Pago aprobado! Gracias por tu compra' + (nombreProducto ? ' de ' + nombreProducto : '') + '. Te llegará un correo de confirmación en breve.');
+      } else if(transaction){
+        alert('El pago quedó en estado: ' + transaction.status + '. Si el banco lo confirma más tarde, te llegará igual el correo de confirmación.');
+      }
+    });
+  })
+  .catch(function(err){
+    console.error(err);
+    alert('Hubo un problema iniciando el pago. Intenta de nuevo o escríbenos por WhatsApp.');
+  });
+}
+
+// Aviso al volver de Wompi (algunos métodos redirigen fuera y regresan aquí)
+(function(){
+  var params = new URLSearchParams(window.location.search);
+  var transactionId = params.get('id');
+  if(!transactionId) return;
+
+  fetch('/.netlify/functions/wompi-check-status?id=' + encodeURIComponent(transactionId))
+    .then(function(resp){ return resp.json(); })
+    .then(function(data){
+      if(!data || !data.status) return;
+      if(data.status === 'APPROVED'){
+        alert('🎉 ¡Pago aprobado! Gracias por tu compra. Te llegará un correo de confirmación en breve.');
+      } else {
+        alert('El pago quedó en estado: ' + data.status + '. Si el banco lo confirma más tarde, te llegará igual el correo de confirmación.');
+      }
+      var urlLimpia = window.location.origin + window.location.pathname;
+      window.history.replaceState({}, document.title, urlLimpia);
+    })
+    .catch(function(err){ console.error('No se pudo verificar el pago al volver', err); });
+})();
+</script>
+<!-- MODAL ENVÍO -->
+<div class="shipping-modal-overlay" id="shipping-modal-overlay">
+  <div class="shipping-modal">
+    <h3>Datos de envío 📦</h3>
+    <div class="shipping-talla-display" id="shipping-talla-display"></div>
+    <p class="shipping-modal-sub">Los necesitamos para tu pedido y para incluir una tarjeta personalizada 💌</p>
+    <form id="datos-envio-form" name="datos-envio" method="POST" data-netlify="true" netlify-honeypot="bot-field-envio">
+      <input type="hidden" name="form-name" value="datos-envio">
+      <input type="hidden" id="envio-talla" name="talla" value="">
+      <p class="hp-field"><label>No llenar: <input name="bot-field-envio"></label></p>
+      <input type="text" id="envio-nombre" name="nombre" placeholder="Tu nombre completo" required class="shipping-input">
+      <input type="text" id="envio-mascota" name="mascota" placeholder="Nombre de tu perrihijo" required class="shipping-input">
+      <input type="tel" id="envio-telefono" name="telefono" placeholder="Teléfono / WhatsApp" required class="shipping-input">
+      <input type="email" id="envio-correo" name="correo" placeholder="Correo electrónico" required class="shipping-input">
+      <input type="text" id="envio-direccion" name="direccion" placeholder="Dirección exacta (calle, número, apto/casa)" required class="shipping-input">
+      <input type="text" id="envio-ciudad-nombre" name="ciudad" placeholder="Ciudad (ej: Bogotá, Medellín, Cali...)" required class="shipping-input">
+      <select id="envio-ciudad" name="tipo_envio" required class="shipping-input shipping-select">
+        <option value="" disabled selected>Tipo de envío</option>
+        <option value="Bogotá / Soacha" data-shipping="9000">Bogotá / Soacha — envío $9.000</option>
+        <option value="Otra ciudad de Colombia" data-shipping="18500">Otra ciudad de Colombia — envío $18.500</option>
+      </select>
+      <input type="text" id="envio-codigo" name="codigo_descuento" placeholder="Código de descuento (opcional)" class="shipping-input" oninput="this.value = this.value.toUpperCase()">
+      <div class="promo-feedback" id="promo-feedback"></div>
+      <button type="submit" class="btn-buy">Continuar al pago 💳</button>
+    </form>
+    <button class="shipping-modal-cancel" id="shipping-modal-cancel">Cancelar</button>
+  </div>
+</div>
+<!-- Scripts para medir -->
+<script>
+(function(){
+  var CURRENCY = 'COP';
+
+  // Envía un evento a GA4 y a Clarity (y a Meta si se indica).
+  function track(name, params, metaEvent){
+    params = params || {};
+    try { if (window.gtag) gtag('event', name, params); } catch(e){}
+    try { if (window.clarity) clarity('event', name); } catch(e){}
+    if (metaEvent) {
+      try {
+        if (window.fbq) fbq('track', metaEvent,
+          params.value ? { value: params.value, currency: CURRENCY } : {});
+      } catch(e){}
+    }
+  }
+  function tag(key, value){ try { if (window.clarity) clarity('set', key, String(value)); } catch(e){} }
+  function save(k, v){ try { sessionStorage.setItem(k, JSON.stringify(v)); } catch(e){} }
+  function load(k){ try { return JSON.parse(sessionStorage.getItem(k)); } catch(e){ return null; } }
+
+  // "Collar de goma (Talla S) x2 [código X]" -> "Collar de goma"
+  function baseName(n){ return String(n || '').replace(/\s*[\(\[].*$/, '').replace(/\s*x\d+$/, '').trim(); }
+  function qtyFrom(n){ var m = String(n || '').match(/\)\s*x(\d+)/); return m ? parseInt(m[1], 10) : 1; }
+  function productOfCard(card){
+    var btn = card && card.querySelector('.btn-buy');
+    var m = btn && (btn.getAttribute('onclick') || '').match(/'([^']+)'\s*\)/);
+    return m ? m[1] : '';
+  }
+
+  // Envuelve una función existente de la página para medir antes de ejecutarla.
+  function wrap(name, before){
+    var original = window[name];
+    if (typeof original !== 'function') return;
+    window[name] = function(){
+      try { before.apply(this, arguments); } catch(e){}
+      return original.apply(this, arguments);
+    };
+  }
+
+  // 1. Elige una talla en una tarjeta de producto
+  wrap('seleccionarTalla', function(chip){
+    var talla = chip.textContent.trim().replace(/^Talla\s+/i, '');
+    track('talla_seleccionada', { talla: talla, item_name: productOfCard(chip.closest('.prod-card')) });
+    tag('talla', talla);
+  });
+
+  // 2. Clic en "Quiero este": detecta si lo intentan sin elegir talla
+  wrap('comprarProducto', function(btn, cents, nombre){
+    var card = btn.closest('.prod-card');
+    if (card && !card.querySelector('.size-chip.selected')) {
+      track('compra_sin_talla', { item_name: nombre });
+    }
+  });
+
+  // 3. Se abre el formulario de envío = inicio de checkout
+  wrap('iniciarCompra', function(cents, nombre, talla){
+    if (!cents || cents <= 0) return;
+    var value = cents / 100;
+    track('begin_checkout', {
+      currency: CURRENCY, value: value,
+      items: [{ item_name: baseName(nombre), item_variant: String(talla || '').replace(/^Talla\s+/i, ''), price: value / qtyFrom(nombre), quantity: qtyFrom(nombre) }]
+    }, 'InitiateCheckout');
+    tag('checkout', 'abierto');
+    try { if (window.clarity) clarity('upgrade', 'checkout'); } catch(e){}  // prioriza grabar esta sesión
+  });
+
+  // 4. "Continuar al pago": se abre Wompi (incluye envío y descuento)
+  wrap('pagarConWompi', function(cents, nombre){
+    if (!cents || cents <= 0) return;
+    var value = cents / 100;
+    save('wuuff_pago', { cents: cents, nombre: nombre });
+    track('add_payment_info', {
+      currency: CURRENCY, value: value, payment_type: 'wompi',
+      items: [{ item_name: baseName(nombre), price: value, quantity: 1 }]
+    }, 'AddPaymentInfo');
+    tag('checkout', 'wompi_abierto');
+  });
+
+  // 5. Compra aprobada. Tu código la llama (ver instrucciones).
+  window.wuuffCompraAprobada = function(transactionId, amountInCents){
+    if (!transactionId) return;
+    var key = 'wuuff_tx_' + transactionId;
+    try { if (localStorage.getItem(key)) return; localStorage.setItem(key, '1'); } catch(e){}
+    var pago = load('wuuff_pago') || {};
+    var value = (amountInCents || pago.cents || 0) / 100;
+    try {
+      if (window.gtag) gtag('event', 'purchase', {
+        transaction_id: String(transactionId), currency: CURRENCY, value: value,
+        items: [{ item_name: baseName(pago.nombre) || 'Pedido Wuuff', price: value, quantity: 1 }]
+      });
+    } catch(e){}
+    try { if (window.fbq) fbq('track', 'Purchase', { value: value, currency: CURRENCY }, { eventID: String(transactionId) }); } catch(e){}
+    try { if (window.clarity) clarity('event', 'purchase'); } catch(e){}
+    tag('compro', 'si');
+    try { sessionStorage.removeItem('wuuff_pago'); } catch(e){}
+  };
+
+  // 6. Clics que no pasan por funciones: WhatsApp, preguntas frecuentes, cancelar
+  document.addEventListener('click', function(e){
+    var el = e.target.closest && e.target.closest('a, button');
+    if (!el) return;
+    var href = el.getAttribute('href') || '';
+    if (href.indexOf('wa.me') !== -1) {
+      track('whatsapp_click', { method: 'whatsapp', link_classes: el.className || '' }, 'Contact');
+    } else if (el.classList.contains('faq-question')) {
+      track('faq_abierta', { pregunta: el.textContent.replace(/[+\-−]\s*$/, '').trim().slice(0, 90) });
+    } else if (el.id === 'shipping-modal-cancel') {
+      track('checkout_cancelado', {});
+      tag('checkout', 'cancelado');
+    } else if (href === '#comprar') {
+      track('cta_click', { cta: el.textContent.trim().slice(0, 40) || 'isotipo' });
+    }
+  }, true);
+
+  // 7. Combo: marca/desmarca productos
+  document.querySelectorAll('.combo-check').forEach(function(input){
+    input.addEventListener('change', function(){
+      track('combo_armado', {
+        value: (window.wuuffComboTotalCents || 0) / 100, currency: CURRENCY,
+        productos: document.querySelectorAll('.combo-check:checked').length
+      });
+    });
+  });
+
+  // 8. Medidor de talla por contorno (una vez por visita)
+  var slider = document.getElementById('weight-slider');
+  if (slider) {
+    var usado = false;
+    slider.addEventListener('change', function(){
+      if (usado) return; usado = true;
+      track('medidor_talla_usado', { valor: slider.value });
+    });
+  }
+})();
+</script>
+</body>
+</html>
