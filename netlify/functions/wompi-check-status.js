@@ -27,7 +27,7 @@ exports.handler = async function (event) {
     return {
       statusCode: 200,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status: status, reference: reference })
+      body: JSON.stringify({ status: status, reference: reference, amountInCents: json.data.amount_in_cents })
     };
   } catch (err) {
     return { statusCode: 500, body: JSON.stringify({ error: 'Error de conexión con Wompi' }) };

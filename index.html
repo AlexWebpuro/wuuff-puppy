@@ -1140,6 +1140,9 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
       // cliente vuelva a esta página). Aquí solo damos aviso inmediato.
       var transaction = result.transaction;
       if(transaction && transaction.status === 'APPROVED'){
+        if(typeof window.wuuffCompraAprobada === 'function'){
+          window.wuuffCompraAprobada(transaction.id, transaction.amountInCents || amountInCents);
+        }
         alert('🎉 ¡Pago aprobado! Gracias por tu compra' + (nombreProducto ? ' de ' + nombreProducto : '') + '. Te llegará un correo de confirmación en breve.');
       } else if(transaction){
         alert('El pago quedó en estado: ' + transaction.status + '. Si el banco lo confirma más tarde, te llegará igual el correo de confirmación.');
@@ -1163,6 +1166,9 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
     .then(function(data){
       if(!data || !data.status) return;
       if(data.status === 'APPROVED'){
+        if(typeof window.wuuffCompraAprobada === 'function'){
+          window.wuuffCompraAprobada(transactionId, data.amountInCents);
+        }
         alert('🎉 ¡Pago aprobado! Gracias por tu compra. Te llegará un correo de confirmación en breve.');
       } else {
         alert('El pago quedó en estado: ' + data.status + '. Si el banco lo confirma más tarde, te llegará igual el correo de confirmación.');
