@@ -1228,6 +1228,46 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
   function save(k, v){ try { sessionStorage.setItem(k, JSON.stringify(v)); } catch(e){} }
   function load(k){ try { return JSON.parse(sessionStorage.getItem(k)); } catch(e){ return null; } }
 
+  // IDs del catálogo de Meta según el nombre base del producto
+  var META_IDS = {
+    'Collar de goma': 'WP-COLLAR',
+    'Arnés de goma': 'WP-ARNES',
+    'Correa de goma': 'WP-CORREA',
+    'Set completo': 'WP-SET'
+  };
+  // Envía un evento de Meta con los datos del catálogo.
+  function metaTrack(event, contents, value, options){
+    try {
+      if (!window.fbq || !contents || !contents.length) return;
+      fbq('track', event, {
+        content_ids: contents.map(function(c){ return c.id; }),
+        contents: contents,
+        content_type: 'product',
+        value: value,
+        currency: CURRENCY
+      }, options);
+    } catch(e){}
+  }
+  // Productos (contents de Meta) de una compra que inicia en iniciarCompra.
+  function contentsFor(cents, nombre){
+    if (nombre === 'Combo personalizado') {
+      var checked = document.querySelectorAll('.combo-check:checked');
+      if (checked.length === 3) return [{ id: 'WP-SET', quantity: 1, item_price: cents / 100 }];
+      var list = [];
+      checked.forEach(function(c){
+        var label = c.closest('.combo-item');
+        var n = label ? label.querySelector('.combo-item-name').textContent.trim() : '';
+        if (META_IDS[n]) list.push({ id: META_IDS[n], quantity: 1, item_price: parseInt(c.dataset.price, 10) });
+      });
+      return list;
+    }
+    var id = META_IDS[baseName(nombre)];
+    if (!id) return [];
+    var qty = qtyFrom(nombre);
+    return [{ id: id, quantity: qty, item_price: cents / 100 / qty }];
+  }
+  var carrito = null;  // contents de la compra en curso
+
   // "Collar de goma (Talla S) x2 [código X]" -> "Collar de goma"
   function baseName(n){ return String(n || '').replace(/\s*[\(\[].*$/, '').replace(/\s*x\d+$/, '').trim(); }
   function qtyFrom(n){ var m = String(n || '').match(/\)\s*x(\d+)/); return m ? parseInt(m[1], 10) : 1; }
@@ -1269,7 +1309,10 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
     track('begin_checkout', {
       currency: CURRENCY, value: value,
       items: [{ item_name: baseName(nombre), item_variant: String(talla || '').replace(/^Talla\s+/i, ''), price: value / qtyFrom(nombre), quantity: qtyFrom(nombre) }]
-    }, 'InitiateCheckout');
+    });
+    carrito = contentsFor(cents, nombre);
+    metaTrack('AddToCart', carrito, value);
+    metaTrack('InitiateCheckout', carrito, value);
     tag('checkout', 'abierto');
     try { if (window.clarity) clarity('upgrade', 'checkout'); } catch(e){}  // prioriza grabar esta sesión
   });
@@ -1278,11 +1321,12 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
   wrap('pagarConWompi', function(cents, nombre){
     if (!cents || cents <= 0) return;
     var value = cents / 100;
-    save('wuuff_pago', { cents: cents, nombre: nombre });
+    save('wuuff_pago', { cents: cents, nombre: nombre, contents: carrito });
     track('add_payment_info', {
       currency: CURRENCY, value: value, payment_type: 'wompi',
       items: [{ item_name: baseName(nombre), price: value, quantity: 1 }]
-    }, 'AddPaymentInfo');
+    });
+    metaTrack('AddPaymentInfo', carrito, value);
     tag('checkout', 'wompi_abierto');
   });
 
@@ -1299,7 +1343,11 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
         items: [{ item_name: baseName(pago.nombre) || 'Pedido Wuuff', price: value, quantity: 1 }]
       });
     } catch(e){}
-    try { if (window.fbq) fbq('track', 'Purchase', { value: value, currency: CURRENCY }, { eventID: String(transactionId) }); } catch(e){}
+    if (pago.contents && pago.contents.length) {
+      metaTrack('Purchase', pago.contents, value, { eventID: String(transactionId) });
+    } else {
+      try { if (window.fbq) fbq('track', 'Purchase', { value: value, currency: CURRENCY }, { eventID: String(transactionId) }); } catch(e){}
+    }
     try { if (window.clarity) clarity('event', 'purchase'); } catch(e){}
     tag('compro', 'si');
     try { sessionStorage.removeItem('wuuff_pago'); } catch(e){}
@@ -1332,7 +1380,23 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
     });
   });
 
-  // 8. Medidor de talla por contorno (una vez por visita)
+  // 8. ViewContent: una vez por tarjeta cuando se ve al 50 %
+  if ('IntersectionObserver' in window) {
+    var visto = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (!entry.isIntersecting) return;
+        visto.unobserve(entry.target);
+        var btn = entry.target.querySelector('.btn-buy');
+        var m = btn && (btn.getAttribute('onclick') || '').match(/,\s*(\d+)\s*,\s*'([^']+)'\s*\)/);
+        if (!m || !META_IDS[m[2]]) return;
+        var value = parseInt(m[1], 10) / 100;
+        metaTrack('ViewContent', [{ id: META_IDS[m[2]], quantity: 1, item_price: value }], value);
+      });
+    }, { threshold: 0.5 });
+    document.querySelectorAll('.prod-card').forEach(function(card){ visto.observe(card); });
+  }
+
+  // 9. Medidor de talla por contorno (una vez por visita)
   var slider = document.getElementById('weight-slider');
   if (slider) {
     var usado = false;
