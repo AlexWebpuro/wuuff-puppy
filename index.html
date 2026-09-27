@@ -134,12 +134,14 @@ nav{
 .prod-tag{display:inline-block;font-size:10px;font-weight:900;letter-spacing:2px;text-transform:uppercase;padding:3px 12px;border-radius:20px;margin-bottom:10px;}
 .tag-blue{background:var(--lime);color:var(--navy);}
 .tag-coral{background:var(--coral);color:#fff;}
-.tag-green{background:#e6f7ec;color:#2b8a3e;letter-spacing:1px;}
-.prod-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
-.prod-tags .prod-tag{margin-bottom:0;white-space:nowrap;}
 .prod-name{font-family:'Fredoka One',cursive;font-size:20px;color:var(--navy);margin-bottom:6px;}
 .prod-desc{font-size:13px;font-weight:600;color:var(--navy);opacity:.65;margin-bottom:14px;line-height:1.5;}
 .prod-price{font-family:'Fredoka One',cursive;font-size:24px;color:var(--blue);margin-bottom:4px;}
+.price-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px 16px;margin-bottom:14px;}
+.price-row .prod-price{margin-bottom:0;line-height:1.1;}
+.price-row .prod-price small{display:block;margin-top:4px;}
+.cuotas-badge{position:relative;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;margin-left:14px;padding:6px 14px 6px 8px;background:var(--lime);color:var(--navy);font-family:'Fredoka One',cursive;font-size:14px;line-height:1.05;text-align:center;text-transform:uppercase;letter-spacing:.3px;border-radius:0 14px 14px 0;white-space:nowrap;}
+.cuotas-badge::before{content:'';position:absolute;top:0;bottom:0;left:-14px;width:15px;background:inherit;clip-path:polygon(100% 0,100% 100%,0 50%);}
 .prod-price small{font-size:13px;font-weight:700;color:var(--navy);opacity:.5;font-family:'Nunito',sans-serif;}
 .size-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px;}
 .size-medidas{display:none;background:var(--lblue);border-radius:10px;padding:8px 12px;font-size:11px;font-weight:800;color:var(--navy);margin-top:-10px;margin-bottom:18px;}
@@ -405,10 +407,13 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
         </div>
       </div>
       <div class="prod-body">
-        <div class="prod-tags"><span class="prod-tag tag-blue">Nuevo</span><span class="prod-tag tag-green">💳 4 cuotas sin interés</span></div>
+        <span class="prod-tag tag-blue">Nuevo</span>
         <div class="prod-name">Collar de goma</div>
         <div class="prod-desc">Resistente al agua, antiolor e hipoalergénico. Para el cuello más bonito del parque.</div>
-        <div class="prod-price">$58.000 COP <small>+ envío</small></div>
+        <div class="price-row">
+          <div class="prod-price">$58.000 COP <small>+ envío</small></div>
+          <span class="cuotas-badge">4 cuotas<br>sin interés</span>
+        </div>
         <div class="size-row"><span class="size-chip" onclick="seleccionarTalla(this)">Talla S</span><span class="size-chip" onclick="seleccionarTalla(this)">Talla M</span></div>
         <div class="size-medidas"></div>
         <div class="qty-row">
@@ -441,10 +446,13 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
         </div>
       </div>
       <div class="prod-body">
-        <div class="prod-tags"><span class="prod-tag tag-blue">Más vendido</span><span class="prod-tag tag-green">💳 4 cuotas sin interés</span></div>
+        <span class="prod-tag tag-blue">Más vendido</span>
         <div class="prod-name">Arnés de goma</div>
         <div class="prod-desc">Cómodo, seguro y bonito. Distribución perfecta del peso para paseos sin jalones.</div>
-        <div class="prod-price">$84.900 COP <small>+ envío</small></div>
+        <div class="price-row">
+          <div class="prod-price">$84.900 COP <small>+ envío</small></div>
+          <span class="cuotas-badge">4 cuotas<br>sin interés</span>
+        </div>
         <div class="size-row"><span class="size-chip" onclick="seleccionarTalla(this)">Talla S</span><span class="size-chip" onclick="seleccionarTalla(this)">Talla M</span></div>
         <div class="size-medidas"></div>
         <div class="qty-row">
@@ -477,10 +485,13 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
         </div>
       </div>
       <div class="prod-body">
-        <div class="prod-tags"><span class="prod-tag tag-blue">Nuevo</span><span class="prod-tag tag-green">💳 4 cuotas sin interés</span></div>
+        <span class="prod-tag tag-blue">Nuevo</span>
         <div class="prod-name">Correa de goma</div>
         <div class="prod-desc">1.8m de longitud. Gancho metálico resistente. El compañero perfecto para cada paseo.</div>
-        <div class="prod-price">$69.000 COP <small>+ envío</small></div>
+        <div class="price-row">
+          <div class="prod-price">$69.000 COP <small>+ envío</small></div>
+          <span class="cuotas-badge">4 cuotas<br>sin interés</span>
+        </div>
         <div class="size-row"><span class="size-chip selected">Talla única</span></div>
         <div class="qty-row">
           <span class="qty-label">Cantidad</span>
@@ -512,10 +523,13 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
         </div>
       </div>
       <div class="prod-body">
-        <div class="prod-tags"><span class="prod-tag tag-coral">⭐ Mejor valor</span><span class="prod-tag tag-green">💳 4 cuotas sin interés</span></div>
+        <span class="prod-tag tag-coral">⭐ Mejor valor</span>
         <div class="prod-name">Combo completo</div>
         <div class="prod-desc">Collar + Arnés + Correa Wuuff Puppy. El regalo perfecto para tu perrihijo especial.</div>
-        <div class="prod-price">$184.900 COP <small>+ envío · ahorras $27.000</small></div>
+        <div class="price-row">
+          <div class="prod-price">$184.900 COP <small>+ envío · ahorras $27.000</small></div>
+          <span class="cuotas-badge">4 cuotas<br>sin interés</span>
+        </div>
         <div class="size-row"><span class="size-chip" onclick="seleccionarTalla(this)">S</span><span class="size-chip" onclick="seleccionarTalla(this)">M</span></div>
         <div class="size-medidas"></div>
         <div class="qty-row">
