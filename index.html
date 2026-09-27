@@ -139,7 +139,7 @@ nav{
 .prod-price{font-family:'Fredoka One',cursive;font-size:24px;color:var(--blue);margin-bottom:4px;}
 .payment-note{display:inline-block;background-color:#e6f7ec;color:#2b8a3e;font-size:11px;font-weight:800;padding:5px 10px;border-radius:8px;margin-bottom:14px;opacity:1;}
 .prod-price small{font-size:13px;font-weight:700;color:var(--navy);opacity:.5;font-family:'Nunito',sans-serif;}
-.size-row{display:flex;gap:6px;margin-bottom:18px;}
+.size-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px;}
 .size-medidas{display:none;background:var(--lblue);border-radius:10px;padding:8px 12px;font-size:11px;font-weight:800;color:var(--navy);margin-top:-10px;margin-bottom:18px;}
 .qty-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
 .qty-label{font-size:12px;font-weight:800;color:var(--navy);opacity:.6;text-transform:uppercase;letter-spacing:.5px;}
@@ -147,7 +147,7 @@ nav{
 .qty-btn{background:#fff;border:none;width:24px;height:24px;border-radius:8px;font-size:16px;font-weight:900;color:var(--blue);cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;box-shadow:0 2px 6px rgba(0,0,0,.08);}
 .qty-btn:hover{background:var(--blue);color:#fff;}
 .qty-value{font-size:14px;font-weight:900;color:var(--navy);min-width:16px;text-align:center;}
-.size-chip{background:var(--lblue);border-radius:8px;padding:4px 10px;font-size:11px;font-weight:800;color:var(--navy);cursor:pointer;border:1.5px solid transparent;transition:background .2s,color .2s,border-color .2s;}
+.size-chip{display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:56px;background:var(--lblue);border-radius:10px;padding:10px 18px;font-size:13px;-webkit-tap-highlight-color:transparent;font-weight:800;color:var(--navy);cursor:pointer;border:1.5px solid transparent;transition:background .2s,color .2s,border-color .2s;}
 .size-chip:hover{border-color:var(--blue);}
 .size-chip.selected{background:var(--blue);color:#fff;}
 .btn-buy{width:100%;background:var(--blue);color:#fff;font-weight:900;font-size:14px;padding:13px;border-radius:16px;border:none;cursor:pointer;transition:background .2s,transform .1s;font-family:'Nunito',sans-serif;}
@@ -292,18 +292,6 @@ footer{background:var(--navy);padding:48px 20px 36px;text-align:center;}
 .footer-social a:hover{background:#fff;color:var(--navy);}
 .footer-copy{font-size:12px;color:rgba(255,255,255,.35);font-weight:600;}
 
-/* ISOTIPO FLOTANTE */
-.isotipo-float{
-  position:fixed;bottom:24px;right:24px;z-index:300;
-  width:56px;height:56px;
-  background:#fff;border-radius:50%;
-  box-shadow:0 6px 24px rgba(73,100,175,.3);
-  display:flex;align-items:center;justify-content:center;
-  transition:transform .2s;cursor:pointer;
-  text-decoration:none;
-}
-.isotipo-float:hover{transform:scale(1.12);}
-.isotipo-float img{width:38px;height:38px;object-fit:contain;}
 
 @media(max-width:768px){
   .hero{min-height:560px;}
@@ -356,11 +344,6 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
   </div>
   <a href="#comprar" class="nav-cta">Quiero el mío 🐾</a>
 </nav>
-
-<!-- ISOTIPO FLOTANTE -->
-<a href="#comprar" class="isotipo-float">
-  <img src="images/wuuff-puppy-2.png" alt="Wuuff Puppy">
-</a>
 
 <!-- WHATSAPP FLOTANTE -->
 <a href="https://wa.me/573176431286?text=Hola%2C%20quiero%20más%20información%20sobre%20Wuuff%20Puppy%20🐾" target="_blank" class="whatsapp-float" aria-label="Escríbenos por WhatsApp">
@@ -424,7 +407,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
         <div class="prod-name">Collar de goma</div>
         <div class="prod-desc">Resistente al agua, antiolor e hipoalergénico. Para el cuello más bonito del parque.</div>
         <div class="prod-price">$58.000 COP <small>+ envío</small></div>
-        <p class="payment-note">💳 4 cuotas sin interés · Pago seguro con Wompi</p>
+        <p class="payment-note">💳 4 cuotas sin interés</p>
         <div class="size-row"><span class="size-chip" onclick="seleccionarTalla(this)">Talla S</span><span class="size-chip" onclick="seleccionarTalla(this)">Talla M</span></div>
         <div class="size-medidas"></div>
         <div class="qty-row">
@@ -435,7 +418,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
             <button type="button" class="qty-btn" onclick="cambiarCantidad(this,1)">+</button>
           </div>
         </div>
-        <button class="btn-buy" onclick="comprarProducto(this, 5800000, 'Collar de goma')">Quiero este 🐾</button>
+        <button class="btn-buy" onclick="comprarProducto(this, 5800000, 'Collar de goma')">Comprar 🐾</button>
       </div>
     </div>
 
@@ -461,7 +444,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
         <div class="prod-name">Arnés de goma</div>
         <div class="prod-desc">Cómodo, seguro y bonito. Distribución perfecta del peso para paseos sin jalones.</div>
         <div class="prod-price">$84.900 COP <small>+ envío</small></div>
-        <p class="payment-note">💳 4 cuotas sin interés · Pago seguro con Wompi</p>
+        <p class="payment-note">💳 4 cuotas sin interés</p>
         <div class="size-row"><span class="size-chip" onclick="seleccionarTalla(this)">Talla S</span><span class="size-chip" onclick="seleccionarTalla(this)">Talla M</span></div>
         <div class="size-medidas"></div>
         <div class="qty-row">
@@ -472,7 +455,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
             <button type="button" class="qty-btn" onclick="cambiarCantidad(this,1)">+</button>
           </div>
         </div>
-        <button class="btn-buy" onclick="comprarProducto(this, 8490000, 'Arnés de goma')">Quiero este 🐾</button>
+        <button class="btn-buy" onclick="comprarProducto(this, 8490000, 'Arnés de goma')">Comprar 🐾</button>
       </div>
     </div>
 
@@ -498,7 +481,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
         <div class="prod-name">Correa de goma</div>
         <div class="prod-desc">1.8m de longitud. Gancho metálico resistente. El compañero perfecto para cada paseo.</div>
         <div class="prod-price">$69.000 COP <small>+ envío</small></div>
-        <p class="payment-note">💳 4 cuotas sin interés · Pago seguro con Wompi</p>
+        <p class="payment-note">💳 4 cuotas sin interés</p>
         <div class="size-row"><span class="size-chip selected">Talla única</span></div>
         <div class="qty-row">
           <span class="qty-label">Cantidad</span>
@@ -508,7 +491,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
             <button type="button" class="qty-btn" onclick="cambiarCantidad(this,1)">+</button>
           </div>
         </div>
-        <button class="btn-buy" onclick="comprarProducto(this, 6900000, 'Correa de goma')">Quiero esta 🐾</button>
+        <button class="btn-buy" onclick="comprarProducto(this, 6900000, 'Correa de goma')">Comprar 🐾</button>
       </div>
     </div>
 
@@ -534,7 +517,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
         <div class="prod-name">Combo completo</div>
         <div class="prod-desc">Collar + Arnés + Correa Wuuff Puppy. El regalo perfecto para tu perrihijo especial.</div>
         <div class="prod-price">$184.900 COP <small>+ envío · ahorras $27.000</small></div>
-        <p class="payment-note">💳 4 cuotas sin interés · Pago seguro con Wompi</p>
+        <p class="payment-note">💳 4 cuotas sin interés</p>
         <div class="size-row"><span class="size-chip" onclick="seleccionarTalla(this)">S</span><span class="size-chip" onclick="seleccionarTalla(this)">M</span></div>
         <div class="size-medidas"></div>
         <div class="qty-row">
@@ -545,7 +528,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
             <button type="button" class="qty-btn" onclick="cambiarCantidad(this,1)">+</button>
           </div>
         </div>
-        <button class="btn-buy coral" onclick="comprarProducto(this, 18490000, 'Combo completo')">Quiero el combo 🎁</button>
+        <button class="btn-buy coral" onclick="comprarProducto(this, 18490000, 'Combo completo')">Comprar 🎁</button>
       </div>
     </div>
 
@@ -1294,7 +1277,7 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
     tag('talla', talla);
   });
 
-  // 2. Clic en "Quiero este": detecta si lo intentan sin elegir talla
+  // 2. Clic en "Comprar": detecta si lo intentan sin elegir talla
   wrap('comprarProducto', function(btn, cents, nombre){
     var card = btn.closest('.prod-card');
     if (card && !card.querySelector('.size-chip.selected')) {
