@@ -115,7 +115,7 @@ nav{
 .products h2{font-family:'Fredoka One',cursive;font-size:clamp(32px,5vw,52px);text-align:center;color:var(--navy);margin-bottom:8px;}
 .products h2 span{color:var(--coral);}
 .prod-sub{text-align:center;font-size:17px;font-weight:600;color:var(--navy);opacity:.65;margin-bottom:56px;}
-.products-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:24px;max-width:1040px;margin:0 auto;}
+.products-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px;max-width:1200px;margin:0 auto;}
 .prod-card{background:#fff;border-radius:28px;overflow:hidden;box-shadow:0 8px 32px rgba(73,100,175,.1);transition:transform .25s,box-shadow .25s;border:2px solid transparent;}
 .prod-card:hover{transform:translateY(-6px);box-shadow:0 24px 60px rgba(73,100,175,.18);border-color:var(--sky);}
 .prod-card.featured{border:3px solid var(--lime);}
@@ -130,16 +130,20 @@ nav{
 .carousel-dots{position:absolute;bottom:8px;left:0;right:0;display:flex;justify-content:center;gap:6px;z-index:2;}
 .carousel-dot{width:6px;height:6px;border-radius:50%;background:rgba(45,67,117,.35);cursor:pointer;transition:background .2s,width .2s;padding:0;border:none;}
 .carousel-dot.active{background:var(--blue);width:16px;border-radius:4px;}
-.prod-body{padding:22px;}
+.prod-body{padding:22px 18px;}
 .prod-tag{display:inline-block;font-size:10px;font-weight:900;letter-spacing:2px;text-transform:uppercase;padding:3px 12px;border-radius:20px;margin-bottom:10px;}
 .tag-blue{background:var(--lime);color:var(--navy);}
 .tag-coral{background:var(--coral);color:#fff;}
 .prod-name{font-family:'Fredoka One',cursive;font-size:20px;color:var(--navy);margin-bottom:6px;}
 .prod-desc{font-size:13px;font-weight:600;color:var(--navy);opacity:.65;margin-bottom:14px;line-height:1.5;}
 .prod-price{font-family:'Fredoka One',cursive;font-size:24px;color:var(--blue);margin-bottom:4px;}
-.payment-note{display:inline-block;background-color:#e6f7ec;color:#2b8a3e;font-size:11px;font-weight:800;padding:5px 10px;border-radius:8px;margin-bottom:14px;opacity:1;}
+.price-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:14px;container-type:inline-size;}
+.price-row .prod-price{flex:1 1 auto;min-width:0;margin-bottom:0;line-height:1.1;font-size:min(24px,8.2cqi);white-space:nowrap;}
+.price-row .prod-price small{display:block;margin-top:4px;font-size:min(13px,6.2cqi);white-space:normal;}
+.cuotas-badge{position:relative;flex-shrink:0;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;margin-left:1em;padding:.45em 1em .45em .55em;background:var(--lime);color:var(--navy);font-family:'Fredoka One',cursive;font-size:min(14px,4.6cqi);line-height:1.05;text-align:center;text-transform:uppercase;letter-spacing:.3px;border-radius:0 1em 1em 0;white-space:nowrap;}
+.cuotas-badge::before{content:'';position:absolute;top:0;bottom:0;left:-.95em;width:1em;background:inherit;clip-path:polygon(100% 0,100% 100%,0 50%);}
 .prod-price small{font-size:13px;font-weight:700;color:var(--navy);opacity:.5;font-family:'Nunito',sans-serif;}
-.size-row{display:flex;gap:6px;margin-bottom:18px;}
+.size-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px;}
 .size-medidas{display:none;background:var(--lblue);border-radius:10px;padding:8px 12px;font-size:11px;font-weight:800;color:var(--navy);margin-top:-10px;margin-bottom:18px;}
 .qty-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
 .qty-label{font-size:12px;font-weight:800;color:var(--navy);opacity:.6;text-transform:uppercase;letter-spacing:.5px;}
@@ -147,7 +151,7 @@ nav{
 .qty-btn{background:#fff;border:none;width:24px;height:24px;border-radius:8px;font-size:16px;font-weight:900;color:var(--blue);cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;box-shadow:0 2px 6px rgba(0,0,0,.08);}
 .qty-btn:hover{background:var(--blue);color:#fff;}
 .qty-value{font-size:14px;font-weight:900;color:var(--navy);min-width:16px;text-align:center;}
-.size-chip{background:var(--lblue);border-radius:8px;padding:4px 10px;font-size:11px;font-weight:800;color:var(--navy);cursor:pointer;border:1.5px solid transparent;transition:background .2s,color .2s,border-color .2s;}
+.size-chip{display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:56px;background:var(--lblue);border-radius:10px;padding:10px 18px;font-size:13px;-webkit-tap-highlight-color:transparent;font-weight:800;color:var(--navy);cursor:pointer;border:1.5px solid transparent;transition:background .2s,color .2s,border-color .2s;}
 .size-chip:hover{border-color:var(--blue);}
 .size-chip.selected{background:var(--blue);color:#fff;}
 .btn-buy{width:100%;background:var(--blue);color:#fff;font-weight:900;font-size:14px;padding:13px;border-radius:16px;border:none;cursor:pointer;transition:background .2s,transform .1s;font-family:'Nunito',sans-serif;}
@@ -292,18 +296,6 @@ footer{background:var(--navy);padding:48px 20px 36px;text-align:center;}
 .footer-social a:hover{background:#fff;color:var(--navy);}
 .footer-copy{font-size:12px;color:rgba(255,255,255,.35);font-weight:600;}
 
-/* ISOTIPO FLOTANTE */
-.isotipo-float{
-  position:fixed;bottom:24px;right:24px;z-index:300;
-  width:56px;height:56px;
-  background:#fff;border-radius:50%;
-  box-shadow:0 6px 24px rgba(73,100,175,.3);
-  display:flex;align-items:center;justify-content:center;
-  transition:transform .2s;cursor:pointer;
-  text-decoration:none;
-}
-.isotipo-float:hover{transform:scale(1.12);}
-.isotipo-float img{width:38px;height:38px;object-fit:contain;}
 
 @media(max-width:768px){
   .hero{min-height:560px;}
@@ -356,11 +348,6 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
   </div>
   <a href="#comprar" class="nav-cta">Quiero el mío 🐾</a>
 </nav>
-
-<!-- ISOTIPO FLOTANTE -->
-<a href="#comprar" class="isotipo-float">
-  <img src="images/wuuff-puppy-2.png" alt="Wuuff Puppy">
-</a>
 
 <!-- WHATSAPP FLOTANTE -->
 <a href="https://wa.me/573176431286?text=Hola%2C%20quiero%20más%20información%20sobre%20Wuuff%20Puppy%20🐾" target="_blank" class="whatsapp-float" aria-label="Escríbenos por WhatsApp">
@@ -423,8 +410,10 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
         <span class="prod-tag tag-blue">Nuevo</span>
         <div class="prod-name">Collar de goma</div>
         <div class="prod-desc">Resistente al agua, antiolor e hipoalergénico. Para el cuello más bonito del parque.</div>
-        <div class="prod-price">$58.000 COP <small>+ envío</small></div>
-        <p class="payment-note">💳 4 cuotas sin interés · Pago seguro con Wompi</p>
+        <div class="price-row">
+          <div class="prod-price">$58.000 COP <small>+ envío</small></div>
+          <span class="cuotas-badge">4 cuotas<br>sin interés</span>
+        </div>
         <div class="size-row"><span class="size-chip" onclick="seleccionarTalla(this)">Talla S</span><span class="size-chip" onclick="seleccionarTalla(this)">Talla M</span></div>
         <div class="size-medidas"></div>
         <div class="qty-row">
@@ -435,7 +424,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
             <button type="button" class="qty-btn" onclick="cambiarCantidad(this,1)">+</button>
           </div>
         </div>
-        <button class="btn-buy" onclick="comprarProducto(this, 5800000, 'Collar de goma')">Quiero este 🐾</button>
+        <button class="btn-buy" onclick="comprarProducto(this, 5800000, 'Collar de goma')">Comprar 🐾</button>
       </div>
     </div>
 
@@ -460,8 +449,10 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
         <span class="prod-tag tag-blue">Más vendido</span>
         <div class="prod-name">Arnés de goma</div>
         <div class="prod-desc">Cómodo, seguro y bonito. Distribución perfecta del peso para paseos sin jalones.</div>
-        <div class="prod-price">$84.900 COP <small>+ envío</small></div>
-        <p class="payment-note">💳 4 cuotas sin interés · Pago seguro con Wompi</p>
+        <div class="price-row">
+          <div class="prod-price">$84.900 COP <small>+ envío</small></div>
+          <span class="cuotas-badge">4 cuotas<br>sin interés</span>
+        </div>
         <div class="size-row"><span class="size-chip" onclick="seleccionarTalla(this)">Talla S</span><span class="size-chip" onclick="seleccionarTalla(this)">Talla M</span></div>
         <div class="size-medidas"></div>
         <div class="qty-row">
@@ -472,7 +463,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
             <button type="button" class="qty-btn" onclick="cambiarCantidad(this,1)">+</button>
           </div>
         </div>
-        <button class="btn-buy" onclick="comprarProducto(this, 8490000, 'Arnés de goma')">Quiero este 🐾</button>
+        <button class="btn-buy" onclick="comprarProducto(this, 8490000, 'Arnés de goma')">Comprar 🐾</button>
       </div>
     </div>
 
@@ -497,8 +488,10 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
         <span class="prod-tag tag-blue">Nuevo</span>
         <div class="prod-name">Correa de goma</div>
         <div class="prod-desc">1.8m de longitud. Gancho metálico resistente. El compañero perfecto para cada paseo.</div>
-        <div class="prod-price">$69.000 COP <small>+ envío</small></div>
-        <p class="payment-note">💳 4 cuotas sin interés · Pago seguro con Wompi</p>
+        <div class="price-row">
+          <div class="prod-price">$69.000 COP <small>+ envío</small></div>
+          <span class="cuotas-badge">4 cuotas<br>sin interés</span>
+        </div>
         <div class="size-row"><span class="size-chip selected">Talla única</span></div>
         <div class="qty-row">
           <span class="qty-label">Cantidad</span>
@@ -508,7 +501,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
             <button type="button" class="qty-btn" onclick="cambiarCantidad(this,1)">+</button>
           </div>
         </div>
-        <button class="btn-buy" onclick="comprarProducto(this, 6900000, 'Correa de goma')">Quiero esta 🐾</button>
+        <button class="btn-buy" onclick="comprarProducto(this, 6900000, 'Correa de goma')">Comprar 🐾</button>
       </div>
     </div>
 
@@ -533,8 +526,10 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
         <span class="prod-tag tag-coral">⭐ Mejor valor</span>
         <div class="prod-name">Combo completo</div>
         <div class="prod-desc">Collar + Arnés + Correa Wuuff Puppy. El regalo perfecto para tu perrihijo especial.</div>
-        <div class="prod-price">$184.900 COP <small>+ envío · ahorras $27.000</small></div>
-        <p class="payment-note">💳 4 cuotas sin interés · Pago seguro con Wompi</p>
+        <div class="price-row">
+          <div class="prod-price">$184.900 COP <small>+ envío · ahorras $27.000</small></div>
+          <span class="cuotas-badge">4 cuotas<br>sin interés</span>
+        </div>
         <div class="size-row"><span class="size-chip" onclick="seleccionarTalla(this)">S</span><span class="size-chip" onclick="seleccionarTalla(this)">M</span></div>
         <div class="size-medidas"></div>
         <div class="qty-row">
@@ -545,7 +540,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
             <button type="button" class="qty-btn" onclick="cambiarCantidad(this,1)">+</button>
           </div>
         </div>
-        <button class="btn-buy coral" onclick="comprarProducto(this, 18490000, 'Combo completo')">Quiero el combo 🎁</button>
+        <button class="btn-buy coral" onclick="comprarProducto(this, 18490000, 'Combo completo')">Comprar 🎁</button>
       </div>
     </div>
 
@@ -1294,7 +1289,7 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
     tag('talla', talla);
   });
 
-  // 2. Clic en "Quiero este": detecta si lo intentan sin elegir talla
+  // 2. Clic en "Comprar": detecta si lo intentan sin elegir talla
   wrap('comprarProducto', function(btn, cents, nombre){
     var card = btn.closest('.prod-card');
     if (card && !card.querySelector('.size-chip.selected')) {
