@@ -132,6 +132,35 @@ video.carousel-slide{background:#dfe8f5;}
 .zoom-hint{position:absolute;top:10px;right:10px;z-index:2;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.92);box-shadow:0 2px 10px rgba(45,67,117,.18);display:flex;align-items:center;justify-content:center;pointer-events:none;color:var(--navy);}
 .zoom-hint svg{width:18px;height:18px;}
 
+.ruleta-overlay{display:none;position:fixed;inset:0;z-index:1800;background:rgba(45,67,117,.6);align-items:center;justify-content:center;padding:16px;}
+.ruleta-overlay.open{display:flex;animation:lbIn .25s ease;}
+.ruleta-modal{position:relative;overflow:hidden;background:linear-gradient(180deg,#fff 0%,var(--cream) 100%);border-radius:28px;max-width:400px;width:100%;padding:28px 22px 22px;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.3);animation:sheetUp .35s cubic-bezier(.2,.9,.3,1);}
+.ruleta-modal:focus{outline:none;}
+.ruleta-cerrar{position:absolute;top:12px;right:12px;z-index:3;width:38px;height:38px;border-radius:50%;border:none;background:var(--lblue);color:var(--navy);font-size:22px;font-weight:900;cursor:pointer;line-height:1;}
+.ruleta-kicker{display:inline-block;background:var(--lime);color:var(--navy);font-size:11px;font-weight:900;letter-spacing:1px;text-transform:uppercase;padding:4px 12px;border-radius:20px;margin-bottom:10px;}
+.ruleta-titulo{font-family:'Fredoka One',cursive;font-weight:400;font-size:22px;line-height:1.2;color:var(--navy);margin:0 26px 14px;}
+.ruleta-sub{font-size:14px;font-weight:700;color:var(--navy);opacity:.75;margin:0 0 14px;}
+.ruleta-wrap{position:relative;width:min(300px,78vw);aspect-ratio:1;margin:6px auto 16px;}
+.ruleta-rueda{width:100%;height:100%;display:block;filter:drop-shadow(0 10px 22px rgba(45,67,117,.3));transition:transform 5.2s cubic-bezier(.12,.75,.1,1);}
+.ruleta-puntero{position:absolute;top:-8px;left:50%;transform:translateX(-50%);z-index:2;width:0;height:0;border-left:15px solid transparent;border-right:15px solid transparent;border-top:28px solid var(--navy);filter:drop-shadow(0 3px 3px rgba(0,0,0,.25));}
+.ruleta-centro{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:23%;aspect-ratio:1;border-radius:50%;border:5px solid #fff;background:var(--navy);color:#fff;font-family:'Fredoka One',cursive;font-size:clamp(12px,3.6vw,15px);cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.3);animation:ruletaPulso 1.6s ease-in-out infinite;}
+.ruleta-centro:disabled{animation:none;cursor:default;}
+@keyframes ruletaPulso{0%,100%{box-shadow:0 0 0 0 rgba(241,125,87,.55)}50%{box-shadow:0 0 0 10px rgba(241,125,87,0)}}
+.ruleta-btn{margin-top:0;}
+.ruleta-btn:disabled{opacity:.6;cursor:default;transform:none;}
+.ruleta-legal{font-size:11px;font-weight:700;color:var(--navy);opacity:.55;margin:10px 0 0;line-height:1.4;}
+.ruleta-premio-emoji{font-size:54px;line-height:1;margin:6px 0 8px;animation:sizeAlertIn .5s cubic-bezier(.2,1.4,.4,1);}
+.ruleta-codigo{display:flex;flex-direction:column;align-items:center;gap:2px;width:100%;border:2.5px dashed var(--coral);background:#fff4ef;border-radius:18px;padding:14px;margin:0 0 14px;cursor:pointer;}
+.ruleta-codigo span{font-family:'Fredoka One',cursive;font-size:30px;letter-spacing:2px;color:var(--coral);}
+.ruleta-codigo small{font-size:12px;font-weight:800;color:var(--navy);opacity:.6;}
+.ruleta-confeti{position:absolute;inset:0;pointer-events:none;z-index:2;}
+.ruleta-confeti i{position:absolute;top:-12px;width:8px;height:12px;border-radius:2px;opacity:0;animation:confeti 1.9s ease-in forwards;}
+@keyframes confeti{0%{opacity:1;transform:translateY(0) rotate(0)}100%{opacity:0;transform:translateY(520px) rotate(620deg)}}
+.ruleta-pill{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:900;border:none;background:var(--coral);color:#fff;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;padding:10px 18px;border-radius:30px;box-shadow:0 8px 24px rgba(241,125,87,.45);cursor:pointer;white-space:nowrap;animation:sheetUp .4s ease;}
+.ruleta-pill strong{font-weight:900;letter-spacing:.5px;}
+@media(max-width:480px){.ruleta-pill{bottom:92px;}}
+@media(prefers-reduced-motion:reduce){.ruleta-rueda{transition-duration:1.2s;}.ruleta-centro{animation:none;}}
+
 /* DETALLES DEL PRODUCTO */
 .btn-details{-webkit-tap-highlight-color:transparent;display:inline-flex;align-items:center;gap:6px;background:none;border:none;padding:6px 0;margin:-6px 0 12px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;color:var(--blue);text-decoration:underline;text-underline-offset:3px;cursor:pointer;}
 .btn-details:hover{color:var(--navy);}
@@ -420,6 +449,34 @@ src="https://www.facebook.com/tr?id=1562103805354462&ev=PageView&noscript=1"
 </script>
 </head>
 <body>
+<!-- RULETA DE PREMIOS -->
+<div class="ruleta-overlay" id="ruleta-overlay" aria-hidden="true">
+  <div class="ruleta-modal" role="dialog" aria-modal="true" aria-labelledby="ruleta-titulo" tabindex="-1">
+    <button type="button" class="ruleta-cerrar" id="ruleta-cerrar" aria-label="Cerrar">×</button>
+    <div class="ruleta-paso" id="ruleta-paso-girar">
+      <span class="ruleta-kicker">🎁 Solo por hoy · ¡Todos ganan!</span>
+      <h3 class="ruleta-titulo" id="ruleta-titulo">Gira la ruleta y gana un premio para tu perrihijo</h3>
+      <div class="ruleta-wrap">
+        <div class="ruleta-puntero" aria-hidden="true"></div>
+        <svg class="ruleta-rueda" id="ruleta-rueda" viewBox="-104 -104 208 208" aria-hidden="true"><circle r="103" fill="#2d4375"/><path d="M0 0L-50.00 -86.60A100 100 0 0 1 50.00 -86.60Z" fill="#f17d57"/><g transform="rotate(0) rotate(-90)" fill="#fff" text-anchor="middle" dominant-baseline="middle"><text x="61" y="-4" font-family="Fredoka One,Nunito,sans-serif" font-size="22">15%</text><text x="61" y="13" font-family="Nunito,sans-serif" font-weight="900" font-size="11">DCTO</text></g><path d="M0 0L50.00 -86.60A100 100 0 0 1 100.00 0.00Z" fill="#4964af"/><g transform="rotate(60) rotate(-90)" fill="#fff" text-anchor="middle" dominant-baseline="middle"><text x="61" y="-6" font-family="Fredoka One,Nunito,sans-serif" font-size="11">Envío gratis</text><text x="61" y="8" font-family="Nunito,sans-serif" font-weight="900" font-size="10">Bogotá*</text></g><path d="M0 0L100.00 0.00A100 100 0 0 1 50.00 86.60Z" fill="#d5d50c"/><g transform="rotate(120) rotate(-90)" fill="#2d4375" text-anchor="middle" dominant-baseline="middle"><text x="61" y="-6" font-family="Fredoka One,Nunito,sans-serif" font-size="15">Tarjeta</text><text x="61" y="9" font-family="Nunito,sans-serif" font-weight="900" font-size="9">personalizada</text></g><path d="M0 0L50.00 86.60A100 100 0 0 1 -50.00 86.60Z" fill="#f17d57"/><g transform="rotate(180) rotate(-90)" fill="#fff" text-anchor="middle" dominant-baseline="middle"><text x="61" y="-4" font-family="Fredoka One,Nunito,sans-serif" font-size="22">15%</text><text x="61" y="13" font-family="Nunito,sans-serif" font-weight="900" font-size="11">DCTO</text></g><path d="M0 0L-50.00 86.60A100 100 0 0 1 -100.00 0.00Z" fill="#4964af"/><g transform="rotate(240) rotate(-90)" fill="#fff" text-anchor="middle" dominant-baseline="middle"><text x="61" y="-4" font-family="Fredoka One,Nunito,sans-serif" font-size="22">10%</text><text x="61" y="13" font-family="Nunito,sans-serif" font-weight="900" font-size="11">DCTO</text></g><path d="M0 0L-100.00 0.00A100 100 0 0 1 -50.00 -86.60Z" fill="#d5d50c"/><g transform="rotate(300) rotate(-90)" fill="#2d4375" text-anchor="middle" dominant-baseline="middle"><text x="61" y="-4" font-family="Fredoka One,Nunito,sans-serif" font-size="22">5%</text><text x="61" y="13" font-family="Nunito,sans-serif" font-weight="900" font-size="11">DCTO</text></g><circle r="100" fill="none" stroke="#fff" stroke-width="3"/><circle cx="93.00" cy="0.00" r="2.6" fill="#fff" opacity=".9"/><circle cx="80.54" cy="46.50" r="2.6" fill="#fff" opacity=".9"/><circle cx="46.50" cy="80.54" r="2.6" fill="#fff" opacity=".9"/><circle cx="0.00" cy="93.00" r="2.6" fill="#fff" opacity=".9"/><circle cx="-46.50" cy="80.54" r="2.6" fill="#fff" opacity=".9"/><circle cx="-80.54" cy="46.50" r="2.6" fill="#fff" opacity=".9"/><circle cx="-93.00" cy="0.00" r="2.6" fill="#fff" opacity=".9"/><circle cx="-80.54" cy="-46.50" r="2.6" fill="#fff" opacity=".9"/><circle cx="-46.50" cy="-80.54" r="2.6" fill="#fff" opacity=".9"/><circle cx="-0.00" cy="-93.00" r="2.6" fill="#fff" opacity=".9"/><circle cx="46.50" cy="-80.54" r="2.6" fill="#fff" opacity=".9"/><circle cx="80.54" cy="-46.50" r="2.6" fill="#fff" opacity=".9"/></svg>
+        <button type="button" class="ruleta-centro" id="ruleta-girar">GIRAR</button>
+      </div>
+      <button type="button" class="btn-buy coral ruleta-btn" id="ruleta-girar-2">¡Girar ahora! 🎡</button>
+      <p class="ruleta-legal">Un giro por persona. *Envío gratis en Bogotá / Soacha en compras desde $150.000.</p>
+    </div>
+    <div class="ruleta-paso" id="ruleta-paso-premio" hidden>
+      <div class="ruleta-premio-emoji">🎉</div>
+      <h3 class="ruleta-titulo">¡Ganaste 15&nbsp;% de descuento!</h3>
+      <p class="ruleta-sub">Tu código ya quedó aplicado. Se usa automáticamente al comprar.</p>
+      <button type="button" class="ruleta-codigo" id="ruleta-codigo" title="Copiar código"><span>RULETA15</span><small id="ruleta-copiado">Toca para copiar</small></button>
+      <button type="button" class="btn-buy coral ruleta-btn" id="ruleta-usar">Usar mi descuento 🐾</button>
+      <p class="ruleta-legal">Válido en tu compra en wuuffpuppy.co. No acumulable con otros códigos.</p>
+    </div>
+    <div class="ruleta-confeti" id="ruleta-confeti" aria-hidden="true"></div>
+  </div>
+</div>
+<button type="button" class="ruleta-pill" id="ruleta-pill" hidden>🎁 15% OFF activado · <strong>RULETA15</strong></button>
+
 <!-- DETALLES DEL PRODUCTO -->
 <div class="details-overlay" id="details-overlay">
   <div class="details-sheet" role="dialog" aria-modal="true" aria-labelledby="details-title">
@@ -1362,7 +1419,8 @@ function actualizarEnvioGratis(){
 
 // Códigos de descuento activos (código en mayúsculas -> fracción de descuento)
 var CODIGOS_DESCUENTO = {
-  'VIP15': 0.15
+  'VIP15': 0.15,
+  'RULETA15': 0.15
 };
 
 document.addEventListener('input', function(e){
@@ -1658,6 +1716,132 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
     <button class="shipping-modal-cancel" id="shipping-modal-cancel">Cancelar</button>
   </div>
 </div>
+<!-- Ruleta de premios: siempre cae en 15 % de descuento -->
+<script>
+(function(){
+  var CODIGO = 'RULETA15';
+  var CASILLAS_GANADORAS = [0, 3];      // casillas de "15 % DCTO" en la rueda (6 casillas de 60°)
+  var MOSTRAR_TRAS_MS = 12000;
+  var overlay = document.getElementById('ruleta-overlay');
+  if(!overlay) return;
+  var rueda = document.getElementById('ruleta-rueda');
+  var btnCentro = document.getElementById('ruleta-girar');
+  var btnGirar = document.getElementById('ruleta-girar-2');
+  var pill = document.getElementById('ruleta-pill');
+  var mostrada = false, girando = false;
+
+  function get(store, k){ try { return window[store].getItem(k); } catch(e){ return null; } }
+  function set(store, k, v){ try { window[store].setItem(k, v); } catch(e){} }
+  function ev(name, params){
+    try { if(window.gtag) gtag('event', name, params || {}); } catch(e){}
+    try { if(window.clarity) clarity('event', name); } catch(e){}
+  }
+  function yaGano(){ return get('localStorage', 'wuuff_ruleta') === CODIGO; }
+  function hayOtroModal(){
+    return !!document.querySelector('.lightbox.open, .details-overlay.open, .shipping-modal-overlay.open');
+  }
+
+  function abrir(origen){
+    if(mostrada || yaGano() || get('sessionStorage', 'wuuff_ruleta_cerrada')) return;
+    if(hayOtroModal()){ setTimeout(function(){ abrir(origen); }, 4000); return; }
+    mostrada = true;
+    overlay.classList.add('open');
+    overlay.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    overlay.querySelector('.ruleta-modal').focus({ preventScroll: true });
+    ev('ruleta_mostrada', { origen: origen });
+  }
+  function cerrar(){
+    if(girando) return;
+    overlay.classList.remove('open');
+    overlay.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    if(!yaGano()){ set('sessionStorage', 'wuuff_ruleta_cerrada', '1'); ev('ruleta_cerrada'); }
+  }
+  function confeti(){
+    var box = document.getElementById('ruleta-confeti');
+    var colores = ['#f17d57', '#d5d50c', '#4964af', '#b8d8f5', '#2d4375'];
+    box.innerHTML = '';
+    for(var i = 0; i < 60; i++){
+      var c = document.createElement('i');
+      c.style.left = (Math.random() * 100) + '%';
+      c.style.background = colores[i % colores.length];
+      c.style.animationDelay = (Math.random() * 0.5) + 's';
+      c.style.animationDuration = (1.4 + Math.random() * 1.1) + 's';
+      box.appendChild(c);
+    }
+  }
+  function mostrarPill(){ pill.hidden = false; }
+  function girar(){
+    if(girando || yaGano()) return;
+    girando = true;
+    btnCentro.disabled = true; btnGirar.disabled = true;
+    btnGirar.textContent = 'Girando… 🤞';
+    ev('ruleta_girada');
+    // Cae siempre en una casilla de 15 %, con un pequeño desfase para que se vea natural
+    var casilla = CASILLAS_GANADORAS[Math.floor(Math.random() * CASILLAS_GANADORAS.length)];
+    var desfase = (Math.random() * 36) - 18;
+    var destino = 360 * 6 + (360 - casilla * 60) + desfase;
+    rueda.style.transform = 'rotate(' + destino + 'deg)';
+    var fin = function(){
+      rueda.removeEventListener('transitionend', fin);
+      clearTimeout(respaldo);
+      if(!girando) return;
+      girando = false;
+      set('localStorage', 'wuuff_ruleta', CODIGO);
+      document.getElementById('ruleta-paso-girar').hidden = true;
+      document.getElementById('ruleta-paso-premio').hidden = false;
+      confeti();
+      mostrarPill();
+      ev('ruleta_premio', { codigo: CODIGO });
+    };
+    var respaldo = setTimeout(fin, 6000);
+    rueda.addEventListener('transitionend', fin);
+  }
+
+  btnCentro.addEventListener('click', girar);
+  btnGirar.addEventListener('click', girar);
+  document.getElementById('ruleta-cerrar').addEventListener('click', cerrar);
+  overlay.addEventListener('click', function(e){ if(e.target === overlay) cerrar(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && overlay.classList.contains('open')) cerrar(); });
+  document.getElementById('ruleta-codigo').addEventListener('click', function(){
+    var ok = function(){ document.getElementById('ruleta-copiado').textContent = '¡Copiado! ✓'; };
+    try { navigator.clipboard.writeText(CODIGO).then(ok, ok); } catch(e){ ok(); }
+  });
+  function irAProductos(){
+    cerrar();
+    var prod = document.getElementById('productos');
+    if(prod) prod.scrollIntoView({ behavior: 'smooth' });
+  }
+  document.getElementById('ruleta-usar').addEventListener('click', function(){ ev('ruleta_usar'); irAProductos(); });
+  pill.addEventListener('click', irAProductos);
+
+  // Aplica el código ganado automáticamente en el formulario de envío
+  var iniciarOriginal = window.iniciarCompra;
+  if(typeof iniciarOriginal === 'function'){
+    window.iniciarCompra = function(){
+      var r = iniciarOriginal.apply(this, arguments);
+      var input = document.getElementById('envio-codigo');
+      if(yaGano() && input && !input.value){
+        input.value = CODIGO;
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+      return r;
+    };
+  }
+
+  // Cuándo aparece: a los 12 s o al llegar a "Arma tu combo" (lo que pase primero), una vez por visitante
+  if(yaGano()){ mostrarPill(); return; }
+  setTimeout(function(){ abrir('tiempo'); }, MOSTRAR_TRAS_MS);
+  var ancla = document.getElementById('arma-tu-combo');
+  if(ancla && 'IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      if(entries[0].isIntersecting){ io.disconnect(); abrir('scroll'); }
+    }, { threshold: 0.3 });
+    io.observe(ancla);
+  }
+})();
+</script>
 <!-- Scripts para medir -->
 <script>
 (function(){
