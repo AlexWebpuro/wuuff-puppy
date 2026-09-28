@@ -125,6 +125,7 @@ nav{
 .carousel-slide{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;object-position:center;padding:0;box-sizing:border-box;opacity:0;transition:opacity .3s ease;pointer-events:none;max-height:none;}
 .carousel-slide.active{opacity:1;pointer-events:auto;}
 .prod-card .carousel-slide.active{cursor:zoom-in;}
+video.carousel-slide{background:#dfe8f5;}
 .zoom-hint{position:absolute;top:10px;right:10px;z-index:2;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.92);box-shadow:0 2px 10px rgba(45,67,117,.18);display:flex;align-items:center;justify-content:center;pointer-events:none;color:var(--navy);}
 .zoom-hint svg{width:18px;height:18px;}
 
@@ -172,6 +173,9 @@ nav{
 .lb-img{max-width:100%;max-height:100%;object-fit:contain;transform-origin:center center;transition:transform .22s ease;will-change:transform;cursor:zoom-in;-webkit-user-drag:none;}
 .lightbox.zoomed .lb-img{cursor:grab;}
 .lightbox.dragging .lb-img{transition:none;cursor:grabbing;}
+.lb-video{display:none;max-width:100%;max-height:100%;background:#000;}
+.lightbox.is-video .lb-img{display:none;}
+.lightbox.is-video .lb-video{display:block;}
 .lb-btn{position:absolute;z-index:2;border:none;background:rgba(255,255,255,.95);color:var(--navy);width:44px;height:44px;border-radius:50%;font-size:24px;font-weight:900;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.25);}
 .lb-close{top:14px;right:14px;font-size:26px;}
 .lb-prev{left:14px;top:50%;transform:translateY(-50%);}
@@ -435,6 +439,7 @@ src="https://www.facebook.com/tr?id=1562103805354462&ev=PageView&noscript=1"
 <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Imagen del producto">
   <div class="lb-stage" id="lb-stage">
     <img class="lb-img" id="lb-img" alt="" draggable="false">
+    <video class="lb-video" id="lb-video" controls playsinline muted loop></video>
     <button type="button" class="lb-btn lb-close" id="lb-close" aria-label="Cerrar">×</button>
     <button type="button" class="lb-btn lb-prev" id="lb-prev" aria-label="Anterior">‹</button>
     <button type="button" class="lb-btn lb-next" id="lb-next" aria-label="Siguiente">›</button>
@@ -500,9 +505,10 @@ src="https://www.facebook.com/tr?id=1562103805354462&ev=PageView&noscript=1"
         <span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21M10.5 7.5v6M7.5 10.5h6"/></svg></span>
         <div class="carousel-track">
           <img src="images/collar-nuevo.jpg" alt="Collar de goma" class="carousel-slide active">
-          <img src="images/montaje-perro-1.jpg" alt="Collar de goma en uso" class="carousel-slide">
-          <img src="images/montaje-perro-2.jpg" alt="Collar de goma en uso" class="carousel-slide">
-          <img src="images/montaje-perro-3.jpg" alt="Collar de goma en uso" class="carousel-slide">
+          <video class="carousel-slide" muted loop playsinline preload="none" poster="images/productos/collar-2-poster.jpg" aria-label="Video: Collar de goma"><source src="images/productos/collar-2.mp4" type="video/mp4"></video>
+          <img src="images/productos/collar-3.jpg" alt="Perro salchicha con collar y arnés Wuuff Puppy" class="carousel-slide" loading="lazy">
+          <img src="images/productos/collar-4.jpg" alt="Perro sentado con collar y correa Wuuff Puppy" class="carousel-slide" loading="lazy">
+          <img src="images/productos/collar-5.jpg" alt="Collar y correa Wuuff Puppy sobre el pasto" class="carousel-slide" loading="lazy">
         </div>
         <button class="carousel-arrow carousel-prev" onclick="moveCarousel(this,-1)" aria-label="Anterior">‹</button>
         <button class="carousel-arrow carousel-next" onclick="moveCarousel(this,1)" aria-label="Siguiente">›</button>
@@ -511,6 +517,7 @@ src="https://www.facebook.com/tr?id=1562103805354462&ev=PageView&noscript=1"
           <span class="carousel-dot" onclick="goToSlide(this,1)"></span>
           <span class="carousel-dot" onclick="goToSlide(this,2)"></span>
           <span class="carousel-dot" onclick="goToSlide(this,3)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,4)"></span>
         </div>
       </div>
       <div class="prod-body">
@@ -541,9 +548,10 @@ src="https://www.facebook.com/tr?id=1562103805354462&ev=PageView&noscript=1"
         <span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21M10.5 7.5v6M7.5 10.5h6"/></svg></span>
         <div class="carousel-track">
           <img src="images/arnes-nuevo.jpg" alt="Arnés de goma" class="carousel-slide active">
-          <img src="images/montaje-perro-1.jpg" alt="Arnés de goma en uso" class="carousel-slide">
-          <img src="images/montaje-perro-2.jpg" alt="Arnés de goma en uso" class="carousel-slide">
-          <img src="images/montaje-perro-3.jpg" alt="Arnés de goma en uso" class="carousel-slide">
+          <video class="carousel-slide" muted loop playsinline preload="none" poster="images/productos/arnes-2-poster.jpg" aria-label="Video: Arnés de goma"><source src="images/productos/arnes-2.mp4" type="video/mp4"></video>
+          <img src="images/productos/arnes-3.jpg" alt="Chihuahua con arnés de goma Wuuff Puppy" class="carousel-slide" loading="lazy">
+          <img src="images/productos/arnes-4.jpg" alt="Perro con arnés Wuuff Puppy visto desde atrás" class="carousel-slide" loading="lazy">
+          <img src="images/productos/arnes-5.jpg" alt="Perro con arnés Wuuff Puppy en el pasto" class="carousel-slide" loading="lazy">
         </div>
         <button class="carousel-arrow carousel-prev" onclick="moveCarousel(this,-1)" aria-label="Anterior">‹</button>
         <button class="carousel-arrow carousel-next" onclick="moveCarousel(this,1)" aria-label="Siguiente">›</button>
@@ -552,6 +560,7 @@ src="https://www.facebook.com/tr?id=1562103805354462&ev=PageView&noscript=1"
           <span class="carousel-dot" onclick="goToSlide(this,1)"></span>
           <span class="carousel-dot" onclick="goToSlide(this,2)"></span>
           <span class="carousel-dot" onclick="goToSlide(this,3)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,4)"></span>
         </div>
       </div>
       <div class="prod-body">
@@ -582,9 +591,9 @@ src="https://www.facebook.com/tr?id=1562103805354462&ev=PageView&noscript=1"
         <span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21M10.5 7.5v6M7.5 10.5h6"/></svg></span>
         <div class="carousel-track">
           <img src="images/correa-nuevo.jpg" alt="Correa de goma" class="carousel-slide active">
-          <img src="images/montaje-perro-1.jpg" alt="Correa de goma en uso" class="carousel-slide">
-          <img src="images/montaje-perro-2.jpg" alt="Correa de goma en uso" class="carousel-slide">
-          <img src="images/montaje-perro-3.jpg" alt="Correa de goma en uso" class="carousel-slide">
+          <video class="carousel-slide" muted loop playsinline preload="none" poster="images/productos/correa-2-poster.jpg" aria-label="Video: Correa de goma"><source src="images/productos/correa-2.mp4" type="video/mp4"></video>
+          <img src="images/productos/correa-3.jpg" alt="Bulldog francés con collar y correa Wuuff Puppy" class="carousel-slide" loading="lazy">
+          <img src="images/productos/correa-4.jpg" alt="Perro sentado con collar y correa Wuuff Puppy" class="carousel-slide" loading="lazy">
         </div>
         <button class="carousel-arrow carousel-prev" onclick="moveCarousel(this,-1)" aria-label="Anterior">‹</button>
         <button class="carousel-arrow carousel-next" onclick="moveCarousel(this,1)" aria-label="Siguiente">›</button>
@@ -622,9 +631,10 @@ src="https://www.facebook.com/tr?id=1562103805354462&ev=PageView&noscript=1"
         <span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21M10.5 7.5v6M7.5 10.5h6"/></svg></span>
         <div class="carousel-track">
           <img src="images/set-completo-nuevo.jpg" alt="Combo completo Wuuff Puppy" class="carousel-slide active">
-          <img src="images/montaje-perro-1.jpg" alt="Combo completo en uso" class="carousel-slide">
-          <img src="images/montaje-perro-2.jpg" alt="Combo completo en uso" class="carousel-slide">
-          <img src="images/montaje-perro-3.jpg" alt="Combo completo en uso" class="carousel-slide">
+          <video class="carousel-slide" muted loop playsinline preload="none" poster="images/productos/combo-2-poster.jpg" aria-label="Video: Combo completo Wuuff Puppy"><source src="images/productos/combo-2.mp4" type="video/mp4"></video>
+          <img src="images/productos/combo-3.jpg" alt="Perro con arnés y correa Wuuff Puppy en el pasto" class="carousel-slide" loading="lazy">
+          <img src="images/productos/combo-4.jpg" alt="Perro con arnés y correa Wuuff Puppy" class="carousel-slide" loading="lazy">
+          <img src="images/productos/combo-5.jpg" alt="Perro paseando con arnés y correa Wuuff Puppy" class="carousel-slide" loading="lazy">
         </div>
         <button class="carousel-arrow carousel-prev" onclick="moveCarousel(this,-1)" aria-label="Anterior">‹</button>
         <button class="carousel-arrow carousel-next" onclick="moveCarousel(this,1)" aria-label="Siguiente">›</button>
@@ -633,6 +643,7 @@ src="https://www.facebook.com/tr?id=1562103805354462&ev=PageView&noscript=1"
           <span class="carousel-dot" onclick="goToSlide(this,1)"></span>
           <span class="carousel-dot" onclick="goToSlide(this,2)"></span>
           <span class="carousel-dot" onclick="goToSlide(this,3)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,4)"></span>
         </div>
       </div>
       <div class="prod-body">
@@ -1097,6 +1108,7 @@ function cerrarDetalles(){
   if(!lb) return;
   var stage = document.getElementById('lb-stage');
   var img = document.getElementById('lb-img');
+  var video = document.getElementById('lb-video');
   var countEl = document.getElementById('lb-count');
   var tipEl = document.getElementById('lb-tip');
   var MAX = 4, ZOOM = 2.5;
@@ -1127,12 +1139,25 @@ function cerrarDetalles(){
     scale = next;
     apply();
   }
-  function toggleZoom(cx, cy){ zoomTo(scale > 1 ? 1 : ZOOM, cx, cy); }
+  function isVideo(){ return lb.classList.contains('is-video'); }
+  function toggleZoom(cx, cy){ if(isVideo()) return; zoomTo(scale > 1 ? 1 : ZOOM, cx, cy); }
   function show(i){
     idx = (i + list.length) % list.length;
     scale = 1; tx = 0; ty = 0; apply();
-    img.src = list[idx].src;
-    img.alt = list[idx].alt || '';
+    var item = list[idx];
+    var esVideo = item.tagName === 'VIDEO';
+    lb.classList.toggle('is-video', esVideo);
+    video.pause();
+    if(esVideo){
+      var src = item.currentSrc || (item.querySelector('source') || {}).src;
+      if(video.getAttribute('src') !== src) video.src = src;
+      video.poster = item.poster || '';
+      var pr = video.play(); if(pr && pr.catch) pr.catch(function(){});
+    } else {
+      img.src = item.src;
+      img.alt = item.alt || '';
+    }
+    tipEl.style.visibility = esVideo ? 'hidden' : '';
     countEl.textContent = (idx + 1) + ' / ' + list.length;
   }
   function open(slides, i){
@@ -1146,7 +1171,9 @@ function cerrarDetalles(){
     document.getElementById('lb-close').focus();
   }
   function close(){
-    lb.classList.remove('open', 'zoomed', 'dragging');
+    video.pause();
+    lb.classList.remove('open', 'zoomed', 'dragging', 'is-video');
+    if(typeof sincronizarVideos === 'function') document.querySelectorAll('.prod-card .carousel').forEach(sincronizarVideos);
     document.body.style.overflow = '';
     pointers = {}; gesture = null;
     if(lastFocus && lastFocus.focus) lastFocus.focus();
@@ -1158,6 +1185,7 @@ function cerrarDetalles(){
     var slide = e.target.closest && e.target.closest('.prod-card .carousel-slide');
     if(!slide) return;
     var slides = Array.prototype.slice.call(slide.closest('.carousel').querySelectorAll('.carousel-slide'));
+    if(slide.tagName === 'VIDEO') slide.pause();
     open(slides, slides.indexOf(slide));
   });
 
@@ -1172,13 +1200,14 @@ function cerrarDetalles(){
   });
 
   stage.addEventListener('wheel', function(e){
+    if(isVideo()) return;
     e.preventDefault();
     zoomTo(scale * Math.exp(-e.deltaY * 0.0022), e.clientX, e.clientY);
   }, { passive: false });
 
   function dist(a, b){ return Math.hypot(a.x - b.x, a.y - b.y); }
   stage.addEventListener('pointerdown', function(e){
-    if(e.target.closest('.lb-btn')) return;
+    if(e.target.closest('.lb-btn') || e.target === video) return;
     stage.setPointerCapture(e.pointerId);
     pointers[e.pointerId] = { x: e.clientX, y: e.clientY };
     var ids = Object.keys(pointers);
@@ -1186,7 +1215,7 @@ function cerrarDetalles(){
       var a = pointers[ids[0]], b = pointers[ids[1]];
       gesture = { type: 'pinch', d: dist(a, b), s: scale, moved: true };
     } else if(ids.length === 1){
-      gesture = { type: 'pan', x: e.clientX, y: e.clientY, tx: tx, ty: ty, moved: false, onImg: e.target === img };
+      gesture = { type: 'pan', x: e.clientX, y: e.clientY, tx: tx, ty: ty, moved: false, onImg: e.target === img && !isVideo() };
     }
   });
   stage.addEventListener('pointermove', function(e){
@@ -1243,6 +1272,7 @@ function moveCarousel(btn, dir){
   dots[current].classList.remove('active');
   slides[next].classList.add('active');
   dots[next].classList.add('active');
+  sincronizarVideos(carousel);
 }
 
 function goToSlide(dot, index){
@@ -1253,7 +1283,31 @@ function goToSlide(dot, index){
   dots.forEach(function(d){ d.classList.remove('active'); });
   slides[index].classList.add('active');
   dots[index].classList.add('active');
+  sincronizarVideos(carousel);
 }
+
+// Reproduce el video del carrusel solo si es la diapositiva activa y la tarjeta está en pantalla
+function sincronizarVideos(carousel){
+  carousel.querySelectorAll('video.carousel-slide').forEach(function(v){
+    if(v.classList.contains('active') && carousel._visible !== false){
+      var pr = v.play();
+      if(pr && pr.catch) pr.catch(function(){});
+    } else {
+      v.pause();
+    }
+  });
+}
+(function(){
+  var carousels = document.querySelectorAll('.prod-card .carousel');
+  if(!('IntersectionObserver' in window)) return;
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      e.target._visible = e.isIntersecting;
+      sincronizarVideos(e.target);
+    });
+  }, { threshold: 0.4 });
+  carousels.forEach(function(c){ io.observe(c); });
+})();
 
 // Paso 1: elegir ciudad (envío) antes de pagar
 var pendingPurchase = null;
