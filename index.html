@@ -124,6 +124,63 @@ nav{
 .carousel-track{width:100%;height:100%;position:relative;}
 .carousel-slide{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;object-position:center;padding:0;box-sizing:border-box;opacity:0;transition:opacity .3s ease;pointer-events:none;max-height:none;}
 .carousel-slide.active{opacity:1;pointer-events:auto;}
+.prod-card .carousel-slide.active{cursor:zoom-in;}
+.zoom-hint{position:absolute;top:10px;right:10px;z-index:2;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.92);box-shadow:0 2px 10px rgba(45,67,117,.18);display:flex;align-items:center;justify-content:center;pointer-events:none;color:var(--navy);}
+.zoom-hint svg{width:18px;height:18px;}
+
+/* DETALLES DEL PRODUCTO */
+.btn-details{-webkit-tap-highlight-color:transparent;display:inline-flex;align-items:center;gap:6px;background:none;border:none;padding:6px 0;margin:-6px 0 12px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;color:var(--blue);text-decoration:underline;text-underline-offset:3px;cursor:pointer;}
+.btn-details:hover{color:var(--navy);}
+.details-overlay{display:none;position:fixed;inset:0;z-index:1500;background:rgba(45,67,117,.55);align-items:flex-end;justify-content:center;}
+.details-overlay.open{display:flex;animation:lbIn .2s ease;}
+.details-sheet{position:relative;background:#fff;width:100%;max-width:600px;max-height:88vh;overflow-y:auto;border-radius:24px 24px 0 0;padding:26px 22px 28px;box-shadow:0 -12px 40px rgba(0,0,0,.2);animation:sheetUp .28s cubic-bezier(.2,.9,.3,1);}
+@media(min-width:700px){.details-overlay{align-items:center;padding:20px;}.details-sheet{border-radius:24px;padding:30px 30px 32px;}}
+@keyframes sheetUp{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.details-close{position:absolute;top:14px;right:14px;width:40px;height:40px;border-radius:50%;border:none;background:var(--lblue);color:var(--navy);font-size:24px;font-weight:900;cursor:pointer;line-height:1;}
+.details-title{font-family:'Fredoka One',cursive;font-size:24px;color:var(--navy);margin:0 48px 14px 0;}
+.details-tabs{display:flex;gap:6px;background:var(--lblue);padding:5px;border-radius:14px;margin-bottom:18px;}
+.details-tab{flex:1;-webkit-tap-highlight-color:transparent;border:none;background:none;padding:10px 6px;border-radius:10px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;color:var(--navy);opacity:.7;cursor:pointer;min-height:40px;}
+.details-tab.active{background:#fff;opacity:1;color:var(--blue);box-shadow:0 2px 8px rgba(73,100,175,.15);}
+.details-panel{display:none;color:var(--navy);font-size:14px;line-height:1.6;}
+.details-panel.active{display:block;}
+.details-panel p{margin:0 0 12px;}
+.details-panel ul{margin:0 0 12px;padding-left:20px;}
+.details-panel li{margin-bottom:4px;}
+.details-panel h4{font-family:'Fredoka One',cursive;font-weight:400;font-size:18px;color:var(--navy);margin:18px 0 10px;}
+.details-panel h4:first-child{margin-top:0;}
+.size-guide{display:flex;align-items:center;gap:16px;background:var(--cream);border-radius:18px;padding:14px;margin-bottom:12px;}
+.size-guide svg{flex-shrink:0;width:140px;height:auto;}
+.size-guide-steps{font-size:13px;line-height:1.5;}
+.size-guide-steps strong{color:var(--blue);}
+@media(max-width:420px){.size-guide{flex-direction:column;text-align:center;}.size-guide svg{width:170px;}}
+.size-table-wrap{overflow-x:auto;margin-bottom:10px;border-radius:14px;border:1.5px solid var(--lblue);}
+.size-table{width:100%;border-collapse:collapse;font-size:13px;text-align:center;}
+.size-table th{background:var(--blue);color:#fff;font-weight:800;padding:10px 8px;font-size:12px;line-height:1.25;}
+.size-table td{padding:10px 8px;font-weight:700;border-top:1px solid var(--lblue);white-space:nowrap;}
+.size-table th:first-child,.size-table td:first-child{text-align:left;padding-left:14px;}
+.size-table td:first-child{white-space:normal;font-weight:800;color:var(--navy);opacity:.8;}
+.size-table th:not(:first-child){font-family:'Fredoka One',cursive;font-weight:400;font-size:15px;}
+.size-table tr:nth-child(even) td{background:#f6f9fe;}
+.size-note{font-size:12.5px;opacity:.8;margin:0 0 6px;}
+.details-tip{background:var(--lblue);border-radius:14px;padding:12px 14px;font-size:13px;font-weight:700;margin-top:12px;}
+
+/* VISOR DE IMÁGENES */
+.lightbox{display:none;position:fixed;inset:0;z-index:2000;background:rgba(24,34,64,.97);flex-direction:column;}
+.lightbox.open{display:flex;animation:lbIn .2s ease;}
+@keyframes lbIn{from{opacity:0}to{opacity:1}}
+.lb-stage{position:relative;flex:1;overflow:hidden;display:flex;align-items:center;justify-content:center;touch-action:none;user-select:none;-webkit-user-select:none;}
+.lb-img{max-width:100%;max-height:100%;object-fit:contain;transform-origin:center center;transition:transform .22s ease;will-change:transform;cursor:zoom-in;-webkit-user-drag:none;}
+.lightbox.zoomed .lb-img{cursor:grab;}
+.lightbox.dragging .lb-img{transition:none;cursor:grabbing;}
+.lb-btn{position:absolute;z-index:2;border:none;background:rgba(255,255,255,.95);color:var(--navy);width:44px;height:44px;border-radius:50%;font-size:24px;font-weight:900;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.25);}
+.lb-close{top:14px;right:14px;font-size:26px;}
+.lb-prev{left:14px;top:50%;transform:translateY(-50%);}
+.lb-next{right:14px;top:50%;transform:translateY(-50%);}
+.lightbox.single .lb-prev,.lightbox.single .lb-next{display:none;}
+.lb-bar{display:flex;align-items:center;justify-content:center;gap:14px;padding:12px 16px 18px;color:#fff;font-size:13px;font-weight:800;}
+.lb-count{background:rgba(255,255,255,.15);padding:5px 12px;border-radius:20px;}
+.lb-tip{opacity:.8;}
+
 .carousel-arrow{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.9);border:none;width:28px;height:28px;border-radius:50%;font-size:16px;font-weight:900;color:var(--navy);cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;box-shadow:0 2px 8px rgba(0,0,0,.15);line-height:1;padding:0;}
 .carousel-prev{left:8px;}
 .carousel-next{right:8px;}
@@ -144,6 +201,18 @@ nav{
 .cuotas-badge::before{content:'';position:absolute;top:0;bottom:0;left:-.95em;width:1em;background:inherit;clip-path:polygon(100% 0,100% 100%,0 50%);}
 .prod-price small{font-size:13px;font-weight:700;color:var(--navy);opacity:.5;font-family:'Nunito',sans-serif;}
 .size-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px;}
+.size-alert{display:none;position:relative;align-items:center;gap:10px;background:#fff4ef;border:2px solid var(--coral);color:var(--navy);border-radius:16px;padding:10px 14px;margin-bottom:14px;box-shadow:0 8px 20px rgba(241,125,87,.18);}
+.size-alert.show{display:flex;animation:sizeAlertIn .28s cubic-bezier(.2,1.4,.4,1);}
+.size-alert::after{content:'';position:absolute;left:26px;bottom:-9px;width:14px;height:14px;background:#fff4ef;border-right:2px solid var(--coral);border-bottom:2px solid var(--coral);transform:rotate(45deg);border-bottom-right-radius:3px;}
+.size-alert-icon{flex-shrink:0;width:34px;height:34px;border-radius:50%;background:var(--coral);display:flex;align-items:center;justify-content:center;font-size:17px;}
+.size-alert-link{background:none;border:none;padding:4px 0 0;font-family:'Nunito',sans-serif;font-size:12.5px;font-weight:900;color:var(--coral);text-decoration:underline;text-underline-offset:2px;cursor:pointer;}
+.size-alert strong{display:block;font-family:'Fredoka One',cursive;font-weight:400;font-size:16px;color:var(--navy);line-height:1.2;}
+.size-alert span.size-alert-text{display:block;font-size:12.5px;font-weight:700;color:var(--navy);opacity:.75;line-height:1.35;}
+@keyframes sizeAlertIn{from{opacity:0;transform:translateY(6px) scale(.96)}to{opacity:1;transform:none}}
+.size-row.needs-size .size-chip{border-color:var(--coral);background:#fff;animation:chipPulse 1s ease 2;}
+.size-row.shake{animation:sizeShake .45s ease;}
+@keyframes sizeShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+@keyframes chipPulse{0%,100%{box-shadow:0 0 0 0 rgba(241,125,87,.45)}50%{box-shadow:0 0 0 6px rgba(241,125,87,0)}}
 .size-medidas{display:none;background:var(--lblue);border-radius:10px;padding:8px 12px;font-size:11px;font-weight:800;color:var(--navy);margin-top:-10px;margin-bottom:18px;}
 .qty-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
 .qty-label{font-size:12px;font-weight:800;color:var(--navy);opacity:.6;text-transform:uppercase;letter-spacing:.5px;}
@@ -154,7 +223,7 @@ nav{
 .size-chip{display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:56px;background:var(--lblue);border-radius:10px;padding:10px 18px;font-size:13px;-webkit-tap-highlight-color:transparent;font-weight:800;color:var(--navy);cursor:pointer;border:1.5px solid transparent;transition:background .2s,color .2s,border-color .2s;}
 .size-chip:hover{border-color:var(--blue);}
 .size-chip.selected{background:var(--blue);color:#fff;}
-.btn-buy{width:100%;background:var(--blue);color:#fff;font-weight:900;font-size:14px;padding:13px;border-radius:16px;border:none;cursor:pointer;transition:background .2s,transform .1s;font-family:'Nunito',sans-serif;}
+.btn-buy{width:100%;background:var(--blue);color:#fff;font-weight:900;font-size:17px;letter-spacing:.2px;padding:15px;border-radius:16px;border:none;cursor:pointer;transition:background .2s,transform .1s;font-family:'Nunito',sans-serif;}
 .btn-buy:hover{background:var(--navy);transform:scale(1.02);}
 .btn-buy.coral{background:var(--coral);}
 .btn-buy.coral:hover{background:#d4603a;}
@@ -338,6 +407,40 @@ src="https://www.facebook.com/tr?id=1562103805354462&ev=PageView&noscript=1"
 </script>
 </head>
 <body>
+<!-- DETALLES DEL PRODUCTO -->
+<div class="details-overlay" id="details-overlay">
+  <div class="details-sheet" role="dialog" aria-modal="true" aria-labelledby="details-title">
+    <button type="button" class="details-close" id="details-close" aria-label="Cerrar">×</button>
+    <h3 class="details-title" id="details-title"></h3>
+    <div class="details-tabs" role="tablist">
+      <button type="button" class="details-tab" role="tab" data-tab="desc">Descripción</button>
+      <button type="button" class="details-tab" role="tab" data-tab="tallas">Guía de tallas</button>
+      <button type="button" class="details-tab" role="tab" data-tab="cuidado">Cuidado</button>
+    </div>
+    <div class="details-panel" data-panel="desc" id="details-desc"></div>
+    <div class="details-panel" data-panel="tallas" id="details-tallas"></div>
+    <div class="details-panel" data-panel="cuidado">
+      <p>Todo nuestro equipo es 100 % impermeable y muy fácil de limpiar.</p>
+      <ul>
+        <li><strong>Suciedad del día a día:</strong> enjuágalo con agua o pásale un paño o una toallita húmeda.</li>
+        <li><strong>Barro o manchas difíciles:</strong> usa un poco de jabón suave (de manos o de loza) y frota con suavidad.</li>
+        <li><strong>Secado:</strong> enjuaga bien y déjalo secar al aire unos minutos, o sécalo con una toalla para usarlo de una vez.</li>
+      </ul>
+      <p>No guarda olores, así que no necesita lavados largos ni tiempos de secado eternos. 🐾</p>
+    </div>
+  </div>
+</div>
+
+<!-- VISOR DE IMÁGENES -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Imagen del producto">
+  <div class="lb-stage" id="lb-stage">
+    <img class="lb-img" id="lb-img" alt="" draggable="false">
+    <button type="button" class="lb-btn lb-close" id="lb-close" aria-label="Cerrar">×</button>
+    <button type="button" class="lb-btn lb-prev" id="lb-prev" aria-label="Anterior">‹</button>
+    <button type="button" class="lb-btn lb-next" id="lb-next" aria-label="Siguiente">›</button>
+  </div>
+  <div class="lb-bar"><span class="lb-count" id="lb-count"></span><span class="lb-tip" id="lb-tip"></span></div>
+</div>
 
 <!-- NAV -->
 <nav>
@@ -394,6 +497,7 @@ src="https://www.facebook.com/tr?id=1562103805354462&ev=PageView&noscript=1"
 
     <div class="prod-card">
       <div class="prod-img carousel">
+        <span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21M10.5 7.5v6M7.5 10.5h6"/></svg></span>
         <div class="carousel-track">
           <img src="images/collar-nuevo.jpg" alt="Collar de goma" class="carousel-slide active">
           <img src="images/montaje-perro-1.jpg" alt="Collar de goma en uso" class="carousel-slide">
@@ -413,6 +517,7 @@ src="https://www.facebook.com/tr?id=1562103805354462&ev=PageView&noscript=1"
         <span class="prod-tag tag-blue">Nuevo</span>
         <div class="prod-name">Collar de goma</div>
         <div class="prod-desc">Resistente al agua, antiolor e hipoalergénico. Para el cuello más bonito del parque.</div>
+        <button type="button" class="btn-details" onclick="abrirDetalles('collar')">📋 Descripción y guía de tallas</button>
         <div class="price-row">
           <div class="prod-price">$58.000 COP <small>+ envío</small></div>
           <span class="cuotas-badge">4 cuotas<br>sin interés</span>
@@ -433,6 +538,7 @@ src="https://www.facebook.com/tr?id=1562103805354462&ev=PageView&noscript=1"
 
     <div class="prod-card">
       <div class="prod-img carousel">
+        <span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21M10.5 7.5v6M7.5 10.5h6"/></svg></span>
         <div class="carousel-track">
           <img src="images/arnes-nuevo.jpg" alt="Arnés de goma" class="carousel-slide active">
           <img src="images/montaje-perro-1.jpg" alt="Arnés de goma en uso" class="carousel-slide">
@@ -452,6 +558,7 @@ src="https://www.facebook.com/tr?id=1562103805354462&ev=PageView&noscript=1"
         <span class="prod-tag tag-blue">Más vendido</span>
         <div class="prod-name">Arnés de goma</div>
         <div class="prod-desc">Cómodo, seguro y bonito. Distribución perfecta del peso para paseos sin jalones.</div>
+        <button type="button" class="btn-details" onclick="abrirDetalles('arnes')">📋 Descripción y guía de tallas</button>
         <div class="price-row">
           <div class="prod-price">$84.900 COP <small>+ envío</small></div>
           <span class="cuotas-badge">4 cuotas<br>sin interés</span>
@@ -472,6 +579,7 @@ src="https://www.facebook.com/tr?id=1562103805354462&ev=PageView&noscript=1"
 
     <div class="prod-card">
       <div class="prod-img carousel">
+        <span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21M10.5 7.5v6M7.5 10.5h6"/></svg></span>
         <div class="carousel-track">
           <img src="images/correa-nuevo.jpg" alt="Correa de goma" class="carousel-slide active">
           <img src="images/montaje-perro-1.jpg" alt="Correa de goma en uso" class="carousel-slide">
@@ -491,6 +599,7 @@ src="https://www.facebook.com/tr?id=1562103805354462&ev=PageView&noscript=1"
         <span class="prod-tag tag-blue">Nuevo</span>
         <div class="prod-name">Correa de goma</div>
         <div class="prod-desc">1.8m de longitud. Gancho metálico resistente. El compañero perfecto para cada paseo.</div>
+        <button type="button" class="btn-details" onclick="abrirDetalles('correa')">📋 Descripción y cuidado</button>
         <div class="price-row">
           <div class="prod-price">$69.000 COP <small>+ envío</small></div>
           <span class="cuotas-badge">4 cuotas<br>sin interés</span>
@@ -510,6 +619,7 @@ src="https://www.facebook.com/tr?id=1562103805354462&ev=PageView&noscript=1"
 
     <div class="prod-card featured">
       <div class="prod-img carousel">
+        <span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21M10.5 7.5v6M7.5 10.5h6"/></svg></span>
         <div class="carousel-track">
           <img src="images/set-completo-nuevo.jpg" alt="Combo completo Wuuff Puppy" class="carousel-slide active">
           <img src="images/montaje-perro-1.jpg" alt="Combo completo en uso" class="carousel-slide">
@@ -529,6 +639,7 @@ src="https://www.facebook.com/tr?id=1562103805354462&ev=PageView&noscript=1"
         <span class="prod-tag tag-coral">⭐ Mejor valor</span>
         <div class="prod-name">Combo completo</div>
         <div class="prod-desc">Collar + Arnés + Correa Wuuff Puppy. El regalo perfecto para tu perrihijo especial.</div>
+        <button type="button" class="btn-details" onclick="abrirDetalles('combo')">📋 Descripción y guía de tallas</button>
         <div class="price-row">
           <div class="prod-price">$184.900 COP <small>+ envío · ahorras $27.000</small></div>
           <span class="cuotas-badge">4 cuotas<br>sin interés</span>
@@ -911,6 +1022,215 @@ src="https://www.facebook.com/tr?id=1562103805354462&ev=PageView&noscript=1"
   }, 5000);
 })();
 
+var TPL_COLLAR = "<h4>Collar</h4>\n<div class=\"size-guide\"><svg viewBox=\"0 0 200 230\" role=\"img\" aria-label=\"Perro con collar: se mide el contorno del cuello\">\n  <g fill=\"#b8d8f5\">\n    <path d=\"M52 200 C20 196 14 170 30 160 C38 176 50 182 64 184 Z\"/>\n    <ellipse cx=\"88\" cy=\"160\" rx=\"46\" ry=\"52\"/>\n    <ellipse cx=\"72\" cy=\"196\" rx=\"40\" ry=\"24\"/>\n    <path d=\"M86 120 C92 96 100 82 110 74 L146 84 C140 104 134 124 128 146 Z\"/>\n    <rect x=\"102\" y=\"140\" width=\"17\" height=\"76\" rx=\"8\"/>\n    <rect x=\"120\" y=\"140\" width=\"17\" height=\"76\" rx=\"8\"/>\n    <circle cx=\"128\" cy=\"62\" r=\"30\"/>\n    <ellipse cx=\"160\" cy=\"72\" rx=\"24\" ry=\"15\"/>\n  </g>\n  <ellipse cx=\"108\" cy=\"64\" rx=\"11\" ry=\"22\" transform=\"rotate(18 108 64)\" fill=\"#8fbfe8\"/>\n  <circle cx=\"137\" cy=\"54\" r=\"3.6\" fill=\"#2d4375\"/>\n  <circle cx=\"182\" cy=\"67\" r=\"5\" fill=\"#2d4375\"/>\n  <path d=\"M162 82 Q170 86 177 82\" stroke=\"#2d4375\" stroke-width=\"2\" fill=\"none\" stroke-linecap=\"round\"/>\n  <ellipse cx=\"122\" cy=\"98\" rx=\"24\" ry=\"7\" transform=\"rotate(14 122 98)\" fill=\"none\" stroke=\"#4964af\" stroke-width=\"7\"/>\n  <circle cx=\"140\" cy=\"108\" r=\"4\" fill=\"#d5d50c\" stroke=\"#2d4375\" stroke-width=\"1.5\"/>\n  <path d=\"M146 100 L176 118\" stroke=\"#f17d57\" stroke-width=\"2\" stroke-dasharray=\"4 3\"/>\n  <rect x=\"150\" y=\"116\" width=\"48\" height=\"20\" rx=\"10\" fill=\"#f17d57\"/>\n  <text x=\"174\" y=\"130\" text-anchor=\"middle\" font-family=\"Nunito,Arial\" font-weight=\"800\" font-size=\"11\" fill=\"#fff\">Cuello</text>\n</svg><div class=\"size-guide-steps\">La talla del collar depende del <strong>contorno del cuello</strong>. Mídelo con una cinta métrica flexible, en la parte donde normalmente va el collar.</div></div>\n<div class=\"size-table-wrap\"><table class=\"size-table\"><thead><tr><th>Medida</th><th>Talla S</th><th>Talla M</th></tr></thead><tbody><tr><td>Contorno de cuello</td><td>20–34 cm</td><td>24–38 cm</td></tr></tbody></table></div>";
+var TPL_ARNES = "<h4>Arnés</h4>\n<div class=\"size-guide\"><svg viewBox=\"0 0 260 190\" role=\"img\" aria-label=\"Perro con arnés: se mide el cuello y el pecho\">\n  <g fill=\"#b8d8f5\">\n    <path d=\"M56 88 C40 78 30 58 34 40 C44 56 52 66 64 74 Z\"/>\n    <ellipse cx=\"120\" cy=\"98\" rx=\"70\" ry=\"34\"/>\n    <rect x=\"66\" y=\"108\" width=\"15\" height=\"62\" rx=\"7\"/>\n    <rect x=\"86\" y=\"108\" width=\"15\" height=\"62\" rx=\"7\"/>\n    <rect x=\"148\" y=\"108\" width=\"15\" height=\"62\" rx=\"7\"/>\n    <rect x=\"168\" y=\"108\" width=\"15\" height=\"62\" rx=\"7\"/>\n    <path d=\"M160 72 C176 52 188 40 200 36 L222 56 C212 76 196 100 184 118 Z\"/>\n    <circle cx=\"208\" cy=\"42\" r=\"25\"/>\n    <ellipse cx=\"234\" cy=\"52\" rx=\"19\" ry=\"12\"/>\n  </g>\n  <ellipse cx=\"195\" cy=\"38\" rx=\"9\" ry=\"18\" transform=\"rotate(-20 195 38)\" fill=\"#8fbfe8\"/>\n  <circle cx=\"214\" cy=\"34\" r=\"3.4\" fill=\"#2d4375\"/>\n  <circle cx=\"251\" cy=\"48\" r=\"4.6\" fill=\"#2d4375\"/>\n  <ellipse cx=\"186\" cy=\"84\" rx=\"10\" ry=\"26\" transform=\"rotate(-28 186 84)\" fill=\"none\" stroke=\"#4964af\" stroke-width=\"6\"/>\n  <ellipse cx=\"146\" cy=\"98\" rx=\"10\" ry=\"35\" fill=\"none\" stroke=\"#4964af\" stroke-width=\"6\"/>\n  <path d=\"M148 64 L178 64\" stroke=\"#4964af\" stroke-width=\"9\" stroke-linecap=\"round\"/>\n  <circle cx=\"163\" cy=\"63\" r=\"4\" fill=\"#d5d50c\" stroke=\"#2d4375\" stroke-width=\"1.5\"/>\n  <path d=\"M200 96 L222 118\" stroke=\"#f17d57\" stroke-width=\"2\" stroke-dasharray=\"4 3\"/>\n  <rect x=\"200\" y=\"116\" width=\"50\" height=\"20\" rx=\"10\" fill=\"#f17d57\"/>\n  <text x=\"225\" y=\"130\" text-anchor=\"middle\" font-family=\"Nunito,Arial\" font-weight=\"800\" font-size=\"11\" fill=\"#fff\">Cuello</text>\n  <path d=\"M140 134 L128 178\" stroke=\"#f17d57\" stroke-width=\"2\" stroke-dasharray=\"4 3\"/>\n  <rect x=\"104\" y=\"170\" width=\"48\" height=\"20\" rx=\"10\" fill=\"#f17d57\"/>\n  <text x=\"128\" y=\"184\" text-anchor=\"middle\" font-family=\"Nunito,Arial\" font-weight=\"800\" font-size=\"11\" fill=\"#fff\">Pecho</text>\n</svg><div class=\"size-guide-steps\"><strong>Cuello:</strong> mide la base del cuello, donde se apoya el arnés.<br><strong>Pecho:</strong> mide el contorno justo detrás de las patas delanteras.</div></div>\n<div class=\"size-table-wrap\"><table class=\"size-table\"><thead><tr><th>Medida</th><th>Talla S</th><th>Talla M</th></tr></thead><tbody><tr><td>Contorno de cuello</td><td>20–34 cm</td><td>24–38 cm</td></tr><tr><td>Contorno de pecho</td><td>23–38 cm</td><td>32–53 cm</td></tr><tr><td>Correa del abdomen</td><td>15–20 cm</td><td>16–22 cm</td></tr><tr><td>Panel de la espalda</td><td>12,5 cm</td><td>14 cm</td></tr><tr><td>Ancho de la cinta</td><td>1,5 cm</td><td>1,85 cm</td></tr></tbody></table></div>\n<p class=\"size-note\">El arnés es ajustable en el cuello y en el pecho. Grosor del material: 0,2 cm.</p>";
+var TIP = "<div class=\"details-tip\">💡 Deja espacio para dos dedos entre el accesorio y el cuerpo. Si tu perrihijo está entre dos tallas, tiene mucho pelo o aún está creciendo, elige la talla más grande. ¿Dudas? Escríbenos por WhatsApp y te ayudamos a elegir.</div>";
+// Descripción y guía de tallas de cada producto
+var DETALLES_PRODUCTO = {
+  collar: {
+    titulo: 'Collar de goma',
+    desc: '<p>Nuestro collar de goma es resistente al agua, no guarda olores y es hipoalergénico. Se limpia en segundos y siempre se ve como nuevo, así llueva o tu perrihijo se meta al charco.</p><ul><li>Material impermeable y antiolor</li><li>Hebilla segura, fácil de abrir y cerrar</li><li>Argolla metálica para la correa y la placa</li><li>Color azul cielo</li></ul>',
+    tallas: TPL_COLLAR + TIP
+  },
+  arnes: {
+    titulo: 'Arnés de goma',
+    desc: '<p>Mejora tus paseos con nuestro arnés de goma resistente e impermeable. Sus correas no guardan olores y se secan en minutos: olvídate de los arneses malolientes y de esperar horas a que se sequen.</p><p>Las correas ajustables dan un ajuste seguro y cómodo, y sus hebillas resistentes con doble argolla en D refuerzan la seguridad en cada salida.</p><ul><li>Ajustable en el cuello y en el pecho</li><li>Distribuye el peso para paseos sin jalones</li><li>Doble argolla en D</li><li>Fácil de limpiar y con un look elegante</li></ul>',
+    tallas: TPL_ARNES + TIP
+  },
+  correa: {
+    titulo: 'Correa de goma',
+    desc: '<p>La compañera perfecta para cada paseo. Hecha del mismo material impermeable y antiolor que el collar y el arnés, así que se limpia fácil y combina con todo el set.</p><ul><li>1,8 m de largo</li><li>Gancho metálico resistente</li><li>Impermeable y antiolor</li><li>Color azul cielo</li></ul>',
+    tallas: '<p><strong>Talla única.</strong> La correa mide 1,8 m de largo y funciona para perros de cualquier tamaño.</p>'
+  },
+  combo: {
+    titulo: 'Combo completo',
+    desc: '<p>Collar + Arnés + Correa de goma Wuuff Puppy en azul cielo, el regalo perfecto para tu perrihijo. Todo el set es impermeable, antiolor e hipoalergénico, y te ahorras $27.000 frente a comprar las piezas por separado.</p><ul><li><strong>Collar:</strong> hebilla segura y argolla metálica</li><li><strong>Arnés:</strong> ajustable en cuello y pecho, con doble argolla en D</li><li><strong>Correa:</strong> 1,8 m de largo con gancho metálico</li></ul><p>Al comprar eliges una sola talla (S o M) para el collar y el arnés.</p>',
+    tallas: TPL_COLLAR + TPL_ARNES + '<p class="size-note"><strong>Correa:</strong> talla única de 1,8 m.</p>' + TIP
+  }
+};
+
+function abrirDetalles(clave, tab){
+  var d = DETALLES_PRODUCTO[clave];
+  if(!d) return;
+  document.getElementById('details-title').textContent = d.titulo;
+  document.getElementById('details-desc').innerHTML = d.desc;
+  document.getElementById('details-tallas').innerHTML = d.tallas;
+  cambiarTabDetalles(tab || 'desc');
+  var overlay = document.getElementById('details-overlay');
+  overlay._lastFocus = document.activeElement;
+  overlay.classList.add('open');
+  overlay.querySelector('.details-sheet').scrollTop = 0;
+  document.body.style.overflow = 'hidden';
+  document.getElementById('details-close').focus();
+}
+function cambiarTabDetalles(tab){
+  var overlay = document.getElementById('details-overlay');
+  overlay.querySelectorAll('.details-tab').forEach(function(b){
+    var on = b.dataset.tab === tab;
+    b.classList.toggle('active', on);
+    b.setAttribute('aria-selected', on ? 'true' : 'false');
+  });
+  overlay.querySelectorAll('.details-panel').forEach(function(p){ p.classList.toggle('active', p.dataset.panel === tab); });
+}
+function cerrarDetalles(){
+  var overlay = document.getElementById('details-overlay');
+  if(!overlay.classList.contains('open')) return;
+  overlay.classList.remove('open');
+  document.body.style.overflow = '';
+  if(overlay._lastFocus && overlay._lastFocus.focus) overlay._lastFocus.focus();
+}
+(function(){
+  var overlay = document.getElementById('details-overlay');
+  if(!overlay) return;
+  overlay.addEventListener('click', function(e){
+    if(e.target === overlay) return cerrarDetalles();
+    var tab = e.target.closest('.details-tab');
+    if(tab) cambiarTabDetalles(tab.dataset.tab);
+  });
+  document.getElementById('details-close').addEventListener('click', cerrarDetalles);
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') cerrarDetalles(); });
+})();
+
+// Visor de imágenes de producto con zoom (clic/toque doble, pellizco, rueda y arrastre)
+(function(){
+  var lb = document.getElementById('lightbox');
+  if(!lb) return;
+  var stage = document.getElementById('lb-stage');
+  var img = document.getElementById('lb-img');
+  var countEl = document.getElementById('lb-count');
+  var tipEl = document.getElementById('lb-tip');
+  var MAX = 4, ZOOM = 2.5;
+  var list = [], idx = 0, scale = 1, tx = 0, ty = 0;
+  var pointers = {}, gesture = null, lastTap = 0, lastFocus = null;
+  var isTouch = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+
+  function clampPan(){
+    var w = img.offsetWidth * scale, h = img.offsetHeight * scale;
+    var maxX = Math.max(0, (w - stage.clientWidth) / 2);
+    var maxY = Math.max(0, (h - stage.clientHeight) / 2);
+    tx = Math.min(maxX, Math.max(-maxX, tx));
+    ty = Math.min(maxY, Math.max(-maxY, ty));
+  }
+  function apply(){
+    if(scale <= 1.01){ scale = 1; tx = 0; ty = 0; }
+    clampPan();
+    img.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')';
+    lb.classList.toggle('zoomed', scale > 1);
+  }
+  // Cambia el zoom manteniendo fijo el punto (cx, cy) de la pantalla
+  function zoomTo(next, cx, cy){
+    next = Math.min(MAX, Math.max(1, next));
+    var r = stage.getBoundingClientRect();
+    var px = cx - (r.left + r.width / 2), py = cy - (r.top + r.height / 2);
+    tx = px - (px - tx) * next / scale;
+    ty = py - (py - ty) * next / scale;
+    scale = next;
+    apply();
+  }
+  function toggleZoom(cx, cy){ zoomTo(scale > 1 ? 1 : ZOOM, cx, cy); }
+  function show(i){
+    idx = (i + list.length) % list.length;
+    scale = 1; tx = 0; ty = 0; apply();
+    img.src = list[idx].src;
+    img.alt = list[idx].alt || '';
+    countEl.textContent = (idx + 1) + ' / ' + list.length;
+  }
+  function open(slides, i){
+    list = slides;
+    lastFocus = document.activeElement;
+    lb.classList.toggle('single', slides.length < 2);
+    tipEl.textContent = isTouch ? 'Toca dos veces o pellizca para hacer zoom' : 'Haz clic o usa la rueda para hacer zoom';
+    show(i);
+    lb.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    document.getElementById('lb-close').focus();
+  }
+  function close(){
+    lb.classList.remove('open', 'zoomed', 'dragging');
+    document.body.style.overflow = '';
+    pointers = {}; gesture = null;
+    if(lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  window.wuuffAbrirVisor = open;
+
+  // Abrir al tocar la imagen de un producto
+  document.addEventListener('click', function(e){
+    var slide = e.target.closest && e.target.closest('.prod-card .carousel-slide');
+    if(!slide) return;
+    var slides = Array.prototype.slice.call(slide.closest('.carousel').querySelectorAll('.carousel-slide'));
+    open(slides, slides.indexOf(slide));
+  });
+
+  document.getElementById('lb-close').addEventListener('click', close);
+  document.getElementById('lb-prev').addEventListener('click', function(){ show(idx - 1); });
+  document.getElementById('lb-next').addEventListener('click', function(){ show(idx + 1); });
+  document.addEventListener('keydown', function(e){
+    if(!lb.classList.contains('open')) return;
+    if(e.key === 'Escape') close();
+    else if(e.key === 'ArrowLeft' && list.length > 1) show(idx - 1);
+    else if(e.key === 'ArrowRight' && list.length > 1) show(idx + 1);
+  });
+
+  stage.addEventListener('wheel', function(e){
+    e.preventDefault();
+    zoomTo(scale * Math.exp(-e.deltaY * 0.0022), e.clientX, e.clientY);
+  }, { passive: false });
+
+  function dist(a, b){ return Math.hypot(a.x - b.x, a.y - b.y); }
+  stage.addEventListener('pointerdown', function(e){
+    if(e.target.closest('.lb-btn')) return;
+    stage.setPointerCapture(e.pointerId);
+    pointers[e.pointerId] = { x: e.clientX, y: e.clientY };
+    var ids = Object.keys(pointers);
+    if(ids.length === 2){
+      var a = pointers[ids[0]], b = pointers[ids[1]];
+      gesture = { type: 'pinch', d: dist(a, b), s: scale, moved: true };
+    } else if(ids.length === 1){
+      gesture = { type: 'pan', x: e.clientX, y: e.clientY, tx: tx, ty: ty, moved: false, onImg: e.target === img };
+    }
+  });
+  stage.addEventListener('pointermove', function(e){
+    if(!pointers[e.pointerId] || !gesture) return;
+    pointers[e.pointerId] = { x: e.clientX, y: e.clientY };
+    var ids = Object.keys(pointers);
+    if(gesture.type === 'pinch' && ids.length === 2){
+      var a = pointers[ids[0]], b = pointers[ids[1]];
+      lb.classList.add('dragging');
+      zoomTo(gesture.s * dist(a, b) / gesture.d, (a.x + b.x) / 2, (a.y + b.y) / 2);
+    } else if(gesture.type === 'pan'){
+      var dx = e.clientX - gesture.x, dy = e.clientY - gesture.y;
+      if(Math.abs(dx) + Math.abs(dy) > 6) gesture.moved = true;
+      if(scale > 1){
+        lb.classList.add('dragging');
+        tx = gesture.tx + dx; ty = gesture.ty + dy; apply();
+      }
+    }
+  });
+  function endPointer(e){
+    if(!pointers[e.pointerId]) return;
+    delete pointers[e.pointerId];
+    lb.classList.remove('dragging');
+    if(!gesture) return;
+    if(Object.keys(pointers).length) { gesture = { type: 'none', moved: true }; return; }
+    var g = gesture; gesture = null;
+    if(g.type !== 'pan') return;
+    var dx = e.clientX - g.x;
+    if(g.moved){
+      // Deslizar para cambiar de foto cuando no hay zoom
+      if(scale === 1 && list.length > 1 && Math.abs(dx) > 50) show(idx + (dx < 0 ? 1 : -1));
+      return;
+    }
+    if(!g.onImg && scale === 1){ close(); return; }  // toque en el fondo
+    if(e.pointerType === 'mouse'){ toggleZoom(e.clientX, e.clientY); return; }
+    var now = Date.now();
+    if(now - lastTap < 320){ toggleZoom(e.clientX, e.clientY); lastTap = 0; }
+    else lastTap = now;
+  }
+  stage.addEventListener('pointerup', endPointer);
+  stage.addEventListener('pointercancel', endPointer);
+  window.addEventListener('resize', function(){ if(lb.classList.contains('open')) apply(); });
+})();
+
 // Carrusel de imágenes de producto
 function moveCarousel(btn, dir){
   var carousel = btn.closest('.carousel');
@@ -968,6 +1288,9 @@ function seleccionarTalla(chip){
   if(!row) return;
   row.querySelectorAll('.size-chip').forEach(function(c){ c.classList.remove('selected'); });
   chip.classList.add('selected');
+  row.classList.remove('needs-size', 'shake');
+  var aviso = row.parentNode.querySelector('.size-alert');
+  if(aviso) aviso.classList.remove('show');
 
   // Muestra la tabla de medidas de la talla elegida
   var card = chip.closest('.prod-card');
@@ -997,11 +1320,36 @@ function cambiarCantidad(btn, delta){
   span.textContent = val;
 }
 
+// Aviso (en la tarjeta) cuando intentan comprar sin elegir talla
+function avisarTalla(card){
+  if(!card) return;
+  var row = card.querySelector('.size-row');
+  if(!row) return;
+  var tip = card.querySelector('.size-alert');
+  if(!tip){
+    tip = document.createElement('div');
+    tip.className = 'size-alert';
+    tip.setAttribute('role', 'alert');
+    var det = card.querySelector('.btn-details');
+    var m = det && (det.getAttribute('onclick') || '').match(/abrirDetalles\('(\w+)'/);
+    tip.innerHTML = '<span class="size-alert-icon">📏</span><div><strong>Elige una talla</strong><span class="size-alert-text">Selecciona la talla de tu perrihijo para continuar con la compra.</span>' +
+      (m ? '<button type="button" class="size-alert-link" onclick="abrirDetalles(\'' + m[1] + '\', \'tallas\')">Ver guía de tallas →</button>' : '') + '</div>';
+    row.parentNode.insertBefore(tip, row);
+  }
+  tip.classList.remove('show'); row.classList.remove('shake', 'needs-size');
+  void tip.offsetWidth;
+  tip.classList.add('show'); row.classList.add('shake', 'needs-size');
+  var r = tip.getBoundingClientRect();
+  if(r.top < 80 || r.bottom > window.innerHeight) tip.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  clearTimeout(tip._timer);
+  tip._timer = setTimeout(function(){ tip.classList.remove('show'); row.classList.remove('needs-size'); }, 5000);
+}
+
 function comprarProducto(btn, amountInCents, nombreBase){
   var card = btn.closest('.prod-card');
   var chip = card ? card.querySelector('.size-chip.selected') : null;
   if(!chip){
-    alert('Por favor selecciona una talla antes de continuar.');
+    avisarTalla(card);
     return;
   }
   var qtyEl = card ? card.querySelector('.qty-value') : null;
@@ -1290,6 +1638,11 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
     var talla = chip.textContent.trim().replace(/^Talla\s+/i, '');
     track('talla_seleccionada', { talla: talla, item_name: productOfCard(chip.closest('.prod-card')) });
     tag('talla', talla);
+  });
+
+  // 1b. Abre la descripción / guía de tallas de un producto
+  wrap('abrirDetalles', function(clave, tab){
+    track('detalles_producto', { item_name: clave, seccion: tab || 'desc' });
   });
 
   // 2. Clic en "Comprar": detecta si lo intentan sin elegir talla
