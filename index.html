@@ -73,6 +73,8 @@ nav{
 .shipping-input:focus{border-color:var(--blue);}
 .shipping-input::placeholder{color:rgba(45,67,117,.5);}
 .shipping-select{appearance:none;-webkit-appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232d4375' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;background-size:16px;padding-right:40px;}
+.envio-gratis-aviso{background:#e6f7ec;color:#2b8a3e;font-size:12.5px;font-weight:700;border-radius:12px;padding:9px 12px;margin:-4px 0 10px;text-align:left;}
+.envio-gratis-aviso strong{font-weight:900;}
 .shipping-modal .btn-buy{border:none;cursor:pointer;margin-top:6px;}
 .promo-feedback{font-size:12px;font-weight:800;margin-top:-6px;min-height:16px;}
 .promo-feedback.valido{color:#2b8a3e;}
@@ -125,6 +127,7 @@ nav{
 .carousel-slide{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;object-position:center;padding:0;box-sizing:border-box;opacity:0;transition:opacity .3s ease;pointer-events:none;max-height:none;}
 .carousel-slide.active{opacity:1;pointer-events:auto;}
 .prod-card .carousel-slide.active{cursor:zoom-in;}
+.carousel-slide.fit-contain{object-fit:contain;background:#fff;padding:10px;}
 video.carousel-slide{background:#dfe8f5;}
 .zoom-hint{position:absolute;top:10px;right:10px;z-index:2;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.92);box-shadow:0 2px 10px rgba(45,67,117,.18);display:flex;align-items:center;justify-content:center;pointer-events:none;color:var(--navy);}
 .zoom-hint svg{width:18px;height:18px;}
@@ -200,6 +203,9 @@ video.carousel-slide{background:#dfe8f5;}
 .prod-price{font-family:'Fredoka One',cursive;font-size:24px;color:var(--blue);margin-bottom:4px;}
 .price-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:14px;container-type:inline-size;}
 .price-row .prod-price{flex:1 1 auto;min-width:0;margin-bottom:0;line-height:1.1;font-size:min(24px,8.2cqi);white-space:nowrap;}
+.price-old{display:flex;align-items:center;gap:6px;margin-bottom:2px;font-family:'Nunito',sans-serif;font-size:min(14px,5.4cqi);font-weight:700;color:var(--navy);}
+.price-old s{opacity:.5;text-decoration-thickness:1.5px;}
+.price-off{background:var(--coral);color:#fff;font-weight:900;font-size:.85em;padding:1px 7px;border-radius:8px;letter-spacing:.3px;}
 .price-row .prod-price small{display:block;margin-top:4px;font-size:min(13px,6.2cqi);white-space:normal;}
 .cuotas-badge{position:relative;flex-shrink:0;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;margin-left:1em;padding:.45em 1em .45em .55em;background:var(--lime);color:var(--navy);font-family:'Fredoka One',cursive;font-size:min(14px,4.6cqi);line-height:1.05;text-align:center;text-transform:uppercase;letter-spacing:.3px;border-radius:0 1em 1em 0;white-space:nowrap;}
 .cuotas-badge::before{content:'';position:absolute;top:0;bottom:0;left:-.95em;width:1em;background:inherit;clip-path:polygon(100% 0,100% 100%,0 50%);}
@@ -234,6 +240,8 @@ video.carousel-slide{background:#dfe8f5;}
 
 /* TOOLS */
 .tools-section{padding:70px 20px;background:#fff;}
+.tools-single{max-width:520px;margin:0 auto;}
+.tools-section-alt{background:var(--cream);}
 .tools-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;max-width:940px;margin:0 auto;}
 .tool-card{background:var(--lblue);border-radius:28px;padding:34px 28px;}
 .tool-card h3{font-family:'Fredoka One',cursive;font-size:19px;color:var(--navy);margin-bottom:6px;}
@@ -345,6 +353,7 @@ video.carousel-slide{background:#dfe8f5;}
 .cta-box h3{font-family:'Fredoka One',cursive;font-size:26px;color:var(--navy);margin-bottom:6px;}
 .cta-sub2{font-size:14px;font-weight:700;color:var(--navy);opacity:.55;margin-bottom:28px;}
 .cta-list{text-align:left;margin-bottom:28px;display:flex;flex-direction:column;gap:11px;}
+.cta-old{opacity:.5;font-weight:700;margin-right:4px;}
 .cta-item{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:700;color:var(--navy);}
 .cta-item span{font-size:18px;}
 .btn-ig{width:100%;background:var(--blue);color:#fff;font-weight:900;font-size:17px;padding:18px;border-radius:20px;border:none;cursor:pointer;text-decoration:none;display:block;box-shadow:0 8px 24px rgba(73,100,175,.35);transition:transform .2s;font-family:'Nunito',sans-serif;}
@@ -490,7 +499,7 @@ src="https://www.facebook.com/tr?id=1562103805354462&ev=PageView&noscript=1"
 <!-- TICKER -->
 <div class="ticker">
   <div class="ticker-inner">
-    <div class="ticker-item"><div class="ticker-dot"></div>Resistente al agua</div><div class="ticker-item"><div class="ticker-dot"></div>Hecho con amor 🐾</div><div class="ticker-item"><div class="ticker-dot"></div>Antiolor y duradero</div><div class="ticker-item"><div class="ticker-dot"></div>Hipoalergénico</div><div class="ticker-item"><div class="ticker-dot"></div>Envíos Colombia 🇨🇴</div><div class="ticker-item"><div class="ticker-dot"></div>Tallas S y M</div><div class="ticker-item"><div class="ticker-dot"></div>Perrihijos felices ✨</div><div class="ticker-item"><div class="ticker-dot"></div>Resistente al agua</div><div class="ticker-item"><div class="ticker-dot"></div>Hecho con amor 🐾</div><div class="ticker-item"><div class="ticker-dot"></div>Antiolor y duradero</div><div class="ticker-item"><div class="ticker-dot"></div>Hipoalergénico</div><div class="ticker-item"><div class="ticker-dot"></div>Envíos Colombia 🇨🇴</div><div class="ticker-item"><div class="ticker-dot"></div>Tallas S y M</div><div class="ticker-item"><div class="ticker-dot"></div>Perrihijos felices ✨</div><div class="ticker-item"><div class="ticker-dot"></div>Resistente al agua</div><div class="ticker-item"><div class="ticker-dot"></div>Hecho con amor 🐾</div><div class="ticker-item"><div class="ticker-dot"></div>Antiolor y duradero</div><div class="ticker-item"><div class="ticker-dot"></div>Hipoalergénico</div><div class="ticker-item"><div class="ticker-dot"></div>Envíos Colombia 🇨🇴</div><div class="ticker-item"><div class="ticker-dot"></div>Tallas S y M</div><div class="ticker-item"><div class="ticker-dot"></div>Perrihijos felices ✨</div>
+    <div class="ticker-item"><div class="ticker-dot"></div>Resistente al agua</div><div class="ticker-item"><div class="ticker-dot"></div>Hecho con amor 🐾</div><div class="ticker-item"><div class="ticker-dot"></div>Antiolor y duradero</div><div class="ticker-item"><div class="ticker-dot"></div>Hipoalergénico</div><div class="ticker-item"><div class="ticker-dot"></div>Envíos Colombia 🇨🇴</div><div class="ticker-item"><div class="ticker-dot"></div>Envío gratis en Bogotá desde $150.000 🚚</div><div class="ticker-item"><div class="ticker-dot"></div>Tallas S y M</div><div class="ticker-item"><div class="ticker-dot"></div>Perrihijos felices ✨</div><div class="ticker-item"><div class="ticker-dot"></div>Resistente al agua</div><div class="ticker-item"><div class="ticker-dot"></div>Hecho con amor 🐾</div><div class="ticker-item"><div class="ticker-dot"></div>Antiolor y duradero</div><div class="ticker-item"><div class="ticker-dot"></div>Hipoalergénico</div><div class="ticker-item"><div class="ticker-dot"></div>Envíos Colombia 🇨🇴</div><div class="ticker-item"><div class="ticker-dot"></div>Envío gratis en Bogotá desde $150.000 🚚</div><div class="ticker-item"><div class="ticker-dot"></div>Tallas S y M</div><div class="ticker-item"><div class="ticker-dot"></div>Perrihijos felices ✨</div><div class="ticker-item"><div class="ticker-dot"></div>Resistente al agua</div><div class="ticker-item"><div class="ticker-dot"></div>Hecho con amor 🐾</div><div class="ticker-item"><div class="ticker-dot"></div>Antiolor y duradero</div><div class="ticker-item"><div class="ticker-dot"></div>Hipoalergénico</div><div class="ticker-item"><div class="ticker-dot"></div>Envíos Colombia 🇨🇴</div><div class="ticker-item"><div class="ticker-dot"></div>Envío gratis en Bogotá desde $150.000 🚚</div><div class="ticker-item"><div class="ticker-dot"></div>Tallas S y M</div><div class="ticker-item"><div class="ticker-dot"></div>Perrihijos felices ✨</div>
   </div>
 </div>
 
@@ -499,6 +508,100 @@ src="https://www.facebook.com/tr?id=1562103805354462&ev=PageView&noscript=1"
   <h2>Nuestros <span>productos</span></h2>
   <p class="prod-sub">Azul cielo · Hipoalergénico · Tallas S y M</p>
   <div class="products-grid">
+
+    <div class="prod-card featured">
+      <div class="prod-img carousel">
+        <span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21M10.5 7.5v6M7.5 10.5h6"/></svg></span>
+        <div class="carousel-track">
+          <img src="images/set-completo-nuevo.jpg" alt="Combo completo Wuuff Puppy" class="carousel-slide active">
+          <video class="carousel-slide" muted loop playsinline preload="none" poster="images/productos/combo-2-poster.jpg" aria-label="Video: Combo completo Wuuff Puppy"><source src="images/productos/combo-2.mp4" type="video/mp4"></video>
+          <img src="images/productos/combo-3.jpg" alt="Perro con arnés y correa Wuuff Puppy en el pasto" class="carousel-slide" loading="lazy">
+          <img src="images/productos/combo-4.jpg" alt="Perro con arnés y correa Wuuff Puppy" class="carousel-slide" loading="lazy">
+          <img src="images/productos/combo-5.jpg" alt="Perro paseando con arnés y correa Wuuff Puppy" class="carousel-slide" loading="lazy">
+          <img src="images/productos/tallas-arnes.png" alt="Guía de tallas del arnés: medidas de la talla S y M en cm" class="carousel-slide fit-contain" loading="lazy">
+          <img src="images/productos/tallas-collar.png" alt="Guía de tallas del collar: contorno de cuello de la talla S y M" class="carousel-slide fit-contain" loading="lazy">
+        </div>
+        <button class="carousel-arrow carousel-prev" onclick="moveCarousel(this,-1)" aria-label="Anterior">‹</button>
+        <button class="carousel-arrow carousel-next" onclick="moveCarousel(this,1)" aria-label="Siguiente">›</button>
+        <div class="carousel-dots">
+          <span class="carousel-dot active" onclick="goToSlide(this,0)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,1)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,2)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,3)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,4)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,5)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,6)"></span>
+        </div>
+      </div>
+      <div class="prod-body">
+        <span class="prod-tag tag-coral">⭐ Mejor valor</span>
+        <div class="prod-name">Combo completo</div>
+        <div class="prod-desc">Collar + Arnés + Correa Wuuff Puppy. El regalo perfecto para tu perrihijo especial.</div>
+        <button type="button" class="btn-details" onclick="abrirDetalles('combo')">📋 Descripción y guía de tallas</button>
+        <div class="price-row">
+          <div class="prod-price"><span class="price-old"><s aria-label="Precio antes: $215.000">$215.000</s><span class="price-off">-14%</span></span>$184.900 COP <small>🚚 Envío gratis en Bogotá</small></div>
+          <span class="cuotas-badge">4 cuotas<br>sin interés</span>
+        </div>
+        <div class="size-row"><span class="size-chip" onclick="seleccionarTalla(this)">S</span><span class="size-chip" onclick="seleccionarTalla(this)">M</span></div>
+        <div class="size-medidas"></div>
+        <div class="qty-row">
+          <span class="qty-label">Cantidad</span>
+          <div class="qty-control">
+            <button type="button" class="qty-btn" onclick="cambiarCantidad(this,-1)">−</button>
+            <span class="qty-value">1</span>
+            <button type="button" class="qty-btn" onclick="cambiarCantidad(this,1)">+</button>
+          </div>
+        </div>
+        <button class="btn-buy coral" onclick="comprarProducto(this, 18490000, 'Combo completo')">Comprar 🎁</button>
+      </div>
+    </div>
+
+
+    <div class="prod-card">
+      <div class="prod-img carousel">
+        <span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21M10.5 7.5v6M7.5 10.5h6"/></svg></span>
+        <div class="carousel-track">
+          <img src="images/arnes-nuevo.jpg" alt="Arnés de goma" class="carousel-slide active">
+          <video class="carousel-slide" muted loop playsinline preload="none" poster="images/productos/arnes-2-poster.jpg" aria-label="Video: Arnés de goma"><source src="images/productos/arnes-2.mp4" type="video/mp4"></video>
+          <img src="images/productos/arnes-3.jpg" alt="Chihuahua con arnés de goma Wuuff Puppy" class="carousel-slide" loading="lazy">
+          <img src="images/productos/arnes-4.jpg" alt="Perro con arnés Wuuff Puppy visto desde atrás" class="carousel-slide" loading="lazy">
+          <img src="images/productos/arnes-5.jpg" alt="Perro con arnés Wuuff Puppy en el pasto" class="carousel-slide" loading="lazy">
+          <img src="images/productos/tallas-arnes.png" alt="Guía de tallas del arnés: medidas de la talla S y M en cm" class="carousel-slide fit-contain" loading="lazy">
+        </div>
+        <button class="carousel-arrow carousel-prev" onclick="moveCarousel(this,-1)" aria-label="Anterior">‹</button>
+        <button class="carousel-arrow carousel-next" onclick="moveCarousel(this,1)" aria-label="Siguiente">›</button>
+        <div class="carousel-dots">
+          <span class="carousel-dot active" onclick="goToSlide(this,0)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,1)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,2)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,3)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,4)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,5)"></span>
+        </div>
+      </div>
+      <div class="prod-body">
+        <span class="prod-tag tag-blue">Más vendido</span>
+        <div class="prod-name">Arnés de goma</div>
+        <div class="prod-desc">Cómodo, seguro y bonito. Distribución perfecta del peso para paseos sin jalones.</div>
+        <button type="button" class="btn-details" onclick="abrirDetalles('arnes')">📋 Descripción y guía de tallas</button>
+        <div class="price-row">
+          <div class="prod-price"><span class="price-old"><s aria-label="Precio antes: $115.000">$115.000</s><span class="price-off">-26%</span></span>$84.900 COP <small>+ envío</small></div>
+          <span class="cuotas-badge">4 cuotas<br>sin interés</span>
+        </div>
+        <div class="size-row"><span class="size-chip" onclick="seleccionarTalla(this)">Talla S</span><span class="size-chip" onclick="seleccionarTalla(this)">Talla M</span></div>
+        <div class="size-medidas"></div>
+        <div class="qty-row">
+          <span class="qty-label">Cantidad</span>
+          <div class="qty-control">
+            <button type="button" class="qty-btn" onclick="cambiarCantidad(this,-1)">−</button>
+            <span class="qty-value">1</span>
+            <button type="button" class="qty-btn" onclick="cambiarCantidad(this,1)">+</button>
+          </div>
+        </div>
+        <button class="btn-buy" onclick="comprarProducto(this, 8490000, 'Arnés de goma')">Comprar 🐾</button>
+      </div>
+    </div>
+
 
     <div class="prod-card">
       <div class="prod-img carousel">
@@ -509,6 +612,7 @@ src="https://www.facebook.com/tr?id=1562103805354462&ev=PageView&noscript=1"
           <img src="images/productos/collar-3.jpg" alt="Perro salchicha con collar y arnés Wuuff Puppy" class="carousel-slide" loading="lazy">
           <img src="images/productos/collar-4.jpg" alt="Perro sentado con collar y correa Wuuff Puppy" class="carousel-slide" loading="lazy">
           <img src="images/productos/collar-5.jpg" alt="Collar y correa Wuuff Puppy sobre el pasto" class="carousel-slide" loading="lazy">
+          <img src="images/productos/tallas-collar.png" alt="Guía de tallas del collar: contorno de cuello de la talla S y M" class="carousel-slide fit-contain" loading="lazy">
         </div>
         <button class="carousel-arrow carousel-prev" onclick="moveCarousel(this,-1)" aria-label="Anterior">‹</button>
         <button class="carousel-arrow carousel-next" onclick="moveCarousel(this,1)" aria-label="Siguiente">›</button>
@@ -518,6 +622,7 @@ src="https://www.facebook.com/tr?id=1562103805354462&ev=PageView&noscript=1"
           <span class="carousel-dot" onclick="goToSlide(this,2)"></span>
           <span class="carousel-dot" onclick="goToSlide(this,3)"></span>
           <span class="carousel-dot" onclick="goToSlide(this,4)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,5)"></span>
         </div>
       </div>
       <div class="prod-body">
@@ -526,7 +631,7 @@ src="https://www.facebook.com/tr?id=1562103805354462&ev=PageView&noscript=1"
         <div class="prod-desc">Resistente al agua, antiolor e hipoalergénico. Para el cuello más bonito del parque.</div>
         <button type="button" class="btn-details" onclick="abrirDetalles('collar')">📋 Descripción y guía de tallas</button>
         <div class="price-row">
-          <div class="prod-price">$58.000 COP <small>+ envío</small></div>
+          <div class="prod-price"><span class="price-old"><s aria-label="Precio antes: $69.000">$69.000</s><span class="price-off">-16%</span></span>$58.000 COP <small>+ envío</small></div>
           <span class="cuotas-badge">4 cuotas<br>sin interés</span>
         </div>
         <div class="size-row"><span class="size-chip" onclick="seleccionarTalla(this)">Talla S</span><span class="size-chip" onclick="seleccionarTalla(this)">Talla M</span></div>
@@ -543,48 +648,6 @@ src="https://www.facebook.com/tr?id=1562103805354462&ev=PageView&noscript=1"
       </div>
     </div>
 
-    <div class="prod-card">
-      <div class="prod-img carousel">
-        <span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21M10.5 7.5v6M7.5 10.5h6"/></svg></span>
-        <div class="carousel-track">
-          <img src="images/arnes-nuevo.jpg" alt="Arnés de goma" class="carousel-slide active">
-          <video class="carousel-slide" muted loop playsinline preload="none" poster="images/productos/arnes-2-poster.jpg" aria-label="Video: Arnés de goma"><source src="images/productos/arnes-2.mp4" type="video/mp4"></video>
-          <img src="images/productos/arnes-3.jpg" alt="Chihuahua con arnés de goma Wuuff Puppy" class="carousel-slide" loading="lazy">
-          <img src="images/productos/arnes-4.jpg" alt="Perro con arnés Wuuff Puppy visto desde atrás" class="carousel-slide" loading="lazy">
-          <img src="images/productos/arnes-5.jpg" alt="Perro con arnés Wuuff Puppy en el pasto" class="carousel-slide" loading="lazy">
-        </div>
-        <button class="carousel-arrow carousel-prev" onclick="moveCarousel(this,-1)" aria-label="Anterior">‹</button>
-        <button class="carousel-arrow carousel-next" onclick="moveCarousel(this,1)" aria-label="Siguiente">›</button>
-        <div class="carousel-dots">
-          <span class="carousel-dot active" onclick="goToSlide(this,0)"></span>
-          <span class="carousel-dot" onclick="goToSlide(this,1)"></span>
-          <span class="carousel-dot" onclick="goToSlide(this,2)"></span>
-          <span class="carousel-dot" onclick="goToSlide(this,3)"></span>
-          <span class="carousel-dot" onclick="goToSlide(this,4)"></span>
-        </div>
-      </div>
-      <div class="prod-body">
-        <span class="prod-tag tag-blue">Más vendido</span>
-        <div class="prod-name">Arnés de goma</div>
-        <div class="prod-desc">Cómodo, seguro y bonito. Distribución perfecta del peso para paseos sin jalones.</div>
-        <button type="button" class="btn-details" onclick="abrirDetalles('arnes')">📋 Descripción y guía de tallas</button>
-        <div class="price-row">
-          <div class="prod-price">$84.900 COP <small>+ envío</small></div>
-          <span class="cuotas-badge">4 cuotas<br>sin interés</span>
-        </div>
-        <div class="size-row"><span class="size-chip" onclick="seleccionarTalla(this)">Talla S</span><span class="size-chip" onclick="seleccionarTalla(this)">Talla M</span></div>
-        <div class="size-medidas"></div>
-        <div class="qty-row">
-          <span class="qty-label">Cantidad</span>
-          <div class="qty-control">
-            <button type="button" class="qty-btn" onclick="cambiarCantidad(this,-1)">−</button>
-            <span class="qty-value">1</span>
-            <button type="button" class="qty-btn" onclick="cambiarCantidad(this,1)">+</button>
-          </div>
-        </div>
-        <button class="btn-buy" onclick="comprarProducto(this, 8490000, 'Arnés de goma')">Comprar 🐾</button>
-      </div>
-    </div>
 
     <div class="prod-card">
       <div class="prod-img carousel">
@@ -610,7 +673,7 @@ src="https://www.facebook.com/tr?id=1562103805354462&ev=PageView&noscript=1"
         <div class="prod-desc">1.8m de longitud. Gancho metálico resistente. El compañero perfecto para cada paseo.</div>
         <button type="button" class="btn-details" onclick="abrirDetalles('correa')">📋 Descripción y cuidado</button>
         <div class="price-row">
-          <div class="prod-price">$69.000 COP <small>+ envío</small></div>
+          <div class="prod-price"><span class="price-old"><s aria-label="Precio antes: $85.000">$85.000</s><span class="price-off">-19%</span></span>$69.000 COP <small>+ envío</small></div>
           <span class="cuotas-badge">4 cuotas<br>sin interés</span>
         </div>
         <div class="size-row"><span class="size-chip selected">Talla única</span></div>
@@ -626,70 +689,12 @@ src="https://www.facebook.com/tr?id=1562103805354462&ev=PageView&noscript=1"
       </div>
     </div>
 
-    <div class="prod-card featured">
-      <div class="prod-img carousel">
-        <span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21M10.5 7.5v6M7.5 10.5h6"/></svg></span>
-        <div class="carousel-track">
-          <img src="images/set-completo-nuevo.jpg" alt="Combo completo Wuuff Puppy" class="carousel-slide active">
-          <video class="carousel-slide" muted loop playsinline preload="none" poster="images/productos/combo-2-poster.jpg" aria-label="Video: Combo completo Wuuff Puppy"><source src="images/productos/combo-2.mp4" type="video/mp4"></video>
-          <img src="images/productos/combo-3.jpg" alt="Perro con arnés y correa Wuuff Puppy en el pasto" class="carousel-slide" loading="lazy">
-          <img src="images/productos/combo-4.jpg" alt="Perro con arnés y correa Wuuff Puppy" class="carousel-slide" loading="lazy">
-          <img src="images/productos/combo-5.jpg" alt="Perro paseando con arnés y correa Wuuff Puppy" class="carousel-slide" loading="lazy">
-        </div>
-        <button class="carousel-arrow carousel-prev" onclick="moveCarousel(this,-1)" aria-label="Anterior">‹</button>
-        <button class="carousel-arrow carousel-next" onclick="moveCarousel(this,1)" aria-label="Siguiente">›</button>
-        <div class="carousel-dots">
-          <span class="carousel-dot active" onclick="goToSlide(this,0)"></span>
-          <span class="carousel-dot" onclick="goToSlide(this,1)"></span>
-          <span class="carousel-dot" onclick="goToSlide(this,2)"></span>
-          <span class="carousel-dot" onclick="goToSlide(this,3)"></span>
-          <span class="carousel-dot" onclick="goToSlide(this,4)"></span>
-        </div>
-      </div>
-      <div class="prod-body">
-        <span class="prod-tag tag-coral">⭐ Mejor valor</span>
-        <div class="prod-name">Combo completo</div>
-        <div class="prod-desc">Collar + Arnés + Correa Wuuff Puppy. El regalo perfecto para tu perrihijo especial.</div>
-        <button type="button" class="btn-details" onclick="abrirDetalles('combo')">📋 Descripción y guía de tallas</button>
-        <div class="price-row">
-          <div class="prod-price">$184.900 COP <small>+ envío · ahorras $27.000</small></div>
-          <span class="cuotas-badge">4 cuotas<br>sin interés</span>
-        </div>
-        <div class="size-row"><span class="size-chip" onclick="seleccionarTalla(this)">S</span><span class="size-chip" onclick="seleccionarTalla(this)">M</span></div>
-        <div class="size-medidas"></div>
-        <div class="qty-row">
-          <span class="qty-label">Cantidad</span>
-          <div class="qty-control">
-            <button type="button" class="qty-btn" onclick="cambiarCantidad(this,-1)">−</button>
-            <span class="qty-value">1</span>
-            <button type="button" class="qty-btn" onclick="cambiarCantidad(this,1)">+</button>
-          </div>
-        </div>
-        <button class="btn-buy coral" onclick="comprarProducto(this, 18490000, 'Combo completo')">Comprar 🎁</button>
-      </div>
-    </div>
-
   </div>
 </section>
 
-<!-- TOOLS: SIZE + COMBO -->
-<section class="tools-section">
-  <div class="tools-grid">
-
-    <div class="tool-card">
-      <h3>¿Qué talla necesita tu perrihijo? 📏</h3>
-      <p class="tool-sub">Mide el contorno de cuello de tu perrihijo con una cinta métrica</p>
-      <div class="size-slider-wrap">
-        <input type="range" min="18" max="40" value="27" id="weight-slider" class="size-slider">
-        <div class="size-weight-label"><span id="weight-value">27</span> cm de cuello</div>
-      </div>
-      <div class="size-result">
-        <span class="size-result-badge" id="size-badge">Talla S</span>
-        <span class="size-result-text" id="size-text">Cuello 20–34 cm · Pecho 23–38 cm</span>
-      </div>
-      <p class="size-disclaimer">*Medida oficial de fábrica. Si tu perrihijo está en el rango límite (24–34 cm), cualquiera de las dos tallas le queda — escríbenos y te ayudamos a elegir 🐾</p>
-    </div>
-
+<!-- ARMA TU COMBO -->
+<section class="tools-section" id="arma-tu-combo">
+  <div class="tools-single">
     <div class="tool-card">
       <h3>Arma tu combo 🎁</h3>
       <p class="tool-sub">Elige las piezas que quieres y mira el total</p>
@@ -717,7 +722,51 @@ src="https://www.facebook.com/tr?id=1562103805354462&ev=PageView&noscript=1"
       <p class="combo-savings" id="combo-savings" style="display:none;">🎉 ¡Llévate las 3 piezas en el Combo completo por $184.900 y ahorra $27.000!</p>
       <button class="btn-buy" id="combo-buy-btn" onclick="iniciarCompra(window.wuuffComboTotalCents, 'Combo personalizado')">Quiero mi combo 🐾</button>
     </div>
+  </div>
+</section>
 
+<!-- INSTAGRAM -->
+<section class="instagram-section">
+  <h2>Síguenos en <span>Instagram</span> 📸</h2>
+  <p class="video-sub">Mira nuestras publicaciones más recientes</p>
+  <div class="instagram-carousel">
+    <div class="instagram-track">
+      <a href="https://instagram.com/wuuffpuppy" target="_blank" class="instagram-slide">
+        <img src="images/montaje-perro-1.jpg" alt="Publicación de Instagram Wuuff Puppy">
+      </a>
+      <a href="https://instagram.com/wuuffpuppy" target="_blank" class="instagram-slide">
+        <img src="images/montaje-perro-2.jpg" alt="Publicación de Instagram Wuuff Puppy">
+      </a>
+      <a href="https://instagram.com/wuuffpuppy" target="_blank" class="instagram-slide">
+        <img src="images/montaje-perro-3.jpg" alt="Publicación de Instagram Wuuff Puppy">
+      </a>
+      <a href="https://instagram.com/wuuffpuppy" target="_blank" class="instagram-slide">
+        <img src="images/banner-hero-bg.jpg" alt="Publicación de Instagram Wuuff Puppy">
+      </a>
+      <a href="https://instagram.com/wuuffpuppy" target="_blank" class="instagram-slide">
+        <img src="images/banner-hero-bg-2.jpg" alt="Publicación de Instagram Wuuff Puppy">
+      </a>
+    </div>
+  </div>
+  <a href="https://instagram.com/wuuffpuppy" target="_blank" class="btn-outline" style="display:inline-block;margin-top:8px;">📱 Ver más en @wuuffpuppy</a>
+</section>
+
+<!-- ¿QUÉ TALLA NECESITA? -->
+<section class="tools-section tools-section-alt" id="que-talla">
+  <div class="tools-single">
+    <div class="tool-card">
+      <h3>¿Qué talla necesita tu perrihijo? 📏</h3>
+      <p class="tool-sub">Mide el contorno de cuello de tu perrihijo con una cinta métrica</p>
+      <div class="size-slider-wrap">
+        <input type="range" min="18" max="40" value="27" id="weight-slider" class="size-slider">
+        <div class="size-weight-label"><span id="weight-value">27</span> cm de cuello</div>
+      </div>
+      <div class="size-result">
+        <span class="size-result-badge" id="size-badge">Talla S</span>
+        <span class="size-result-text" id="size-text">Cuello 20–34 cm · Pecho 23–38 cm</span>
+      </div>
+      <p class="size-disclaimer">*Medida oficial de fábrica. Si tu perrihijo está en el rango límite (24–34 cm), cualquiera de las dos tallas le queda — escríbenos y te ayudamos a elegir 🐾</p>
+    </div>
   </div>
 </section>
 
@@ -791,32 +840,6 @@ src="https://www.facebook.com/tr?id=1562103805354462&ev=PageView&noscript=1"
   </div>
 </section>
 
-<!-- INSTAGRAM -->
-<section class="instagram-section">
-  <h2>Síguenos en <span>Instagram</span> 📸</h2>
-  <p class="video-sub">Mira nuestras publicaciones más recientes</p>
-  <div class="instagram-carousel">
-    <div class="instagram-track">
-      <a href="https://instagram.com/wuuffpuppy" target="_blank" class="instagram-slide">
-        <img src="images/montaje-perro-1.jpg" alt="Publicación de Instagram Wuuff Puppy">
-      </a>
-      <a href="https://instagram.com/wuuffpuppy" target="_blank" class="instagram-slide">
-        <img src="images/montaje-perro-2.jpg" alt="Publicación de Instagram Wuuff Puppy">
-      </a>
-      <a href="https://instagram.com/wuuffpuppy" target="_blank" class="instagram-slide">
-        <img src="images/montaje-perro-3.jpg" alt="Publicación de Instagram Wuuff Puppy">
-      </a>
-      <a href="https://instagram.com/wuuffpuppy" target="_blank" class="instagram-slide">
-        <img src="images/banner-hero-bg.jpg" alt="Publicación de Instagram Wuuff Puppy">
-      </a>
-      <a href="https://instagram.com/wuuffpuppy" target="_blank" class="instagram-slide">
-        <img src="images/banner-hero-bg-2.jpg" alt="Publicación de Instagram Wuuff Puppy">
-      </a>
-    </div>
-  </div>
-  <a href="https://instagram.com/wuuffpuppy" target="_blank" class="btn-outline" style="display:inline-block;margin-top:8px;">📱 Ver más en @wuuffpuppy</a>
-</section>
-
 <!-- CAUSE -->
 <section class="cause">
   <div class="cause-blob" style="width:400px;height:400px;top:-150px;right:-100px;"></div>
@@ -860,7 +883,7 @@ src="https://www.facebook.com/tr?id=1562103805354462&ev=PageView&noscript=1"
         <span class="faq-icon">+</span>
       </button>
       <div class="faq-answer">
-        <p>Sí, hacemos envíos a nivel nacional. Los despachos comienzan a partir del lanzamiento oficial en septiembre 2026. El costo y tiempo de entrega varían según tu ciudad — te confirmamos ambos datos antes de que hagas el pedido.</p>
+        <p>Sí, hacemos envíos a nivel nacional. Los despachos comienzan a partir del lanzamiento oficial en septiembre 2026. El envío a Bogotá / Soacha cuesta $9.000 y es <strong>gratis en compras desde $150.000</strong> (el Combo completo siempre califica). A otras ciudades cuesta $18.500. Los tiempos de entrega varían según tu ciudad — te los confirmamos antes de que hagas el pedido.</p>
       </div>
     </div>
 
@@ -906,11 +929,12 @@ src="https://www.facebook.com/tr?id=1562103805354462&ev=PageView&noscript=1"
     <h3>Escríbenos por DM</h3>
     <div class="cta-sub2">Reserva el tuyo antes de que se agote</div>
     <div class="cta-list">
-      <div class="cta-item"><span>🦮</span> Collar de goma — $58.000 COP</div>
-      <div class="cta-item"><span>🎽</span> Arnés de goma — $84.900 COP</div>
-      <div class="cta-item"><span>🐕</span> Correa de goma — $69.000 COP</div>
-      <div class="cta-item"><span>🎁</span> Combo completo — $184.900 COP</div>
+      <div class="cta-item"><span>🦮</span> Collar de goma — <s class="cta-old">$69.000</s> $58.000 COP</div>
+      <div class="cta-item"><span>🎽</span> Arnés de goma — <s class="cta-old">$115.000</s> $84.900 COP</div>
+      <div class="cta-item"><span>🐕</span> Correa de goma — <s class="cta-old">$85.000</s> $69.000 COP</div>
+      <div class="cta-item"><span>🎁</span> Combo completo — <s class="cta-old">$215.000</s> $184.900 COP</div>
       <div class="cta-item"><span>🇨🇴</span> Envíos a toda Colombia</div>
+      <div class="cta-item"><span>🚚</span> Envío gratis en Bogotá desde $150.000</div>
       <div class="cta-item"><span>💳</span> Nequi · Daviplata · PSE</div>
     </div>
     <a href="https://instagram.com/wuuffpuppy" target="_blank" class="btn-ig">💙 Escribir por Instagram</a>
@@ -1312,6 +1336,30 @@ function sincronizarVideos(carousel){
 // Paso 1: elegir ciudad (envío) antes de pagar
 var pendingPurchase = null;
 
+// Envío gratis en Bogotá / Soacha para compras desde este valor (subtotal de productos, en centavos)
+var ENVIO_GRATIS_BOGOTA_DESDE = 15000000;
+function envioGratisAplica(opcion, baseCents){
+  return !!opcion && opcion.value === 'Bogotá / Soacha' && baseCents >= ENVIO_GRATIS_BOGOTA_DESDE;
+}
+// Actualiza el texto de la opción de Bogotá y el aviso según el subtotal de la compra en curso
+function actualizarEnvioGratis(){
+  var select = document.getElementById('envio-ciudad');
+  var aviso = document.getElementById('envio-gratis-aviso');
+  if(!select || !pendingPurchase) return;
+  var bogota = select.querySelector('option[value="Bogotá / Soacha"]');
+  var gratis = pendingPurchase.baseAmountInCents >= ENVIO_GRATIS_BOGOTA_DESDE;
+  if(bogota) bogota.textContent = gratis ? 'Bogotá / Soacha — ¡envío GRATIS! 🎉' : 'Bogotá / Soacha — envío $9.000';
+  if(aviso){
+    if(gratis){
+      aviso.innerHTML = '🚚 <strong>¡Tu envío en Bogotá / Soacha es gratis!</strong>';
+    } else {
+      var falta = Math.ceil((ENVIO_GRATIS_BOGOTA_DESDE - pendingPurchase.baseAmountInCents) / 100);
+      aviso.innerHTML = '🚚 Te faltan <strong>$' + falta.toLocaleString('es-CO') + '</strong> para envío gratis en Bogotá / Soacha';
+    }
+    aviso.style.display = 'block';
+  }
+}
+
 // Códigos de descuento activos (código en mayúsculas -> fracción de descuento)
 var CODIGOS_DESCUENTO = {
   'VIP15': 0.15
@@ -1420,6 +1468,7 @@ function iniciarCompra(baseAmountInCents, nombreProducto, talla){
     return;
   }
   pendingPurchase = { baseAmountInCents: baseAmountInCents, nombreProducto: nombreProducto, talla: talla };
+  actualizarEnvioGratis();
   var tallaField = document.getElementById('envio-talla');
   var tallaDisplay = document.getElementById('shipping-talla-display');
   if(tallaField) tallaField.value = talla || '';
@@ -1459,6 +1508,7 @@ document.addEventListener('submit', function(e){
   var citySelect = document.getElementById('envio-ciudad');
   var selectedOption = citySelect.options[citySelect.selectedIndex];
   var shippingCents = parseInt(selectedOption.dataset.shipping, 10) * 100;
+  if(envioGratisAplica(selectedOption, pendingPurchase.baseAmountInCents)) shippingCents = 0;
 
   var codigoInput = document.getElementById('envio-codigo');
   var codigo = codigoInput ? codigoInput.value.trim().toUpperCase() : '';
@@ -1600,6 +1650,7 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
         <option value="Bogotá / Soacha" data-shipping="9000">Bogotá / Soacha — envío $9.000</option>
         <option value="Otra ciudad de Colombia" data-shipping="18500">Otra ciudad de Colombia — envío $18.500</option>
       </select>
+      <div class="envio-gratis-aviso" id="envio-gratis-aviso" style="display:none;"></div>
       <input type="text" id="envio-codigo" name="codigo_descuento" placeholder="Código de descuento (opcional)" class="shipping-input" oninput="this.value = this.value.toUpperCase()">
       <div class="promo-feedback" id="promo-feedback"></div>
       <button type="submit" class="btn-buy">Continuar al pago 💳</button>
