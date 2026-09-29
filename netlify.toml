@@ -1,3 +1,28 @@
 [build]
   functions = "netlify/functions"
   publish = "."
+
+# wuuffpuppy.com (y www) redirige al dominio principal wuuffpuppy.co, conservando la ruta
+[[redirects]]
+  from = "https://wuuffpuppy.com/*"
+  to = "https://wuuffpuppy.co/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://www.wuuffpuppy.com/*"
+  to = "https://wuuffpuppy.co/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "http://wuuffpuppy.com/*"
+  to = "https://wuuffpuppy.co/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "http://www.wuuffpuppy.com/*"
+  to = "https://wuuffpuppy.co/:splat"
+  status = 301
+  force = true
