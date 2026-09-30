@@ -57,6 +57,10 @@ nav{
 .hero-offer{display:inline-block;background:#fff;color:var(--navy);font-weight:800;font-size:16px;line-height:1.4;padding:10px 18px;border-radius:18px;margin:0 0 22px;box-shadow:0 8px 24px rgba(45,67,117,.18);}
 .hero-offer s{opacity:.5;font-weight:700;margin:0 2px;}
 .hero-offer strong{font-family:'Fredoka One',cursive;font-weight:400;font-size:1.25em;color:var(--coral);}
+.hero-ship{display:inline-flex;align-items:center;gap:6px;background:var(--lime);color:var(--navy);font-weight:800;font-size:14px;padding:7px 14px;border-radius:14px;margin:-12px 0 22px;box-shadow:0 6px 18px rgba(45,67,117,.15);}
+.hero-ship strong{font-weight:900;}
+.hero-offer + .hero-ship{display:flex;width:max-content;}
+@media(max-width:768px){.hero-offer + .hero-ship{margin-left:auto;margin-right:auto;}}
 .hero-offer-ship{white-space:nowrap;}
 .hero-btns{display:flex;gap:14px;flex-wrap:wrap;}
 .btn-primary{background:var(--blue);color:#fff;font-weight:900;font-size:15px;padding:15px 32px;border-radius:50px;text-decoration:none;box-shadow:0 8px 24px rgba(73,100,175,.35);transition:transform .2s;display:inline-flex;align-items:center;gap:8px;}
@@ -78,6 +82,7 @@ nav{
 .shipping-input::placeholder{color:rgba(45,67,117,.5);}
 .shipping-select{appearance:none;-webkit-appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232d4375' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;background-size:16px;padding-right:40px;}
 .envio-gratis-aviso{background:#e6f7ec;color:#2b8a3e;font-size:12.5px;font-weight:700;border-radius:12px;padding:9px 12px;margin:-4px 0 10px;text-align:left;}
+.envio-despacho{font-size:12.5px;font-weight:700;color:var(--navy);opacity:.8;margin:-4px 0 10px;text-align:left;line-height:1.4;}
 .envio-gratis-aviso strong{font-weight:900;}
 .shipping-modal .btn-buy{border:none;cursor:pointer;margin-top:6px;}
 .promo-feedback{font-size:12px;font-weight:800;margin-top:-6px;min-height:16px;}
@@ -267,7 +272,8 @@ video.carousel-slide{background:#dfe8f5;}
 .cuotas-badge small{display:block;margin-top:2px;font-family:'Nunito',sans-serif;font-weight:900;font-size:.62em;letter-spacing:.2px;text-transform:none;}
 .cuotas-badge::before{content:'';position:absolute;top:0;bottom:0;left:-.95em;width:1em;background:inherit;clip-path:polygon(100% 0,100% 100%,0 50%);}
 .prod-price small{font-size:13px;font-weight:700;color:var(--navy);opacity:.5;font-family:'Nunito',sans-serif;}
-.prod-trust{display:flex;flex-wrap:wrap;gap:4px 12px;margin:-4px 0 16px;font-size:11.5px;font-weight:800;color:var(--navy);opacity:.72;line-height:1.35;}
+.prod-trust{display:flex;flex-wrap:wrap;gap:4px 12px;margin:-4px 0 16px;font-size:11.5px;font-weight:800;color:var(--navy);line-height:1.35;}
+.prod-trust span{opacity:.72;}
 .buy-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 12px;margin-bottom:16px;}
 .buy-row .size-row,.buy-row .qty-row{margin-bottom:0;}
 .buy-row .size-alert{flex-basis:100%;margin-bottom:6px;}
@@ -280,6 +286,8 @@ video.carousel-slide{background:#dfe8f5;}
   .btn-details{margin:-4px 0 8px;}
   .prod-trust{margin-bottom:12px;}
 }
+.prod-trust .trust-ship{background:#e6f7ec;color:#2b8a3e;padding:2px 8px;border-radius:8px;opacity:1;}
+.prod-trust{align-items:center;}
 .size-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px;}
 .size-alert{display:none;position:relative;align-items:center;gap:10px;background:#fff4ef;border:2px solid var(--coral);color:var(--navy);border-radius:16px;padding:10px 14px;margin-bottom:14px;box-shadow:0 8px 20px rgba(241,125,87,.18);}
 .size-alert.show{display:flex;animation:sizeAlertIn .28s cubic-bezier(.2,1.4,.4,1);}
@@ -598,6 +606,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
         <span class="t-highlight t-coral">perrihijo</span>
       </h1>
       <p class="hero-offer" role="link" tabindex="0"><span class="hero-offer-name">🎁 Combo completo</span> <s>$215.000</s> <strong>$184.900</strong> <span class="hero-offer-ship">· Envío gratis en Bogotá</span></p>
+      <p class="hero-ship"><span>🚀</span><span>Despachamos en <strong>1–2 días hábiles</strong></span></p>
       <div class="hero-btns">
         <a href="#combo" class="btn-primary">Ver el combo 🎁</a>
         <a href="#productos" class="btn-outline">Ver productos</a>
@@ -609,7 +618,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
 <!-- TICKER -->
 <div class="ticker">
   <div class="ticker-inner">
-    <div class="ticker-item"><div class="ticker-dot"></div>Resistente al agua</div><div class="ticker-item"><div class="ticker-dot"></div>Hecho con amor 🐾</div><div class="ticker-item"><div class="ticker-dot"></div>Antiolor y duradero</div><div class="ticker-item"><div class="ticker-dot"></div>Hipoalergénico</div><div class="ticker-item"><div class="ticker-dot"></div>Envíos Colombia 🇨🇴</div><div class="ticker-item"><div class="ticker-dot"></div>Envío gratis en Bogotá con el Combo completo 🚚</div><div class="ticker-item"><div class="ticker-dot"></div>Tallas S y M</div><div class="ticker-item"><div class="ticker-dot"></div>Perrihijos felices ✨</div><div class="ticker-item"><div class="ticker-dot"></div>Resistente al agua</div><div class="ticker-item"><div class="ticker-dot"></div>Hecho con amor 🐾</div><div class="ticker-item"><div class="ticker-dot"></div>Antiolor y duradero</div><div class="ticker-item"><div class="ticker-dot"></div>Hipoalergénico</div><div class="ticker-item"><div class="ticker-dot"></div>Envíos Colombia 🇨🇴</div><div class="ticker-item"><div class="ticker-dot"></div>Envío gratis en Bogotá con el Combo completo 🚚</div><div class="ticker-item"><div class="ticker-dot"></div>Tallas S y M</div><div class="ticker-item"><div class="ticker-dot"></div>Perrihijos felices ✨</div><div class="ticker-item"><div class="ticker-dot"></div>Resistente al agua</div><div class="ticker-item"><div class="ticker-dot"></div>Hecho con amor 🐾</div><div class="ticker-item"><div class="ticker-dot"></div>Antiolor y duradero</div><div class="ticker-item"><div class="ticker-dot"></div>Hipoalergénico</div><div class="ticker-item"><div class="ticker-dot"></div>Envíos Colombia 🇨🇴</div><div class="ticker-item"><div class="ticker-dot"></div>Envío gratis en Bogotá con el Combo completo 🚚</div><div class="ticker-item"><div class="ticker-dot"></div>Tallas S y M</div><div class="ticker-item"><div class="ticker-dot"></div>Perrihijos felices ✨</div>
+    <div class="ticker-item"><div class="ticker-dot"></div>Resistente al agua</div><div class="ticker-item"><div class="ticker-dot"></div>Hecho con amor 🐾</div><div class="ticker-item"><div class="ticker-dot"></div>Antiolor y duradero</div><div class="ticker-item"><div class="ticker-dot"></div>Hipoalergénico</div><div class="ticker-item"><div class="ticker-dot"></div>Envíos Colombia 🇨🇴</div><div class="ticker-item"><div class="ticker-dot"></div>Despacho en 1–2 días hábiles 🚀</div><div class="ticker-item"><div class="ticker-dot"></div>Envío gratis en Bogotá con el Combo completo 🚚</div><div class="ticker-item"><div class="ticker-dot"></div>Tallas S y M</div><div class="ticker-item"><div class="ticker-dot"></div>Perrihijos felices ✨</div><div class="ticker-item"><div class="ticker-dot"></div>Resistente al agua</div><div class="ticker-item"><div class="ticker-dot"></div>Hecho con amor 🐾</div><div class="ticker-item"><div class="ticker-dot"></div>Antiolor y duradero</div><div class="ticker-item"><div class="ticker-dot"></div>Hipoalergénico</div><div class="ticker-item"><div class="ticker-dot"></div>Envíos Colombia 🇨🇴</div><div class="ticker-item"><div class="ticker-dot"></div>Despacho en 1–2 días hábiles 🚀</div><div class="ticker-item"><div class="ticker-dot"></div>Envío gratis en Bogotá con el Combo completo 🚚</div><div class="ticker-item"><div class="ticker-dot"></div>Tallas S y M</div><div class="ticker-item"><div class="ticker-dot"></div>Perrihijos felices ✨</div><div class="ticker-item"><div class="ticker-dot"></div>Resistente al agua</div><div class="ticker-item"><div class="ticker-dot"></div>Hecho con amor 🐾</div><div class="ticker-item"><div class="ticker-dot"></div>Antiolor y duradero</div><div class="ticker-item"><div class="ticker-dot"></div>Hipoalergénico</div><div class="ticker-item"><div class="ticker-dot"></div>Envíos Colombia 🇨🇴</div><div class="ticker-item"><div class="ticker-dot"></div>Despacho en 1–2 días hábiles 🚀</div><div class="ticker-item"><div class="ticker-dot"></div>Envío gratis en Bogotá con el Combo completo 🚚</div><div class="ticker-item"><div class="ticker-dot"></div>Tallas S y M</div><div class="ticker-item"><div class="ticker-dot"></div>Perrihijos felices ✨</div>
   </div>
 </div>
 
@@ -650,7 +659,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
           <div class="prod-price"><span class="price-old"><s aria-label="Precio antes: $215.000">$215.000</s><span class="price-off">-14%</span></span>$184.900 COP <small>🚚 Envío gratis en Bogotá</small></div>
           <span class="cuotas-badge">4 cuotas<br>sin interés<small>con Bancolombia</small></span>
         </div>
-        <div class="prod-trust"><span>🔒 Pago seguro con Wompi</span><span>🔄 Cambio de talla</span><span>📦 Despacho en 1–2 días hábiles</span></div>
+        <div class="prod-trust"><span>🔒 Pago seguro con Wompi</span><span>🔄 Cambio de talla</span><span class="trust-ship">🚀 Despacho en 1–2 días hábiles</span></div>
         <div class="buy-row">
           <div class="size-row"><span class="size-chip" onclick="seleccionarTalla(this)">S</span><span class="size-chip" onclick="seleccionarTalla(this)">M</span></div>
           <div class="qty-row">
@@ -697,7 +706,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
           <div class="prod-price"><span class="price-old"><s aria-label="Precio antes: $115.000">$115.000</s><span class="price-off">-26%</span></span>$84.900 COP <small>+ envío</small></div>
           <span class="cuotas-badge">4 cuotas<br>sin interés<small>con Bancolombia</small></span>
         </div>
-        <div class="prod-trust"><span>🔒 Pago seguro con Wompi</span><span>🔄 Cambio de talla</span><span>📦 Despacho en 1–2 días hábiles</span></div>
+        <div class="prod-trust"><span>🔒 Pago seguro con Wompi</span><span>🔄 Cambio de talla</span><span class="trust-ship">🚀 Despacho en 1–2 días hábiles</span></div>
         <div class="buy-row">
           <div class="size-row"><span class="size-chip" onclick="seleccionarTalla(this)">Talla S</span><span class="size-chip" onclick="seleccionarTalla(this)">Talla M</span></div>
           <div class="qty-row">
@@ -746,7 +755,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
           <div class="prod-price"><span class="price-old"><s aria-label="Precio antes: $69.000">$69.000</s><span class="price-off">-16%</span></span>$58.000 COP <small>+ envío</small></div>
           <span class="cuotas-badge">4 cuotas<br>sin interés<small>con Bancolombia</small></span>
         </div>
-        <div class="prod-trust"><span>🔒 Pago seguro con Wompi</span><span>🔄 Cambio de talla</span><span>📦 Despacho en 1–2 días hábiles</span></div>
+        <div class="prod-trust"><span>🔒 Pago seguro con Wompi</span><span>🔄 Cambio de talla</span><span class="trust-ship">🚀 Despacho en 1–2 días hábiles</span></div>
         <div class="buy-row">
           <div class="size-row"><span class="size-chip" onclick="seleccionarTalla(this)">Talla S</span><span class="size-chip" onclick="seleccionarTalla(this)">Talla M</span></div>
           <div class="qty-row">
@@ -793,7 +802,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
           <div class="prod-price"><span class="price-old"><s aria-label="Precio antes: $85.000">$85.000</s><span class="price-off">-19%</span></span>$69.000 COP <small>+ envío</small></div>
           <span class="cuotas-badge">4 cuotas<br>sin interés<small>con Bancolombia</small></span>
         </div>
-        <div class="prod-trust"><span>🔒 Pago seguro con Wompi</span><span>🔄 Cambio de talla</span><span>📦 Despacho en 1–2 días hábiles</span></div>
+        <div class="prod-trust"><span>🔒 Pago seguro con Wompi</span><span>🔄 Cambio de talla</span><span class="trust-ship">🚀 Despacho en 1–2 días hábiles</span></div>
         <div class="buy-row">
           <div class="size-row"><span class="size-chip selected">Talla única</span></div>
           <div class="qty-row">
@@ -1899,6 +1908,7 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
         <option value="Otra ciudad de Colombia" data-shipping="18500">Otra ciudad de Colombia — envío $18.500</option>
       </select>
       <div class="envio-gratis-aviso" id="envio-gratis-aviso" style="display:none;"></div>
+      <p class="envio-despacho">🚀 Despachamos tu pedido en <strong>1–2 días hábiles</strong>. Entrega de 2 a 5 días según tu ciudad.</p>
       <input type="text" id="envio-codigo" name="codigo_descuento" placeholder="Código de descuento (opcional)" class="shipping-input" oninput="this.value = this.value.toUpperCase()">
       <div class="promo-feedback" id="promo-feedback"></div>
       <button type="submit" class="btn-buy">Continuar al pago 💳</button>
