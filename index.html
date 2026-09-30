@@ -14,6 +14,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Wuuff Puppy — Accesorios impermeables para tu perrihijo 🐾</title>
 <link rel="icon" type="image/png" href="images/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="image" href="images/banner-hero-bg-m.jpg" media="(max-width: 768px)" fetchpriority="high">
+<link rel="preload" as="image" href="images/banner-hero-bg.jpg" media="(min-width: 769px)" fetchpriority="high">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -168,6 +172,13 @@ video.carousel-slide{background:#dfe8f5;}
 .ruleta-confeti i{position:absolute;top:-12px;width:8px;height:12px;border-radius:2px;opacity:0;animation:confeti 1.9s ease-in forwards;}
 @keyframes confeti{0%{opacity:1;transform:translateY(0) rotate(0)}100%{opacity:0;transform:translateY(520px) rotate(620deg)}}
 .ruleta-pill{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:900;border:none;background:var(--coral);color:#fff;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;padding:10px 18px;border-radius:30px;box-shadow:0 8px 24px rgba(241,125,87,.45);cursor:pointer;white-space:nowrap;animation:sheetUp .4s ease;}
+.ruleta-teaser{position:fixed;right:16px;bottom:24px;z-index:900;display:flex;align-items:center;background:var(--coral);border-radius:30px;box-shadow:0 8px 24px rgba(241,125,87,.45);animation:sheetUp .4s ease,ruletaBrinco 2.8s ease-in-out 1.5s infinite;}
+.ruleta-teaser[hidden]{display:none;}
+.ruleta-teaser-abrir{border:none;background:none;color:#fff;font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;padding:12px 6px 12px 16px;cursor:pointer;white-space:nowrap;}
+.ruleta-teaser-abrir strong{font-weight:900;}
+.ruleta-teaser-x{border:none;background:rgba(255,255,255,.25);color:#fff;width:26px;height:26px;border-radius:50%;margin-right:8px;font-size:16px;font-weight:900;line-height:1;cursor:pointer;}
+@keyframes ruletaBrinco{0%,85%,100%{transform:translateY(0)}90%{transform:translateY(-6px)}95%{transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){.ruleta-teaser{animation:none;}}
 .ruleta-pill strong{font-weight:900;letter-spacing:.5px;}
 @media(max-width:480px){.ruleta-pill{bottom:92px;}}
 @media(prefers-reduced-motion:reduce){.ruleta-rueda{transition-duration:1.2s;}.ruleta-centro{animation:none;}}
@@ -321,6 +332,7 @@ video.carousel-slide{background:#dfe8f5;}
 
 /* TOOLS */
 .tools-section{padding:70px 20px;background:#fff;}
+.instagram-section,#que-talla,.features,.video-section,.story,.faq-section,.cta-section,.cause,.characters,.gallery-section{content-visibility:auto;contain-intrinsic-size:auto 900px;}
 .tools-single{max-width:520px;margin:0 auto;}
 .tools-section-alt{background:var(--cream);}
 .tools-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;max-width:940px;margin:0 auto;}
@@ -469,6 +481,13 @@ footer{background:var(--navy);padding:48px 20px 36px;text-align:center;}
   .hero-title{font-size:28px;line-height:1.5;margin-bottom:20px;}
   .hero-title .t-highlight{padding:2px 14px;border-radius:18px;}
   .hero-btns{justify-content:center;}
+  .hero{min-height:0;}
+  .hero-inner{padding:26px 16px 24px;}
+  .hero-title{font-size:25px;line-height:1.42;margin-bottom:14px;}
+  .hero-offer{font-size:14.5px;padding:8px 14px;margin-bottom:12px;}
+  .hero-ship{font-size:13px;padding:6px 12px;margin-top:-2px;margin-bottom:14px;}
+  .hero-btns .btn-outline{display:none;}
+  .products{padding-top:36px;}
   .nav-links{display:none;}
   .cta-box{padding:32px 20px;}
 }
@@ -527,6 +546,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
     <div class="ruleta-confeti" id="ruleta-confeti" aria-hidden="true"></div>
   </div>
 </div>
+<div class="ruleta-teaser" id="ruleta-teaser" hidden><button type="button" class="ruleta-teaser-abrir" id="ruleta-teaser-abrir">🎁 Gira y gana <strong>15%</strong></button><button type="button" class="ruleta-teaser-x" id="ruleta-teaser-x" aria-label="Ocultar">×</button></div>
 <button type="button" class="ruleta-pill" id="ruleta-pill" hidden>🎁 15% OFF en combo · <strong>RULETA15</strong></button>
 
 <!-- DETALLES DEL PRODUCTO -->
@@ -598,8 +618,8 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
 <!-- HERO -->
 <section class="hero">
   <div class="hero-bg-carousel">
-    <img src="images/banner-hero-bg.jpg" class="hero-bg-slide active" alt="Wuuff Puppy — accesorios impermeables para perros">
-    <img src="images/banner-hero-bg-2.jpg" class="hero-bg-slide" alt="Wuuff Puppy — perrihijo con accesorios de goma">
+    <picture><source media="(max-width: 768px)" srcset="images/banner-hero-bg-m.jpg"><img src="images/banner-hero-bg.jpg" class="hero-bg-slide active" alt="Wuuff Puppy — accesorios impermeables para perros" fetchpriority="high"></picture>
+    <picture><source media="(max-width: 768px)" srcset="images/banner-hero-bg-2-m.jpg"><img src="images/banner-hero-bg-2.jpg" class="hero-bg-slide" alt="Wuuff Puppy — perrihijo con accesorios de goma" fetchpriority="low" decoding="async"></picture>
   </div>
   <div class="hero-inner">
     <div class="hero-text">
@@ -941,6 +961,8 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
   <div class="video-wrap">
     <iframe
       src="https://www.tiktok.com/embed/v2/7648732489850047765"
+      loading="lazy"
+      title="Video de Wuuff Puppy en TikTok"
       allowfullscreen
       allow="autoplay"
     ></iframe>
@@ -1928,13 +1950,14 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
 (function(){
   var CODIGO = 'RULETA15';
   var CASILLAS_GANADORAS = [0, 3];      // casillas de "15 % DCTO" en la rueda (6 casillas de 60°)
-  var MOSTRAR_TRAS_MS = 12000;
+  var MOSTRAR_BOTON_TRAS_MS = 6000;   // el botón "Gira y gana" aparece a los 6 s; la ruleta solo se abre si lo tocan
   var overlay = document.getElementById('ruleta-overlay');
   if(!overlay) return;
   var rueda = document.getElementById('ruleta-rueda');
   var btnCentro = document.getElementById('ruleta-girar');
   var btnGirar = document.getElementById('ruleta-girar-2');
   var pill = document.getElementById('ruleta-pill');
+  var teaser = document.getElementById('ruleta-teaser');
   var mostrada = false, girando = false;
 
   function get(store, k){ try { return window[store].getItem(k); } catch(e){ return null; } }
@@ -1947,18 +1970,11 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
   function hayOtroModal(){
     return !!document.querySelector('.lightbox.open, .details-overlay.open, .shipping-modal-overlay.open, .talla-overlay.open');
   }
-  // Si la persona está interactuando con los productos, la ruleta espera 40 s sin actividad
-  var ultimaInteraccion = 0;
-  document.addEventListener('click', function(e){
-    if(e.target.closest && e.target.closest('.prod-card, #arma-tu-combo, .shipping-modal-overlay, .talla-overlay, .details-overlay, .lightbox')) ultimaInteraccion = Date.now();
-  }, true);
 
   function abrir(origen){
-    if(mostrada || yaGano() || get('sessionStorage', 'wuuff_ruleta_cerrada')) return;
-    if(hayOtroModal()){ setTimeout(function(){ abrir(origen); }, 4000); return; }
-    var espera = 40000 - (Date.now() - ultimaInteraccion);
-    if(espera > 0){ setTimeout(function(){ abrir(origen); }, espera); return; }
+    if(mostrada || yaGano() || hayOtroModal()) return;
     mostrada = true;
+    teaser.hidden = true;
     overlay.classList.add('open');
     overlay.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
@@ -1970,7 +1986,8 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
     overlay.classList.remove('open');
     overlay.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
-    if(!yaGano()){ set('sessionStorage', 'wuuff_ruleta_cerrada', '1'); ev('ruleta_cerrada'); }
+    mostrada = false;
+    if(!yaGano()){ ev('ruleta_cerrada'); mostrarTeaser(); }
   }
   function confeti(){
     var box = document.getElementById('ruleta-confeti');
@@ -1985,7 +2002,11 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
       box.appendChild(c);
     }
   }
-  function mostrarPill(){ pill.hidden = false; }
+  function mostrarPill(){ pill.hidden = false; teaser.hidden = true; }
+  function mostrarTeaser(){
+    if(yaGano() || get('sessionStorage', 'wuuff_ruleta_oculta')) return;
+    teaser.hidden = false;
+  }
   function girar(){
     if(girando || yaGano()) return;
     girando = true;
@@ -2044,16 +2065,15 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
     };
   }
 
-  // Cuándo aparece: a los 12 s o al llegar a "Arma tu combo" (lo que pase primero), una vez por visitante
+  // La ruleta ya no se abre sola: un botón flotante "Gira y gana 15%" la abre si la persona quiere
+  document.getElementById('ruleta-teaser-abrir').addEventListener('click', function(){ abrir('boton'); });
+  document.getElementById('ruleta-teaser-x').addEventListener('click', function(){
+    teaser.hidden = true;
+    set('sessionStorage', 'wuuff_ruleta_oculta', '1');
+    ev('ruleta_boton_oculto');
+  });
   if(yaGano()){ mostrarPill(); return; }
-  setTimeout(function(){ abrir('tiempo'); }, MOSTRAR_TRAS_MS);
-  var ancla = document.getElementById('arma-tu-combo');
-  if(ancla && 'IntersectionObserver' in window){
-    var io = new IntersectionObserver(function(entries){
-      if(entries[0].isIntersecting){ io.disconnect(); abrir('scroll'); }
-    }, { threshold: 0.3 });
-    io.observe(ancla);
-  }
+  setTimeout(function(){ mostrarTeaser(); if(!teaser.hidden) ev('ruleta_boton_visto'); }, MOSTRAR_BOTON_TRAS_MS);
 })();
 </script>
 <!-- Scripts para medir -->
