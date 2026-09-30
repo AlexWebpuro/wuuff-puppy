@@ -26,3 +26,16 @@
   to = "https://wuuffpuppy.co/:splat"
   status = 301
   force = true
+
+# El arnés cambió de nombre a "arnés tipo H": la URL anterior redirige a la nueva
+[[redirects]]
+  from = "/arnes-impermeable-perro/*"
+  to = "/arnes-tipo-h-impermeable-perro/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/arnes-impermeable-perro"
+  to = "/arnes-tipo-h-impermeable-perro/"
+  status = 301
+  force = true
