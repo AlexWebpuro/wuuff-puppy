@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://wuuffpuppy.co/</loc>
+    <lastmod>2026-09-30</lastmod>
+    <image:image><image:loc>https://wuuffpuppy.co/images/set-completo-nuevo.jpg</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://wuuffpuppy.co/combo-collar-arnes-correa-para-perro/</loc>
+    <lastmod>2026-09-30</lastmod>
+    <image:image><image:loc>https://wuuffpuppy.co/images/set-completo-nuevo.jpg</image:loc></image:image>
+    <image:image><image:loc>https://wuuffpuppy.co/images/productos/combo-4.jpg</image:loc></image:image>
+    <image:image><image:loc>https://wuuffpuppy.co/images/productos/combo-5.jpg</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://wuuffpuppy.co/arnes-impermeable-para-perro/</loc>
+    <lastmod>2026-09-30</lastmod>
+    <image:image><image:loc>https://wuuffpuppy.co/images/arnes-nuevo.jpg</image:loc></image:image>
+    <image:image><image:loc>https://wuuffpuppy.co/images/productos/arnes-3.jpg</image:loc></image:image>
+    <image:image><image:loc>https://wuuffpuppy.co/images/productos/arnes-4.jpg</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://wuuffpuppy.co/collar-impermeable-para-perro/</loc>
+    <lastmod>2026-09-30</lastmod>
+    <image:image><image:loc>https://wuuffpuppy.co/images/collar-nuevo.jpg</image:loc></image:image>
+    <image:image><image:loc>https://wuuffpuppy.co/images/productos/collar-4.jpg</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://wuuffpuppy.co/correa-impermeable-para-perro/</loc>
+    <lastmod>2026-09-30</lastmod>
+    <image:image><image:loc>https://wuuffpuppy.co/images/correa-nuevo.jpg</image:loc></image:image>
+    <image:image><image:loc>https://wuuffpuppy.co/images/productos/correa-3.jpg</image:loc></image:image>
+  </url>
+</urlset>
