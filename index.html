@@ -203,6 +203,21 @@ video.carousel-slide{background:#dfe8f5;}
 .size-note{font-size:12.5px;opacity:.8;margin:0 0 6px;}
 .details-tip{background:var(--lblue);border-radius:14px;padding:12px 14px;font-size:13px;font-weight:700;margin-top:12px;}
 
+/* SELECTOR DE TALLA */
+.talla-overlay{display:none;position:fixed;inset:0;z-index:1600;background:rgba(45,67,117,.55);align-items:flex-end;justify-content:center;}
+.talla-overlay.open{display:flex;animation:lbIn .2s ease;}
+.talla-sheet{position:relative;background:#fff;width:100%;max-width:480px;border-radius:24px 24px 0 0;padding:24px 20px 26px;box-shadow:0 -12px 40px rgba(0,0,0,.2);animation:sheetUp .28s cubic-bezier(.2,.9,.3,1);}
+@media(min-width:700px){.talla-overlay{align-items:center;padding:20px;}.talla-sheet{border-radius:24px;}}
+.talla-titulo{font-family:'Fredoka One',cursive;font-weight:400;font-size:22px;color:var(--navy);margin:0 48px 4px 0;}
+.talla-sub{font-size:13.5px;font-weight:700;color:var(--navy);opacity:.7;margin:0 0 16px;}
+.talla-opciones{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;}
+.talla-op{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:92px;padding:12px 10px;border:2px solid var(--lblue);background:var(--lblue);border-radius:18px;cursor:pointer;font-family:'Nunito',sans-serif;color:var(--navy);-webkit-tap-highlight-color:transparent;transition:border-color .15s,transform .1s;}
+.talla-op:hover,.talla-op:focus-visible{border-color:var(--blue);}
+.talla-op:active{transform:scale(.97);}
+.talla-op strong{font-family:'Fredoka One',cursive;font-weight:400;font-size:28px;color:var(--blue);line-height:1;}
+.talla-op span{white-space:pre-line;font-size:12.5px;font-weight:700;opacity:.75;line-height:1.35;text-align:center;}
+.talla-guia{display:block;width:100%;background:none;border:none;padding:8px 0 0;font-family:'Nunito',sans-serif;font-size:13.5px;font-weight:800;color:var(--blue);text-decoration:underline;text-underline-offset:3px;cursor:pointer;}
+
 /* VISOR DE IMÁGENES */
 .lightbox{display:none;position:fixed;inset:0;z-index:2000;background:rgba(24,34,64,.97);flex-direction:column;}
 .lightbox.open{display:flex;animation:lbIn .2s ease;}
@@ -228,6 +243,12 @@ video.carousel-slide{background:#dfe8f5;}
 .carousel-next{right:8px;}
 .carousel-dots{position:absolute;bottom:8px;left:0;right:0;display:flex;justify-content:center;gap:6px;z-index:2;}
 .carousel-dot{width:6px;height:6px;border-radius:50%;background:rgba(45,67,117,.35);cursor:pointer;transition:background .2s,width .2s;padding:0;border:none;}
+.carousel-dot{position:relative;}
+.carousel-dot::after{content:'';position:absolute;inset:-9px -5px;}
+.hero-offer{cursor:pointer;}
+.gallery-img{cursor:zoom-in;}
+.price-row,.prod-name,.prod-desc{cursor:pointer;}
+.prod-img.carousel{touch-action:pan-y;}
 .carousel-dot.active{background:var(--blue);width:16px;border-radius:4px;}
 .prod-body{padding:22px 18px;}
 .prod-tag{display:inline-block;font-size:10px;font-weight:900;letter-spacing:2px;text-transform:uppercase;padding:3px 12px;border-radius:20px;margin-bottom:10px;}
@@ -458,7 +479,7 @@ fbq('track', 'PageView');
 src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
 /></noscript>
 <!-- End Meta Pixel Code -->
-<script type="text/javascript" src="https://checkout.wompi.co/widget.js"></script>
+<script type="text/javascript" src="https://checkout.wompi.co/widget.js" defer></script>
 <!-- Script Tracking Claritify -->
 <script type="text/javascript">
     (function(c,l,a,r,i,t,y){
@@ -521,6 +542,17 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
   </div>
 </div>
 
+<!-- SELECTOR DE TALLA (al comprar sin talla) -->
+<div class="talla-overlay" id="talla-overlay" aria-hidden="true">
+  <div class="talla-sheet" role="dialog" aria-modal="true" aria-labelledby="talla-titulo">
+    <button type="button" class="details-close" id="talla-cerrar" aria-label="Cerrar">×</button>
+    <h3 class="talla-titulo" id="talla-titulo">Elige la talla</h3>
+    <p class="talla-sub" id="talla-sub"></p>
+    <div class="talla-opciones" id="talla-opciones"></div>
+    <button type="button" class="talla-guia" id="talla-guia">📏 ¿No sabes su talla? Ver guía de tallas</button>
+  </div>
+</div>
+
 <!-- VISOR DE IMÁGENES -->
 <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Imagen del producto">
   <div class="lb-stage" id="lb-stage">
@@ -565,7 +597,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
         <span class="t-highlight">para tu</span><br>
         <span class="t-highlight t-coral">perrihijo</span>
       </h1>
-      <p class="hero-offer"><span class="hero-offer-name">🎁 Combo completo</span> <s>$215.000</s> <strong>$184.900</strong> <span class="hero-offer-ship">· Envío gratis en Bogotá</span></p>
+      <p class="hero-offer" role="link" tabindex="0"><span class="hero-offer-name">🎁 Combo completo</span> <s>$215.000</s> <strong>$184.900</strong> <span class="hero-offer-ship">· Envío gratis en Bogotá</span></p>
       <div class="hero-btns">
         <a href="#combo" class="btn-primary">Ver el combo 🎁</a>
         <a href="#productos" class="btn-outline">Ver productos</a>
@@ -1293,8 +1325,16 @@ function cerrarDetalles(){
 
   // Abrir al tocar la imagen de un producto
   document.addEventListener('click', function(e){
+    var gal = e.target.closest && e.target.closest('.gallery-img');
+    if(gal){
+      var fotos = Array.prototype.slice.call(document.querySelectorAll('.gallery-img'));
+      open(fotos, fotos.indexOf(gal));
+      return;
+    }
     var slide = e.target.closest && e.target.closest('.prod-card .carousel-slide');
     if(!slide) return;
+    var car = slide.closest('.carousel');
+    if(car && car._swipeAt && Date.now() - car._swipeAt < 400) return;
     var slides = Array.prototype.slice.call(slide.closest('.carousel').querySelectorAll('.carousel-slide'));
     if(slide.tagName === 'VIDEO') slide.pause();
     open(slides, slides.indexOf(slide));
@@ -1369,6 +1409,43 @@ function cerrarDetalles(){
   stage.addEventListener('pointerup', endPointer);
   stage.addEventListener('pointercancel', endPointer);
   window.addEventListener('resize', function(){ if(lb.classList.contains('open')) apply(); });
+})();
+
+// Zonas de la tarjeta que la gente toca: el precio lleva a comprar; el nombre y la descripción abren los detalles
+document.addEventListener('click', function(e){
+  var card = e.target.closest && e.target.closest('.prod-card');
+  if(!card || e.target.closest('button, a, input, .carousel, .size-chip')) return;
+  if(e.target.closest('.price-row')){
+    var b = card.querySelector('.btn-buy');
+    if(b) b.click();
+  } else if(e.target.closest('.prod-name, .prod-desc')){
+    var clave = claveProducto(card);
+    if(clave) abrirDetalles(clave);
+  }
+});
+// Primera pantalla: tocar la imagen de fondo o el recuadro del combo lleva a la tarjeta del combo
+document.addEventListener('click', function(e){
+  if(!e.target.closest || !e.target.closest('.hero') || e.target.closest('a, button')) return;
+  var combo = document.getElementById('combo');
+  if(combo) combo.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+
+// Carrusel: deslizar con el dedo para cambiar de foto
+(function(){
+  document.querySelectorAll('.prod-card .carousel').forEach(function(c){
+    var x0 = null, y0 = null;
+    c.addEventListener('touchstart', function(e){ if(e.touches.length !== 1) return; x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
+    c.addEventListener('touchend', function(e){
+      if(x0 === null) return;
+      var t = e.changedTouches[0], dx = t.clientX - x0, dy = t.clientY - y0;
+      x0 = null;
+      if(Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.3){
+        c._swipeAt = Date.now();
+        var btn = c.querySelector(dx < 0 ? '.carousel-next' : '.carousel-prev');
+        if(btn) moveCarousel(btn, dx < 0 ? 1 : -1);
+      }
+    }, { passive: true });
+  });
 })();
 
 // Carrusel de imágenes de producto
@@ -1548,11 +1625,74 @@ function avisarTalla(card){
   tip._timer = setTimeout(function(){ tip.classList.remove('show'); row.classList.remove('needs-size'); }, 5000);
 }
 
+// Selector de talla: aparece al pulsar Comprar (o el precio) sin haber elegido talla.
+// Al escoger una talla, la marca en la tarjeta y continúa la compra.
+var MEDIDAS_TALLA = {
+  collar: { S: 'Cuello 20–34 cm', M: 'Cuello 24–38 cm' },
+  arnes:  { S: 'Cuello 20–34 cm\nPecho 23–38 cm', M: 'Cuello 24–38 cm\nPecho 32–53 cm' },
+  combo:  { S: 'Cuello 20–34 cm\nPecho 23–38 cm', M: 'Cuello 24–38 cm\nPecho 32–53 cm' }
+};
+function claveProducto(card){
+  var det = card && card.querySelector('.btn-details');
+  var m = det && (det.getAttribute('onclick') || '').match(/abrirDetalles\('(\w+)'/);
+  return m ? m[1] : '';
+}
+function abrirSelectorTalla(card, btn){
+  var overlay = document.getElementById('talla-overlay');
+  if(!overlay || !card) return false;
+  var chips = card.querySelectorAll('.size-chip');
+  if(!chips.length) return false;
+  var clave = claveProducto(card);
+  var nombre = (card.querySelector('.prod-name') || {}).textContent || '';
+  document.getElementById('talla-sub').textContent = nombre ? 'Para tu ' + nombre.toLowerCase() + '. Luego sigues con tus datos de envío.' : '';
+  var cont = document.getElementById('talla-opciones');
+  cont.innerHTML = '';
+  chips.forEach(function(chip){
+    var t = chip.textContent.trim().replace(/^Talla\s+/i, '');
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'talla-op';
+    var med = (MEDIDAS_TALLA[clave] || {})[t] || '';
+    b.innerHTML = '<strong>' + t + '</strong>' + (med ? '<span>' + med + '</span>' : '');
+    b.addEventListener('click', function(){
+      seleccionarTalla(chip);
+      cerrarSelectorTalla();
+      try { if(window.gtag) gtag('event', 'talla_desde_selector', { talla: t, item_name: nombre }); } catch(e){}
+      (btn || card.querySelector('.btn-buy')).click();
+    });
+    cont.appendChild(b);
+  });
+  var guia = document.getElementById('talla-guia');
+  guia.style.display = clave ? '' : 'none';
+  guia.onclick = function(){ cerrarSelectorTalla(); abrirDetalles(clave, 'tallas'); };
+  overlay._lastFocus = document.activeElement;
+  overlay.classList.add('open');
+  overlay.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+  var primero = cont.querySelector('.talla-op');
+  if(primero) primero.focus({ preventScroll: true });
+  return true;
+}
+function cerrarSelectorTalla(){
+  var overlay = document.getElementById('talla-overlay');
+  if(!overlay || !overlay.classList.contains('open')) return;
+  overlay.classList.remove('open');
+  overlay.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+}
+(function(){
+  var overlay = document.getElementById('talla-overlay');
+  if(!overlay) return;
+  overlay.addEventListener('click', function(e){ if(e.target === overlay) cerrarSelectorTalla(); });
+  document.getElementById('talla-cerrar').addEventListener('click', cerrarSelectorTalla);
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') cerrarSelectorTalla(); });
+})();
+
 function comprarProducto(btn, amountInCents, nombreBase){
   var card = btn.closest('.prod-card');
   var chip = card ? card.querySelector('.size-chip.selected') : null;
   if(!chip){
-    avisarTalla(card);
+    if(!abrirSelectorTalla(card, btn)) avisarTalla(card);
     return;
   }
   var qtyEl = card ? card.querySelector('.qty-value') : null;
@@ -1687,6 +1827,10 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
     };
     if(customerData){ config.customerData = customerData; }
     if(shippingAddress){ config.shippingAddress = shippingAddress; }
+    if(typeof WidgetCheckout !== 'function'){
+      alert('El pago aún está cargando. Espera un segundo e inténtalo de nuevo.');
+      return;
+    }
     var checkout = new WidgetCheckout(config);
     checkout.open(function(result){
       // El registro del pedido y el correo de confirmación los maneja
@@ -1784,12 +1928,19 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
   }
   function yaGano(){ return get('localStorage', 'wuuff_ruleta') === CODIGO; }
   function hayOtroModal(){
-    return !!document.querySelector('.lightbox.open, .details-overlay.open, .shipping-modal-overlay.open');
+    return !!document.querySelector('.lightbox.open, .details-overlay.open, .shipping-modal-overlay.open, .talla-overlay.open');
   }
+  // Si la persona está interactuando con los productos, la ruleta espera 40 s sin actividad
+  var ultimaInteraccion = 0;
+  document.addEventListener('click', function(e){
+    if(e.target.closest && e.target.closest('.prod-card, #arma-tu-combo, .shipping-modal-overlay, .talla-overlay, .details-overlay, .lightbox')) ultimaInteraccion = Date.now();
+  }, true);
 
   function abrir(origen){
     if(mostrada || yaGano() || get('sessionStorage', 'wuuff_ruleta_cerrada')) return;
     if(hayOtroModal()){ setTimeout(function(){ abrir(origen); }, 4000); return; }
+    var espera = 40000 - (Date.now() - ultimaInteraccion);
+    if(espera > 0){ setTimeout(function(){ abrir(origen); }, espera); return; }
     mostrada = true;
     overlay.classList.add('open');
     overlay.setAttribute('aria-hidden', 'false');
