@@ -372,7 +372,7 @@ html{scroll-behavior:smooth;}
 body{font-family:'Nunito',sans-serif;background:var(--white);color:var(--navy);overflow-x:hidden;}
 
 /* NAV */
-nav{
+#menu{
   position:fixed;top:0;left:0;right:0;z-index:200;
   background:rgba(255,255,255,0.96);backdrop-filter:blur(12px);
   padding:12px 32px;
@@ -381,7 +381,19 @@ nav{
 }
 .nav-logo{display:flex;align-items:center;gap:10px;}
 .nav-logo img{height:36px;object-fit:contain;}
-.nav-links{display:flex;gap:28px;}
+.nav-links{display:flex;gap:28px;align-items:center;}
+.nav-right{display:flex;align-items:center;gap:10px;}
+.nav-drop{position:relative;}
+.nav-drop-menu{display:none;position:absolute;top:100%;left:-16px;padding-top:12px;min-width:240px;}
+.nav-drop-menu::before{content:"";position:absolute;inset:12px 0 0;background:#fff;border-radius:16px;box-shadow:0 12px 30px rgba(45,67,117,.16);border:2px solid var(--lblue);}
+.nav-drop-menu a{position:relative;display:block;padding:10px 18px;opacity:.85 !important;}
+.nav-drop-menu a:first-child{margin-top:8px;}.nav-drop-menu a:last-child{margin-bottom:8px;}
+.nav-drop:hover .nav-drop-menu,.nav-drop:focus-within .nav-drop-menu{display:block;}
+.nav-burger{display:none;width:42px;height:42px;border:none;background:var(--lblue);border-radius:12px;cursor:pointer;flex-direction:column;align-items:center;justify-content:center;gap:4px;-webkit-tap-highlight-color:transparent;}
+.nav-burger span{display:block;width:18px;height:2.5px;border-radius:2px;background:var(--navy);transition:transform .2s,opacity .2s;}
+#menu.abierto .nav-burger span:nth-child(1){transform:translateY(6.5px) rotate(45deg);}
+#menu.abierto .nav-burger span:nth-child(2){opacity:0;}
+#menu.abierto .nav-burger span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
 .nav-links a{font-size:13px;font-weight:800;color:var(--navy);text-decoration:none;opacity:0.7;transition:opacity .2s;}
 .nav-links a:hover{opacity:1;color:var(--blue);}
 .nav-cta{background:var(--blue);color:#fff;font-weight:900;font-size:13px;padding:10px 24px;border-radius:30px;text-decoration:none;transition:transform .2s;box-shadow:0 4px 14px rgba(73,100,175,.3);}
@@ -528,6 +540,9 @@ video.carousel-slide{background:#dfe8f5;}
 /* DETALLES DEL PRODUCTO */
 .btn-details{-webkit-tap-highlight-color:transparent;display:inline-flex;align-items:center;gap:6px;background:none;border:none;padding:6px 0;margin:-6px 0 12px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;color:var(--blue);text-decoration:underline;text-underline-offset:3px;cursor:pointer;}
 .btn-details:hover{color:var(--navy);}
+.btn-details{text-decoration:none;}
+.prod-name a{color:inherit;text-decoration:none;}
+.prod-name a:hover{color:var(--blue);text-decoration:underline;text-underline-offset:3px;}
 .details-overlay{display:none;position:fixed;inset:0;z-index:1500;background:rgba(45,67,117,.55);align-items:flex-end;justify-content:center;}
 .details-overlay.open{display:flex;animation:lbIn .2s ease;}
 .details-sheet{position:relative;background:#fff;width:100%;max-width:600px;max-height:88vh;overflow-y:auto;border-radius:24px 24px 0 0;padding:26px 22px 28px;box-shadow:0 -12px 40px rgba(0,0,0,.2);animation:sheetUp .28s cubic-bezier(.2,.9,.3,1);}
@@ -833,7 +848,16 @@ footer{background:var(--navy);padding:48px 20px 36px;text-align:center;}
   .hero-ship{font-size:13px;padding:6px 12px;margin-top:-2px;margin-bottom:14px;}
   .hero-btns .btn-outline{display:none;}
   .products{padding-top:36px;}
-  .nav-links{display:none;}
+  .nav-burger{display:flex;}
+  .nav-cta{padding:10px 16px;}
+  .nav-links{display:none;position:absolute;top:100%;left:0;right:0;flex-direction:column;align-items:stretch;gap:0;background:#fff;border-bottom:2px solid var(--lblue);box-shadow:0 14px 30px rgba(45,67,117,.14);padding:8px 16px 14px;max-height:calc(100vh - 70px);overflow-y:auto;}
+  #menu.abierto .nav-links{display:flex;}
+  .nav-links a{font-size:16px;opacity:.9;padding:12px 4px;border-bottom:1px solid var(--lblue);}
+  .nav-drop-btn{display:none !important;}
+  .nav-drop-menu{display:block;position:static;padding:0;min-width:0;}
+  .nav-drop-menu::before{display:none;}
+  .nav-drop-menu a{padding:12px 4px;}
+  .nav-drop-menu a:first-child,.nav-drop-menu a:last-child{margin:0;}
   .cta-box{padding:32px 20px;}
 }
 </style>
@@ -943,16 +967,28 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
 </div>
 
 <!-- NAV -->
-<nav>
-  <div class="nav-logo">
+<nav id="menu" aria-label="Principal">
+  <a class="nav-logo" href="/" aria-label="Wuuff Puppy, inicio">
     <img src="images/wuuff-puppy.png" alt="Wuuff Puppy">
-  </div>
-  <div class="nav-links">
-    <a href="#productos">Productos</a>
+  </a>
+  <div class="nav-links" id="nav-links">
+    <div class="nav-drop">
+      <a href="#productos" class="nav-drop-btn">Productos <span aria-hidden="true">▾</span></a>
+      <div class="nav-drop-menu">
+        <a href="/combo-collar-arnes-correa/">🎁 Combo completo</a>
+        <a href="/arnes-tipo-h-impermeable-perro/">Arnés tipo H impermeable</a>
+        <a href="/collar-impermeable-perro/">Collar impermeable</a>
+        <a href="/correa-impermeable-perro/">Correa impermeable</a>
+      </div>
+    </div>
     <a href="#por-que">¿Por qué goma?</a>
+    <a href="/blog/">Blog</a>
     <a href="#nosotros">Nosotros</a>
   </div>
-  <a href="#comprar" class="nav-cta">Quiero el mío 🐾</a>
+  <div class="nav-right">
+    <a href="#comprar" class="nav-cta">Quiero el mío 🐾</a>
+    <button type="button" class="nav-burger" id="nav-burger" aria-label="Abrir menú" aria-expanded="false" aria-controls="nav-links"><span></span><span></span><span></span></button>
+  </div>
 </nav>
 
 <!-- WHATSAPP FLOTANTE -->
@@ -1021,9 +1057,9 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
       </div>
       <div class="prod-body">
         <span class="prod-tag tag-coral">⭐ Mejor valor</span>
-        <h3 class="prod-name">Combo completo</h3>
+        <h3 class="prod-name"><a href="/combo-collar-arnes-correa/">Combo completo</a></h3>
         <div class="prod-desc">Collar + Arnés + Correa impermeables: de goma suave, antiolor y fácil de limpiar. El regalo perfecto para tu perrihijo.</div>
-        <button type="button" class="btn-details" onclick="abrirDetalles('combo')">📋 Descripción y guía de tallas</button>
+        <a class="btn-details" href="/combo-collar-arnes-correa/" data-clave="combo">📋 Ver detalles y guía de tallas →</a>
         <div class="price-row">
           <div class="prod-price"><span class="price-old"><s aria-label="Precio antes: $215.000">$215.000</s><span class="price-off">-14%</span></span>$184.900 COP <small>🚚 Envío gratis en Bogotá</small></div>
           <span class="cuotas-badge">4 cuotas<br>sin interés<small>con Bancolombia</small></span>
@@ -1069,9 +1105,9 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
       </div>
       <div class="prod-body">
         <span class="prod-tag tag-blue">Más vendido</span>
-        <h3 class="prod-name">Arnés tipo H impermeable</h3>
+        <h3 class="prod-name"><a href="/arnes-tipo-h-impermeable-perro/">Arnés tipo H impermeable</a></h3>
         <div class="prod-desc">Diseño en H que no presiona el cuello ni roza las axilas. De goma suave, antiolor y fácil de limpiar.</div>
-        <button type="button" class="btn-details" onclick="abrirDetalles('arnes')">📋 Descripción y guía de tallas</button>
+        <a class="btn-details" href="/arnes-tipo-h-impermeable-perro/" data-clave="arnes">📋 Ver detalles y guía de tallas →</a>
         <div class="price-row">
           <div class="prod-price"><span class="price-old"><s aria-label="Precio antes: $115.000">$115.000</s><span class="price-off">-26%</span></span>$84.900 COP <small>+ envío</small></div>
           <span class="cuotas-badge">4 cuotas<br>sin interés<small>con Bancolombia</small></span>
@@ -1119,9 +1155,9 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
       </div>
       <div class="prod-body">
         <span class="prod-tag tag-blue">Nuevo</span>
-        <h3 class="prod-name">Collar impermeable</h3>
+        <h3 class="prod-name"><a href="/collar-impermeable-perro/">Collar impermeable</a></h3>
         <div class="prod-desc">De goma suave, antiolor y fácil de limpiar. Para el cuello más bonito del parque.</div>
-        <button type="button" class="btn-details" onclick="abrirDetalles('collar')">📋 Descripción y guía de tallas</button>
+        <a class="btn-details" href="/collar-impermeable-perro/" data-clave="collar">📋 Ver detalles y guía de tallas →</a>
         <div class="price-row">
           <div class="prod-price"><span class="price-old"><s aria-label="Precio antes: $69.000">$69.000</s><span class="price-off">-16%</span></span>$58.000 COP <small>+ envío</small></div>
           <span class="cuotas-badge">4 cuotas<br>sin interés<small>con Bancolombia</small></span>
@@ -1167,9 +1203,9 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
       </div>
       <div class="prod-body">
         <span class="prod-tag tag-blue">Nuevo</span>
-        <h3 class="prod-name">Correa impermeable</h3>
+        <h3 class="prod-name"><a href="/correa-impermeable-perro/">Correa impermeable</a></h3>
         <div class="prod-desc">De goma suave, antiolor y fácil de limpiar. 1,8 m de largo con gancho metálico resistente.</div>
-        <button type="button" class="btn-details" onclick="abrirDetalles('correa')">📋 Descripción y cuidado</button>
+        <a class="btn-details" href="/correa-impermeable-perro/" data-clave="correa">📋 Ver detalles y cuidado →</a>
         <div class="price-row">
           <div class="prod-price"><span class="price-old"><s aria-label="Precio antes: $85.000">$85.000</s><span class="price-off">-19%</span></span>$69.000 COP <small>+ envío</small></div>
           <span class="cuotas-badge">4 cuotas<br>sin interés<small>con Bancolombia</small></span>
@@ -1808,9 +1844,9 @@ document.addEventListener('click', function(e){
   if(e.target.closest('.price-row')){
     var b = card.querySelector('.btn-buy');
     if(b) b.click();
-  } else if(e.target.closest('.prod-name, .prod-desc')){
-    var clave = claveProducto(card);
-    if(clave) abrirDetalles(clave);
+  } else if(e.target.closest('.prod-desc')){
+    var link = card.querySelector('.prod-name a');
+    if(link) link.click();
   }
 });
 // Primera pantalla: tocar la imagen de fondo o el recuadro del combo lleva a la tarjeta del combo
@@ -2000,8 +2036,8 @@ function avisarTalla(card){
     tip = document.createElement('div');
     tip.className = 'size-alert';
     tip.setAttribute('role', 'alert');
-    var det = card.querySelector('.btn-details');
-    var m = det && (det.getAttribute('onclick') || '').match(/abrirDetalles\('(\w+)'/);
+    var clave = claveProducto(card);
+    var m = clave && clave !== 'correa' ? [null, clave] : null;
     tip.innerHTML = '<span class="size-alert-icon">📏</span><div><strong>Elige una talla</strong><span class="size-alert-text">Selecciona la talla de tu perrihijo para continuar con la compra.</span>' +
       (m ? '<button type="button" class="size-alert-link" onclick="abrirDetalles(\'' + m[1] + '\', \'tallas\')">Ver guía de tallas →</button>' : '') + '</div>';
     row.parentNode.insertBefore(tip, row);
@@ -2024,8 +2060,7 @@ var MEDIDAS_TALLA = {
 };
 function claveProducto(card){
   var det = card && card.querySelector('.btn-details');
-  var m = det && (det.getAttribute('onclick') || '').match(/abrirDetalles\('(\w+)'/);
-  return m ? m[1] : '';
+  return (det && det.getAttribute('data-clave')) || '';
 }
 function abrirSelectorTalla(card, btn){
   var overlay = document.getElementById('talla-overlay');
@@ -2658,6 +2693,32 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
     if(btn) btn.click();
   }
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iniciar); else iniciar();
+})();
+</script>
+<script>
+// Menú en celular (☰) y medición de clics hacia las páginas de producto y el blog
+(function(){
+  var menu = document.getElementById('menu'), btn = document.getElementById('nav-burger');
+  if(menu && btn){
+    btn.addEventListener('click', function(){
+      var abierto = menu.classList.toggle('abierto');
+      btn.setAttribute('aria-expanded', abierto ? 'true' : 'false');
+      btn.setAttribute('aria-label', abierto ? 'Cerrar menú' : 'Abrir menú');
+    });
+    menu.querySelectorAll('.nav-links a').forEach(function(a){
+      a.addEventListener('click', function(){ menu.classList.remove('abierto'); btn.setAttribute('aria-expanded', 'false'); });
+    });
+    document.addEventListener('click', function(e){
+      if(menu.classList.contains('abierto') && !menu.contains(e.target)){ menu.classList.remove('abierto'); btn.setAttribute('aria-expanded', 'false'); }
+    });
+  }
+  document.addEventListener('click', function(e){
+    var a = e.target.closest && e.target.closest('a[href^="/"]');
+    if(!a || a.getAttribute('href') === '/') return;
+    var origen = a.closest('#menu') ? 'menu' : a.closest('.prod-card') ? 'tarjeta' : a.closest('footer') ? 'pie' : 'otro';
+    try { if(window.gtag) gtag('event', 'ir_a_pagina', { destino: a.getAttribute('href'), origen: origen }); } catch(err){}
+    try { if(window.clarity) clarity('event', 'ir_a_pagina_' + origen); } catch(err){}
+  }, true);
 })();
 </script>
 </body>

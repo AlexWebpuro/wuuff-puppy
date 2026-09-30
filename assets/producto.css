@@ -86,7 +86,10 @@ footer small{display:block;margin-top:10px;color:rgba(255,255,255,.4)}
   .thumbs{gap:6px;margin-top:8px}
   .thumbs button{border-radius:10px}
   .migas{padding-top:10px}
-  .nav-links{display:none}
+  body>nav .wrap{flex-wrap:wrap;row-gap:6px}
+  .nav-links{order:3;width:100%;overflow-x:auto;gap:18px;padding:2px 0 4px;white-space:nowrap;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .nav-links::-webkit-scrollbar{display:none}
+  .nav-links a{font-size:14px;opacity:.85}
   .relacionados{grid-template-columns:1fr 1fr}
   .relacionados a:nth-child(3){display:none}
 }
@@ -114,7 +117,7 @@ footer small{display:block;margin-top:10px;color:rgba(255,255,255,.4)}
 .lista-blog{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:10px 0 40px}
 .lista-blog a{text-decoration:none;color:var(--navy);border:2px solid var(--lblue);border-radius:18px;overflow:hidden;background:#fff;transition:transform .15s}
 .lista-blog a:hover{transform:translateY(-3px)}
-.lista-blog img{aspect-ratio:16/10;object-fit:cover;width:100%}
+.lista-blog img{height:210px;object-fit:cover;width:100%;background:#fff}
 .lista-blog div{padding:14px 16px}
 .lista-blog strong{display:block;font-family:'Fredoka One',cursive;font-weight:400;font-size:19px;line-height:1.2;margin-bottom:6px}
 .lista-blog span{font-size:14px;color:#55607e;font-weight:600}
