@@ -5,8 +5,8 @@ body{font-family:'Nunito',sans-serif;background:#fff;color:var(--navy);overflow-
 a{color:var(--blue)}
 img{max-width:100%;display:block}
 .wrap{max-width:1120px;margin:0 auto;padding:0 20px}
-nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-bottom:2px solid var(--lblue)}
-nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:10px;padding-bottom:10px}
+body>nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-bottom:2px solid var(--lblue)}
+body>nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:10px;padding-bottom:10px}
 nav .logo img{height:38px;width:auto}
 .nav-links{display:flex;gap:18px;list-style:none}
 .nav-links a{color:var(--navy);font-weight:800;font-size:14px;text-decoration:none;opacity:.75}
