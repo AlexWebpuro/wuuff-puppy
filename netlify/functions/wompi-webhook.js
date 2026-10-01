@@ -106,7 +106,10 @@ exports.handler = async function (event) {
     direccion: direccion,
     ciudad: ciudad,
     tipo_envio: tipoEnvio,
-    talla: talla
+    talla: talla,
+    producto: nombreProducto + ' | Ref: ' + (transaction.reference || transaction.id || ''),
+    total: '$' + Math.round((transaction.amount_in_cents || transaction.amountInCents || 0) / 100).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'),
+    metodo_pago: 'wompi'
   }).toString();
 
   const siteUrl = 'https://wuuffpuppy.co/';

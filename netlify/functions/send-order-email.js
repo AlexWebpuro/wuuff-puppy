@@ -12,7 +12,8 @@ exports.handler = async function (event) {
     return { statusCode: 400, body: JSON.stringify({ error: 'JSON inválido' }) };
   }
 
-  const { toEmail, toName, nombreProducto, mascota, direccion, ciudad } = body;
+  const { toEmail, toName, nombreProducto, mascota, direccion, ciudad, metodoPago, total } = body;
+  const contraentrega = metodoPago === 'contraentrega';
 
   if (!toEmail) {
     return { statusCode: 400, body: JSON.stringify({ error: 'Falta el correo del cliente' }) };
@@ -39,11 +40,12 @@ exports.handler = async function (event) {
   const html = `
     <div style="font-family:Arial,sans-serif;max-width:480px;margin:0 auto;padding:24px;color:#2d4375;">
       <h1 style="font-size:22px;">¡Gracias por tu pedido${toName ? ', ' + toName : ''}! 🐾</h1>
-      <p>Tu pago fue aprobado y ya estamos preparando todo.</p>
+      <p>${contraentrega ? `Recibimos tu pedido y ya lo estamos preparando. <strong>Pagas ${total || 'el total'} al recibirlo</strong> (contraentrega).` : 'Tu pago fue aprobado y ya estamos preparando todo.'}</p>
       <div style="background:#e8f0fb;border-radius:12px;padding:16px 20px;margin:20px 0;">
         ${nombreProducto ? `<p style="margin:4px 0;"><strong>Producto:</strong> ${nombreProducto}</p>` : ''}
         ${mascota ? `<p style="margin:4px 0;"><strong>Perrihijo:</strong> ${mascota}</p>` : ''}
         ${direccion ? `<p style="margin:4px 0;"><strong>Dirección:</strong> ${direccion}${ciudad ? ', ' + ciudad : ''}</p>` : ''}
+        ${total ? `<p style="margin:4px 0;"><strong>Total:</strong> ${total}${contraentrega ? ' · se paga al recibir' : ''}</p>` : ''}
       </div>
       <p>Te contactaremos pronto por WhatsApp para coordinar el envío.</p>
       <p style="margin-top:28px;">— El equipo de Wuuff Puppy 💙</p>
