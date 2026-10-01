@@ -689,6 +689,28 @@ video.carousel-slide{background:#dfe8f5;}
 
 /* TOOLS */
 .tools-section{padding:70px 20px;background:#fff;}
+.real-section{padding:64px 20px 70px;background:var(--cream);text-align:center;}
+.real-section h2{font-family:'Fredoka One',cursive;font-size:clamp(28px,4vw,42px);color:var(--navy);margin-bottom:8px;}
+.real-section h2 span{color:var(--coral);}
+.real-sub{font-size:16px;font-weight:700;color:#55607e;max-width:560px;margin:0 auto 28px;}
+.real-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:980px;margin:0 auto;}
+.real-card{margin:0;background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 8px 24px rgba(45,67,117,.08);text-align:left;}
+.real-video{position:relative;aspect-ratio:9/16;background:var(--lblue);}
+.real-sonido{position:absolute;right:10px;bottom:10px;width:40px;height:40px;border-radius:50%;border:none;background:rgba(45,67,117,.82);color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;}
+.real-sonido[aria-pressed=true]{background:var(--coral);}
+.real-video video{width:100%;height:100%;object-fit:cover;display:block;}
+.real-badge{position:absolute;top:10px;left:10px;background:rgba(45,67,117,.82);color:#fff;font-size:11px;font-weight:900;letter-spacing:.5px;padding:4px 10px;border-radius:12px;}
+.real-card figcaption{padding:14px 16px 16px;display:flex;flex-direction:column;gap:4px;}
+.real-card strong{font-family:'Fredoka One',cursive;font-weight:400;font-size:19px;color:var(--navy);}
+.real-card figcaption span{font-size:14px;font-weight:700;color:#55607e;}
+.real-card figcaption a{font-size:14px;font-weight:900;color:var(--blue);text-decoration:none;margin-top:4px;}
+.real-wa{font-size:15px;font-weight:700;color:#55607e;margin-top:24px;}
+.real-wa a{color:#128c4a;font-weight:900;}
+@media(max-width:900px){
+  .real-grid{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:76%;overflow-x:auto;scroll-snap-type:x mandatory;padding:0 4px 10px;margin:0 -20px;padding-left:20px;padding-right:20px;scrollbar-width:none;}
+  .real-grid::-webkit-scrollbar{display:none;}
+  .real-card{scroll-snap-align:center;}
+}
 .instagram-section,#que-talla,.features,.video-section,.story,.faq-section,.cta-section,.cause,.characters,.gallery-section{content-visibility:auto;contain-intrinsic-size:auto 900px;}
 .tools-single{max-width:520px;margin:0 auto;}
 .tools-section-alt{background:var(--cream);}
@@ -1260,6 +1282,39 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
       <button class="btn-buy" id="combo-buy-btn" onclick="iniciarCompra(window.wuuffComboTotalCents, 'Combo personalizado')">Quiero mi combo 🐾</button>
     </div>
   </div>
+</section>
+
+<!-- ASÍ ES EN LA VIDA REAL -->
+<section class="real-section" id="en-video">
+  <h2>Así es <span>en la vida real</span> 🎥</h2>
+  <p class="real-sub">Perritos reales estrenando su Wuuff: así se pone el arnés tipo H y así de fácil se limpia.</p>
+  <div class="real-grid">
+    <figure class="real-card">
+      <div class="real-video">
+        <video muted loop playsinline preload="none" poster="images/productos/real-lupe-poster.jpg" aria-label="Video real: Así se pone el arnés tipo H" data-nombre="Así se pone el arnés tipo H"><source src="images/productos/real-lupe.mp4" type="video/mp4"></video>
+        <span class="real-badge">▶ Video real</span>
+        <button type="button" class="real-sonido" aria-pressed="false" aria-label="Activar sonido">🔇</button>
+      </div>
+      <figcaption><strong>Así se pone el arnés tipo H</strong><span>Lupe lo estrena: se abre con hebillas, se ajusta y sale a pasear.</span><a href="/arnes-tipo-h-impermeable-perro/">Ver el arnés tipo H →</a></figcaption>
+    </figure>
+    <figure class="real-card">
+      <div class="real-video">
+        <video muted loop playsinline preload="none" poster="images/productos/real-saske-poster.jpg" aria-label="Video real: Paso a paso con Saske" data-nombre="Paso a paso con Saske"><source src="images/productos/real-saske.mp4" type="video/mp4"></video>
+        <span class="real-badge">▶ Video real</span>
+        <button type="button" class="real-sonido" aria-pressed="false" aria-label="Activar sonido">🔇</button>
+      </div>
+      <figcaption><strong>Paso a paso con Saske</strong><span>Cuello, pecho y ajuste: así le queda a un perrito peludo.</span><a href="/arnes-tipo-h-impermeable-perro/">Ver el arnés tipo H →</a></figcaption>
+    </figure>
+    <figure class="real-card">
+      <div class="real-video">
+        <video muted loop playsinline preload="none" poster="images/productos/real-asi-queda-poster.jpg" aria-label="Video real: Adiós al arnés manchado" data-nombre="Adiós al arnés manchado"><source src="images/productos/real-asi-queda.mp4" type="video/mp4"></video>
+        <span class="real-badge">▶ Video real</span>
+        <button type="button" class="real-sonido" aria-pressed="false" aria-label="Activar sonido">🔇</button>
+      </div>
+      <figcaption><strong>Adiós al arnés manchado</strong><span>Tela vs. goma: el Wuuff se limpia con agua y un trapo.</span><a href="/combo-collar-arnes-correa/">Ver el combo →</a></figcaption>
+    </figure>
+  </div>
+  <p class="real-wa">¿Quieres ver cómo le queda a un perrito de tu tamaño? <a href="https://wa.me/573176431286?text=Hola%2C%20quiero%20ver%20un%20video%20de%20c%C3%B3mo%20se%20pone%20el%20arn%C3%A9s" target="_blank" rel="noopener">Escríbenos por WhatsApp</a> y te mandamos un video.</p>
 </section>
 
 <!-- INSTAGRAM -->
@@ -2719,6 +2774,47 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
     try { if(window.gtag) gtag('event', 'ir_a_pagina', { destino: a.getAttribute('href'), origen: origen }); } catch(err){}
     try { if(window.clarity) clarity('event', 'ir_a_pagina_' + origen); } catch(err){}
   }, true);
+})();
+</script>
+<script>
+// Videos reales: se reproducen solos (sin sonido) mientras están en pantalla
+(function(){
+  var vids = document.querySelectorAll('#en-video video');
+  if(!vids.length || !('IntersectionObserver' in window)) return;
+  var vistos = {};
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      var v = en.target;
+      if(en.isIntersecting && en.intersectionRatio >= 0.6){
+        if(v.preload !== 'auto'){ v.preload = 'auto'; }
+        var pr = v.play(); if(pr && pr.catch) pr.catch(function(){});
+        var n = v.getAttribute('data-nombre');
+        if(!vistos[n]){
+          vistos[n] = 1;
+          try { if(window.gtag) gtag('event', 'video_real_visto', { item_name: n }); } catch(e){}
+          try { if(window.clarity) clarity('event', 'video_real_visto'); } catch(e){}
+        }
+      } else if(!v.paused){ v.pause(); }
+    });
+  }, { threshold: [0, 0.6] });
+  vids.forEach(function(v){ io.observe(v); });
+  document.querySelectorAll('#en-video .real-sonido').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var v = btn.parentNode.querySelector('video');
+      var activar = v.muted;
+      vids.forEach(function(o){
+        o.muted = true;
+        var b = o.parentNode.querySelector('.real-sonido');
+        b.textContent = '🔇'; b.setAttribute('aria-pressed', 'false'); b.setAttribute('aria-label', 'Activar sonido');
+      });
+      if(activar){
+        v.muted = false; v.preload = 'auto';
+        var pr = v.play(); if(pr && pr.catch) pr.catch(function(){});
+        btn.textContent = '🔊'; btn.setAttribute('aria-pressed', 'true'); btn.setAttribute('aria-label', 'Silenciar');
+        try { if(window.gtag) gtag('event', 'video_real_sonido', { item_name: v.getAttribute('data-nombre') }); } catch(e){}
+      }
+    });
+  });
 })();
 </script>
 </body>
