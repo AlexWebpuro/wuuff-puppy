@@ -493,6 +493,7 @@
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
+section[id],.prod-card[id]{scroll-margin-top:78px;}
 body{font-family:'Nunito',sans-serif;background:var(--white);color:var(--navy);overflow-x:hidden;}
 
 /* NAV */
@@ -503,7 +504,7 @@ body{font-family:'Nunito',sans-serif;background:var(--white);color:var(--navy);o
   display:flex;align-items:center;justify-content:space-between;
   border-bottom:2px solid var(--lblue);
 }
-.nav-logo{display:flex;align-items:center;gap:10px;}
+.nav-logo{display:flex;align-items:center;gap:10px;padding:6px 14px 6px 0;margin:-6px 0;}
 .nav-logo img{height:36px;object-fit:contain;}
 .nav-links{display:flex;gap:28px;align-items:center;}
 .nav-right{display:flex;align-items:center;gap:10px;}
@@ -609,6 +610,8 @@ body{font-family:'Nunito',sans-serif;background:var(--white);color:var(--navy);o
 .chars-grid{display:flex;gap:24px;justify-content:center;flex-wrap:wrap;max-width:1000px;margin:0 auto;}
 .char-card{background:#fff;border-radius:28px;padding:32px 24px;text-align:center;width:210px;transition:transform .25s,box-shadow .25s;box-shadow:0 6px 24px rgba(73,100,175,.1);border:2px solid var(--lblue);}
 .char-card:hover{transform:translateY(-8px) rotate(-1deg);box-shadow:0 20px 50px rgba(73,100,175,.18);}
+.char-card.saltar{animation:charSalto .5s ease;}
+@keyframes charSalto{0%,100%{transform:none}35%{transform:translateY(-14px) rotate(-3deg)}70%{transform:translateY(0) rotate(2deg)}}
 .char-card img{width:130px;height:130px;object-fit:contain;margin-bottom:14px;}
 .char-name{font-family:'Fredoka One',cursive;font-size:18px;color:var(--navy);margin-bottom:4px;}
 .char-desc{font-size:12px;font-weight:700;color:var(--navy);opacity:.6;}
@@ -753,7 +756,8 @@ video.carousel-slide{background:#dfe8f5;}
 .carousel-dot{position:relative;}
 .carousel-dot::after{content:'';position:absolute;inset:-9px -5px;}
 .hero-offer{cursor:pointer;}
-.gallery-img{cursor:zoom-in;}
+.gallery-img,.ig-img{cursor:zoom-in;}
+button.instagram-slide{border:none;padding:0;background:none;font:inherit;-webkit-tap-highlight-color:transparent;}
 .price-row,.prod-name,.prod-desc{cursor:pointer;}
 .prod-img.carousel{touch-action:pan-y;}
 .carousel-dot.active{background:var(--blue);width:16px;border-radius:4px;}
@@ -842,7 +846,6 @@ video.carousel-slide{background:#dfe8f5;}
   .real-grid::-webkit-scrollbar{display:none;}
   .real-card{scroll-snap-align:center;}
 }
-.instagram-section,#que-talla,.features,.video-section,.story,.faq-section,.cta-section,.cause,.characters,.gallery-section{content-visibility:auto;contain-intrinsic-size:auto 900px;}
 .tools-single{max-width:520px;margin:0 auto;}
 .tools-section-alt{background:var(--cream);}
 .tools-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;max-width:940px;margin:0 auto;}
@@ -1120,7 +1123,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
 
 <!-- NAV -->
 <nav id="menu" aria-label="Principal">
-  <a class="nav-logo" href="/" aria-label="Wuuff Puppy, inicio">
+  <a class="nav-logo" href="/" aria-label="Wuuff Puppy, inicio" onclick="if(location.pathname==='/'){event.preventDefault();window.scrollTo({top:0,behavior:'smooth'});}">
     <img src="images/wuuff-puppy.png" alt="Wuuff Puppy">
   </a>
   <div class="nav-links" id="nav-links">
@@ -1138,7 +1141,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
     <a href="#nosotros">Nosotros</a>
   </div>
   <div class="nav-right">
-    <a href="#comprar" class="nav-cta">Quiero el mío 🐾</a>
+    <a href="#productos" class="nav-cta">Ver productos 🐾</a>
     <button type="button" class="nav-burger" id="nav-burger" aria-label="Abrir menú" aria-expanded="false" aria-controls="nav-links"><span></span><span></span><span></span></button>
   </div>
 </nav>
@@ -1457,21 +1460,11 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
   <p class="video-sub">Mira nuestras publicaciones más recientes</p>
   <div class="instagram-carousel">
     <div class="instagram-track">
-      <a href="https://instagram.com/wuuffpuppy" target="_blank" class="instagram-slide">
-        <img src="images/montaje-perro-1.jpg" alt="Publicación de Instagram Wuuff Puppy" loading="lazy">
-      </a>
-      <a href="https://instagram.com/wuuffpuppy" target="_blank" class="instagram-slide">
-        <img src="images/montaje-perro-2.jpg" alt="Publicación de Instagram Wuuff Puppy" loading="lazy">
-      </a>
-      <a href="https://instagram.com/wuuffpuppy" target="_blank" class="instagram-slide">
-        <img src="images/montaje-perro-3.jpg" alt="Publicación de Instagram Wuuff Puppy" loading="lazy">
-      </a>
-      <a href="https://instagram.com/wuuffpuppy" target="_blank" class="instagram-slide">
-        <img src="images/banner-hero-bg.jpg" alt="Publicación de Instagram Wuuff Puppy" loading="lazy">
-      </a>
-      <a href="https://instagram.com/wuuffpuppy" target="_blank" class="instagram-slide">
-        <img src="images/banner-hero-bg-2.jpg" alt="Publicación de Instagram Wuuff Puppy" loading="lazy">
-      </a>
+      <button type="button" class="instagram-slide"><img class="ig-img" src="images/montaje-perro-1.jpg" alt="Publicación de Instagram Wuuff Puppy" loading="lazy"></button>
+      <button type="button" class="instagram-slide"><img class="ig-img" src="images/montaje-perro-2.jpg" alt="Publicación de Instagram Wuuff Puppy" loading="lazy"></button>
+      <button type="button" class="instagram-slide"><img class="ig-img" src="images/montaje-perro-3.jpg" alt="Publicación de Instagram Wuuff Puppy" loading="lazy"></button>
+      <button type="button" class="instagram-slide"><img class="ig-img" src="images/banner-hero-bg.jpg" alt="Publicación de Instagram Wuuff Puppy" loading="lazy"></button>
+      <button type="button" class="instagram-slide"><img class="ig-img" src="images/banner-hero-bg-2.jpg" alt="Publicación de Instagram Wuuff Puppy" loading="lazy"></button>
     </div>
   </div>
   <a href="https://instagram.com/wuuffpuppy" target="_blank" class="btn-outline" style="display:inline-block;margin-top:8px;">📱 Ver más en @wuuffpuppy</a>
@@ -1940,9 +1933,9 @@ function cerrarDetalles(){
 
   // Abrir al tocar la imagen de un producto
   document.addEventListener('click', function(e){
-    var gal = e.target.closest && e.target.closest('.gallery-img');
+    var gal = e.target.closest && (e.target.closest('.gallery-img') || e.target.closest('.ig-img'));
     if(gal){
-      var fotos = Array.prototype.slice.call(document.querySelectorAll('.gallery-img'));
+      var fotos = Array.prototype.slice.call(document.querySelectorAll(gal.classList.contains('ig-img') ? '.ig-img' : '.gallery-img'));
       open(fotos, fotos.indexOf(gal));
       return;
     }
@@ -2647,6 +2640,8 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
   }
 
   btnCentro.addEventListener('click', girar);
+  rueda.addEventListener('click', girar);
+  rueda.style.cursor = 'pointer';
   btnGirar.addEventListener('click', girar);
   document.getElementById('ruleta-cerrar').addEventListener('click', cerrar);
   overlay.addEventListener('click', function(e){ if(e.target === overlay) cerrar(); });
@@ -2950,6 +2945,10 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
     });
   }, { threshold: [0, 0.6] });
   vids.forEach(function(v){ io.observe(v); });
+  vids.forEach(function(v){
+    v.style.cursor = 'pointer';
+    v.addEventListener('click', function(){ v.parentNode.querySelector('.real-sonido').click(); });
+  });
   document.querySelectorAll('#en-video .real-sonido').forEach(function(btn){
     btn.addEventListener('click', function(){
       var v = btn.parentNode.querySelector('video');
@@ -2975,6 +2974,14 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
   if(new Date() < new Date('2026-10-31T00:00:00-05:00')) return;
   document.querySelectorAll('.lanzamiento-fecha').forEach(function(el){ el.style.display = 'none'; });
 })();
+</script>
+<script>
+// La pandilla Wuuff: al tocar un personaje da un saltito (antes el toque no hacía nada)
+document.addEventListener('click', function(e){
+  var c = e.target.closest && e.target.closest('.char-card');
+  if(!c) return;
+  c.classList.remove('saltar'); void c.offsetWidth; c.classList.add('saltar');
+});
 </script>
 </body>
 </html>
