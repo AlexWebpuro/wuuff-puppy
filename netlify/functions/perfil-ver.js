@@ -3,6 +3,19 @@
 // Siempre está disponible y no se indexa en buscadores: solo llega quien escanea la placa.
 const { getStore, connectLambda } = require('@netlify/blobs');
 
+// El código del perfil puede llegar como ?id=… (redirección de netlify.toml), en la ruta de la función
+// (/.netlify/functions/perfil-ver/<código>) o en la dirección original que abrió el celular (/m/<código>).
+function codigoPerfil(event) {
+  const q = (event.queryStringParameters || {}).id;
+  const fuentes = [q, event.path, event.rawUrl, (event.headers || {})['x-nf-original-path'], (event.headers || {})['x-original-uri']];
+  for (const f of fuentes) {
+    if (!f) continue;
+    const m = /(?:^|\/m\/|perfil-(?:ver|foto)\/)([A-Za-z0-9]{6,16})(?:\/foto)?\/?(?:[?#]|$)/.exec(String(f));
+    if (m) return m[1].toUpperCase();
+  }
+  return '';
+}
+
 const TIENDA_WA = '573176431286';
 const MESES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
 
@@ -87,12 +100,13 @@ function pagina(titulo, cuerpo) {
     '<style>' + CSS + '</style></head><body>' + cuerpo + '</body></html>';
 }
 
-function noEncontrado() {
+function noEncontrado(id) {
   const wa = 'https://wa.me/' + TIENDA_WA + '?text=' + encodeURIComponent('Hola, encontré una mascota con una placa Wuuff Puppy y quiero ayudar a que vuelva a casa.');
   return pagina('Placa Wuuff Puppy', '<main class="status-page"><div class="icon">🐾</div>' +
     '<h1>Esta placa aún no tiene un perfil activo</h1>' +
     '<p>Si encontraste a una mascota con esta placa, escríbenos y te ayudamos a contactar a su familia.</p>' +
-    '<a class="btn btn-wa" href="' + wa + '">💬 Escribir a Wuuff Puppy</a></main>');
+    '<a class="btn btn-wa" href="' + wa + '">💬 Escribir a Wuuff Puppy</a>' +
+    '<p style="margin-top:22px;font-size:.75rem;opacity:.6">Código de la placa: ' + esc(id || 'sin código') + '</p></main>');
 }
 
 function perfilHTML(p) {
@@ -172,17 +186,24 @@ function perfilHTML(p) {
 }
 
 exports.handler = async function (event) {
-  const id = String((event.queryStringParameters || {}).id || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+  const id = codigoPerfil(event);
   const headers = { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex, nofollow' };
   let perfil = null;
   if (/^[A-Z0-9]{6,16}$/.test(id)) {
     try {
       connectLambda(event);
-      perfil = await getStore('perfiles-nfc').get(id, { type: 'json' });
+      const store = getStore('perfiles-nfc');
+      perfil = await store.get(id, { type: 'json' });
+      // Un perfil recién creado puede tardar unos segundos en verse: se intenta una vez más
+      if (!perfil) {
+        await new Promise(function (r) { setTimeout(r, 1500); });
+        perfil = await store.get(id, { type: 'json' });
+      }
     } catch (err) {
       console.error('No se pudo leer el perfil', id, err.message);
     }
   }
-  if (!perfil || perfil.activo === false) return { statusCode: 404, headers: headers, body: noEncontrado() };
+  if (!perfil) console.log('Perfil no encontrado', JSON.stringify({ id: id, q: event.queryStringParameters, path: event.path, rawUrl: event.rawUrl }));
+  if (!perfil || perfil.activo === false) return { statusCode: 404, headers: headers, body: noEncontrado(id) };
   return { statusCode: 200, headers: headers, body: perfilHTML(perfil) };
 };
