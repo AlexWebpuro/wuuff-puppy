@@ -29,7 +29,7 @@ function publico(perfil) {
 
 exports.handler = async function (event) {
   connectLambda(event);
-  const store = getStore({ name: 'perfiles-nfc', consistency: 'strong' });
+  const store = getStore('perfiles-nfc');
 
   if (event.httpMethod === 'GET') {
     const q = event.queryStringParameters || {};

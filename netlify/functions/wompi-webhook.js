@@ -95,6 +95,23 @@ exports.handler = async function (event) {
   const tallaMatch = /\((Talla [^)]+)\)/.exec(nombreProducto);
   if (tallaMatch) talla = tallaMatch[1];
 
+  // Placa NFC con perfil pendiente (el navegador no pudo crearlo): se crea aquí con los datos del pedido
+  const pendiente = /Perfil NFC: pendiente \(([^,]+), ([^,]+), ([^)]+)\)/.exec(nombreProducto);
+  if (pendiente) {
+    try {
+      const r = await fetch('https://wuuffpuppy.co/.netlify/functions/perfil-crear', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mascota: mascota, especie: pendiente[1].trim(), sexo: pendiente[2].trim(), raza: pendiente[3].trim(),
+          contactoNombre: nombre, telefono: telefono, ciudad: ciudad, correo: correo })
+      });
+      const j = await r.json();
+      if (r.ok && j.id) nombreProducto = nombreProducto.replace(pendiente[0], 'Perfil NFC: ' + j.id);
+    } catch (err) {
+      console.error('No se pudo crear el perfil NFC pendiente', err.message);
+    }
+  }
+
   // El tipo de envío se infiere de la ciudad (mismo criterio usado al calcular el costo)
   const tipoEnvio = /bogot|soacha/i.test(ciudad) ? 'Bogotá / Soacha' : 'Otra ciudad de Colombia';
 
@@ -133,7 +150,7 @@ exports.handler = async function (event) {
   if (perfilMatch) {
     try {
       connectLambda(event);
-      const store = getStore({ name: 'perfiles-nfc', consistency: 'strong' });
+      const store = getStore('perfiles-nfc');
       const perfil = await store.get(perfilMatch[1], { type: 'json' });
       if (perfil) {
         perfil.pedido = Object.assign({}, perfil.pedido, { estado: 'pagado', referencia: transaction.reference || transaction.id || '' });
