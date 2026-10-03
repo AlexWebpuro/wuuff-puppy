@@ -1134,6 +1134,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
         <a href="/arnes-tipo-h-impermeable-perro/">Arnés tipo H impermeable</a>
         <a href="/collar-impermeable-perro/">Collar impermeable</a>
         <a href="/correa-impermeable-perro/">Correa impermeable</a>
+        <a href="/placa-nfc/">🏷️ Placa NFC con nombre</a>
       </div>
     </div>
     <a href="#por-que">¿Por qué goma?</a>
@@ -1690,6 +1691,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
     <a href="/arnes-tipo-h-impermeable-perro/">Arnés tipo H impermeable</a>
     <a href="/collar-impermeable-perro/">Collar impermeable para perro</a>
     <a href="/correa-impermeable-perro/">Correa impermeable para perro</a>
+    <a href="/placa-nfc/">Placa NFC con nombre</a>
     <a href="/blog/">Blog</a>
   </div>
   <div class="footer-copy">Bogotá, Colombia · 2026 · Wuuff Puppy ❤️</div>
@@ -2895,6 +2897,50 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
     if(btn) btn.click();
   }
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iniciar); else iniciar();
+})();
+</script>
+<script>
+// Llegada desde /placa-nfc/ (/?comprar=placa&forma=…&nombre=…&base=…&letras=…&con=…&talla=…):
+// arma el pedido de la placa NFC (sola o con collar, arnés o combo) y abre la misma compra de la tienda.
+(function(){
+  var q = new URLSearchParams(location.search);
+  if(q.get('comprar') !== 'placa') return;
+
+  // Precios en centavos (deben coincidir con /placa-nfc/js/app.js)
+  var PLACA_SOLA = 3490000, PLACA_CON_PRODUCTO = 2490000;
+  var PRODUCTOS = {
+    collar: { nombre: 'Collar impermeable', cents: 4990000 },
+    arnes:  { nombre: 'Arnés tipo H impermeable', cents: 7290000 },
+    combo:  { nombre: 'Combo completo', cents: 15790000 }
+  };
+  var FORMAS  = { huella: 'Huella', gato: 'Gato', nombre: 'Nombre' };
+  var COLORES = { morado: 'Morado', azul: 'Azul', blanco: 'Blanco', rojo: 'Rojo' };
+
+  var nombre = (q.get('nombre') || '').replace(/[^A-Za-z0-9ÁÉÍÓÚÑÜáéíóúñü '\-.&]/g, '').slice(0, 10).trim();
+  var forma = FORMAS[q.get('forma')], base = COLORES[q.get('base')], letras = COLORES[q.get('letras')];
+  if(!nombre || !forma || !base || !letras) return;
+
+  var con = PRODUCTOS.hasOwnProperty(q.get('con')) ? q.get('con') : 'sola';
+  var talla = (q.get('talla') || '').toUpperCase();
+  if(talla !== 'S' && talla !== 'M') talla = (con === 'sola') ? '' : 'M';
+
+  var placa = 'Placa NFC ' + forma + ' "' + nombre + '" (placa ' + base + ', letras ' + letras + ')';
+  var total, producto;
+  if(con === 'sola'){
+    total = PLACA_SOLA;
+    producto = placa;
+  } else {
+    // El nombre empieza igual que en la tienda ("Combo completo …") para que se apliquen sus reglas de envío
+    total = PRODUCTOS[con].cents + PLACA_CON_PRODUCTO;
+    producto = PRODUCTOS[con].nombre + ' (Talla ' + talla + ') + ' + placa;
+  }
+
+  function abrir(){
+    if(history.replaceState) history.replaceState(null, '', location.pathname);
+    try { if(window.gtag) gtag('event', 'placa_iniciar_compra', { forma: q.get('forma'), con: con, value: total / 100, currency: 'COP' }); } catch(err){}
+    iniciarCompra(total, producto, talla);
+  }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', abrir); else abrir();
 })();
 </script>
 <script>

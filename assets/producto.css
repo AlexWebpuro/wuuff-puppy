@@ -125,3 +125,5 @@ footer small{display:block;margin-top:10px;color:rgba(255,255,255,.4)}
 .bloque h2:not(:first-child){margin-top:30px}
 main{min-height:60vh}
 .lanzamiento-hasta{font-size:13.5px;font-weight:800;color:var(--coral);margin:2px 0 6px}
+.mas-placa{display:block;text-align:center;margin-top:10px;font-weight:900;font-size:14px;color:var(--navy);background:var(--lime);border-radius:12px;padding:9px 12px;text-decoration:none}
+.mas-placa:hover{filter:brightness(.96)}

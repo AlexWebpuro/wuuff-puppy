@@ -36,7 +36,7 @@ exports.handler = async function (event) {
     direccion: limpiar(body.direccion, 200),
     ciudad: limpiar(body.ciudad, 80),
     talla: limpiar(body.talla, 20),
-    producto: limpiar(body.producto, 300)
+    producto: limpiar(body.producto, 600)
   };
   const totalCents = parseInt(body.totalCents, 10);
 

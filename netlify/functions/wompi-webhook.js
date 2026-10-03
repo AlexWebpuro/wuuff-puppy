@@ -88,9 +88,10 @@ exports.handler = async function (event) {
     nombreProducto = match[3];
   }
 
-  // La talla queda dentro del nombre del producto, ej: "Collar de goma (Talla S) x2"
+  // La talla queda dentro del nombre del producto, ej: "Collar de goma (Talla S) x2".
+  // Solo se toma el paréntesis que dice "Talla …" (la placa NFC lleva otro con sus colores).
   let talla = '';
-  const tallaMatch = /\(([^)]+)\)/.exec(nombreProducto);
+  const tallaMatch = /\((Talla [^)]+)\)/.exec(nombreProducto);
   if (tallaMatch) talla = tallaMatch[1];
 
   // El tipo de envío se infiere de la ciudad (mismo criterio usado al calcular el costo)
