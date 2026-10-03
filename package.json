@@ -1,0 +1,8 @@
+{
+  "name": "wuuff-puppy",
+  "private": true,
+  "description": "Sitio de Wuuff Puppy. Las dependencias son solo para las funciones de Netlify.",
+  "dependencies": {
+    "@netlify/blobs": "8.2.0"
+  }
+}

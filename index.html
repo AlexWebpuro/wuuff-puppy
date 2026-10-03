@@ -576,6 +576,12 @@ body{font-family:'Nunito',sans-serif;background:var(--white);color:var(--navy);o
 .pago-op input{accent-color:var(--blue);width:18px;height:18px;flex:none;}
 .pago-op strong{display:block;font-size:14px;color:var(--navy);}
 .pago-op small{display:block;font-size:12px;color:#55607e;font-weight:700;}
+.perfil-placa[hidden]{display:none;}
+.perfil-placa{background:#f4f8ff;border:2px solid var(--lblue);border-radius:14px;padding:12px;margin:0 0 12px;text-align:left;display:grid;gap:8px;}
+.perfil-placa .shipping-input{margin:0;}
+.perfil-titulo{font-size:13px;font-weight:900;color:var(--navy);margin:0;}
+.perfil-sub{font-size:12px;font-weight:700;color:#55607e;margin:0;}
+.perfil-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 .regalo-ruleta{background:#fffbe6;border-radius:12px;padding:9px 12px;font-size:13px;font-weight:800;color:var(--navy);margin:0 0 12px;text-align:left;}
 .lanzamiento-hasta{font-size:12.5px;font-weight:800;color:var(--coral);margin:-2px 0 10px;}
 .hero-offer-hasta{display:block;font-size:12.5px;font-weight:800;color:var(--coral);margin-top:2px;}
@@ -2290,6 +2296,12 @@ function iniciarCompra(baseAmountInCents, nombreProducto, talla){
     }
   }
   actualizarOpcionesPago();
+  var conPlaca = /Placa NFC/.test(nombreProducto);
+  var perfilBox = document.getElementById('perfil-placa');
+  if(perfilBox){
+    perfilBox.hidden = !conPlaca;
+    ['perfil-especie', 'perfil-sexo', 'perfil-raza'].forEach(function(id){ document.getElementById(id).required = conPlaca; });
+  }
   var regaloBox = document.getElementById('regalo-ruleta');
   var regaloTxt = typeof window.wuuffRegaloRuleta === 'function' ? window.wuuffRegaloRuleta('') : '';
   if(regaloBox){ regaloBox.hidden = !regaloTxt; regaloBox.textContent = regaloTxt ? '🎁 Tu regalo de la ruleta va incluido: ' + regaloTxt : ''; }
@@ -2330,11 +2342,23 @@ document.addEventListener('submit', function(e){
   var pagoSel = form.querySelector('input[name="metodo_pago"]:checked');
   var contraentrega = selectedOption.value === 'Bogotá / Soacha' && pagoSel && pagoSel.value === 'contraentrega';
 
+  // Placa NFC: se crea el perfil de la mascota (su dirección es la que se graba en el chip)
+  if(/Placa NFC/.test(nombreProducto)){
+    if(!pendingPurchase.perfil){
+      crearPerfilPlaca(form, { mascota: mascota, especie: document.getElementById('perfil-especie').value,
+        sexo: document.getElementById('perfil-sexo').value, raza: document.getElementById('perfil-raza').value.trim(),
+        contactoNombre: nombre, telefono: telefono, ciudad: ciudadNombre, correo: correo });
+      return;
+    }
+    nombreProducto += ' | Perfil NFC: ' + pendingPurchase.perfil.id;
+  }
+  var perfilPlaca = pendingPurchase.perfil || null;
+
   if(contraentrega){
     enviarPedidoContraentrega(form, {
       nombre: nombre, mascota: mascota, telefono: telefono, correo: correo,
       direccion: direccion, ciudad: ciudadNombre, talla: document.getElementById('envio-talla').value,
-      producto: nombreProducto, totalCents: totalCents,
+      producto: nombreProducto, totalCents: totalCents, perfil: perfilPlaca,
       botField: (form.querySelector('[name="bot-field-envio"]') || {}).value || ''
     });
     return;
@@ -2402,12 +2426,47 @@ function enviarPedidoContraentrega(form, datos){
     actualizarOpcionesPago();
     if(typeof window.wuuffCompraAprobada === 'function') window.wuuffCompraAprobada(r.referencia, datos.totalCents, 'contraentrega');
     alert('🎉 ¡Pedido confirmado! Pagas ' + formatoPesos(datos.totalCents) + ' al recibir tu pedido en Bogotá / Soacha.\n\nTe escribiremos por WhatsApp para coordinar la entrega. Referencia: ' + r.referencia);
+    if(datos.perfil) ofrecerCompletarPerfil();
   })
   .catch(function(err){
     console.error(err);
     alert('No pudimos registrar tu pedido. Intenta de nuevo o escríbenos por WhatsApp al 317 643 1286.');
   })
   .then(function(){ if(btn) btn.disabled = false; actualizarOpcionesPago(); });
+}
+
+
+// Placa NFC: crea el perfil con los datos básicos y vuelve a enviar el formulario para seguir con la compra
+function crearPerfilPlaca(form, datos){
+  if(!datos.especie || !datos.sexo || !datos.raza){
+    alert('Completa la especie, el sexo y la raza para el perfil de la placa NFC.');
+    return;
+  }
+  var btn = document.getElementById('envio-submit');
+  if(btn){ btn.disabled = true; btn.textContent = 'Creando el perfil…'; }
+  fetch('/.netlify/functions/perfil-crear', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) })
+    .then(function(r){ return r.json().then(function(j){ if(!r.ok || !j.id) throw new Error(j && j.error || 'Error'); return j; }); })
+    .then(function(j){
+      if(!pendingPurchase) return;
+      pendingPurchase.perfil = { id: j.id, clave: j.clave };
+      try { sessionStorage.setItem('wuuff_perfil', JSON.stringify({ id: j.id, clave: j.clave, mascota: datos.mascota })); } catch(e){}
+      if(btn) btn.disabled = false;
+      form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    })
+    .catch(function(err){
+      console.error(err);
+      if(btn){ btn.disabled = false; actualizarOpcionesPago(); }
+      alert('No pudimos crear el perfil de la placa. Intenta de nuevo o escríbenos por WhatsApp al 317 643 1286.');
+    });
+}
+// Después de comprar una placa: invita a completar el perfil (foto, vacunas, veterinaria)
+function ofrecerCompletarPerfil(){
+  var p = null;
+  try { p = JSON.parse(sessionStorage.getItem('wuuff_perfil') || 'null'); sessionStorage.removeItem('wuuff_perfil'); } catch(e){}
+  if(!p || !p.id) return;
+  if(confirm('🏷️ Tu placa NFC ya tiene perfil. ¿Quieres completarlo ahora con la foto, vacunas y veterinaria de ' + (p.mascota || 'tu mascota') + '?\n\nTambién te enviamos el enlace al correo.')){
+    location.href = '/placa-nfc/perfil/#id=' + encodeURIComponent(p.id) + '&clave=' + encodeURIComponent(p.clave);
+  }
 }
 
 // Paso 2: pago con Wompi (producción)
@@ -2459,6 +2518,7 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
           window.wuuffCompraAprobada(transaction.id, transaction.amountInCents || amountInCents);
         }
         alert('🎉 ¡Pago aprobado! Gracias por tu compra' + (nombreProducto ? ' de ' + nombreProducto : '') + '. Te llegará un correo de confirmación en breve.');
+        ofrecerCompletarPerfil();
       } else if(transaction){
         alert('El pago quedó en estado: ' + transaction.status + '. Si el banco lo confirma más tarde, te llegará igual el correo de confirmación.');
       }
@@ -2485,6 +2545,7 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
           window.wuuffCompraAprobada(transactionId, data.amountInCents);
         }
         alert('🎉 ¡Pago aprobado! Gracias por tu compra. Te llegará un correo de confirmación en breve.');
+        ofrecerCompletarPerfil();
       } else {
         alert('El pago quedó en estado: ' + data.status + '. Si el banco lo confirma más tarde, te llegará igual el correo de confirmación.');
       }
@@ -2506,6 +2567,15 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
       <p class="hp-field"><label>No llenar: <input name="bot-field-envio"></label></p>
       <input type="text" id="envio-nombre" name="nombre" placeholder="Tu nombre completo" required class="shipping-input">
       <input type="text" id="envio-mascota" name="mascota" placeholder="Nombre de tu perrihijo" required class="shipping-input">
+      <div class="perfil-placa" id="perfil-placa" hidden>
+        <p class="perfil-titulo">🏷️ Perfil de la placa NFC</p>
+        <p class="perfil-sub">Esto es lo que verá quien escanee la placa: el nombre de tu perrihijo, estos datos y tu teléfono. Después de comprar podrás agregar su foto, vacunas y veterinaria.</p>
+        <div class="perfil-grid">
+          <select id="perfil-especie" class="shipping-input shipping-select" aria-label="Especie"><option value="">Especie</option><option>Perro</option><option>Gato</option></select>
+          <select id="perfil-sexo" class="shipping-input shipping-select" aria-label="Sexo"><option value="">Sexo</option><option>Macho</option><option>Hembra</option></select>
+        </div>
+        <input type="text" id="perfil-raza" class="shipping-input" maxlength="60" placeholder="Raza (ej: Beagle, criollo…)" aria-label="Raza">
+      </div>
       <input type="tel" id="envio-telefono" name="telefono" placeholder="Teléfono / WhatsApp" required class="shipping-input">
       <input type="email" id="envio-correo" name="correo" placeholder="Correo electrónico" required class="shipping-input">
       <input type="text" id="envio-direccion" name="direccion" placeholder="Dirección exacta (calle, número, apto/casa)" required class="shipping-input">

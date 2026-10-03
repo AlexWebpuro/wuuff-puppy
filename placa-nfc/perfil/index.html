@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#4964af">
+<title>Perfil de tu mascota · Wuuff Puppy</title>
+<link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700&family=Nunito+Sans:wght@400;700;800&display=swap">
+<style>
+:root{--blue:#4964af;--blue-dark:#37508f;--coral:#f17d57;--coral-dark:#d95f39;--cream:#f9f0ee;--ink:#2a3149;--muted:#6d7488;--line:#e9ddd6;--ok:#2e7d51;--danger:#c0392b;--shadow:0 2px 6px rgba(42,49,73,.07),0 10px 30px rgba(42,49,73,.07)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--cream);color:var(--ink);font-family:"Nunito Sans",system-ui,-apple-system,sans-serif;line-height:1.5}
+h1,h2{font-family:"Baloo 2","Nunito Sans",sans-serif;line-height:1.15;margin:0}
+a{color:var(--blue)}
+[hidden]{display:none!important}
+.barra{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;background:#fff;border-bottom:2px solid #e8f0fb}
+.barra img{height:34px}
+.barra a.ver{font-weight:800;font-size:.9rem;text-decoration:none}
+main{max-width:720px;margin:0 auto;padding:18px 16px 120px}
+.intro h1{font-size:1.8rem;color:var(--blue-dark)}
+.intro p{color:var(--muted);margin:6px 0 0}
+.chip-url{margin-top:12px;background:#fff;border:2px dashed var(--blue);border-radius:14px;padding:10px 14px;font-size:.9rem}
+.chip-url b{font-family:ui-monospace,Menlo,monospace;overflow-wrap:anywhere}
+.form-card{background:#fff;border-radius:16px;box-shadow:var(--shadow);padding:20px;margin-top:16px}
+.form-card h2{font-size:1.15rem;color:var(--blue-dark);margin-bottom:2px}
+.form-card .hint{color:var(--muted);font-size:.86rem;margin:0 0 14px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:600px){.grid-2{grid-template-columns:1fr}}
+.field label{display:block;font-size:.8rem;font-weight:800;letter-spacing:.03em;margin-bottom:5px}
+.field label .req{color:var(--coral-dark)}
+.field input,.field select,.field textarea{width:100%;padding:11px 12px;border:1.5px solid var(--line);border-radius:10px;font:400 1rem "Nunito Sans",sans-serif;background:#fff;color:var(--ink)}
+.field textarea{resize:vertical;min-height:70px}
+.field input:focus,.field select:focus,.field textarea:focus{outline:2px solid var(--blue);outline-offset:1px;border-color:var(--blue)}
+.field .note{font-size:.78rem;color:var(--muted);margin-top:4px}
+.ancho{grid-column:1/-1}
+.check{display:flex;gap:10px;align-items:flex-start;padding-top:6px}
+.check input{width:20px;height:20px;accent-color:var(--blue);margin-top:2px}
+.foto-wrap{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.foto-prev{width:110px;height:110px;border-radius:18px;object-fit:cover;background:linear-gradient(160deg,var(--blue),var(--blue-dark));display:flex;align-items:center;justify-content:center;font-size:3rem}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 18px;border:none;border-radius:12px;font:800 .95rem "Nunito Sans",sans-serif;cursor:pointer;text-decoration:none}
+.btn-primary{background:var(--coral);color:#fff}.btn-primary:hover{background:var(--coral-dark)}
+.btn-secundario{background:#fff;color:var(--blue);border:2px solid var(--blue)}
+.btn-ghost{background:transparent;color:var(--muted);border:1.5px solid var(--line)}
+.vacuna{position:relative;display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:8px;align-items:end;padding:10px 40px 12px 0;border-bottom:1px solid var(--line)}
+.vacuna .field input{padding:9px 10px;font-size:.92rem}
+@media(max-width:600px){.vacuna{grid-template-columns:1fr 1fr}.vacuna .nombre{grid-column:1/-1}}
+.quitar{position:absolute;top:6px;right:0;background:none;border:none;color:var(--danger);font-size:1.5rem;line-height:1;cursor:pointer;padding:6px 8px}
+.guardar{position:fixed;left:0;right:0;bottom:0;z-index:20;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:rgba(249,240,238,.94);backdrop-filter:blur(10px);border-top:1px solid var(--line)}
+.guardar .in{max-width:720px;margin:0 auto;display:flex;gap:12px;align-items:center}
+.guardar .btn-primary{flex:1;padding:15px;font-size:1.05rem}
+.msg{border-radius:10px;padding:10px 14px;font-weight:800;font-size:.9rem;margin-top:14px}
+.msg.ok{background:#e0f2e9;color:var(--ok)}.msg.err{background:#fdeae4;color:var(--danger)}
+.estado{min-height:60vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:10px;color:var(--muted)}
+.estado .icon{font-size:3.5rem}
+</style>
+</head>
+<body>
+<div class="barra">
+  <a href="/placa-nfc/"><img src="/images/wuuff-puppy.png" alt="Wuuff Puppy"></a>
+  <a class="ver" id="ver-perfil" href="#" target="_blank" rel="noopener" hidden>👀 Ver como lo verán</a>
+</div>
+<main>
+  <div class="estado" id="cargando"><div class="icon">🐾</div><p>Cargando el perfil…</p></div>
+  <div class="estado" id="sin-acceso" hidden><div class="icon">🔒</div><h1>No encontramos este perfil</h1>
+    <p>Abre el enlace completo que te enviamos al correo después de tu compra. Si lo perdiste, escríbenos por
+    <a href="https://wa.me/573176431286?text=Hola%2C%20necesito%20el%20enlace%20para%20editar%20el%20perfil%20de%20mi%20placa%20NFC">WhatsApp</a>.</p></div>
+
+  <form id="form" novalidate hidden>
+    <div class="intro">
+      <h1 id="titulo">Perfil de tu mascota</h1>
+      <p>Esto es lo que verá quien acerque su celular a la placa. Los datos con <b style="color:var(--coral-dark)">*</b> son obligatorios; todo lo demás es opcional y lo puedes cambiar cuando quieras.</p>
+      <div class="chip-url">🏷️ Dirección de la placa: <b id="url-placa"></b></div>
+      <div class="msg err" id="aviso-enlace">🔐 Guarda este enlace: es la única forma de editar el perfil. No lo compartas.</div>
+    </div>
+
+    <section class="form-card">
+      <h2>🐾 Datos básicos</h2>
+      <p class="hint">Lo mínimo para que puedan reconocerlo.</p>
+      <div class="grid-2">
+        <div class="field"><label for="m-nombre">Nombre <span class="req">*</span></label><input id="m-nombre" maxlength="40" required></div>
+        <div class="field"><label for="m-especie">Especie <span class="req">*</span></label><select id="m-especie" required><option value="">Elige…</option><option>Perro</option><option>Gato</option></select></div>
+        <div class="field"><label for="m-raza">Raza <span class="req">*</span></label><input id="m-raza" maxlength="60" required placeholder="Ej: Beagle, criollo…"></div>
+        <div class="field"><label for="m-sexo">Sexo <span class="req">*</span></label><select id="m-sexo" required><option value="">Elige…</option><option>Macho</option><option>Hembra</option></select></div>
+      </div>
+    </section>
+
+    <section class="form-card">
+      <h2>📷 Foto</h2>
+      <p class="hint">Una foto clara de su cara o de cuerpo entero ayuda mucho a reconocerlo.</p>
+      <div class="foto-wrap">
+        <div class="foto-prev" id="foto-prev">🐶</div>
+        <div>
+          <input type="file" id="foto" accept="image/*" hidden>
+          <button type="button" class="btn btn-secundario" id="foto-elegir">Subir foto</button>
+          <button type="button" class="btn btn-ghost" id="foto-quitar" hidden>Quitar</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="form-card">
+      <h2>📞 Contacto de la familia</h2>
+      <p class="hint">Este teléfono aparece en el perfil para que te llamen o te escriban.</p>
+      <div class="grid-2">
+        <div class="field"><label for="c-nombre">Nombre de la familia</label><input id="c-nombre" maxlength="80" placeholder="Ej: Familia Monroy"></div>
+        <div class="field"><label for="c-telefono">Teléfono / WhatsApp <span class="req">*</span></label><input id="c-telefono" type="tel" maxlength="30" required></div>
+        <div class="field"><label for="c-telefono2">Otro teléfono</label><input id="c-telefono2" type="tel" maxlength="30"></div>
+        <div class="field"><label class="check"><input type="checkbox" id="c-whatsapp" checked> <span>Mostrar botón de WhatsApp</span></label></div>
+      </div>
+    </section>
+
+    <section class="form-card">
+      <h2>🐶 Más sobre tu mascota</h2>
+      <div class="grid-2">
+        <div class="field"><label for="m-nacimiento">Fecha de nacimiento</label><input id="m-nacimiento" type="month"><div class="note">Con esto calculamos su edad.</div></div>
+        <div class="field"><label for="m-color">Color</label><input id="m-color" maxlength="60" placeholder="Ej: Tricolor"></div>
+        <div class="field"><label for="m-esterilizado">Esterilizado</label><select id="m-esterilizado"><option value="">Sin indicar</option><option>Sí</option><option>No</option></select></div>
+        <div class="field"><label for="m-ciudad">Ciudad</label><input id="m-ciudad" maxlength="60"></div>
+        <div class="field ancho"><label for="m-senas">Señas particulares</label><textarea id="m-senas" maxlength="300" placeholder="Ej: Mancha blanca en el pecho"></textarea></div>
+        <div class="field ancho"><label for="m-descripcion">Descripción</label><textarea id="m-descripcion" maxlength="500" placeholder="Ej: Juguetón y amigable. Se acerca si lo llamas con calma."></textarea></div>
+      </div>
+    </section>
+
+    <section class="form-card">
+      <h2>❤️ Salud</h2>
+      <div class="grid-2">
+        <div class="field ancho"><label for="s-alergias">Alergias</label><input id="s-alergias" maxlength="300" placeholder="Ej: Ninguna conocida"></div>
+        <div class="field ancho"><label for="s-condiciones">Condiciones especiales</label><input id="s-condiciones" maxlength="300"></div>
+        <div class="field ancho"><label for="s-medicamentos">Medicamentos</label><input id="s-medicamentos" maxlength="300"></div>
+      </div>
+    </section>
+
+    <section class="form-card">
+      <h2>💉 Vacunas</h2>
+      <p class="hint">Sirve también como su carné de vacunas a la mano.</p>
+      <div id="vacunas"></div>
+      <button type="button" class="btn btn-secundario" id="vacuna-agregar" style="margin-top:12px">+ Agregar vacuna</button>
+    </section>
+
+    <section class="form-card">
+      <h2>🩺 Veterinaria</h2>
+      <div class="grid-2">
+        <div class="field"><label for="v-nombre">Veterinaria o veterinario</label><input id="v-nombre" maxlength="80"></div>
+        <div class="field"><label for="v-telefono">Teléfono</label><input id="v-telefono" type="tel" maxlength="30"></div>
+        <div class="field ancho"><label for="v-direccion">Dirección</label><input id="v-direccion" maxlength="120"></div>
+      </div>
+    </section>
+    <div class="msg" id="msg" hidden role="status"></div>
+  </form>
+</main>
+<div class="guardar" id="barra-guardar" hidden><div class="in">
+  <button type="button" class="btn btn-primary" id="guardar">Guardar perfil 🐾</button>
+</div></div>
+
+<script>
+(function(){
+  var h = new URLSearchParams(location.hash.slice(1));
+  var ID = (h.get('id') || '').toUpperCase(), CLAVE = h.get('clave') || '';
+  var $ = function(id){ return document.getElementById(id); };
+  var fotoNueva = null, quitarFoto = false, tieneFoto = false;
+
+  function mostrar(estado){
+    $('cargando').hidden = estado !== 'cargando';
+    $('sin-acceso').hidden = estado !== 'sin-acceso';
+    $('form').hidden = estado !== 'form';
+    $('barra-guardar').hidden = estado !== 'form';
+  }
+  function aviso(texto, ok){
+    var m = $('msg'); m.textContent = texto; m.className = 'msg ' + (ok ? 'ok' : 'err'); m.hidden = false;
+    m.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+  function vacunaFila(v){
+    v = v || {};
+    var d = document.createElement('div'); d.className = 'vacuna';
+    d.innerHTML = '<div class="field nombre"><label>Vacuna</label><input class="vn" maxlength="60" placeholder="Ej: Rabia"></div>' +
+      '<div class="field"><label>Fecha</label><input class="vf" type="date"></div>' +
+      '<div class="field"><label>Próxima dosis</label><input class="vp" type="date"></div>' +
+      '<button type="button" class="quitar" aria-label="Quitar vacuna">×</button>' +
+      '<div class="field nombre" style="grid-column:1/-1"><label>Lugar (opcional)</label><input class="vl" maxlength="80" placeholder="Ej: Vet. Patitas Felices"></div>';
+    d.querySelector('.vn').value = v.nombre || '';
+    d.querySelector('.vf').value = v.fecha || '';
+    d.querySelector('.vp').value = v.proxima || '';
+    d.querySelector('.vl').value = v.lugar || '';
+    d.querySelector('.quitar').addEventListener('click', function(){ d.remove(); });
+    $('vacunas').appendChild(d);
+  }
+  function pintarFoto(src){
+    var p = $('foto-prev');
+    if(src){ p.outerHTML = '<img class="foto-prev" id="foto-prev" alt="Foto de tu mascota" src="' + src + '">'; }
+    else { p.outerHTML = '<div class="foto-prev" id="foto-prev">' + ($('m-especie').value === 'Gato' ? '🐱' : '🐶') + '</div>'; }
+    $('foto-quitar').hidden = !src;
+  }
+  function llenar(p){
+    var m = p.mascota || {}, c = p.contacto || {}, s = p.salud || {}, v = p.veterinaria || {};
+    var set = function(id, val){ $(id).value = val || ''; };
+    set('m-nombre', m.nombre); set('m-especie', m.especie); set('m-raza', m.raza); set('m-sexo', m.sexo);
+    set('m-nacimiento', (m.nacimiento || '').slice(0, 7)); set('m-color', m.color); set('m-esterilizado', m.esterilizado);
+    set('m-ciudad', m.ciudad); set('m-senas', m.senas); set('m-descripcion', m.descripcion);
+    set('c-nombre', c.nombre); set('c-telefono', c.telefono); set('c-telefono2', c.telefono2); $('c-whatsapp').checked = c.whatsapp !== false;
+    set('s-alergias', s.alergias); set('s-condiciones', s.condiciones); set('s-medicamentos', s.medicamentos);
+    set('v-nombre', v.nombre); set('v-telefono', v.telefono); set('v-direccion', v.direccion);
+    $('vacunas').innerHTML = ''; (p.vacunas || []).forEach(vacunaFila);
+    tieneFoto = !!p.foto; pintarFoto(p.foto ? '/m/' + ID + '/foto?v=' + p.foto : '');
+    $('titulo').textContent = 'Perfil de ' + (m.nombre || 'tu mascota');
+  }
+  function datos(){
+    var val = function(id){ return $(id).value.trim(); };
+    return {
+      mascota: { nombre: val('m-nombre'), especie: val('m-especie'), raza: val('m-raza'), sexo: val('m-sexo'),
+        nacimiento: val('m-nacimiento'), color: val('m-color'), esterilizado: val('m-esterilizado'), ciudad: val('m-ciudad'),
+        senas: val('m-senas'), descripcion: val('m-descripcion') },
+      contacto: { nombre: val('c-nombre'), telefono: val('c-telefono'), telefono2: val('c-telefono2'), whatsapp: $('c-whatsapp').checked },
+      salud: { alergias: val('s-alergias'), condiciones: val('s-condiciones'), medicamentos: val('s-medicamentos') },
+      vacunas: Array.prototype.map.call(document.querySelectorAll('.vacuna'), function(d){
+        return { nombre: d.querySelector('.vn').value.trim(), fecha: d.querySelector('.vf').value, proxima: d.querySelector('.vp').value, lugar: d.querySelector('.vl').value.trim() };
+      }),
+      veterinaria: { nombre: val('v-nombre'), telefono: val('v-telefono'), direccion: val('v-direccion') }
+    };
+  }
+
+  // Foto: se reduce en el celular a 900 px como máximo antes de subirla
+  $('foto-elegir').addEventListener('click', function(){ $('foto').click(); });
+  $('foto').addEventListener('change', function(){
+    var f = this.files && this.files[0]; if(!f) return;
+    var img = new Image(), url = URL.createObjectURL(f);
+    img.onload = function(){
+      var max = 900, w = img.naturalWidth, hh = img.naturalHeight, k = Math.min(1, max / Math.max(w, hh));
+      var cv = document.createElement('canvas'); cv.width = Math.round(w * k); cv.height = Math.round(hh * k);
+      cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+      fotoNueva = cv.toDataURL('image/jpeg', 0.82); quitarFoto = false;
+      URL.revokeObjectURL(url); pintarFoto(fotoNueva);
+    };
+    img.onerror = function(){ aviso('No pudimos leer esa imagen. Prueba con otra foto.', false); };
+    img.src = url;
+  });
+  $('foto-quitar').addEventListener('click', function(){ fotoNueva = null; quitarFoto = tieneFoto; pintarFoto(''); $('foto').value = ''; });
+  $('vacuna-agregar').addEventListener('click', function(){ vacunaFila(); });
+
+  $('guardar').addEventListener('click', function(){
+    var d = datos(), faltan = [];
+    if(!d.mascota.nombre) faltan.push('nombre'); if(!d.mascota.especie) faltan.push('especie');
+    if(!d.mascota.raza) faltan.push('raza'); if(!d.mascota.sexo) faltan.push('sexo');
+    if((d.contacto.telefono.match(/\d/g) || []).length < 7) faltan.push('teléfono de contacto');
+    if(faltan.length){ aviso('Falta: ' + faltan.join(', ') + '.', false); return; }
+    var b = $('guardar'); b.disabled = true; b.textContent = 'Guardando…';
+    fetch('/.netlify/functions/perfil-datos', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: ID, clave: CLAVE, datos: d, foto: fotoNueva, quitarFoto: quitarFoto }) })
+      .then(function(r){ return r.json().then(function(j){ if(!r.ok) throw new Error(j.error || 'Error'); return j; }); })
+      .then(function(j){ fotoNueva = null; quitarFoto = false; llenar(j.perfil); aviso('✅ ¡Listo! El perfil quedó guardado.', true);
+        })
+      .catch(function(e){ aviso('No se pudo guardar: ' + e.message + '. Intenta de nuevo.', false); })
+      .then(function(){ b.disabled = false; b.textContent = 'Guardar perfil 🐾'; });
+  });
+
+  if(!/^[A-Z0-9]{6,16}$/.test(ID) || !CLAVE){ mostrar('sin-acceso'); return; }
+  var publica = location.origin + '/m/' + ID;
+  $('url-placa').textContent = 'wuuffpuppy.co/m/' + ID;
+  $('ver-perfil').href = publica; $('ver-perfil').hidden = false;
+  fetch('/.netlify/functions/perfil-datos?id=' + encodeURIComponent(ID) + '&clave=' + encodeURIComponent(CLAVE))
+    .then(function(r){ if(!r.ok) throw new Error('404'); return r.json(); })
+    .then(function(j){ llenar(j.perfil); mostrar('form'); })
+    .catch(function(){ mostrar('sin-acceso'); });
+})();
+</script>
+</body>
+</html>

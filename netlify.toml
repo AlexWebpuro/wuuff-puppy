@@ -39,3 +39,24 @@
   to = "/arnes-tipo-h-impermeable-perro/"
   status = 301
   force = true
+
+# Perfil de la mascota de la placa NFC: es la dirección que se graba en el chip
+[[redirects]]
+  from = "/m/:id/foto"
+  to = "/.netlify/functions/perfil-foto?id=:id"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/m/:id"
+  to = "/.netlify/functions/perfil-ver?id=:id"
+  status = 200
+  force = true
+
+# La página de edición del perfil y las respuestas del perfil no se indexan ni se guardan en caché
+[[headers]]
+  for = "/placa-nfc/perfil/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Referrer-Policy = "no-referrer"
+    Cache-Control = "no-store"

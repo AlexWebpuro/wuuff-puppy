@@ -12,7 +12,8 @@ exports.handler = async function (event) {
     return { statusCode: 400, body: JSON.stringify({ error: 'JSON inválido' }) };
   }
 
-  const { toEmail, toName, nombreProducto, mascota, direccion, ciudad, metodoPago, total } = body;
+  const { toEmail, toName, nombreProducto, mascota, direccion, ciudad, metodoPago, total, perfilEditar } = body;
+  const enlacePerfil = /^https:\/\/[a-z0-9.-]+\/placa-nfc\/perfil\/#id=[A-Z0-9]+&clave=[a-f0-9]+$/.test(perfilEditar || '') ? perfilEditar : '';
   const contraentrega = metodoPago === 'contraentrega';
 
   if (!toEmail) {
@@ -47,6 +48,11 @@ exports.handler = async function (event) {
         ${direccion ? `<p style="margin:4px 0;"><strong>Dirección:</strong> ${direccion}${ciudad ? ', ' + ciudad : ''}</p>` : ''}
         ${total ? `<p style="margin:4px 0;"><strong>Total:</strong> ${total}${contraentrega ? ' · se paga al recibir' : ''}</p>` : ''}
       </div>
+      ${enlacePerfil ? `<div style="background:#fff4ef;border:2px solid #f17d57;border-radius:12px;padding:16px 20px;margin:20px 0;">
+        <p style="margin:0 0 8px;"><strong>🏷️ Completa el perfil de la placa NFC</strong></p>
+        <p style="margin:0 0 12px;">Es lo que verá quien escanee la placa: agrega su foto, vacunas y veterinaria cuando quieras. Guarda este correo: el enlace es privado y es la única forma de editarlo.</p>
+        <a href="${enlacePerfil}" style="display:inline-block;background:#f17d57;color:#fff;font-weight:bold;padding:12px 18px;border-radius:10px;text-decoration:none;">Completar el perfil</a>
+      </div>` : ''}
       <p>Te contactaremos pronto por WhatsApp para coordinar el envío.</p>
       <p style="margin-top:28px;">— El equipo de Wuuff Puppy 💙</p>
     </div>
