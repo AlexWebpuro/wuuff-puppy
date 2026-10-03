@@ -1,6 +1,7 @@
 // Registra un pedido con pago contraentrega (solo Bogotá / Soacha).
 // No pasa por Wompi: guarda el pedido en Netlify Forms, le avisa a la tienda
 // por correo y envía la confirmación a la clienta.
+const { getStore, connectLambda } = require('@netlify/blobs');
 const SITE_URL = 'https://wuuffpuppy.co/';
 
 function limpiar(v, max) {
@@ -36,7 +37,7 @@ exports.handler = async function (event) {
     direccion: limpiar(body.direccion, 200),
     ciudad: limpiar(body.ciudad, 80),
     talla: limpiar(body.talla, 20),
-    producto: limpiar(body.producto, 300)
+    producto: limpiar(body.producto, 600)
   };
   const totalCents = parseInt(body.totalCents, 10);
 
@@ -47,6 +48,12 @@ exports.handler = async function (event) {
   if ((pedido.telefono.match(/\d/g) || []).length < 7) {
     return { statusCode: 400, body: JSON.stringify({ error: 'Teléfono inválido' }) };
   }
+
+  // Placa NFC: perfil de la mascota creado al comprar (su dirección se graba en el chip)
+  const perfil = body.perfil && /^[A-Z0-9]{6,16}$/.test(String(body.perfil.id || '')) && /^[a-f0-9]{20,64}$/.test(String(body.perfil.clave || ''))
+    ? { id: body.perfil.id, clave: body.perfil.clave } : null;
+  const urlChip = perfil ? SITE_URL + 'm/' + perfil.id : '';
+  const urlEditar = perfil ? SITE_URL + 'placa-nfc/perfil/#id=' + perfil.id + '&clave=' + perfil.clave : '';
 
   const referencia = 'CE-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6).toUpperCase();
   const total = pesos(totalCents);
@@ -75,6 +82,20 @@ exports.handler = async function (event) {
     console.error('No se pudo guardar el pedido en Netlify Forms', err);
   }
 
+  if (perfil) {
+    try {
+      connectLambda(event);
+      const store = getStore({ name: 'perfiles-nfc', consistency: 'strong' });
+      const p = await store.get(perfil.id, { type: 'json' });
+      if (p && p.clave === perfil.clave) {
+        p.pedido = Object.assign({}, p.pedido, { estado: 'contraentrega', referencia: referencia });
+        await store.setJSON(perfil.id, p);
+      }
+    } catch (err) {
+      console.error('No se pudo marcar el pedido en el perfil NFC', err.message);
+    }
+  }
+
   const apiKey = process.env.RESEND_API_KEY;
   const fromEmail = process.env.RESEND_FROM;
   const fromAddress = fromEmail ? `Wuuff Puppy <${fromEmail}>` : 'Wuuff Puppy <onboarding@resend.dev>';
@@ -93,6 +114,7 @@ exports.handler = async function (event) {
         <strong>Teléfono:</strong> ${pedido.telefono} (<a href="${wa}">WhatsApp</a>)<br>
         <strong>Correo:</strong> ${pedido.correo || '-'}<br>
         <strong>Dirección:</strong> ${pedido.direccion}, ${pedido.ciudad}</p>
+        ${urlChip ? `<p style="background:#fffbe6;padding:10px 12px;border-radius:10px"><strong>🏷️ Grabar en el chip NFC:</strong><br><a href="${urlChip}">${urlChip}</a></p>` : ''}
       </div>`;
     try {
       const resp = await fetch('https://api.resend.com/emails', {
@@ -128,7 +150,8 @@ exports.handler = async function (event) {
           direccion: pedido.direccion,
           ciudad: pedido.ciudad,
           metodoPago: 'contraentrega',
-          total: total
+          total: total,
+          perfilEditar: urlEditar
         })
       });
     } catch (err) {

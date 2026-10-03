@@ -2,6 +2,7 @@
 // Esta es la única fuente de verdad para marcar un pedido como confirmado:
 // no depende de que el cliente vuelva a la página después de pagar.
 const crypto = require('crypto');
+const { getStore, connectLambda } = require('@netlify/blobs');
 
 function getValueByPath(obj, path) {
   return path.split('.').reduce(function (acc, key) {
@@ -88,9 +89,10 @@ exports.handler = async function (event) {
     nombreProducto = match[3];
   }
 
-  // La talla queda dentro del nombre del producto, ej: "Collar de goma (Talla S) x2"
+  // La talla queda dentro del nombre del producto, ej: "Collar de goma (Talla S) x2".
+  // Solo se toma el paréntesis que dice "Talla …" (la placa NFC lleva otro con sus colores).
   let talla = '';
-  const tallaMatch = /\(([^)]+)\)/.exec(nombreProducto);
+  const tallaMatch = /\((Talla [^)]+)\)/.exec(nombreProducto);
   if (tallaMatch) talla = tallaMatch[1];
 
   // El tipo de envío se infiere de la ciudad (mismo criterio usado al calcular el costo)
@@ -124,6 +126,50 @@ exports.handler = async function (event) {
     console.error('No se pudo guardar el registro en Netlify Forms', err);
   }
 
+  // Placa NFC: el producto lleva "Perfil NFC: <id>". Se marca el perfil como pagado y se arma
+  // el enlace privado de edición (va al correo del cliente) y la dirección para grabar en el chip.
+  let urlEditar = '', urlChip = '';
+  const perfilMatch = /Perfil NFC:\s*([A-Z0-9]{6,16})/.exec(nombreProducto);
+  if (perfilMatch) {
+    try {
+      connectLambda(event);
+      const store = getStore({ name: 'perfiles-nfc', consistency: 'strong' });
+      const perfil = await store.get(perfilMatch[1], { type: 'json' });
+      if (perfil) {
+        perfil.pedido = Object.assign({}, perfil.pedido, { estado: 'pagado', referencia: transaction.reference || transaction.id || '' });
+        await store.setJSON(perfil.id, perfil);
+        urlChip = siteUrl + 'm/' + perfil.id;
+        urlEditar = siteUrl + 'placa-nfc/perfil/#id=' + perfil.id + '&clave=' + perfil.clave;
+      }
+    } catch (err) {
+      console.error('No se pudo actualizar el perfil NFC', err.message);
+    }
+    // Aviso a la tienda con lo necesario para imprimir y grabar la placa
+    if (process.env.RESEND_API_KEY) {
+      const from = process.env.RESEND_FROM ? `Wuuff Puppy <${process.env.RESEND_FROM}>` : 'Wuuff Puppy <onboarding@resend.dev>';
+      try {
+        await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            from: from,
+            to: [process.env.RESEND_REPLY_TO || 'wuuffpuppy@gmail.com'],
+            subject: `🏷️ Pedido con placa NFC pagado · ${nombre || 'cliente'}`,
+            html: `<div style="font-family:Arial,sans-serif;color:#2d4375;max-width:520px">
+              <h2>🏷️ Pedido con placa NFC (pagado con Wompi)</h2>
+              <p><strong>Producto:</strong> ${String(nombreProducto).replace(/[<>]/g, '')}</p>
+              <p><strong>Cliente:</strong> ${String(nombre).replace(/[<>]/g, '')} · ${String(telefono).replace(/[<>]/g, '')}<br>
+              <strong>Dirección:</strong> ${String(direccion).replace(/[<>]/g, '')}, ${String(ciudad).replace(/[<>]/g, '')}</p>
+              ${urlChip ? `<p style="background:#fffbe6;padding:10px 12px;border-radius:10px"><strong>Grabar en el chip NFC:</strong><br><a href="${urlChip}">${urlChip}</a></p>` : '<p>⚠️ No se encontró el perfil NFC de este pedido.</p>'}
+            </div>`
+          })
+        });
+      } catch (err) {
+        console.error('No se pudo avisar a la tienda del pedido con placa', err.message);
+      }
+    }
+  }
+
   // Envía el correo de confirmación con la marca Wuuff Puppy
   if (correo) {
     try {
@@ -136,7 +182,8 @@ exports.handler = async function (event) {
           nombreProducto: nombreProducto,
           mascota: mascota,
           direccion: direccion,
-          ciudad: ciudad
+          ciudad: ciudad,
+          perfilEditar: urlEditar
         })
       });
     } catch (err) {

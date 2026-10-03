@@ -1,5 +1,7 @@
 User-agent: *
 Allow: /
 Disallow: /.netlify/
+Disallow: /m/
+Disallow: /placa-nfc/perfil/
 
 Sitemap: https://wuuffpuppy.co/sitemap.xml
