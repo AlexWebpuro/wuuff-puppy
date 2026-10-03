@@ -43,13 +43,13 @@
 # Perfil de la mascota de la placa NFC: es la dirección que se graba en el chip
 [[redirects]]
   from = "/m/:id/foto"
-  to = "/.netlify/functions/perfil-foto?id=:id"
+  to = "/.netlify/functions/perfil-foto/:id?id=:id"
   status = 200
   force = true
 
 [[redirects]]
   from = "/m/:id"
-  to = "/.netlify/functions/perfil-ver?id=:id"
+  to = "/.netlify/functions/perfil-ver/:id?id=:id"
   status = 200
   force = true
 
