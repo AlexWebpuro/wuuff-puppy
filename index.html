@@ -521,6 +521,8 @@ body{font-family:'Nunito',sans-serif;background:var(--white);color:var(--navy);o
 #menu.abierto .nav-burger span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
 .nav-links a{font-size:13px;font-weight:800;color:var(--navy);text-decoration:none;opacity:0.7;transition:opacity .2s;}
 .nav-links a:hover{opacity:1;color:var(--blue);}
+.nav-links a.nav-placa{opacity:1;display:inline-flex;align-items:center;gap:6px;}
+.nav-nuevo{background:var(--coral);color:#fff;font-size:9px;font-weight:900;letter-spacing:1px;text-transform:uppercase;padding:3px 7px;border-radius:20px;}
 .nav-cta{background:var(--blue);color:#fff;font-weight:900;font-size:13px;padding:10px 24px;border-radius:30px;text-decoration:none;transition:transform .2s;box-shadow:0 4px 14px rgba(73,100,175,.3);}
 .nav-cta:hover{transform:translateY(-2px);}
 
@@ -632,6 +634,11 @@ body{font-family:'Nunito',sans-serif;background:var(--white);color:var(--navy);o
 .prod-card:hover{transform:translateY(-6px);box-shadow:0 24px 60px rgba(73,100,175,.18);border-color:var(--sky);}
 .prod-card{scroll-margin-top:80px;}
 .prod-card.featured{border:3px solid var(--lime);}
+.prod-card.placa{grid-column:1/-1;border:3px solid var(--coral);}
+a.btn-buy{display:block;box-sizing:border-box;text-align:center;text-decoration:none;}
+.prod-card.placa .prod-img{text-decoration:none;}
+.prod-card.placa .carousel-slide{object-fit:contain;}
+@media(min-width:760px){.prod-card.placa{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);align-items:center;}.prod-card.placa .prod-img.carousel{height:100%;min-height:360px;}}
 .prod-img{background:linear-gradient(135deg,var(--lblue),var(--cream));height:220px;display:flex;align-items:center;justify-content:center;padding:20px;}
 .prod-img.carousel{position:relative;overflow:hidden;padding:0;height:min(380px,55vh);}
 .carousel-track{width:100%;height:100%;position:relative;}
@@ -1140,9 +1147,9 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
         <a href="/arnes-tipo-h-impermeable-perro/">Arnés tipo H impermeable</a>
         <a href="/collar-impermeable-perro/">Collar impermeable</a>
         <a href="/correa-impermeable-perro/">Correa impermeable</a>
-        <a href="/placa-nfc/">🏷️ Placa NFC con nombre</a>
       </div>
     </div>
+    <a href="/placa-nfc/" class="nav-placa">Placa NFC <span class="nav-nuevo">Nuevo</span></a>
     <a href="#por-que">¿Por qué goma?</a>
     <a href="/blog/">Blog</a>
     <a href="#nosotros">Nosotros</a>
@@ -1389,6 +1396,25 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
           </div>
         </div>
         <button class="btn-buy" onclick="comprarProducto(this, 5890000, 'Correa impermeable')">Comprar 🐾</button>
+      </div>
+    </div>
+
+    <div class="prod-card placa" id="placa-nfc">
+      <a class="prod-img carousel" href="/placa-nfc/" aria-label="Ver la Placa NFC con nombre">
+        <div class="carousel-track">
+          <img src="images/productos/placa-nfc.jpg" alt="Perro con la Placa NFC con su nombre colgada del collar" class="carousel-slide active" loading="lazy" width="800" height="800">
+        </div>
+      </a>
+      <div class="prod-body">
+        <span class="prod-tag tag-coral">✨ Nuevo</span>
+        <h3 class="prod-name"><a href="/placa-nfc/">Placa NFC con nombre</a></h3>
+        <div class="prod-desc">Placa con el nombre de tu perrihijo y un chip NFC sellado por dentro. Si se pierde, quien lo encuentre acerca el celular y ve cómo contactarte y su información veterinaria. Sin batería y sin app.</div>
+        <a class="btn-details" href="/placa-nfc/#como-funciona">📋 Ver cómo funciona →</a>
+        <div class="price-row">
+          <div class="prod-price"><span class="price-old"><s aria-label="Precio antes: $44.900">$44.900</s><span class="price-off">-22%</span></span>$34.900 COP <small>🏷️ $24.900 si la llevas con collar, arnés o combo</small></div>
+        </div>
+        <div class="prod-trust"><span>🐾 Huella, gato o nombre</span><span>🎨 Tú eliges los colores</span><span>📱 Funciona con cualquier celular</span></div>
+        <a class="btn-buy" href="/placa-nfc/#disena">Diseña su placa 🐾</a>
       </div>
     </div>
 
