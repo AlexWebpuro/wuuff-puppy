@@ -53,12 +53,17 @@ exports.handler = async function (event) {
     return { statusCode: 400, body: JSON.stringify({ error: 'Teléfono inválido' }) };
   }
 
-  connectLambda(event);
-  const store = getStore({ name: 'perfiles-nfc', consistency: 'strong' });
+  let store;
+  try {
+    connectLambda(event);
+    store = getStore('perfiles-nfc');
+  } catch (err) {
+    console.error('Netlify Blobs no está disponible', err.name, err.message);
+    return { statusCode: 503, body: JSON.stringify({ error: 'No se pudo guardar el perfil', detalle: err.name }) };
+  }
 
   // Código público de 10 caracteres (≈ 49 bits): imposible de adivinar recorriendo códigos
   let id = codigo(10);
-  for (let i = 0; i < 3 && (await store.get(id)); i++) id = codigo(10);
 
   const ahora = new Date().toISOString();
   const perfil = {
@@ -75,7 +80,12 @@ exports.handler = async function (event) {
     veterinaria: {},
     foto: null
   };
-  await store.setJSON(id, perfil);
+  try {
+    await store.setJSON(id, perfil);
+  } catch (err) {
+    console.error('No se pudo guardar el perfil NFC', err.name, err.message);
+    return { statusCode: 503, body: JSON.stringify({ error: 'No se pudo guardar el perfil', detalle: err.name }) };
+  }
 
   console.log('Perfil NFC creado', id, mascota.nombre);
   return {

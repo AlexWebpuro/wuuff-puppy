@@ -178,7 +178,7 @@ exports.handler = async function (event) {
   if (/^[A-Z0-9]{6,16}$/.test(id)) {
     try {
       connectLambda(event);
-      perfil = await getStore({ name: 'perfiles-nfc', consistency: 'strong' }).get(id, { type: 'json' });
+      perfil = await getStore('perfiles-nfc').get(id, { type: 'json' });
     } catch (err) {
       console.error('No se pudo leer el perfil', id, err.message);
     }

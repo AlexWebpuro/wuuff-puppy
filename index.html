@@ -2350,9 +2350,9 @@ document.addEventListener('submit', function(e){
         contactoNombre: nombre, telefono: telefono, ciudad: ciudadNombre, correo: correo });
       return;
     }
-    nombreProducto += ' | Perfil NFC: ' + pendingPurchase.perfil.id;
+    nombreProducto += ' | Perfil NFC: ' + (pendingPurchase.perfil.pendiente || pendingPurchase.perfil.id);
   }
-  var perfilPlaca = pendingPurchase.perfil || null;
+  var perfilPlaca = pendingPurchase.perfil && pendingPurchase.perfil.id ? pendingPurchase.perfil : null;
 
   if(contraentrega){
     enviarPedidoContraentrega(form, {
@@ -2444,20 +2444,29 @@ function crearPerfilPlaca(form, datos){
   }
   var btn = document.getElementById('envio-submit');
   if(btn){ btn.disabled = true; btn.textContent = 'Creando el perfil…'; }
-  fetch('/.netlify/functions/perfil-crear', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) })
-    .then(function(r){ return r.json().then(function(j){ if(!r.ok || !j.id) throw new Error(j && j.error || 'Error'); return j; }); })
-    .then(function(j){
-      if(!pendingPurchase) return;
-      pendingPurchase.perfil = { id: j.id, clave: j.clave };
-      try { sessionStorage.setItem('wuuff_perfil', JSON.stringify({ id: j.id, clave: j.clave, mascota: datos.mascota })); } catch(e){}
-      if(btn) btn.disabled = false;
-      form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
-    })
-    .catch(function(err){
-      console.error(err);
-      if(btn){ btn.disabled = false; actualizarOpcionesPago(); }
-      alert('No pudimos crear el perfil de la placa. Intenta de nuevo o escríbenos por WhatsApp al 317 643 1286.');
-    });
+  function seguir(){
+    if(btn) btn.disabled = false;
+    form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+  }
+  function intentar(n){
+    fetch('/.netlify/functions/perfil-crear', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) })
+      .then(function(r){ return r.json().then(function(j){ if(!r.ok || !j.id) throw new Error((j && j.error) || ('HTTP ' + r.status)); return j; }); })
+      .then(function(j){
+        if(!pendingPurchase) return;
+        pendingPurchase.perfil = { id: j.id, clave: j.clave };
+        try { sessionStorage.setItem('wuuff_perfil', JSON.stringify({ id: j.id, clave: j.clave, mascota: datos.mascota })); } catch(e){}
+        seguir();
+      })
+      .catch(function(err){
+        console.error('No se pudo crear el perfil NFC', err);
+        if(n < 2){ setTimeout(function(){ intentar(n + 1); }, 1500); return; }
+        // La venta no se bloquea: el pedido lleva los datos y el servidor crea el perfil al registrarlo
+        if(!pendingPurchase) return;
+        pendingPurchase.perfil = { pendiente: 'pendiente (' + datos.especie + ', ' + datos.sexo + ', ' + datos.raza.replace(/[(),|]/g, ' ') + ')' };
+        seguir();
+      });
+  }
+  intentar(1);
 }
 // Después de comprar una placa: invita a completar el perfil (foto, vacunas, veterinaria)
 function ofrecerCompletarPerfil(){

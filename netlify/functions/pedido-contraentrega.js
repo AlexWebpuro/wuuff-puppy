@@ -50,8 +50,27 @@ exports.handler = async function (event) {
   }
 
   // Placa NFC: perfil de la mascota creado al comprar (su dirección se graba en el chip)
-  const perfil = body.perfil && /^[A-Z0-9]{6,16}$/.test(String(body.perfil.id || '')) && /^[a-f0-9]{20,64}$/.test(String(body.perfil.clave || ''))
+  let perfil = body.perfil && /^[A-Z0-9]{6,16}$/.test(String(body.perfil.id || '')) && /^[a-f0-9]{20,64}$/.test(String(body.perfil.clave || ''))
     ? { id: body.perfil.id, clave: body.perfil.clave } : null;
+  // Si el navegador no pudo crear el perfil, el pedido trae "Perfil NFC: pendiente (Especie, Sexo, Raza)"
+  const pendiente = /Perfil NFC: pendiente \(([^,]+), ([^,]+), ([^)]+)\)/.exec(pedido.producto);
+  if (!perfil && pendiente) {
+    try {
+      const r = await fetch(SITE_URL + '.netlify/functions/perfil-crear', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mascota: pedido.mascota, especie: pendiente[1].trim(), sexo: pendiente[2].trim(), raza: pendiente[3].trim(),
+          contactoNombre: pedido.nombre, telefono: pedido.telefono, ciudad: pedido.ciudad, correo: pedido.correo })
+      });
+      const j = await r.json();
+      if (r.ok && j.id) {
+        perfil = { id: j.id, clave: j.clave };
+        pedido.producto = pedido.producto.replace(pendiente[0], 'Perfil NFC: ' + j.id);
+      }
+    } catch (err) {
+      console.error('No se pudo crear el perfil NFC pendiente', err.message);
+    }
+  }
   const urlChip = perfil ? SITE_URL + 'm/' + perfil.id : '';
   const urlEditar = perfil ? SITE_URL + 'placa-nfc/perfil/#id=' + perfil.id + '&clave=' + perfil.clave : '';
 
@@ -85,7 +104,7 @@ exports.handler = async function (event) {
   if (perfil) {
     try {
       connectLambda(event);
-      const store = getStore({ name: 'perfiles-nfc', consistency: 'strong' });
+      const store = getStore('perfiles-nfc');
       const p = await store.get(perfil.id, { type: 'json' });
       if (p && p.clave === perfil.clave) {
         p.pedido = Object.assign({}, p.pedido, { estado: 'contraentrega', referencia: referencia });

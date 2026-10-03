@@ -260,10 +260,18 @@ main{max-width:720px;margin:0 auto;padding:18px 16px 120px}
   var publica = location.origin + '/m/' + ID;
   $('url-placa').textContent = 'wuuffpuppy.co/m/' + ID;
   $('ver-perfil').href = publica; $('ver-perfil').hidden = false;
-  fetch('/.netlify/functions/perfil-datos?id=' + encodeURIComponent(ID) + '&clave=' + encodeURIComponent(CLAVE))
-    .then(function(r){ if(!r.ok) throw new Error('404'); return r.json(); })
-    .then(function(j){ llenar(j.perfil); mostrar('form'); })
-    .catch(function(){ mostrar('sin-acceso'); });
+  // Un perfil recién creado puede tardar unos segundos en estar disponible: se reintenta antes de rendirse
+  function cargar(n){
+    fetch('/.netlify/functions/perfil-datos?id=' + encodeURIComponent(ID) + '&clave=' + encodeURIComponent(CLAVE))
+      .then(function(r){ if(!r.ok) throw new Error(String(r.status)); return r.json(); })
+      .then(function(j){ llenar(j.perfil); mostrar('form'); })
+      .catch(function(){
+        if(n >= 12){ mostrar('sin-acceso'); return; }
+        if(n === 1) document.querySelector('#cargando p').textContent = 'Estamos preparando el perfil, un momento…';
+        setTimeout(function(){ cargar(n + 1); }, 4000);
+      });
+  }
+  cargar(1);
 })();
 </script>
 </body>
