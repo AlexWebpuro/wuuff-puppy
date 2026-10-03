@@ -87,10 +87,18 @@ a { color: var(--blue); }
 .info-card b { color: var(--coral); font-family: var(--f-display); font-weight: 400; font-size: 18px; }
 .pastilla { background: var(--lime); color: var(--navy); font-weight: 800; font-size: 14px; border-radius: 30px; padding: 7px 14px; }
 .hero-cta { display: flex; flex-wrap: wrap; gap: 12px; }
-.hero-ilus { position: relative; margin: 0; width: 100%; max-width: min(400px, 82%); justify-self: center; }
+.hero-ilus { position: relative; margin: 0; width: 100%; max-width: min(520px, 88%); justify-self: center; }
 .hero-ilus img { display: block; width: 100%; height: auto; }
-#tag-hero { position: absolute; left: 60%; top: 80.5%; width: 30%; filter: drop-shadow(0 4px 6px rgba(45, 67, 117, .3)); }
+#tag-hero { position: absolute; left: 57.5%; top: 59.5%; width: 30%; filter: drop-shadow(0 4px 6px rgba(45, 67, 117, .3)); }
 #tag-hero svg { display: block; width: 100%; height: auto; overflow: visible; }
+/* Lupa: la placa vista de cerca */
+.lupa { position: absolute; right: -2%; top: 0; width: 40%; aspect-ratio: 1; border-radius: 50%; border: 4px solid var(--navy);
+  background: radial-gradient(circle at 35% 30%, #fff, #eef3fb 70%); box-shadow: 0 10px 26px rgba(45, 67, 117, .28); display: grid; place-items: center; }
+.lupa::after { content: ""; position: absolute; right: 4%; bottom: 4%; width: 24%; height: 9%; background: var(--navy); border-radius: 8px;
+  transform-origin: left center; transform: translate(88%, 40%) rotate(45deg); }
+.lupa-tag { width: 58%; margin-top: -14%; filter: drop-shadow(0 4px 6px rgba(45, 67, 117, .3)); }
+.lupa-tag svg { display: block; width: 100%; height: auto; }
+.lupa-txt { position: absolute; bottom: 11%; font: 900 10px/1 var(--f-cuerpo); letter-spacing: .1em; text-transform: uppercase; color: var(--navy); background: var(--lime); padding: 4px 8px; border-radius: 20px; }
 
 /* Cinta */
 .ticker { background: var(--blue); color: var(--white); overflow: hidden; white-space: nowrap; padding-block: 12px; font-weight: 800; font-size: 15px; }
@@ -262,8 +270,9 @@ footer a:hover { opacity: 1; text-decoration: underline; }
       </div>
     </div>
     <figure class="hero-ilus">
-      <img id="img-boceto" alt="Dibujo de un perro con collar y arnés, con la placa NFC colgada del arnés">
+      <img id="img-boceto" alt="Dibujo de un perro con collar y arnés, con la placa NFC colgada del collar">
       <div id="tag-hero" aria-hidden="true"></div>
+      <div class="lupa" aria-hidden="true"><div class="lupa-tag" id="tag-lupa"></div><span class="lupa-txt">Chip NFC</span></div>
     </figure>
   </div>
 </header>
@@ -358,7 +367,7 @@ footer a:hover { opacity: 1; text-decoration: underline; }
     </div>
   </section>
 
-  <section class="seccion franja" aria-labelledby="t-como">
+  <section class="seccion franja" id="como-funciona" aria-labelledby="t-como">
     <div class="envoltura">
       <div class="cabeza"><h2 id="t-como">Así funciona el chip 📲</h2><p>Funciona con celulares que tienen NFC: iPhone XS o más nuevo y la mayoría de Android.</p></div>
       <ol class="pasos">

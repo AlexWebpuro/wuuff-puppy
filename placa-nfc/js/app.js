@@ -229,12 +229,13 @@ function miniaturas(nombre) {
     const g = geometria(tipo, nombre);
     $('#mini-' + tipo).innerHTML = svgDe(g, G.bounds(g.base), 1);
   }
-  // placa colgada del arnés en el boceto del inicio
+  // placa colgada del collar en el boceto del inicio (y vista de cerca en la lupa)
   const g = geometria(estado.diseno, nombre), bb = G.bounds(g.base);
   const hx = (g.agujero.x - bb.x0) / bb.w * 100, hy = (bb.y1 - g.agujero.y) / bb.h * 100;
   const tag = $('#tag-hero'); tag.innerHTML = svgDe(g, bb, 0);
-  tag.style.width = (30 * bb.w / 44).toFixed(2) + '%';
+  tag.style.width = (22 * bb.w / 44).toFixed(2) + '%';
   tag.style.transform = `translate(-${hx.toFixed(1)}%, -${hy.toFixed(1)}%)`;
+  $('#tag-lupa').innerHTML = svgDe(g, bb, 0);
 }
 
 // ---------------- Actualización ----------------
