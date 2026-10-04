@@ -330,6 +330,9 @@ function montar(THREE, stage) {
   const facing = Math.atan2(fA.n.x, fA.n.z); // ángulo de la placa respecto al frente
   let yaw = -facing + 0.55, vel = AUTO, arrastre = null, tocado = false, ultimoToque = -1e9;
   let psi = 0, dpsi = 0, th = 0, dth = 0, velPrev = vel, armado = false;
+  // inclinación (arrastrar hacia arriba o abajo): limitada para que el collar no atraviese el piso
+  const INC_MIN = -0.25, INC_MAX = 0.4, VEL_MAX = 2.4;          // rad, rad · VEL_MAX ≈ 0,4 vueltas por segundo
+  let inc = 0;
 
   function cara() { let f = yaw + facing; f = Math.atan2(Math.sin(f), Math.cos(f)); return f; }
 
@@ -343,15 +346,16 @@ function montar(THREE, stage) {
   canvas.addEventListener('pointermove', e => {
     if (!arrastre || e.pointerId !== arrastre.id) return;
     const now = performance.now(), dt = Math.max(1, now - arrastre.t) / 1000;
-    const dx = e.clientX - arrastre.x;
-    const k = 6.2 / Math.max(260, stage.clientWidth);           // una pasada completa ≈ una vuelta
-    yaw += dx * k; vel = vel * 0.4 + (dx * k / dt) * 0.6;
+    const dx = e.clientX - arrastre.x, dy = e.clientY - arrastre.y;
+    const k = 3.6 / Math.max(260, stage.clientWidth);           // una pasada completa ≈ media vuelta
+    yaw += dx * k; vel = vel * 0.5 + (dx * k / dt) * 0.5;
+    inc = Math.max(INC_MIN, Math.min(INC_MAX, inc + dy * k));
     arrastre.x = e.clientX; arrastre.y = e.clientY; arrastre.t = now; ultimoToque = now;
   });
   const soltar = e => {
     if (!arrastre || (e && e.pointerId !== arrastre.id)) return;
     if (performance.now() - arrastre.t > 90) vel = 0;           // se quedó quieto antes de soltar
-    vel = Math.max(-9, Math.min(9, vel));
+    vel = Math.max(-VEL_MAX, Math.min(VEL_MAX, vel));
     arrastre = null; canvas.classList.remove('arrastrando'); ultimoToque = performance.now();
   };
   canvas.addEventListener('pointerup', soltar);
@@ -361,6 +365,8 @@ function montar(THREE, stage) {
     if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
       e.preventDefault(); vel = (e.key === 'ArrowLeft' ? -1 : 1) * 2.4; ultimoToque = performance.now();
       if (!tocado) { tocado = true; stage.classList.add('tocado'); }
+    } else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+      e.preventDefault(); inc = Math.max(INC_MIN, Math.min(INC_MAX, inc + (e.key === 'ArrowDown' ? 0.12 : -0.12))); ultimoToque = performance.now();
     }
   });
 
@@ -368,13 +374,15 @@ function montar(THREE, stage) {
   function paso(now) {
     raf = 0;
     // en reposo basta con ~30 cuadros por segundo (ahorra batería en el celular)
-    const quieto = !arrastre && Math.abs(vel - AUTO) < 0.05 && Math.abs(dpsi) < 0.02 && Math.abs(dth) < 0.02;
+    const quieto = !arrastre && Math.abs(vel - AUTO) < 0.05 && Math.abs(dpsi) < 0.02 && Math.abs(dth) < 0.02 && Math.abs(inc) < 0.002;
     if (quieto && now - tPrev < 30) { if (visible && enPantalla) raf = requestAnimationFrame(paso); return; }
     const dt = Math.min(0.05, (now - tPrev) / 1000); tPrev = now;
     if (!arrastre) {
-      const k = now - ultimoToque < 1500 ? 0.9 : 2.2;            // inercia y luego vuelve al giro lento
+      const k = now - ultimoToque < 1500 ? 1.6 : 2.2;            // inercia corta y luego vuelve al giro lento
       vel += (AUTO - vel) * (1 - Math.exp(-dt * k));
       yaw += vel * dt;
+      // la inclinación vuelve suave a su lugar unos segundos después de soltar
+      if (now - ultimoToque > 3000) inc += (0 - inc) * (1 - Math.exp(-dt * 1.2));
     }
     const acel = Math.max(-40, Math.min(40, (vel - velPrev) / Math.max(dt, 1e-3))); velPrev = vel;
     // la placa se mece: hacia afuera por la velocidad de giro y de lado por los cambios de velocidad
@@ -383,7 +391,7 @@ function montar(THREE, stage) {
     dpsi += (-psi * 55 - dpsi * 3.2 - acel * 0.11) * dt; psi += dpsi * dt;
     psi = Math.max(-0.7, Math.min(0.7, psi));
     pendulo.rotation.x = th; pendulo.rotation.z = psi;
-    collar.rotation.y = yaw;
+    collar.rotation.y = yaw; collar.rotation.x = inc;
     collar.position.y = reducido ? 0 : Math.sin((now - t0) / 1000 * 1.25) * 2.2;
     // cambia el nombre cuando la placa queda de espaldas
     const f = Math.abs(cara());
@@ -406,7 +414,7 @@ function montar(THREE, stage) {
   else addEventListener('resize', encuadrar);
 
   const pista = document.createElement('span'); pista.className = 'hero-3d-pista'; pista.setAttribute('aria-hidden', 'true');
-  pista.textContent = '↔ Desliza para girarlo';
+  pista.textContent = '✋ Arrástralo para girarlo';
   stage.appendChild(pista);
   renderer.render(scene, camera);
   requestAnimationFrame(() => { stage.classList.add('listo'); reanudar(); });

@@ -17,7 +17,7 @@
 }
 .hero-3d-poster,.hero-3d canvas{position:absolute;inset:0;width:100% !important;height:100% !important;display:block;}
 .hero-3d-poster{object-fit:contain;transition:opacity .5s ease;user-select:none;-webkit-user-drag:none;}
-.hero-3d canvas{opacity:0;transition:opacity .5s ease;touch-action:pan-y pinch-zoom;cursor:grab;outline:none;-webkit-tap-highlight-color:transparent;}
+.hero-3d canvas{opacity:0;transition:opacity .5s ease;touch-action:none;cursor:grab;outline:none;-webkit-tap-highlight-color:transparent;}
 .hero-3d canvas.arrastrando{cursor:grabbing;}
 .hero-3d canvas:focus-visible{box-shadow:0 0 0 3px var(--navy,#2d4375);border-radius:18px;}
 .hero-3d.listo canvas{opacity:1;}
