@@ -26,12 +26,24 @@ function esperarCarga() {
     if (document.readyState === 'complete') idle(); else addEventListener('load', idle, { once: true });
   });
 }
+// Solo con aceleración gráfica real: sin ella (WebGL por software) dibujar el 3D traba el celular,
+// así que se queda la imagen fija.
+const SIN_SOFTWARE = { failIfMajorPerformanceCaveat: true };
 function hayWebGL() {
-  try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch (e) { return false; }
+  try {
+    const c = document.createElement('canvas');
+    const gl = c.getContext('webgl2', SIN_SOFTWARE) || c.getContext('webgl', SIN_SOFTWARE);
+    if (!gl) return false;
+    const info = gl.getExtension('WEBGL_debug_renderer_info');
+    const gpu = info ? String(gl.getParameter(info.UNMASKED_RENDERER_WEBGL)) : '';
+    gl.getExtension('WEBGL_lose_context')?.loseContext();
+    return !/swiftshader|llvmpipe|software|basic render/i.test(gpu);
+  } catch (e) { return false; }
 }
 
 async function arrancar(stage) {
-  if (!hayWebGL()) return;
+  const forzar = POSTER || window.__collarForzar === true;   // para generar el póster y para pruebas
+  if (!forzar && !hayWebGL()) return;
   if (!POSTER) await esperarCarga();
   let THREE;
   try { THREE = await import(THREE_URL); } catch (e) { return; }   // sin red: se queda la imagen
@@ -142,7 +154,7 @@ function leerFormas(THREE, lista) {
 // ---------------------------------------------------------------- escena
 function montar(THREE, stage) {
   const reducido = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: POSTER, powerPreference: 'low-power' });
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: POSTER, powerPreference: 'low-power', failIfMajorPerformanceCaveat: !(POSTER || window.__collarForzar === true) });
   renderer.setPixelRatio(POSTER ? 1 : Math.min(window.devicePixelRatio || 1, 2));
   renderer.setClearColor(0x000000, 0);
   renderer.outputColorSpace = THREE.SRGBColorSpace;

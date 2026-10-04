@@ -484,16 +484,23 @@
  ]
 }
 </script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="image" href="/collar-3d/collar-3d-poster.webp" fetchpriority="high">
 <link rel="stylesheet" href="/collar-3d/collar-3d.css">
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
+<link rel="preload" as="font" type="font/woff2" href="/assets/fonts/fredoka-one-latin-400-normal.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="/assets/fonts/nunito-latin-800-normal.woff2" crossorigin>
 <style>
+/* Fuentes servidas desde el sitio (más rápido que Google Fonts) */
+@font-face{font-family:'Fredoka One';font-style:normal;font-weight:400;font-display:swap;src:url(/assets/fonts/fredoka-one-latin-400-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;}
+@font-face{font-family:'Nunito';font-style:normal;font-weight:400;font-display:swap;src:url(/assets/fonts/nunito-latin-400-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;}
+@font-face{font-family:'Nunito';font-style:normal;font-weight:700;font-display:swap;src:url(/assets/fonts/nunito-latin-700-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;}
+@font-face{font-family:'Nunito';font-style:normal;font-weight:800;font-display:swap;src:url(/assets/fonts/nunito-latin-800-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;}
+@font-face{font-family:'Nunito';font-style:normal;font-weight:900;font-display:swap;src:url(/assets/fonts/nunito-latin-900-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;}
 :root{
   --blue:#4964af; --lime:#d5d50c; --coral:#f17d57;
   --navy:#2d4375; --cream:#f9f0ee; --pink:#cc8d9f;
   --sky:#b8d8f5; --white:#ffffff; --lblue:#e8f0fb;
+  --coral-fuerte:#c94d27; /* coral para fondos con letra blanca pequeña (botones, etiquetas) */
+  --coral-texto:#e0623a; /* coral para textos: contraste suficiente sobre crema y con letra blanca */
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
@@ -523,7 +530,7 @@ body{font-family:'Nunito',sans-serif;background:var(--white);color:var(--navy);o
 #menu.abierto .nav-burger span:nth-child(1){transform:translateY(6.5px) rotate(45deg);}
 #menu.abierto .nav-burger span:nth-child(2){opacity:0;}
 #menu.abierto .nav-burger span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
-.nav-links a{font-size:13px;font-weight:800;color:var(--navy);text-decoration:none;opacity:0.7;transition:opacity .2s;}
+.nav-links a{font-size:13px;font-weight:800;color:var(--navy);text-decoration:none;opacity:.8;transition:opacity .2s;}
 .nav-links a:hover{opacity:1;color:var(--blue);}
 .nav-links a.nav-placa{opacity:1;display:inline-flex;align-items:center;gap:6px;}
 .nav-nuevo{background:var(--coral);color:#fff;font-size:9px;font-weight:900;letter-spacing:1px;text-transform:uppercase;padding:3px 7px;border-radius:20px;}
@@ -542,7 +549,7 @@ body{font-family:'Nunito',sans-serif;background:var(--white);color:var(--navy);o
 .hero-text{position:relative;z-index:2;max-width:560px;text-align:left;}
 .hero-title{font-family:'Fredoka One',cursive;font-size:clamp(42px,6vw,72px);color:var(--navy);line-height:1.35;margin-bottom:28px;}
 .hero-title .t-highlight{background:var(--navy);color:#fff;padding:4px 22px;border-radius:26px;box-decoration-break:clone;-webkit-box-decoration-break:clone;}
-.hero-title .t-coral{background:var(--coral);color:#fff;}
+.hero-title .t-coral{background:var(--coral-texto);color:#fff;}
 .hero-offer{display:inline-block;background:#fff;color:var(--navy);font-weight:800;font-size:16px;line-height:1.4;padding:10px 18px;border-radius:18px;margin:0 0 22px;box-shadow:0 8px 24px rgba(45,67,117,.18);}
 .hero-offer s{opacity:.5;font-weight:700;margin:0 2px;}
 .hero-offer strong{font-family:'Fredoka One',cursive;font-weight:400;font-size:1.25em;color:var(--coral);}
@@ -563,7 +570,7 @@ body{font-family:'Nunito',sans-serif;background:var(--white);color:var(--navy);o
 .shipping-modal-overlay.open{display:flex;}
 .shipping-modal{background:#fff;border-radius:24px;padding:32px 26px;max-width:380px;width:100%;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.25);margin:auto;}
 .shipping-modal h3{font-family:'Fredoka One',cursive;font-size:20px;color:var(--navy);margin-bottom:8px;}
-.shipping-modal-sub{font-size:13px;font-weight:600;color:var(--navy);opacity:.65;margin-bottom:22px;}
+.shipping-modal-sub{font-size:13px;font-weight:600;color:var(--navy);opacity:.8;margin-bottom:22px;}
 .shipping-talla-display{display:none;background:var(--lime);color:var(--navy);font-weight:900;font-size:13px;padding:8px 14px;border-radius:12px;margin-bottom:14px;}
 .shipping-modal form{display:flex;flex-direction:column;gap:12px;}
 .shipping-input{width:100%;padding:13px 16px;border-radius:14px;border:1.5px solid var(--lblue);font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;color:var(--navy);outline:none;box-sizing:border-box;background:var(--cream);}
@@ -592,7 +599,7 @@ body{font-family:'Nunito',sans-serif;background:var(--white);color:var(--navy);o
 .hero-offer-hasta{display:block;font-size:12.5px;font-weight:800;color:var(--coral);margin-top:2px;}
 .promo-feedback.valido{color:#2b8a3e;}
 .promo-feedback.invalido{color:#c0392b;}
-.shipping-modal-cancel{background:none;border:none;color:var(--navy);opacity:.5;font-weight:700;font-size:13px;cursor:pointer;margin-top:14px;font-family:'Nunito',sans-serif;}
+.shipping-modal-cancel{background:none;border:none;color:var(--navy);opacity:.8;font-weight:700;font-size:13px;cursor:pointer;margin-top:14px;font-family:'Nunito',sans-serif;}
 
 /* WHATSAPP FLOTANTE */
 .whatsapp-float{
@@ -618,7 +625,7 @@ body{font-family:'Nunito',sans-serif;background:var(--white);color:var(--navy);o
 .characters{padding:90px 20px;background:var(--lblue);}
 .characters h2{font-family:'Fredoka One',cursive;font-size:clamp(32px,5vw,52px);text-align:center;color:var(--navy);margin-bottom:8px;}
 .characters h2 span{color:var(--blue);}
-.chars-sub{text-align:center;font-size:17px;font-weight:600;color:var(--navy);opacity:.65;margin-bottom:56px;}
+.chars-sub{text-align:center;font-size:17px;font-weight:600;color:var(--navy);opacity:.8;margin-bottom:56px;}
 .chars-grid{display:flex;gap:24px;justify-content:center;flex-wrap:wrap;max-width:1000px;margin:0 auto;}
 .char-card{background:#fff;border-radius:28px;padding:32px 24px;text-align:center;width:210px;transition:transform .25s,box-shadow .25s;box-shadow:0 6px 24px rgba(73,100,175,.1);border:2px solid var(--lblue);}
 .char-card:hover{transform:translateY(-8px) rotate(-1deg);box-shadow:0 20px 50px rgba(73,100,175,.18);}
@@ -626,13 +633,13 @@ body{font-family:'Nunito',sans-serif;background:var(--white);color:var(--navy);o
 @keyframes charSalto{0%,100%{transform:none}35%{transform:translateY(-14px) rotate(-3deg)}70%{transform:translateY(0) rotate(2deg)}}
 .char-card img{width:130px;height:130px;object-fit:contain;margin-bottom:14px;}
 .char-name{font-family:'Fredoka One',cursive;font-size:18px;color:var(--navy);margin-bottom:4px;}
-.char-desc{font-size:12px;font-weight:700;color:var(--navy);opacity:.6;}
+.char-desc{font-size:12px;font-weight:700;color:var(--navy);opacity:.8;}
 
 /* PRODUCTS */
 .products{padding:90px 20px;background:var(--cream);}
 .products h2{font-family:'Fredoka One',cursive;font-size:clamp(32px,5vw,52px);text-align:center;color:var(--navy);margin-bottom:8px;}
-.products h2 span{color:var(--coral);}
-.prod-sub{text-align:center;font-size:17px;font-weight:600;color:var(--navy);opacity:.65;margin-bottom:56px;}
+.products h2 span{color:var(--coral-texto);}
+.prod-sub{text-align:center;font-size:17px;font-weight:600;color:var(--navy);opacity:.8;margin-bottom:56px;}
 .products-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px;max-width:1200px;margin:0 auto;}
 .prod-card{background:#fff;border-radius:28px;overflow:hidden;box-shadow:0 8px 32px rgba(73,100,175,.1);transition:transform .25s,box-shadow .25s;border:2px solid transparent;}
 .prod-card:hover{transform:translateY(-6px);box-shadow:0 24px 60px rgba(73,100,175,.18);border-color:var(--sky);}
@@ -675,7 +682,7 @@ video.carousel-slide{background:#dfe8f5;}
 .details-close{position:absolute;top:14px;right:14px;width:40px;height:40px;border-radius:50%;border:none;background:var(--lblue);color:var(--navy);font-size:24px;font-weight:900;cursor:pointer;line-height:1;}
 .details-title{font-family:'Fredoka One',cursive;font-size:24px;color:var(--navy);margin:0 48px 14px 0;}
 .details-tabs{display:flex;gap:6px;background:var(--lblue);padding:5px;border-radius:14px;margin-bottom:18px;}
-.details-tab{flex:1;-webkit-tap-highlight-color:transparent;border:none;background:none;padding:10px 6px;border-radius:10px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;color:var(--navy);opacity:.7;cursor:pointer;min-height:40px;}
+.details-tab{flex:1;-webkit-tap-highlight-color:transparent;border:none;background:none;padding:10px 6px;border-radius:10px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;color:var(--navy);opacity:.8;cursor:pointer;min-height:40px;}
 .details-tab.active{background:#fff;opacity:1;color:var(--blue);box-shadow:0 2px 8px rgba(73,100,175,.15);}
 .details-panel{display:none;color:var(--navy);font-size:14px;line-height:1.6;}
 .details-panel.active{display:block;}
@@ -706,7 +713,7 @@ video.carousel-slide{background:#dfe8f5;}
 .talla-sheet{position:relative;background:#fff;width:100%;max-width:480px;border-radius:24px 24px 0 0;padding:24px 20px 26px;box-shadow:0 -12px 40px rgba(0,0,0,.2);animation:sheetUp .28s cubic-bezier(.2,.9,.3,1);}
 @media(min-width:700px){.talla-overlay{align-items:center;padding:20px;}.talla-sheet{border-radius:24px;}}
 .talla-titulo{font-family:'Fredoka One',cursive;font-weight:400;font-size:22px;color:var(--navy);margin:0 48px 4px 0;}
-.talla-sub{font-size:13.5px;font-weight:700;color:var(--navy);opacity:.7;margin:0 0 16px;}
+.talla-sub{font-size:13.5px;font-weight:700;color:var(--navy);opacity:.8;margin:0 0 16px;}
 .talla-opciones{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;}
 .talla-op{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:92px;padding:12px 10px;border:2px solid var(--lblue);background:var(--lblue);border-radius:18px;cursor:pointer;font-family:'Nunito',sans-serif;color:var(--navy);-webkit-tap-highlight-color:transparent;transition:border-color .15s,transform .1s;}
 .talla-op:hover,.talla-op:focus-visible{border-color:var(--blue);}
@@ -715,7 +722,7 @@ video.carousel-slide{background:#dfe8f5;}
 .talla-op span{white-space:pre-line;font-size:12.5px;font-weight:700;opacity:.75;line-height:1.35;text-align:center;}
 .talla-wa{display:inline-flex;align-items:center;gap:6px;margin:-6px 0 14px;font-size:13px;font-weight:800;color:#1e9e56;text-decoration:underline;text-underline-offset:3px;-webkit-tap-highlight-color:transparent;}
 .talla-wa::before{content:'';width:16px;height:16px;flex-shrink:0;background:#25d366;border-radius:50%;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2z'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2z'/%3E%3C/svg%3E") center/contain no-repeat;}
-.talla-wa-btn{display:flex;justify-content:center;width:100%;box-sizing:border-box;margin:0 0 4px;padding:13px 14px;background:#e8f9ef;border:2px solid #25d366;border-radius:16px;color:#128c4a;text-decoration:none;font-size:13px;text-align:center;line-height:1.3;}
+.talla-wa-btn{display:flex;justify-content:center;width:100%;box-sizing:border-box;margin:0 0 4px;padding:13px 14px;background:#e8f9ef;border:2px solid #25d366;border-radius:16px;color:#0b7a3e;text-decoration:none;font-size:13px;text-align:center;line-height:1.3;}
 .talla-guia{display:block;width:100%;background:none;border:none;padding:8px 0 0;font-family:'Nunito',sans-serif;font-size:13.5px;font-weight:800;color:var(--blue);text-decoration:underline;text-underline-offset:3px;cursor:pointer;}
 
 /* VISOR DE IMÁGENES */
@@ -754,20 +761,20 @@ button.instagram-slide{border:none;padding:0;background:none;font:inherit;-webki
 .prod-body{padding:22px 18px;}
 .prod-tag{display:inline-block;font-size:10px;font-weight:900;letter-spacing:2px;text-transform:uppercase;padding:3px 12px;border-radius:20px;margin-bottom:10px;}
 .tag-blue{background:var(--lime);color:var(--navy);}
-.tag-coral{background:var(--coral);color:#fff;}
+.tag-coral{background:var(--coral-fuerte);color:#fff;}
 .prod-name{font-family:'Fredoka One',cursive;font-weight:400;font-size:20px;color:var(--navy);margin-bottom:6px;}
-.prod-desc{font-size:13px;font-weight:600;color:var(--navy);opacity:.65;margin-bottom:14px;line-height:1.5;}
+.prod-desc{font-size:13px;font-weight:600;color:var(--navy);opacity:.82;margin-bottom:14px;line-height:1.5;}
 .prod-price{font-family:'Fredoka One',cursive;font-size:24px;color:var(--blue);margin-bottom:4px;}
 .price-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:14px;container-type:inline-size;}
 .price-row .prod-price{flex:1 1 auto;min-width:0;margin-bottom:0;line-height:1.1;font-size:min(24px,8.2cqi);white-space:nowrap;}
 .price-old{display:flex;align-items:center;gap:6px;margin-bottom:2px;font-family:'Nunito',sans-serif;font-size:min(14px,5.4cqi);font-weight:700;color:var(--navy);}
-.price-old s{opacity:.5;text-decoration-thickness:1.5px;}
+.price-old s{opacity:.75;text-decoration-thickness:1.5px;}
 .price-off{background:var(--coral);color:#fff;font-weight:900;font-size:.85em;padding:1px 7px;border-radius:8px;letter-spacing:.3px;}
 .price-row .prod-price small{display:block;margin-top:4px;font-size:min(13px,6.2cqi);white-space:normal;}
 .cuotas-badge{position:relative;flex-shrink:0;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;margin-left:1em;padding:.45em 1em .45em .55em;background:var(--lime);color:var(--navy);font-family:'Fredoka One',cursive;font-size:min(14px,4.6cqi);line-height:1.05;text-align:center;text-transform:uppercase;letter-spacing:.3px;border-radius:0 1em 1em 0;white-space:nowrap;}
 .cuotas-badge small{display:block;margin-top:2px;font-family:'Nunito',sans-serif;font-weight:900;font-size:.62em;letter-spacing:.2px;text-transform:none;}
 .cuotas-badge::before{content:'';position:absolute;top:0;bottom:0;left:-.95em;width:1em;background:inherit;clip-path:polygon(100% 0,100% 100%,0 50%);}
-.prod-price small{font-size:13px;font-weight:700;color:var(--navy);opacity:.5;font-family:'Nunito',sans-serif;}
+.prod-price small{font-size:13px;font-weight:700;color:var(--navy);opacity:.8;font-family:'Nunito',sans-serif;}
 .prod-trust{display:flex;flex-wrap:wrap;gap:4px 12px;margin:-4px 0 16px;font-size:11.5px;font-weight:800;color:var(--navy);line-height:1.35;}
 .prod-trust span{opacity:.72;}
 .buy-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 12px;margin-bottom:16px;}
@@ -791,7 +798,7 @@ button.instagram-slide{border:none;padding:0;background:none;font:inherit;-webki
 .size-alert-icon{flex-shrink:0;width:34px;height:34px;border-radius:50%;background:var(--coral);display:flex;align-items:center;justify-content:center;font-size:17px;}
 .size-alert-link{background:none;border:none;padding:4px 0 0;font-family:'Nunito',sans-serif;font-size:12.5px;font-weight:900;color:var(--coral);text-decoration:underline;text-underline-offset:2px;cursor:pointer;}
 .size-alert strong{display:block;font-family:'Fredoka One',cursive;font-weight:400;font-size:16px;color:var(--navy);line-height:1.2;}
-.size-alert span.size-alert-text{display:block;font-size:12.5px;font-weight:700;color:var(--navy);opacity:.75;line-height:1.35;}
+.size-alert span.size-alert-text{display:block;font-size:12.5px;font-weight:700;color:var(--navy);opacity:.8;line-height:1.35;}
 @keyframes sizeAlertIn{from{opacity:0;transform:translateY(6px) scale(.96)}to{opacity:1;transform:none}}
 .size-row.needs-size .size-chip{border-color:var(--coral);background:#fff;animation:chipPulse 1s ease 2;}
 .size-row.shake{animation:sizeShake .45s ease;}
@@ -799,7 +806,7 @@ button.instagram-slide{border:none;padding:0;background:none;font:inherit;-webki
 @keyframes chipPulse{0%,100%{box-shadow:0 0 0 0 rgba(241,125,87,.45)}50%{box-shadow:0 0 0 6px rgba(241,125,87,0)}}
 .size-medidas{display:none;background:var(--lblue);border-radius:10px;padding:8px 12px;font-size:11px;font-weight:800;color:var(--navy);margin-top:-10px;margin-bottom:18px;}
 .qty-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
-.qty-label{font-size:12px;font-weight:800;color:var(--navy);opacity:.6;text-transform:uppercase;letter-spacing:.5px;}
+.qty-label{font-size:12px;font-weight:800;color:var(--navy);opacity:.8;text-transform:uppercase;letter-spacing:.5px;}
 .qty-control{display:flex;align-items:center;gap:12px;background:var(--lblue);border-radius:12px;padding:4px 8px;}
 .qty-btn{background:#fff;border:none;width:24px;height:24px;border-radius:8px;font-size:16px;font-weight:900;color:var(--blue);cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;box-shadow:0 2px 6px rgba(0,0,0,.08);}
 .qty-btn:hover{background:var(--blue);color:#fff;}
@@ -809,14 +816,14 @@ button.instagram-slide{border:none;padding:0;background:none;font:inherit;-webki
 .size-chip.selected{background:var(--blue);color:#fff;}
 .btn-buy{width:100%;background:var(--blue);color:#fff;font-weight:900;font-size:17px;letter-spacing:.2px;padding:15px;border-radius:16px;border:none;cursor:pointer;transition:background .2s,transform .1s;font-family:'Nunito',sans-serif;}
 .btn-buy:hover{background:var(--navy);transform:scale(1.02);}
-.btn-buy.coral{background:var(--coral);}
-.btn-buy.coral:hover{background:#d4603a;}
+.btn-buy.coral{background:var(--coral-fuerte);}
+.btn-buy.coral:hover{background:#b34322;}
 
 /* TOOLS */
 .tools-section{padding:70px 20px;background:#fff;}
 .real-section{padding:64px 20px 70px;background:var(--cream);text-align:center;}
 .real-section h2{font-family:'Fredoka One',cursive;font-size:clamp(28px,4vw,42px);color:var(--navy);margin-bottom:8px;}
-.real-section h2 span{color:var(--coral);}
+.real-section h2 span{color:var(--coral-texto);}
 .real-sub{font-size:16px;font-weight:700;color:#55607e;max-width:560px;margin:0 auto 28px;}
 .real-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:980px;margin:0 auto;}
 .real-card{margin:0;background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 8px 24px rgba(45,67,117,.08);text-align:left;}
@@ -830,7 +837,7 @@ button.instagram-slide{border:none;padding:0;background:none;font:inherit;-webki
 .real-card figcaption span{font-size:14px;font-weight:700;color:#55607e;}
 .real-card figcaption a{font-size:14px;font-weight:900;color:var(--blue);text-decoration:none;margin-top:4px;}
 .real-wa{font-size:15px;font-weight:700;color:#55607e;margin-top:24px;}
-.real-wa a{color:#128c4a;font-weight:900;}
+.real-wa a{color:#0b7a3e;font-weight:900;}
 @media(max-width:900px){
   .real-grid{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:76%;overflow-x:auto;scroll-snap-type:x mandatory;padding:0 4px 10px;margin:0 -20px;padding-left:20px;padding-right:20px;scrollbar-width:none;}
   .real-grid::-webkit-scrollbar{display:none;}
@@ -841,14 +848,14 @@ button.instagram-slide{border:none;padding:0;background:none;font:inherit;-webki
 .tools-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;max-width:940px;margin:0 auto;}
 .tool-card{background:var(--lblue);border-radius:28px;padding:34px 28px;}
 .tool-card h3{font-family:'Fredoka One',cursive;font-size:19px;color:var(--navy);margin-bottom:6px;}
-.tool-sub{font-size:13px;font-weight:600;color:var(--navy);opacity:.65;margin-bottom:24px;}
+.tool-sub{font-size:13px;font-weight:600;color:var(--navy);opacity:.8;margin-bottom:24px;}
 .size-slider-wrap{margin-bottom:18px;}
 .size-slider{width:100%;accent-color:var(--blue);height:6px;}
 .size-weight-label{text-align:center;font-family:'Fredoka One',cursive;font-size:22px;color:var(--blue);margin-top:10px;}
 .size-result{background:#fff;border-radius:18px;padding:16px 18px;display:flex;align-items:center;gap:14px;margin-bottom:14px;flex-wrap:wrap;}
 .size-result-badge{background:var(--blue);color:#fff;font-weight:900;font-size:14px;padding:8px 16px;border-radius:14px;white-space:nowrap;}
-.size-result-text{font-size:13px;font-weight:700;color:var(--navy);opacity:.75;}
-.size-disclaimer{font-size:11px;color:var(--navy);opacity:.5;font-weight:600;line-height:1.5;}
+.size-result-text{font-size:13px;font-weight:700;color:var(--navy);opacity:.8;}
+.size-disclaimer{font-size:11px;color:var(--navy);opacity:.8;font-weight:600;line-height:1.5;}
 .combo-list{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;}
 .combo-item{display:flex;align-items:center;gap:12px;background:#fff;border-radius:14px;padding:12px 16px;cursor:pointer;border:2px solid transparent;transition:border-color .2s;}
 .combo-item.is-checked{border-color:var(--blue);}
@@ -856,7 +863,7 @@ button.instagram-slide{border:none;padding:0;background:none;font:inherit;-webki
 .combo-item-name{flex:1;font-size:13px;font-weight:800;color:var(--navy);}
 .combo-item-price{font-size:13px;font-weight:900;color:var(--blue);}
 .combo-total-row{display:flex;justify-content:space-between;align-items:center;background:#fff;border-radius:14px;padding:14px 18px;margin-bottom:12px;}
-.combo-total-row span:first-child{font-size:12px;font-weight:800;color:var(--navy);opacity:.6;text-transform:uppercase;letter-spacing:1px;}
+.combo-total-row span:first-child{font-size:12px;font-weight:800;color:var(--navy);opacity:.8;text-transform:uppercase;letter-spacing:1px;}
 .combo-total{font-family:'Fredoka One',cursive;font-size:22px;color:var(--blue);}
 .combo-savings{background:var(--lime);color:var(--navy);font-size:12px;font-weight:800;padding:10px 14px;border-radius:12px;margin-bottom:16px;line-height:1.4;}
 
@@ -864,7 +871,7 @@ button.instagram-slide{border:none;padding:0;background:none;font:inherit;-webki
 .features{padding:80px 20px;background:#fff;}
 .features h2{font-family:'Fredoka One',cursive;font-size:clamp(30px,5vw,48px);text-align:center;color:var(--navy);margin-bottom:8px;}
 .features h2 span{color:var(--blue);}
-.feat-sub{text-align:center;font-size:17px;font-weight:600;color:var(--navy);opacity:.65;margin-bottom:52px;}
+.feat-sub{text-align:center;font-size:17px;font-weight:600;color:var(--navy);opacity:.8;margin-bottom:52px;}
 .feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;max-width:880px;margin:0 auto;}
 .feat-card{background:var(--cream);border-radius:24px;padding:32px 22px;text-align:center;position:relative;overflow:hidden;transition:transform .2s;}
 .feat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;border-radius:5px 5px 0 0;}
@@ -875,13 +882,13 @@ button.instagram-slide{border:none;padding:0;background:none;font:inherit;-webki
 .feat-card:hover{transform:translateY(-5px);}
 .feat-icon{font-size:42px;margin-bottom:14px;display:block;}
 .feat-title{font-family:'Fredoka One',cursive;font-size:17px;color:var(--navy);margin-bottom:8px;}
-.feat-desc{font-size:13px;font-weight:600;color:var(--navy);opacity:.7;line-height:1.5;}
+.feat-desc{font-size:13px;font-weight:600;color:var(--navy);opacity:.8;line-height:1.5;}
 
 /* VIDEO SECTION */
 .video-section{padding:90px 20px;background:var(--lblue);text-align:center;}
 .video-section h2{font-family:'Fredoka One',cursive;font-size:clamp(30px,5vw,48px);color:var(--navy);margin-bottom:8px;}
-.video-section h2 span{color:var(--coral);}
-.video-sub{font-size:17px;font-weight:600;color:var(--navy);opacity:.65;margin-bottom:44px;}
+.video-section h2 span{color:var(--coral-texto);}
+.video-sub{font-size:17px;font-weight:600;color:var(--navy);opacity:.8;margin-bottom:44px;}
 .video-wrap{
   max-width:400px;margin:0 auto;
   border-radius:24px;overflow:hidden;
@@ -896,7 +903,7 @@ button.instagram-slide{border:none;padding:0;background:none;font:inherit;-webki
 /* INSTAGRAM */
 .instagram-section{padding:90px 20px;background:#fff;text-align:center;}
 .instagram-section h2{font-family:'Fredoka One',cursive;font-size:clamp(30px,5vw,48px);color:var(--navy);margin-bottom:8px;}
-.instagram-section h2 span{color:var(--coral);}
+.instagram-section h2 span{color:var(--coral-texto);}
 .instagram-carousel{max-width:1100px;margin:0 auto 28px;overflow-x:auto;-webkit-overflow-scrolling:touch;}
 .instagram-track{display:flex;gap:16px;padding:8px 4px 16px;width:max-content;}
 .instagram-slide{flex:0 0 220px;width:220px;height:220px;border-radius:16px;overflow:hidden;display:block;box-shadow:0 8px 20px rgba(73,100,175,.12);}
@@ -920,7 +927,7 @@ button.instagram-slide{border:none;padding:0;background:none;font:inherit;-webki
 .story-inner .story-dog{max-height:260px;width:auto;max-width:100%;object-fit:contain;margin-bottom:28px;filter:drop-shadow(0 12px 30px rgba(73,100,175,.25));}
 .story-quote{font-family:'Fredoka One',cursive;font-size:clamp(22px,4vw,30px);color:var(--navy);line-height:1.3;margin-bottom:20px;}
 .story-quote em{font-style:normal;color:var(--blue);}
-.story-by{font-size:14px;font-weight:700;color:var(--navy);opacity:.6;margin-bottom:32px;}
+.story-by{font-size:14px;font-weight:700;color:var(--navy);opacity:.8;margin-bottom:32px;}
 .social-row{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;}
 .social-btn{color:var(--navy);font-weight:800;font-size:14px;padding:11px 22px;border-radius:30px;text-decoration:none;border:2px solid var(--navy);transition:all .2s;}
 .social-btn:hover{background:var(--navy);color:#fff;}
@@ -928,7 +935,7 @@ button.instagram-slide{border:none;padding:0;background:none;font:inherit;-webki
 /* FAQ */
 .faq-section{padding:80px 20px;background:#fff;}
 .faq-section h2{font-family:'Fredoka One',cursive;font-size:clamp(30px,5vw,48px);text-align:center;color:var(--navy);margin-bottom:44px;}
-.faq-section h2 span{color:var(--coral);}
+.faq-section h2 span{color:var(--coral-texto);}
 .faq-list{max-width:700px;margin:0 auto;display:flex;flex-direction:column;gap:14px;}
 .faq-item{background:var(--cream);border-radius:20px;overflow:hidden;border:2px solid transparent;transition:border-color .2s;}
 .faq-item.is-open{border-color:var(--sky);}
@@ -936,39 +943,39 @@ button.instagram-slide{border:none;padding:0;background:none;font:inherit;-webki
 .faq-icon{font-family:'Fredoka One',cursive;font-size:20px;color:var(--blue);flex-shrink:0;transition:transform .25s;}
 .faq-item.is-open .faq-icon{transform:rotate(45deg);}
 .faq-answer{max-height:0;overflow:hidden;transition:max-height .3s ease;}
-.faq-answer p{padding:0 22px 20px;font-size:14px;font-weight:600;color:var(--navy);opacity:.75;line-height:1.6;}
+.faq-answer p{padding:0 22px 20px;font-size:14px;font-weight:600;color:var(--navy);opacity:.8;line-height:1.6;}
 .faq-answer strong{color:var(--blue);}
 
 /* CTA */
 .cta-section{padding:90px 20px;background:linear-gradient(160deg,var(--lblue),var(--cream));text-align:center;}
 .cta-section h2{font-family:'Fredoka One',cursive;font-size:clamp(30px,5vw,48px);color:var(--navy);margin-bottom:10px;}
-.cta-section h2 span{color:var(--coral);}
-.cta-sub{font-size:17px;font-weight:600;color:var(--navy);opacity:.65;margin-bottom:48px;}
+.cta-section h2 span{color:var(--coral-texto);}
+.cta-sub{font-size:17px;font-weight:600;color:var(--navy);opacity:.8;margin-bottom:48px;}
 .cta-box{background:#fff;border-radius:36px;padding:50px 44px;max-width:560px;margin:0 auto;box-shadow:0 24px 70px rgba(73,100,175,.15);}
 .cta-emoji{font-size:56px;margin-bottom:8px;}
 .cta-box h3{font-family:'Fredoka One',cursive;font-size:26px;color:var(--navy);margin-bottom:6px;}
-.cta-sub2{font-size:14px;font-weight:700;color:var(--navy);opacity:.55;margin-bottom:28px;}
+.cta-sub2{font-size:14px;font-weight:700;color:var(--navy);opacity:.8;margin-bottom:28px;}
 .cta-list{text-align:left;margin-bottom:28px;display:flex;flex-direction:column;gap:11px;}
 .cta-comprar,.cta-dudas{display:block;width:100%;max-width:340px;margin:18px auto 0;text-align:center;box-sizing:border-box;}
 .cta-dudas{margin-top:10px;}
 .cta-note a{color:inherit;font-weight:800;}
-.cta-old{opacity:.5;font-weight:700;margin-right:4px;}
+.cta-old{opacity:.75;font-weight:700;margin-right:4px;}
 .cta-item{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:700;color:var(--navy);}
 .cta-item span{font-size:18px;}
 .btn-ig{width:100%;background:var(--blue);color:#fff;font-weight:900;font-size:17px;padding:18px;border-radius:20px;border:none;cursor:pointer;text-decoration:none;display:block;box-shadow:0 8px 24px rgba(73,100,175,.35);transition:transform .2s;font-family:'Nunito',sans-serif;}
 .btn-ig:hover{transform:translateY(-2px);}
-.cta-note{margin-top:14px;font-size:12px;color:var(--navy);opacity:.45;font-weight:700;}
+.cta-note{margin-top:14px;font-size:12px;color:var(--navy);opacity:.8;font-weight:700;}
 
 /* FOOTER */
 /* GALERÍA */
 
 footer{background:var(--navy);padding:48px 20px 36px;text-align:center;}
 .footer-logo img{height:44px;object-fit:contain;margin-bottom:8px;filter:brightness(0) invert(1);}
-.footer-tag{font-size:13px;font-weight:700;color:rgba(255,255,255,.5);margin-bottom:24px;font-style:italic;}
+.footer-tag{font-size:13px;font-weight:700;color:rgba(255,255,255,.8);margin-bottom:24px;font-style:italic;}
 .footer-social{display:flex;justify-content:center;gap:14px;margin-bottom:28px;flex-wrap:wrap;}
 .footer-social a{color:rgba(255,255,255,.75);font-size:13px;font-weight:800;text-decoration:none;padding:7px 18px;border-radius:22px;border:1.5px solid rgba(255,255,255,.2);transition:all .2s;}
 .footer-social a:hover{background:#fff;color:var(--navy);}
-.footer-copy{font-size:12px;color:rgba(255,255,255,.35);font-weight:600;}
+.footer-copy{font-size:12px;color:rgba(255,255,255,.75);font-weight:600;}
 .footer-productos{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 18px;margin:-8px 0 24px;}
 .footer-productos a{color:rgba(255,255,255,.8);font-size:13px;font-weight:800;text-decoration:none;}
 .footer-productos a:hover{color:#fff;text-decoration:underline;}
@@ -1080,7 +1087,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
 <!-- NAV -->
 <nav id="menu" aria-label="Principal">
   <a class="nav-logo" href="/" aria-label="Wuuff Puppy, inicio" onclick="if(location.pathname==='/'){event.preventDefault();window.scrollTo({top:0,behavior:'smooth'});}">
-    <img src="images/wuuff-puppy.png" alt="Wuuff Puppy">
+    <img src="images/opt/wuuff-puppy.webp" alt="Wuuff Puppy">
   </a>
   <div class="nav-links" id="nav-links">
     <div class="nav-drop">
@@ -1109,6 +1116,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
 </a>
 
 <!-- HERO -->
+<main id="contenido">
 <section class="hero hero-3d-set">
   <h1 class="visualmente-oculto">Collar, arnés tipo H y correa impermeables para perro</h1>
   <div class="hero-inner">
@@ -1146,10 +1154,10 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
       <div class="prod-img carousel">
         <span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21M10.5 7.5v6M7.5 10.5h6"/></svg></span>
         <div class="carousel-track">
-          <img src="images/productos/arnes-3.jpg" alt="Chihuahua con collar, arnés y correa Wuuff Puppy" class="carousel-slide active" loading="lazy">
-          <img src="images/set-completo-nuevo.jpg" alt="Combo completo Wuuff Puppy" class="carousel-slide" loading="lazy">
-          <video class="carousel-slide" muted loop playsinline preload="none" poster="images/productos/combo-2-poster.jpg" aria-label="Video: Combo completo Wuuff Puppy"><source src="images/productos/combo-2.mp4" type="video/mp4"></video>
-          <img src="images/productos/collar-3.jpg" alt="Perro salchicha con collar y arnés Wuuff Puppy" class="carousel-slide" loading="lazy">
+          <img src="images/opt/productos/arnes-3.webp" alt="Chihuahua con collar, arnés y correa Wuuff Puppy" class="carousel-slide active" loading="lazy">
+          <img src="images/opt/set-completo-nuevo.webp" alt="Combo completo Wuuff Puppy" class="carousel-slide" loading="lazy">
+          <video class="carousel-slide" muted loop playsinline preload="none" data-poster="images/opt/productos/combo-2-poster.webp" aria-label="Video: Combo completo Wuuff Puppy"><source src="images/productos/combo-2.mp4" type="video/mp4"></video>
+          <img src="images/opt/productos/collar-3.webp" alt="Perro salchicha con collar y arnés Wuuff Puppy" class="carousel-slide" loading="lazy">
           <img src="images/productos/tallas-arnes.png" alt="Guía de tallas del arnés: medidas de la talla S y M en cm" class="carousel-slide fit-contain" loading="lazy">
           <img src="images/productos/tallas-collar.png" alt="Guía de tallas del collar: contorno de cuello de la talla S y M" class="carousel-slide fit-contain" loading="lazy">
         </div>
@@ -1180,10 +1188,10 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
       <div class="prod-img carousel">
         <span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21M10.5 7.5v6M7.5 10.5h6"/></svg></span>
         <div class="carousel-track">
-          <img src="images/productos/collar-3.jpg" alt="Perro salchicha con arnés y collar Wuuff Puppy" class="carousel-slide active" loading="lazy">
-          <img src="images/arnes-nuevo.jpg" alt="Arnés tipo H impermeable" class="carousel-slide" loading="lazy">
-          <video class="carousel-slide" muted loop playsinline preload="none" poster="images/productos/arnes-2-poster.jpg" aria-label="Video: Arnés tipo H impermeable"><source src="images/productos/arnes-2.mp4" type="video/mp4"></video>
-          <img src="images/productos/arnes-3.jpg" alt="Chihuahua con arnés tipo H de goma Wuuff Puppy" class="carousel-slide" loading="lazy">
+          <img src="images/opt/productos/collar-3.webp" alt="Perro salchicha con arnés y collar Wuuff Puppy" class="carousel-slide active" loading="lazy">
+          <img src="images/opt/arnes-nuevo.webp" alt="Arnés tipo H impermeable" class="carousel-slide" loading="lazy">
+          <video class="carousel-slide" muted loop playsinline preload="none" data-poster="images/opt/productos/arnes-2-poster.webp" aria-label="Video: Arnés tipo H impermeable"><source src="images/productos/arnes-2.mp4" type="video/mp4"></video>
+          <img src="images/opt/productos/arnes-3.webp" alt="Chihuahua con arnés tipo H de goma Wuuff Puppy" class="carousel-slide" loading="lazy">
           <img src="images/productos/tallas-arnes.png" alt="Guía de tallas del arnés: medidas de la talla S y M en cm" class="carousel-slide fit-contain" loading="lazy">
         </div>
         <button class="carousel-arrow carousel-prev" onclick="moveCarousel(this,-1)" aria-label="Anterior">‹</button>
@@ -1212,11 +1220,11 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
       <div class="prod-img carousel">
         <span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21M10.5 7.5v6M7.5 10.5h6"/></svg></span>
         <div class="carousel-track">
-          <img src="images/productos/collar-4.jpg" alt="Perro sentado con collar y correa Wuuff Puppy" class="carousel-slide active" loading="lazy">
-          <img src="images/collar-nuevo.jpg" alt="Collar impermeable" class="carousel-slide" loading="lazy">
-          <video class="carousel-slide" muted loop playsinline preload="none" poster="images/productos/collar-2-poster.jpg" aria-label="Video: Collar impermeable"><source src="images/productos/collar-2.mp4" type="video/mp4"></video>
-          <img src="images/productos/collar-3.jpg" alt="Perro salchicha con collar y arnés Wuuff Puppy" class="carousel-slide" loading="lazy">
-          <img src="images/productos/collar-5.jpg" alt="Collar y correa Wuuff Puppy sobre el pasto" class="carousel-slide" loading="lazy">
+          <img src="images/opt/productos/collar-4.webp" alt="Perro sentado con collar y correa Wuuff Puppy" class="carousel-slide active" loading="lazy">
+          <img src="images/opt/collar-nuevo.webp" alt="Collar impermeable" class="carousel-slide" loading="lazy">
+          <video class="carousel-slide" muted loop playsinline preload="none" data-poster="images/opt/productos/collar-2-poster.webp" aria-label="Video: Collar impermeable"><source src="images/productos/collar-2.mp4" type="video/mp4"></video>
+          <img src="images/opt/productos/collar-3.webp" alt="Perro salchicha con collar y arnés Wuuff Puppy" class="carousel-slide" loading="lazy">
+          <img src="images/opt/productos/collar-5.webp" alt="Collar y correa Wuuff Puppy sobre el pasto" class="carousel-slide" loading="lazy">
           <img src="images/productos/tallas-collar.png" alt="Guía de tallas del collar: contorno de cuello de la talla S y M" class="carousel-slide fit-contain" loading="lazy">
         </div>
         <button class="carousel-arrow carousel-prev" onclick="moveCarousel(this,-1)" aria-label="Anterior">‹</button>
@@ -1246,11 +1254,11 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
       <div class="prod-img carousel">
         <span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21M10.5 7.5v6M7.5 10.5h6"/></svg></span>
         <div class="carousel-track">
-          <img src="images/montaje-perro-1.jpg" alt="Perro paseando con correa y arnés Wuuff Puppy" class="carousel-slide active" loading="lazy">
-          <img src="images/correa-nuevo.jpg" alt="Correa impermeable" class="carousel-slide" loading="lazy">
-          <video class="carousel-slide" muted loop playsinline preload="none" poster="images/productos/correa-2-poster.jpg" aria-label="Video: Correa impermeable"><source src="images/productos/correa-2.mp4" type="video/mp4"></video>
-          <img src="images/productos/correa-3.jpg" alt="Bulldog francés con collar y correa Wuuff Puppy" class="carousel-slide" loading="lazy">
-          <img src="images/productos/correa-4.jpg" alt="Perro sentado con collar y correa Wuuff Puppy" class="carousel-slide" loading="lazy">
+          <img src="images/opt/montaje-perro-1.webp" alt="Perro paseando con correa y arnés Wuuff Puppy" class="carousel-slide active" loading="lazy">
+          <img src="images/opt/correa-nuevo.webp" alt="Correa impermeable" class="carousel-slide" loading="lazy">
+          <video class="carousel-slide" muted loop playsinline preload="none" data-poster="images/opt/productos/correa-2-poster.webp" aria-label="Video: Correa impermeable"><source src="images/productos/correa-2.mp4" type="video/mp4"></video>
+          <img src="images/opt/productos/correa-3.webp" alt="Bulldog francés con collar y correa Wuuff Puppy" class="carousel-slide" loading="lazy">
+          <img src="images/opt/productos/correa-4.webp" alt="Perro sentado con collar y correa Wuuff Puppy" class="carousel-slide" loading="lazy">
         </div>
         <button class="carousel-arrow carousel-prev" onclick="moveCarousel(this,-1)" aria-label="Anterior">‹</button>
         <button class="carousel-arrow carousel-next" onclick="moveCarousel(this,1)" aria-label="Siguiente">›</button>
@@ -1276,7 +1284,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
     <div class="prod-card placa" id="placa-nfc">
       <a class="prod-img carousel" href="/placa-nfc/" aria-label="Ver la Placa NFC con nombre">
         <div class="carousel-track">
-          <img src="images/productos/placa-nfc.jpg" alt="Perro con la Placa NFC con su nombre colgada del collar" class="carousel-slide active" loading="lazy" width="800" height="800">
+          <img src="images/opt/productos/placa-nfc.webp" alt="Perro con la Placa NFC con su nombre colgada del collar" class="carousel-slide active" loading="lazy" width="800" height="800">
         </div>
       </a>
       <div class="prod-body">
@@ -1334,7 +1342,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
   <div class="real-grid">
     <figure class="real-card">
       <div class="real-video">
-        <video muted loop playsinline preload="none" poster="images/productos/real-lupe-poster.jpg" aria-label="Video real: Así se pone el arnés tipo H" data-nombre="Así se pone el arnés tipo H"><source src="images/productos/real-lupe.mp4" type="video/mp4"></video>
+        <video muted loop playsinline preload="none" data-poster="images/opt/productos/real-lupe-poster.webp" aria-label="Video real: Así se pone el arnés tipo H" data-nombre="Así se pone el arnés tipo H"><source src="images/productos/real-lupe.mp4" type="video/mp4"></video>
         <span class="real-badge">▶ Video real</span>
         <button type="button" class="real-sonido" aria-pressed="false" aria-label="Activar sonido">🔇</button>
       </div>
@@ -1342,7 +1350,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
     </figure>
     <figure class="real-card">
       <div class="real-video">
-        <video muted loop playsinline preload="none" poster="images/productos/real-saske-poster.jpg" aria-label="Video real: Paso a paso con Saske" data-nombre="Paso a paso con Saske"><source src="images/productos/real-saske.mp4" type="video/mp4"></video>
+        <video muted loop playsinline preload="none" data-poster="images/opt/productos/real-saske-poster.webp" aria-label="Video real: Paso a paso con Saske" data-nombre="Paso a paso con Saske"><source src="images/productos/real-saske.mp4" type="video/mp4"></video>
         <span class="real-badge">▶ Video real</span>
         <button type="button" class="real-sonido" aria-pressed="false" aria-label="Activar sonido">🔇</button>
       </div>
@@ -1350,7 +1358,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
     </figure>
     <figure class="real-card">
       <div class="real-video">
-        <video muted loop playsinline preload="none" poster="images/productos/real-asi-queda-poster.jpg" aria-label="Video real: Adiós al arnés manchado" data-nombre="Adiós al arnés manchado"><source src="images/productos/real-asi-queda.mp4" type="video/mp4"></video>
+        <video muted loop playsinline preload="none" data-poster="images/opt/productos/real-asi-queda-poster.webp" aria-label="Video real: Adiós al arnés manchado" data-nombre="Adiós al arnés manchado"><source src="images/productos/real-asi-queda.mp4" type="video/mp4"></video>
         <span class="real-badge">▶ Video real</span>
         <button type="button" class="real-sonido" aria-pressed="false" aria-label="Activar sonido">🔇</button>
       </div>
@@ -1366,11 +1374,11 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
   <p class="video-sub">Mira nuestras publicaciones más recientes</p>
   <div class="instagram-carousel">
     <div class="instagram-track">
-      <button type="button" class="instagram-slide"><img class="ig-img" src="images/montaje-perro-1.jpg" alt="Publicación de Instagram Wuuff Puppy" loading="lazy"></button>
-      <button type="button" class="instagram-slide"><img class="ig-img" src="images/montaje-perro-2.jpg" alt="Publicación de Instagram Wuuff Puppy" loading="lazy"></button>
-      <button type="button" class="instagram-slide"><img class="ig-img" src="images/montaje-perro-3.jpg" alt="Publicación de Instagram Wuuff Puppy" loading="lazy"></button>
-      <button type="button" class="instagram-slide"><img class="ig-img" src="images/banner-hero-bg.jpg" alt="Publicación de Instagram Wuuff Puppy" loading="lazy"></button>
-      <button type="button" class="instagram-slide"><img class="ig-img" src="images/banner-hero-bg-2.jpg" alt="Publicación de Instagram Wuuff Puppy" loading="lazy"></button>
+      <button type="button" class="instagram-slide"><img class="ig-img" src="images/opt/montaje-perro-1.webp" alt="Publicación de Instagram Wuuff Puppy" loading="lazy"></button>
+      <button type="button" class="instagram-slide"><img class="ig-img" src="images/opt/montaje-perro-2.webp" alt="Publicación de Instagram Wuuff Puppy" loading="lazy"></button>
+      <button type="button" class="instagram-slide"><img class="ig-img" src="images/opt/montaje-perro-3.webp" alt="Publicación de Instagram Wuuff Puppy" loading="lazy"></button>
+      <button type="button" class="instagram-slide"><img class="ig-img" src="images/opt/banner-hero-bg.webp" alt="Publicación de Instagram Wuuff Puppy" loading="lazy"></button>
+      <button type="button" class="instagram-slide"><img class="ig-img" src="images/opt/banner-hero-bg-2.webp" alt="Publicación de Instagram Wuuff Puppy" loading="lazy"></button>
     </div>
   </div>
   <a href="https://instagram.com/wuuffpuppy" target="_blank" class="btn-outline" style="display:inline-block;margin-top:8px;">📱 Ver más en @wuuffpuppy</a>
@@ -1383,7 +1391,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
       <h3>¿Qué talla necesita tu perrihijo? 📏</h3>
       <p class="tool-sub">Mide el contorno de cuello de tu perrihijo con una cinta métrica</p>
       <div class="size-slider-wrap">
-        <input type="range" min="18" max="40" value="27" id="weight-slider" class="size-slider">
+        <input type="range" min="18" max="40" value="27" id="weight-slider" class="size-slider" aria-label="Contorno de cuello en centímetros">
         <div class="size-weight-label"><span id="weight-value">27</span> cm de cuello</div>
       </div>
       <div class="size-result">
@@ -1441,7 +1449,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
 <!-- STORY -->
 <section class="story" id="nosotros">
   <div class="story-inner">
-    <img class="story-dog" src="images/thor-y-zabache-los-perrihijos-de-angie.png" alt="Guardian y Zabache — los perrihijos de Angie" loading="lazy">
+    <img class="story-dog" src="images/opt/thor-y-zabache-los-perrihijos-de-angie.webp" alt="Guardian y Zabache — los perrihijos de Angie" loading="lazy">
     <p class="story-quote">
       "Wuuff Puppy nació por <em>Guardian y Zabache</em>, mis dos perrihijos.<br>
       Buscaba accesorios bonitos en Colombia y no los encontraba.<br>
@@ -1535,7 +1543,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
     <p>Pequeños detalles que dicen te quiero — para tu perrihijo y para los que esperan un hogar. 🏠</p>
   </div>
   <div class="cause-dog">
-    <img src="images/arecito.png" alt="Arecito Wuuff" loading="lazy">
+    <img src="images/opt/arecito.webp" alt="Arecito Wuuff" loading="lazy">
   </div>
 </section>
 
@@ -1545,22 +1553,22 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
   <p class="chars-sub">Cada perrihijo tiene su propio personaje — ¿cuál es el tuyo?</p>
   <div class="chars-grid">
     <div class="char-card">
-      <img src="images/chawi.png" alt="Chawi" loading="lazy">
+      <img src="images/opt/chawi.webp" alt="Chawi" loading="lazy">
       <div class="char-name">Chawi 🍗</div>
       <div class="char-desc">Hambriento y siempre feliz</div>
     </div>
     <div class="char-card">
-      <img src="images/arecito.png" alt="Arecito" loading="lazy">
+      <img src="images/opt/arecito.webp" alt="Arecito" loading="lazy">
       <div class="char-name">Arecito 🧢</div>
       <div class="char-desc">El más cool del parque</div>
     </div>
     <div class="char-card">
-      <img src="images/guardian.png" alt="Guardian" loading="lazy">
+      <img src="images/opt/guardian.webp" alt="Guardian" loading="lazy">
       <div class="char-name">Guardian 💙</div>
       <div class="char-desc">Noble y leal para siempre</div>
     </div>
     <div class="char-card">
-      <img src="images/lucas.png" alt="Lucas" loading="lazy">
+      <img src="images/opt/lucas.webp" alt="Lucas" loading="lazy">
       <div class="char-name">Lucas 💻</div>
       <div class="char-desc">El más inteligente del team</div>
     </div>
@@ -1568,9 +1576,11 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
 </section>
 
 <!-- FOOTER -->
+</main>
+
 <footer>
   <div class="footer-logo">
-    <img src="images/wuuff-puppy.png" alt="Wuuff Puppy" loading="lazy">
+    <img src="images/opt/wuuff-puppy.webp" alt="Wuuff Puppy" loading="lazy">
   </div>
   <div class="footer-tag">"Pequeños detalles que dicen te quiero."</div>
   <div class="footer-social">
@@ -1587,7 +1597,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
     <a href="/blog/">Blog</a>
   </div>
   <div class="footer-copy">Bogotá, Colombia · 2026 · Wuuff Puppy ❤️</div>
-  <div class="footer-copy" style="margin-top:8px;"><a href="politica-de-privacidad.html" style="color:rgba(255,255,255,.5);text-decoration:underline;">Política de Privacidad</a> · <a href="politica-de-devoluciones.html" style="color:rgba(255,255,255,.5);text-decoration:underline;">Cambios y Devoluciones</a></div>
+  <div class="footer-copy" style="margin-top:8px;"><a href="politica-de-privacidad.html" style="color:rgba(255,255,255,.8);text-decoration:underline;">Política de Privacidad</a> · <a href="politica-de-devoluciones.html" style="color:rgba(255,255,255,.8);text-decoration:underline;">Cambios y Devoluciones</a></div>
 </footer>
 
 <script>
@@ -1796,7 +1806,7 @@ function cerrarDetalles(){
     if(esVideo){
       var src = item.currentSrc || (item.querySelector('source') || {}).src;
       if(video.getAttribute('src') !== src) video.src = src;
-      video.poster = item.poster || '';
+      video.poster = item.poster || item.getAttribute('data-poster') || '';
       var pr = video.play(); if(pr && pr.catch) pr.catch(function(){});
     } else {
       img.src = item.src;
@@ -2415,8 +2425,8 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
       <input type="hidden" name="form-name" value="datos-envio">
       <input type="hidden" id="envio-talla" name="talla" value="">
       <p class="hp-field"><label>No llenar: <input name="bot-field-envio"></label></p>
-      <input type="text" id="envio-nombre" name="nombre" placeholder="Tu nombre completo" required class="shipping-input">
-      <input type="text" id="envio-mascota" name="mascota" placeholder="Nombre de tu perrihijo" required class="shipping-input">
+      <input type="text" id="envio-nombre" name="nombre" placeholder="Tu nombre completo" required class="shipping-input" aria-label="Tu nombre completo">
+      <input type="text" id="envio-mascota" name="mascota" placeholder="Nombre de tu perrihijo" required class="shipping-input" aria-label="Nombre de tu perrihijo">
       <div class="perfil-placa" id="perfil-placa" hidden>
         <p class="perfil-titulo">🏷️ Perfil de la placa NFC</p>
         <p class="perfil-sub">Esto es lo que verá quien escanee la placa: el nombre de tu perrihijo, estos datos y tu teléfono. Después de comprar podrás agregar su foto, vacunas y veterinaria.</p>
@@ -2426,11 +2436,11 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
         </div>
         <input type="text" id="perfil-raza" class="shipping-input" maxlength="60" placeholder="Raza (ej: Beagle, criollo…)" aria-label="Raza">
       </div>
-      <input type="tel" id="envio-telefono" name="telefono" placeholder="Teléfono / WhatsApp" required class="shipping-input">
-      <input type="email" id="envio-correo" name="correo" placeholder="Correo electrónico" required class="shipping-input">
-      <input type="text" id="envio-direccion" name="direccion" placeholder="Dirección exacta (calle, número, apto/casa)" required class="shipping-input">
-      <input type="text" id="envio-ciudad-nombre" name="ciudad" placeholder="Ciudad (ej: Bogotá, Medellín, Cali...)" required class="shipping-input">
-      <select id="envio-ciudad" name="tipo_envio" required class="shipping-input shipping-select">
+      <input type="tel" id="envio-telefono" name="telefono" placeholder="Teléfono / WhatsApp" required class="shipping-input" aria-label="Teléfono / WhatsApp">
+      <input type="email" id="envio-correo" name="correo" placeholder="Correo electrónico" required class="shipping-input" aria-label="Correo electrónico">
+      <input type="text" id="envio-direccion" name="direccion" placeholder="Dirección exacta (calle, número, apto/casa)" required class="shipping-input" aria-label="Dirección exacta (calle, número, apto/casa)">
+      <input type="text" id="envio-ciudad-nombre" name="ciudad" placeholder="Ciudad (ej: Bogotá, Medellín, Cali...)" required class="shipping-input" aria-label="Ciudad (ej: Bogotá, Medellín, Cali...)">
+      <select id="envio-ciudad" name="tipo_envio" required class="shipping-input shipping-select" aria-label="Tipo de envío">
         <option value="" disabled selected>Tipo de envío</option>
         <option value="Bogotá / Soacha" data-shipping="0">Bogotá / Soacha — envío GRATIS 🎉</option>
         <option value="Otra ciudad de Colombia" data-shipping="18500">Otra ciudad de Colombia — envío $18.500</option>
@@ -2792,6 +2802,18 @@ document.addEventListener('click', function(e){
   if(!c) return;
   c.classList.remove('saltar'); void c.offsetWidth; c.classList.add('saltar');
 });
+</script>
+<script>
+// Portadas de los videos: se cargan cuando el video se acerca a la pantalla (no todas al abrir la página)
+(function(){
+  var vids = document.querySelectorAll('video[data-poster]');
+  function poner(v){ if(!v.poster) v.poster = v.getAttribute('data-poster'); }
+  if(!('IntersectionObserver' in window)){ vids.forEach(poner); return; }
+  var io = new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ poner(e.target); io.unobserve(e.target); } });
+  }, { rootMargin: '400px 0px' });
+  vids.forEach(function(v){ io.observe(v); });
+})();
 </script>
 <script type="module" src="/collar-3d/collar-3d.js"></script>
 </body>

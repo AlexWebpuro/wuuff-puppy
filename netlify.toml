@@ -109,3 +109,30 @@
     X-Robots-Tag = "noindex, nofollow"
     Referrer-Policy = "no-referrer"
     Cache-Control = "no-store"
+
+# Caché del navegador: imágenes y videos 30 días, fuentes 1 año, CSS/JS del sitio 1 día.
+# Si cambias una imagen, súbela con otro nombre para que todos vean la nueva enseguida.
+[[headers]]
+  for = "/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000"
+
+[[headers]]
+  for = "/assets/fonts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/assets/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "/collar-3d/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "/placa-nfc/img/*"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000"

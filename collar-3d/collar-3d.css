@@ -52,7 +52,7 @@
 /* Celular: el collar va entre el título y el precio */
 @media (max-width:768px){
   .hero-3d-set .hero-3d{width:min(100%, 480px);margin:0 auto 22px;}
-  .hero-3d-set .hero-title{font-size:22px;margin-bottom:4px;}
+  .hero-3d-set .hero-title{font-size:24px;margin-bottom:4px;}
 }
 @media (max-width:560px){
   .hero-3d-set .hero-3d{width:calc(100% + 32px);max-width:none;margin-left:-16px;margin-right:-16px;}
