@@ -40,6 +40,55 @@
   status = 301
   force = true
 
+# URLs anteriores de las fichas ("-para-perro"): redirigen a las actuales
+[[redirects]]
+  from = "/combo-collar-arnes-correa-para-perro/*"
+  to = "/combo-collar-arnes-correa/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/combo-collar-arnes-correa-para-perro"
+  to = "/combo-collar-arnes-correa/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/arnes-impermeable-para-perro/*"
+  to = "/arnes-tipo-h-impermeable-perro/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/arnes-impermeable-para-perro"
+  to = "/arnes-tipo-h-impermeable-perro/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/collar-impermeable-para-perro/*"
+  to = "/collar-impermeable-perro/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/collar-impermeable-para-perro"
+  to = "/collar-impermeable-perro/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/correa-impermeable-para-perro/*"
+  to = "/correa-impermeable-perro/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/correa-impermeable-para-perro"
+  to = "/correa-impermeable-perro/"
+  status = 301
+  force = true
+
 # Perfil de la mascota de la placa NFC: es la dirección que se graba en el chip
 [[redirects]]
   from = "/m/:id/foto"
