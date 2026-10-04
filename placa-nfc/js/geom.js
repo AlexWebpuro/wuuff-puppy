@@ -143,9 +143,12 @@
   const HUELLA = [[-0.1501,0.4591],[-0.1706,0.4559],[-0.1904,0.4491],[-0.2091,0.4400],[-0.2267,0.4288],[-0.2419,0.4146],[-0.2553,0.3986],[-0.2676,0.3817],[-0.2772,0.3632],[-0.2841,0.3435],[-0.2905,0.3237],[-0.2954,0.3035],[-0.2967,0.2826],[-0.2978,0.2618],[-0.3102,0.2470],[-0.3309,0.2480],[-0.3517,0.2503],[-0.3724,0.2487],[-0.3924,0.2429],[-0.4119,0.2355],[-0.4302,0.2255],[-0.4461,0.2119],[-0.4600,0.1965],[-0.4720,0.1794],[-0.4810,0.1606],[-0.4884,0.1411],[-0.4945,0.1211],[-0.4980,0.1006],[-0.4995,0.0798],[-0.5000,0.0589],[-0.4984,0.0381],[-0.4941,0.0177],[-0.4884,-0.0024],[-0.4813,-0.0220],[-0.4715,-0.0403],[-0.4604,-0.0580],[-0.4488,-0.0754],[-0.4348,-0.0907],[-0.4190,-0.1044],[-0.4029,-0.1177],[-0.3852,-0.1286],[-0.3662,-0.1372],[-0.3531,-0.1520],[-0.3600,-0.1715],[-0.3695,-0.1901],[-0.3751,-0.2101],[-0.3792,-0.2306],[-0.3831,-0.2511],[-0.3842,-0.2719],[-0.3819,-0.2926],[-0.3782,-0.3131],[-0.3728,-0.3333],[-0.3646,-0.3524],[-0.3546,-0.3707],[-0.3434,-0.3883],[-0.3298,-0.4041],[-0.3143,-0.4181],[-0.2976,-0.4306],[-0.2795,-0.4408],[-0.2601,-0.4485],[-0.2400,-0.4540],[-0.2194,-0.4578],[-0.1987,-0.4595],[-0.1778,-0.4593],[-0.1570,-0.4574],[-0.1363,-0.4549],[-0.1157,-0.4519],[-0.0952,-0.4480],[-0.0748,-0.4436],[-0.0543,-0.4393],[-0.0338,-0.4355],[-0.0132,-0.4327],[0.0077,-0.4323],[0.0284,-0.4345],[0.0490,-0.4382],[0.0694,-0.4424],[0.0898,-0.4468],[0.1102,-0.4509],[0.1309,-0.4541],[0.1516,-0.4568],[0.1723,-0.4589],[0.1932,-0.4597],[0.2140,-0.4584],[0.2346,-0.4552],[0.2548,-0.4502],[0.2745,-0.4431],[0.2930,-0.4336],[0.3101,-0.4217],[0.3259,-0.4080],[0.3401,-0.3928],[0.3519,-0.3756],[0.3621,-0.3574],[0.3710,-0.3386],[0.3772,-0.3186],[0.3812,-0.2982],[0.3840,-0.2775],[0.3840,-0.2567],[0.3805,-0.2361],[0.3763,-0.2157],[0.3716,-0.1954],[0.3629,-0.1764],[0.3540,-0.1576],[0.3614,-0.1400],[0.3802,-0.1309],[0.3985,-0.1210],[0.4148,-0.1080],[0.4307,-0.0945],[0.4455,-0.0798],[0.4576,-0.0628],[0.4687,-0.0452],[0.4791,-0.0271],[0.4869,-0.0078],[0.4928,0.0123],[0.4976,0.0325],[0.5000,0.0533],[0.5000,0.0741],[0.4987,0.0949],[0.4959,0.1156],[0.4904,0.1357],[0.4833,0.1553],[0.4749,0.1744],[0.4637,0.1920],[0.4502,0.2079],[0.4349,0.2221],[0.4172,0.2331],[0.3979,0.2410],[0.3781,0.2474],[0.3575,0.2504],[0.3367,0.2488],[0.3160,0.2465],[0.2994,0.2563],[0.2970,0.2770],[0.2962,0.2978],[0.2923,0.3183],[0.2860,0.3382],[0.2794,0.3580],[0.2707,0.3769],[0.2590,0.3941],[0.2459,0.4104],[0.2313,0.4252],[0.2142,0.4372],[0.1957,0.4468],[0.1763,0.4544],[0.1559,0.4585],[0.1350,0.4597],[0.1142,0.4586],[0.0940,0.4535],[0.0755,0.4439],[0.0581,0.4325],[0.0416,0.4197],[0.0271,0.4047],[0.0123,0.3901],[-0.0073,0.3872],[-0.0232,0.4005],[-0.0373,0.4158],[-0.0533,0.4292],[-0.0706,0.4409],[-0.0887,0.4513],[-0.1084,0.4577],[-0.1292,0.4597]];
   function placaFigura(forma, nombre, o = {}) {
     const P = Object.assign({ anchoHuella: 44, anchoGato: 40, tamMax: 10, tamMin: 5.5, espaciado: 1, grosor: 3, altoLetras: 1,
-      dAgujero: 4.5, margenAgujero: 2.2, nfc: true, dNfc: 25, holgura: 0.6, pared: 1.2, piso: 0.6 }, o);
+      dAgujero: 4.5, margenAgujero: 2.2, nfc: true, dNfc: 25, holgura: 0.6, pared: 1.2, piso: 0.6,
+      encajadas: true, marcaNfc: true, profMarca: 0.6, holguraMarca: 0.15 }, o);
     const gato = forma === 'gato', font = GLYPHS.titan;
-    const FR = 0.74, YT = gato ? -0.06 : -0.07;
+    const conMarca = !gato && P.marcaNfc, encajadas = !gato && P.encajadas;
+    const FR = 0.74, YT = gato ? -0.06 : (conMarca ? 0.06 : -0.07), YM = -0.215;
+    if (conMarca) P.tamMax = Math.min(P.tamMax, 8);
     const rCav = (P.dNfc + P.holgura) / 2;
     const a10 = anchoTabla(font, nombre) * 10 / 0.72 * P.espaciado;
     const W = Math.max(gato ? P.anchoGato : P.anchoHuella, a10 * P.tamMin / 10 / FR);
@@ -171,8 +174,26 @@
     const agujero = circle(0, yA, P.dAgujero, 64);
     const base = diff(contorno, agujero);
     const txt = translate(texto(font, nombre, tam, P.espaciado, 'center', 'center'), 0, YT * W);
-    const letras = union(inter(txt, diff(offD(contorno, -1), agujero)), detalles);
+    const nombreRecortado = inter(txt, diff(offD(contorno, -1), agujero));
+    // Marca NFC: pastilla con ondas y "NFC" calados (igual que placa_figura.scad)
+    let marca = [], pastilla = [];
+    if (conMarca) {
+      const R = 3.6, TXT = 3.4, XT = 4.9, XL = 1.8;
+      const tw = anchoTabla(font, 'NFC') * TXT / 0.72;
+      const xr = XT + tw - R + 1.2, dx = -((XL - R) + (xr + R)) / 2, cy = YM * W;
+      pastilla = hull(circle(XL + dx, cy, 2 * R, 64).concat(circle(xr + dx, cy, 2 * R, 64)));
+      const rad = a => a * Math.PI / 180;
+      const cuña = toInt([[[dx, cy], [dx + 10 * Math.cos(rad(42)), cy + 10 * Math.sin(rad(42))], [dx + 10, cy], [dx + 10 * Math.cos(rad(-42)), cy + 10 * Math.sin(rad(-42))]]]);
+      let ondas = circle(dx, cy, 1.6, 64);
+      for (const r of [2.0, 3.6]) ondas = union(ondas, inter(diff(circle(dx, cy, 2 * (r + 0.4), 64), circle(dx, cy, 2 * (r - 0.4), 64)), cuña));
+      ondas = union(ondas, translate(texto(font, 'NFC', TXT, 1, 'left', 'center'), dx + XT, cy));
+      marca = diff(pastilla, ondas);
+    }
+    const letras = union(nombreRecortado.concat(detalles, marca));
+    const rebajes = encajadas ? union(offR(nombreRecortado, P.holguraMarca).concat(conMarca ? offR(pastilla, P.holguraMarca) : [])) : null;
     return { tipo: forma, base, letras, grosor: P.grosor, altoLetras: P.altoLetras, tamLetra: tam,
+      rebajes, profRebaje: encajadas ? P.profMarca : 0, baseRebajada: encajadas ? diff(base, rebajes) : null,
+      letrasZ0: encajadas ? P.grosor - P.profMarca : P.grosor, letrasAlto: encajadas ? P.profMarca + P.altoLetras : P.altoLetras,
       agujero: { x: 0, y: yA, d: P.dAgujero }, nfc: P.nfc ? { x: 0, y: yN, d: P.dNfc, z: P.piso, cabe: true } : null };
   }
 

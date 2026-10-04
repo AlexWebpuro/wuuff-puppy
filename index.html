@@ -486,8 +486,8 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="image" href="images/banner-hero-bg-m.jpg" media="(max-width: 768px)" fetchpriority="high">
-<link rel="preload" as="image" href="images/banner-hero-bg.jpg" media="(min-width: 769px)" fetchpriority="high">
+<link rel="preload" as="image" href="/collar-3d/collar-3d-poster.webp" fetchpriority="high">
+<link rel="stylesheet" href="/collar-3d/collar-3d.css">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -608,7 +608,8 @@ body{font-family:'Nunito',sans-serif;background:var(--white);color:var(--navy);o
 
 /* TICKER */
 .ticker{background:var(--blue);padding:14px 0;overflow:hidden;border-top:3px solid var(--navy);border-bottom:3px solid var(--navy);}
-.ticker-inner{display:flex;gap:48px;animation:ticker 22s linear infinite;width:max-content;}
+.visualmente-oculto{position:absolute !important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+.ticker-inner{display:flex;gap:48px;animation:ticker 80s linear infinite;width:max-content;}
 .ticker-item{display:flex;align-items:center;gap:12px;font-family:'Fredoka One',cursive;font-size:16px;color:#fff;white-space:nowrap;}
 .ticker-dot{width:8px;height:8px;background:var(--lime);border-radius:50%;flex-shrink:0;}
 @keyframes ticker{from{transform:translateX(0);}to{transform:translateX(-50%);}}
@@ -1108,24 +1109,21 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
 </a>
 
 <!-- HERO -->
-<section class="hero">
-  <div class="hero-bg-carousel">
-    <picture><source media="(max-width: 768px)" srcset="images/banner-hero-bg-m.jpg"><img src="images/banner-hero-bg.jpg" class="hero-bg-slide active" alt="Wuuff Puppy — accesorios impermeables para perros" fetchpriority="high"></picture>
-    <picture><source media="(max-width: 768px)" srcset="images/banner-hero-bg-2-m.jpg"><img src="images/banner-hero-bg-2.jpg" class="hero-bg-slide" alt="Wuuff Puppy — perrihijo con accesorios de goma" fetchpriority="low" decoding="async"></picture>
-  </div>
+<section class="hero hero-3d-set">
+  <h1 class="visualmente-oculto">Collar, arnés tipo H y correa impermeables para perro</h1>
   <div class="hero-inner">
     <div class="hero-text">
-      <h1 class="hero-title">
+      <h2 class="hero-title">
         <span class="t-highlight">Accesorios</span><br>
-        <span class="t-highlight">impermeables</span><br>
         <span class="t-highlight">para tu</span><br>
-        <span class="t-highlight t-coral">perrihijo</span>
-      </h1>
-      <p class="hero-offer" role="link" tabindex="0"><span class="hero-offer-name">🎁 Combo completo</span> <s>$184.900</s> <strong>$157.900</strong> <span class="hero-offer-ship">· Envío gratis en Bogotá</span><span class="hero-offer-hasta lanzamiento-fecha">⏳ Precio de lanzamiento hasta el 30 de octubre</span></p>
-      <p class="hero-ship"><span>🚀</span><span>Despachamos en <strong>1–2 días hábiles</strong></span></p>
+        <span class="t-highlight t-coral">mascota</span>
+      </h2>
+      <div class="hero-3d" data-collar-3d>
+        <img class="hero-3d-poster" src="/collar-3d/collar-3d-poster.webp" width="960" height="800" alt="Collar impermeable Wuuff azul cielo con placa NFC en forma de huella" fetchpriority="high" draggable="false">
+        <a class="hero-3d-chip" href="/placa-nfc/">🏷️ Placa NFC con su nombre · <b>Personalízala</b></a>
+      </div>
       <div class="hero-btns">
-        <a href="#combo" class="btn-primary">Ver el combo 🎁</a>
-        <a href="#productos" class="btn-outline">Ver productos</a>
+        <a href="#combo" class="btn-primary">Ver el combo</a>
       </div>
     </div>
   </div>
@@ -1926,12 +1924,6 @@ document.addEventListener('click', function(e){
     var link = card.querySelector('.prod-name a');
     if(link) link.click();
   }
-});
-// Primera pantalla: tocar la imagen de fondo o el recuadro del combo lleva a la tarjeta del combo
-document.addEventListener('click', function(e){
-  if(!e.target.closest || !e.target.closest('.hero') || e.target.closest('a, button')) return;
-  var combo = document.getElementById('combo');
-  if(combo) combo.scrollIntoView({ behavior: 'smooth', block: 'start' });
 });
 
 // Carrusel: deslizar con el dedo para cambiar de foto
@@ -2801,5 +2793,6 @@ document.addEventListener('click', function(e){
   c.classList.remove('saltar'); void c.offsetWidth; c.classList.add('saltar');
 });
 </script>
+<script type="module" src="/collar-3d/collar-3d.js"></script>
 </body>
 </html>
