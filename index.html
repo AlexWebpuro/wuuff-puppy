@@ -452,7 +452,7 @@
      "name": "¿Hacen envíos a toda Colombia?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "Sí, hacemos envíos a toda Colombia. Despachamos en 1–2 días hábiles; la entrega tarda de 2 a 5 días según tu ciudad. El envío a Bogotá / Soacha es gratis en todos los productos y puedes pagar contraentrega. A otras ciudades cuesta $18.500."
+      "text": "Sí, hacemos envíos a toda Colombia. Despachamos en 1–2 días hábiles; la entrega tarda de 2 a 5 días según tu ciudad. El envío a Bogotá / Soacha es gratis en todos los productos. A otras ciudades cuesta $18.500."
      }
     },
     {
@@ -588,7 +588,6 @@ body{font-family:'Nunito',sans-serif;background:var(--white);color:var(--navy);o
 .perfil-titulo{font-size:13px;font-weight:900;color:var(--navy);margin:0;}
 .perfil-sub{font-size:12px;font-weight:700;color:#55607e;margin:0;}
 .perfil-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.regalo-ruleta{background:#fffbe6;border-radius:12px;padding:9px 12px;font-size:13px;font-weight:800;color:var(--navy);margin:0 0 12px;text-align:left;}
 .lanzamiento-hasta{font-size:12.5px;font-weight:800;color:var(--coral);margin:-2px 0 10px;}
 .hero-offer-hasta{display:block;font-size:12.5px;font-weight:800;color:var(--coral);margin-top:2px;}
 .promo-feedback.valido{color:#2b8a3e;}
@@ -638,8 +637,13 @@ body{font-family:'Nunito',sans-serif;background:var(--white);color:var(--navy);o
 .prod-card:hover{transform:translateY(-6px);box-shadow:0 24px 60px rgba(73,100,175,.18);border-color:var(--sky);}
 .prod-card{scroll-margin-top:80px;}
 .prod-card.featured{border:3px solid var(--lime);}
-.prod-card.placa{grid-column:1/-1;border:3px solid var(--coral);}
+.prod-card.placa{grid-column:1/-1;border:3px solid var(--blue);background:linear-gradient(135deg,#dbe8fb 0%,var(--lblue) 50%,#f4f6d2 100%);}
+.prod-card.placa .prod-body{background:transparent;}
+.placa-puntos{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 6px;padding:0;list-style:none;}
+.placa-puntos li{background:#fff;border-radius:20px;padding:6px 12px;font-size:13px;font-weight:800;color:var(--navy);box-shadow:0 2px 8px rgba(73,100,175,.12);}
 a.btn-buy{display:block;box-sizing:border-box;text-align:center;text-decoration:none;}
+.btn-ver{display:flex !important;align-items:center;justify-content:center;gap:10px;margin-top:6px;}
+.ico-carrito{width:22px;height:22px;flex:none;}
 .prod-card.placa .prod-img{text-decoration:none;}
 .prod-card.placa .carousel-slide{object-fit:contain;}
 @media(min-width:760px){.prod-card.placa{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);align-items:center;}.prod-card.placa .prod-img.carousel{height:100%;min-height:360px;}}
@@ -654,39 +658,7 @@ video.carousel-slide{background:#dfe8f5;}
 .zoom-hint{position:absolute;top:10px;right:10px;z-index:2;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.92);box-shadow:0 2px 10px rgba(45,67,117,.18);display:flex;align-items:center;justify-content:center;pointer-events:none;color:var(--navy);}
 .zoom-hint svg{width:18px;height:18px;}
 
-.ruleta-overlay{display:none;position:fixed;inset:0;z-index:1800;background:rgba(45,67,117,.6);align-items:center;justify-content:center;padding:16px;}
-.ruleta-overlay.open{display:flex;animation:lbIn .25s ease;}
-.ruleta-modal{position:relative;overflow:hidden;background:linear-gradient(180deg,#fff 0%,var(--cream) 100%);border-radius:28px;max-width:400px;width:100%;padding:28px 22px 22px;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.3);animation:sheetUp .35s cubic-bezier(.2,.9,.3,1);}
-.ruleta-modal:focus{outline:none;}
-.ruleta-cerrar{position:absolute;top:12px;right:12px;z-index:3;width:38px;height:38px;border-radius:50%;border:none;background:var(--lblue);color:var(--navy);font-size:22px;font-weight:900;cursor:pointer;line-height:1;}
-.ruleta-kicker{display:inline-block;background:var(--lime);color:var(--navy);font-size:11px;font-weight:900;letter-spacing:1px;text-transform:uppercase;padding:4px 12px;border-radius:20px;margin-bottom:10px;}
-.ruleta-titulo{font-family:'Fredoka One',cursive;font-weight:400;font-size:22px;line-height:1.2;color:var(--navy);margin:0 26px 14px;}
-.ruleta-sub small{display:block;margin-top:6px;font-size:12px;opacity:.8;}
-.ruleta-sub{font-size:14px;font-weight:700;color:var(--navy);opacity:.75;margin:0 0 14px;}
-.ruleta-wrap{position:relative;width:min(300px,78vw);aspect-ratio:1;margin:6px auto 16px;}
-.ruleta-rueda{width:100%;height:100%;display:block;filter:drop-shadow(0 10px 22px rgba(45,67,117,.3));transition:transform 5.2s cubic-bezier(.12,.75,.1,1);}
-.ruleta-puntero{position:absolute;top:-8px;left:50%;transform:translateX(-50%);z-index:2;width:0;height:0;border-left:15px solid transparent;border-right:15px solid transparent;border-top:28px solid var(--navy);filter:drop-shadow(0 3px 3px rgba(0,0,0,.25));}
-.ruleta-centro{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:23%;aspect-ratio:1;border-radius:50%;border:5px solid #fff;background:var(--navy);color:#fff;font-family:'Fredoka One',cursive;font-size:clamp(12px,3.6vw,15px);cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.3);animation:ruletaPulso 1.6s ease-in-out infinite;}
-.ruleta-centro:disabled{animation:none;cursor:default;}
-@keyframes ruletaPulso{0%,100%{box-shadow:0 0 0 0 rgba(241,125,87,.55)}50%{box-shadow:0 0 0 10px rgba(241,125,87,0)}}
-.ruleta-btn{margin-top:0;}
-.ruleta-btn:disabled{opacity:.6;cursor:default;transform:none;}
-.ruleta-legal{font-size:11px;font-weight:700;color:var(--navy);opacity:.55;margin:10px 0 0;line-height:1.4;}
-.ruleta-premio-emoji{font-size:54px;line-height:1;margin:6px 0 8px;animation:sizeAlertIn .5s cubic-bezier(.2,1.4,.4,1);}
-.ruleta-confeti{position:absolute;inset:0;pointer-events:none;z-index:2;}
-.ruleta-confeti i{position:absolute;top:-12px;width:8px;height:12px;border-radius:2px;opacity:0;animation:confeti 1.9s ease-in forwards;}
 @keyframes confeti{0%{opacity:1;transform:translateY(0) rotate(0)}100%{opacity:0;transform:translateY(520px) rotate(620deg)}}
-.ruleta-pill{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:900;border:none;background:var(--coral);color:#fff;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;padding:10px 18px;border-radius:30px;box-shadow:0 8px 24px rgba(241,125,87,.45);cursor:pointer;white-space:nowrap;animation:sheetUp .4s ease;}
-.ruleta-teaser{position:fixed;right:16px;bottom:24px;z-index:900;display:flex;align-items:center;background:var(--coral);border-radius:30px;box-shadow:0 8px 24px rgba(241,125,87,.45);animation:sheetUp .4s ease,ruletaBrinco 2.8s ease-in-out 1.5s infinite;}
-.ruleta-teaser[hidden]{display:none;}
-.ruleta-teaser-abrir{border:none;background:none;color:#fff;font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;padding:12px 6px 12px 16px;cursor:pointer;white-space:nowrap;}
-.ruleta-teaser-abrir strong{font-weight:900;}
-.ruleta-teaser-x{border:none;background:rgba(255,255,255,.25);color:#fff;width:26px;height:26px;border-radius:50%;margin-right:8px;font-size:16px;font-weight:900;line-height:1;cursor:pointer;}
-@keyframes ruletaBrinco{0%,85%,100%{transform:translateY(0)}90%{transform:translateY(-6px)}95%{transform:translateY(0)}}
-@media(prefers-reduced-motion:reduce){.ruleta-teaser{animation:none;}}
-.ruleta-pill strong{font-weight:900;letter-spacing:.5px;}
-@media(max-width:480px){.ruleta-pill{bottom:92px;}}
-@media(prefers-reduced-motion:reduce){.ruleta-rueda{transition-duration:1.2s;}.ruleta-centro{animation:none;}}
 
 /* DETALLES DEL PRODUCTO */
 .btn-details{-webkit-tap-highlight-color:transparent;display:inline-flex;align-items:center;gap:6px;background:none;border:none;padding:6px 0;margin:-6px 0 12px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;color:var(--blue);text-decoration:underline;text-underline-offset:3px;cursor:pointer;}
@@ -988,13 +960,6 @@ button.instagram-slide{border:none;padding:0;background:none;font:inherit;-webki
 
 /* FOOTER */
 /* GALERÍA */
-.gallery-section{padding:80px 20px;background:var(--cream);text-align:center;}
-.gallery-section h2{font-family:'Fredoka One',cursive;font-size:clamp(30px,5vw,48px);color:var(--navy);margin-bottom:8px;}
-.gallery-section h2 span{color:var(--blue);}
-.gallery-sub{font-size:15px;font-weight:600;color:var(--navy);opacity:.65;margin-bottom:40px;}
-.gallery-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;max-width:1100px;margin:0 auto;}
-.gallery-img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:20px;box-shadow:0 8px 24px rgba(73,100,175,.12);transition:transform .3s;display:block;}
-.gallery-img:hover{transform:scale(1.03);}
 
 footer{background:var(--navy);padding:48px 20px 36px;text-align:center;}
 .footer-logo img{height:44px;object-fit:contain;margin-bottom:8px;filter:brightness(0) invert(1);}
@@ -1062,33 +1027,6 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
 </script>
 </head>
 <body>
-<!-- RULETA DE PREMIOS -->
-<div class="ruleta-overlay" id="ruleta-overlay" aria-hidden="true">
-  <div class="ruleta-modal" role="dialog" aria-modal="true" aria-labelledby="ruleta-titulo" tabindex="-1">
-    <button type="button" class="ruleta-cerrar" id="ruleta-cerrar" aria-label="Cerrar">×</button>
-    <div class="ruleta-paso" id="ruleta-paso-girar">
-      <span class="ruleta-kicker">🎁 ¡Todos ganan! · Un giro por persona</span>
-      <h3 class="ruleta-titulo" id="ruleta-titulo">Gira la ruleta y gana un premio para tu perrihijo</h3>
-      <div class="ruleta-wrap">
-        <div class="ruleta-puntero" aria-hidden="true"></div>
-        <svg class="ruleta-rueda" id="ruleta-rueda" viewBox="-104 -104 208 208" aria-hidden="true"><circle r="103" fill="#2d4375"/><path d="M0 0L-50.00 -86.60A100 100 0 0 1 50.00 -86.60Z" fill="#f17d57"/><g transform="rotate(0) rotate(-90)" fill="#fff" text-anchor="middle" dominant-baseline="middle"><text x="61" y="-6" font-family="Fredoka One,Nunito,sans-serif" font-size="15">Stickers</text><text x="61" y="9" font-family="Nunito,sans-serif" font-weight="900" font-size="10">de regalo</text></g><path d="M0 0L50.00 -86.60A100 100 0 0 1 100.00 0.00Z" fill="#4964af"/><g transform="rotate(60) rotate(-90)" fill="#fff" text-anchor="middle" dominant-baseline="middle"><text x="61" y="-6" font-family="Fredoka One,Nunito,sans-serif" font-size="13">Marca con</text><text x="61" y="9" font-family="Nunito,sans-serif" font-weight="900" font-size="10">su nombre</text></g><path d="M0 0L100.00 0.00A100 100 0 0 1 50.00 86.60Z" fill="#d5d50c"/><g transform="rotate(120) rotate(-90)" fill="#2d4375" text-anchor="middle" dominant-baseline="middle"><text x="61" y="-6" font-family="Fredoka One,Nunito,sans-serif" font-size="15">Stickers</text><text x="61" y="9" font-family="Nunito,sans-serif" font-weight="900" font-size="10">de regalo</text></g><path d="M0 0L50.00 86.60A100 100 0 0 1 -50.00 86.60Z" fill="#f17d57"/><g transform="rotate(180) rotate(-90)" fill="#fff" text-anchor="middle" dominant-baseline="middle"><text x="61" y="-6" font-family="Fredoka One,Nunito,sans-serif" font-size="13">Marca con</text><text x="61" y="9" font-family="Nunito,sans-serif" font-weight="900" font-size="10">su nombre</text></g><path d="M0 0L-50.00 86.60A100 100 0 0 1 -100.00 0.00Z" fill="#4964af"/><g transform="rotate(240) rotate(-90)" fill="#fff" text-anchor="middle" dominant-baseline="middle"><text x="61" y="-6" font-family="Fredoka One,Nunito,sans-serif" font-size="15">Stickers</text><text x="61" y="9" font-family="Nunito,sans-serif" font-weight="900" font-size="10">de regalo</text></g><path d="M0 0L-100.00 0.00A100 100 0 0 1 -50.00 -86.60Z" fill="#d5d50c"/><g transform="rotate(300) rotate(-90)" fill="#2d4375" text-anchor="middle" dominant-baseline="middle"><text x="61" y="-6" font-family="Fredoka One,Nunito,sans-serif" font-size="13">Marca con</text><text x="61" y="9" font-family="Nunito,sans-serif" font-weight="900" font-size="10">su nombre</text></g><circle r="100" fill="none" stroke="#fff" stroke-width="3"/><circle cx="93.00" cy="0.00" r="2.6" fill="#fff" opacity=".9"/><circle cx="80.54" cy="46.50" r="2.6" fill="#fff" opacity=".9"/><circle cx="46.50" cy="80.54" r="2.6" fill="#fff" opacity=".9"/><circle cx="0.00" cy="93.00" r="2.6" fill="#fff" opacity=".9"/><circle cx="-46.50" cy="80.54" r="2.6" fill="#fff" opacity=".9"/><circle cx="-80.54" cy="46.50" r="2.6" fill="#fff" opacity=".9"/><circle cx="-93.00" cy="0.00" r="2.6" fill="#fff" opacity=".9"/><circle cx="-80.54" cy="-46.50" r="2.6" fill="#fff" opacity=".9"/><circle cx="-46.50" cy="-80.54" r="2.6" fill="#fff" opacity=".9"/><circle cx="-0.00" cy="-93.00" r="2.6" fill="#fff" opacity=".9"/><circle cx="46.50" cy="-80.54" r="2.6" fill="#fff" opacity=".9"/><circle cx="80.54" cy="-46.50" r="2.6" fill="#fff" opacity=".9"/></svg>
-        <button type="button" class="ruleta-centro" id="ruleta-girar">GIRAR</button>
-      </div>
-      <button type="button" class="btn-buy coral ruleta-btn" id="ruleta-girar-2">¡Girar ahora! 🎡</button>
-      <p class="ruleta-legal">Un giro por persona. Regalo válido con cualquier compra en wuuffpuppy.co hasta el 30 de octubre.</p>
-    </div>
-    <div class="ruleta-paso" id="ruleta-paso-premio" hidden>
-      <div class="ruleta-premio-emoji">🎉</div>
-      <h3 class="ruleta-titulo" id="ruleta-premio-titulo">¡Ganaste stickers Wuuff de regalo!</h3>
-      <p class="ruleta-sub" id="ruleta-premio-sub">Se agregan solos a tu pedido, con cualquier producto 🎁<small>No necesitas código: queda guardado en este celular.</small></p>
-      <button type="button" class="btn-buy coral ruleta-btn" id="ruleta-usar">Elegir mi Wuuff 🐾</button>
-      <p class="ruleta-legal">Válido con cualquier compra en wuuffpuppy.co hasta el 30 de octubre. Un regalo por pedido.</p>
-    </div>
-    <div class="ruleta-confeti" id="ruleta-confeti" aria-hidden="true"></div>
-  </div>
-</div>
-<div class="ruleta-teaser" id="ruleta-teaser" hidden><button type="button" class="ruleta-teaser-abrir" id="ruleta-teaser-abrir">🎁 Gira y gana <strong>un regalo</strong></button><button type="button" class="ruleta-teaser-x" id="ruleta-teaser-x" aria-label="Ocultar">×</button></div>
-<button type="button" class="ruleta-pill" id="ruleta-pill" hidden>🎁 Tu regalo: <strong id="ruleta-pill-premio">stickers</strong></button>
 
 <!-- DETALLES DEL PRODUCTO -->
 <div class="details-overlay" id="details-overlay">
@@ -1232,27 +1170,10 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
         <span class="prod-tag tag-coral">⭐ Mejor valor</span>
         <h3 class="prod-name"><a href="/combo-collar-arnes-correa/">Combo completo</a></h3>
         <div class="prod-desc">Collar + Arnés + Correa impermeables: de goma suave, antiolor y fácil de limpiar. El regalo perfecto para tu perrihijo.</div>
-        <a class="btn-details" href="/combo-collar-arnes-correa/" data-clave="combo">📋 Ver detalles y guía de tallas →</a>
         <div class="price-row">
           <div class="prod-price"><span class="price-old"><s aria-label="Precio antes: $184.900">$184.900</s><span class="price-off">-15%</span></span>$157.900 COP <small>🚚 Envío gratis en Bogotá</small></div>
-          <span class="cuotas-badge">4 cuotas<br>sin interés<small>con Bancolombia</small></span>
         </div>
-        <div class="lanzamiento-hasta lanzamiento-fecha">⏳ Precio de lanzamiento hasta el 30 de octubre</div>
-        <div class="prod-trust"><span>🔒 Pago seguro con Wompi</span><span>🔄 Cambio de talla</span><span class="trust-ship">🚀 Despacho en 1–2 días hábiles</span></div>
-        <div class="buy-row">
-          <div class="size-row"><span class="size-chip" onclick="seleccionarTalla(this)">S</span><span class="size-chip" onclick="seleccionarTalla(this)">M</span></div>
-          <div class="qty-row">
-            <span class="qty-label">Cantidad</span>
-            <div class="qty-control">
-              <button type="button" class="qty-btn" onclick="cambiarCantidad(this,-1)">−</button>
-              <span class="qty-value">1</span>
-              <button type="button" class="qty-btn" onclick="cambiarCantidad(this,1)">+</button>
-            </div>
-          </div>
-        </div>
-        <div class="size-medidas"></div>
-        <a href="https://wa.me/573176431286?text=Hola%2C%20quiero%20saber%20qu%C3%A9%20talla%20le%20queda%20a%20mi%20perrito" target="_blank" rel="noopener" class="talla-wa">¿No sabes su talla? Escríbenos con una foto 📸</a>
-        <button class="btn-buy coral" onclick="comprarProducto(this, 15790000, 'Combo completo')">Comprar 🎁</button>
+        <a class="btn-buy btn-ver coral" href="/combo-collar-arnes-correa/"><svg class="ico-carrito" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.4 10.2a1.5 1.5 0 0 0 1.5 1.1h8.7a1.5 1.5 0 0 0 1.4-1.1L21 8H6.2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9.5" cy="19.5" r="1.6" fill="currentColor"/><circle cx="17.5" cy="19.5" r="1.6" fill="currentColor"/></svg> Ver producto</a>
       </div>
     </div>
 
@@ -1281,27 +1202,10 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
         <span class="prod-tag tag-blue">Más vendido</span>
         <h3 class="prod-name"><a href="/arnes-tipo-h-impermeable-perro/">Arnés tipo H impermeable</a></h3>
         <div class="prod-desc">Diseño en H que no presiona el cuello ni roza las axilas. De goma suave, antiolor y fácil de limpiar.</div>
-        <a class="btn-details" href="/arnes-tipo-h-impermeable-perro/" data-clave="arnes">📋 Ver detalles y guía de tallas →</a>
         <div class="price-row">
           <div class="prod-price"><span class="price-old"><s aria-label="Precio antes: $84.900">$84.900</s><span class="price-off">-14%</span></span>$72.900 COP <small>🚚 Envío gratis en Bogotá</small></div>
-          <span class="cuotas-badge">4 cuotas<br>sin interés<small>con Bancolombia</small></span>
         </div>
-        <div class="lanzamiento-hasta lanzamiento-fecha">⏳ Precio de lanzamiento hasta el 30 de octubre</div>
-        <div class="prod-trust"><span>🔒 Pago seguro con Wompi</span><span>🔄 Cambio de talla</span><span class="trust-ship">🚀 Despacho en 1–2 días hábiles</span></div>
-        <div class="buy-row">
-          <div class="size-row"><span class="size-chip" onclick="seleccionarTalla(this)">Talla S</span><span class="size-chip" onclick="seleccionarTalla(this)">Talla M</span></div>
-          <div class="qty-row">
-            <span class="qty-label">Cantidad</span>
-            <div class="qty-control">
-              <button type="button" class="qty-btn" onclick="cambiarCantidad(this,-1)">−</button>
-              <span class="qty-value">1</span>
-              <button type="button" class="qty-btn" onclick="cambiarCantidad(this,1)">+</button>
-            </div>
-          </div>
-        </div>
-        <div class="size-medidas"></div>
-        <a href="https://wa.me/573176431286?text=Hola%2C%20quiero%20saber%20qu%C3%A9%20talla%20le%20queda%20a%20mi%20perrito" target="_blank" rel="noopener" class="talla-wa">¿No sabes su talla? Escríbenos con una foto 📸</a>
-        <button class="btn-buy" onclick="comprarProducto(this, 7290000, 'Arnés tipo H impermeable')">Comprar 🐾</button>
+        <a class="btn-buy btn-ver" href="/arnes-tipo-h-impermeable-perro/"><svg class="ico-carrito" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.4 10.2a1.5 1.5 0 0 0 1.5 1.1h8.7a1.5 1.5 0 0 0 1.4-1.1L21 8H6.2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9.5" cy="19.5" r="1.6" fill="currentColor"/><circle cx="17.5" cy="19.5" r="1.6" fill="currentColor"/></svg> Ver producto</a>
       </div>
     </div>
 
@@ -1332,27 +1236,10 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
         <span class="prod-tag tag-blue">Nuevo</span>
         <h3 class="prod-name"><a href="/collar-impermeable-perro/">Collar impermeable</a></h3>
         <div class="prod-desc">De goma suave, antiolor y fácil de limpiar. Para el cuello más bonito del parque.</div>
-        <a class="btn-details" href="/collar-impermeable-perro/" data-clave="collar">📋 Ver detalles y guía de tallas →</a>
         <div class="price-row">
           <div class="prod-price"><span class="price-old"><s aria-label="Precio antes: $58.000">$58.000</s><span class="price-off">-14%</span></span>$49.900 COP <small>🚚 Envío gratis en Bogotá</small></div>
-          <span class="cuotas-badge">4 cuotas<br>sin interés<small>con Bancolombia</small></span>
         </div>
-        <div class="lanzamiento-hasta lanzamiento-fecha">⏳ Precio de lanzamiento hasta el 30 de octubre</div>
-        <div class="prod-trust"><span>🔒 Pago seguro con Wompi</span><span>🔄 Cambio de talla</span><span class="trust-ship">🚀 Despacho en 1–2 días hábiles</span></div>
-        <div class="buy-row">
-          <div class="size-row"><span class="size-chip" onclick="seleccionarTalla(this)">Talla S</span><span class="size-chip" onclick="seleccionarTalla(this)">Talla M</span></div>
-          <div class="qty-row">
-            <span class="qty-label">Cantidad</span>
-            <div class="qty-control">
-              <button type="button" class="qty-btn" onclick="cambiarCantidad(this,-1)">−</button>
-              <span class="qty-value">1</span>
-              <button type="button" class="qty-btn" onclick="cambiarCantidad(this,1)">+</button>
-            </div>
-          </div>
-        </div>
-        <div class="size-medidas"></div>
-        <a href="https://wa.me/573176431286?text=Hola%2C%20quiero%20saber%20qu%C3%A9%20talla%20le%20queda%20a%20mi%20perrito" target="_blank" rel="noopener" class="talla-wa">¿No sabes su talla? Escríbenos con una foto 📸</a>
-        <button class="btn-buy" onclick="comprarProducto(this, 4990000, 'Collar impermeable')">Comprar 🐾</button>
+        <a class="btn-buy btn-ver" href="/collar-impermeable-perro/"><svg class="ico-carrito" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.4 10.2a1.5 1.5 0 0 0 1.5 1.1h8.7a1.5 1.5 0 0 0 1.4-1.1L21 8H6.2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9.5" cy="19.5" r="1.6" fill="currentColor"/><circle cx="17.5" cy="19.5" r="1.6" fill="currentColor"/></svg> Ver producto</a>
       </div>
     </div>
 
@@ -1381,25 +1268,10 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
         <span class="prod-tag tag-blue">Nuevo</span>
         <h3 class="prod-name"><a href="/correa-impermeable-perro/">Correa impermeable</a></h3>
         <div class="prod-desc">De goma suave, antiolor y fácil de limpiar. 1,8 m de largo con gancho metálico resistente.</div>
-        <a class="btn-details" href="/correa-impermeable-perro/" data-clave="correa">📋 Ver detalles y cuidado →</a>
         <div class="price-row">
           <div class="prod-price"><span class="price-old"><s aria-label="Precio antes: $69.000">$69.000</s><span class="price-off">-15%</span></span>$58.900 COP <small>🚚 Envío gratis en Bogotá</small></div>
-          <span class="cuotas-badge">4 cuotas<br>sin interés<small>con Bancolombia</small></span>
         </div>
-        <div class="lanzamiento-hasta lanzamiento-fecha">⏳ Precio de lanzamiento hasta el 30 de octubre</div>
-        <div class="prod-trust"><span>🔒 Pago seguro con Wompi</span><span>🔄 Cambio de talla</span><span class="trust-ship">🚀 Despacho en 1–2 días hábiles</span></div>
-        <div class="buy-row">
-          <div class="size-row"><span class="size-chip selected">Talla única</span></div>
-          <div class="qty-row">
-            <span class="qty-label">Cantidad</span>
-            <div class="qty-control">
-              <button type="button" class="qty-btn" onclick="cambiarCantidad(this,-1)">−</button>
-              <span class="qty-value">1</span>
-              <button type="button" class="qty-btn" onclick="cambiarCantidad(this,1)">+</button>
-            </div>
-          </div>
-        </div>
-        <button class="btn-buy" onclick="comprarProducto(this, 5890000, 'Correa impermeable')">Comprar 🐾</button>
+        <a class="btn-buy btn-ver" href="/correa-impermeable-perro/"><svg class="ico-carrito" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.4 10.2a1.5 1.5 0 0 0 1.5 1.1h8.7a1.5 1.5 0 0 0 1.4-1.1L21 8H6.2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9.5" cy="19.5" r="1.6" fill="currentColor"/><circle cx="17.5" cy="19.5" r="1.6" fill="currentColor"/></svg> Ver producto</a>
       </div>
     </div>
 
@@ -1410,15 +1282,14 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
         </div>
       </a>
       <div class="prod-body">
-        <span class="prod-tag tag-coral">✨ Nuevo</span>
+        <span class="prod-tag tag-blue">✨ Nuevo · Chip NFC</span>
         <h3 class="prod-name"><a href="/placa-nfc/">Placa NFC con nombre</a></h3>
         <div class="prod-desc">Placa con el nombre de tu perrihijo y un chip NFC sellado por dentro. Si se pierde, quien lo encuentre acerca el celular y ve cómo contactarte y su información veterinaria. Sin batería y sin app.</div>
-        <a class="btn-details" href="/placa-nfc/#como-funciona">📋 Ver cómo funciona →</a>
         <div class="price-row">
           <div class="prod-price"><span class="price-old"><s aria-label="Precio antes: $44.900">$44.900</s><span class="price-off">-22%</span></span>$34.900 COP <small>🏷️ $24.900 si la llevas con collar, arnés o combo</small></div>
         </div>
-        <div class="prod-trust"><span>🐾 Huella, gato o nombre</span><span>🎨 Tú eliges los colores</span><span>📱 Funciona con cualquier celular</span></div>
-        <a class="btn-buy" href="/placa-nfc/#disena">Diseña su placa 🐾</a>
+        <ul class="placa-puntos"><li>🐾 Huella, gato o nombre</li><li>🎨 Tú eliges los colores</li><li>📱 Sin batería y sin app</li></ul>
+        <a class="btn-buy btn-ver" href="/placa-nfc/"><svg class="ico-carrito" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.4 10.2a1.5 1.5 0 0 0 1.5 1.1h8.7a1.5 1.5 0 0 0 1.4-1.1L21 8H6.2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9.5" cy="19.5" r="1.6" fill="currentColor"/><circle cx="17.5" cy="19.5" r="1.6" fill="currentColor"/></svg> Ver producto</a>
       </div>
     </div>
 
@@ -1597,7 +1468,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
         <span class="faq-icon">+</span>
       </button>
       <div class="faq-answer">
-        <p>Sí, hacemos envíos a toda Colombia. Despachamos en 1–2 días hábiles; la entrega tarda de 2 a 5 días según tu ciudad. El envío a Bogotá / Soacha es <strong>gratis en todos los productos</strong> y puedes <strong>pagar contraentrega</strong>. A otras ciudades cuesta $18.500.</p>
+        <p>Sí, hacemos envíos a toda Colombia. Despachamos en 1–2 días hábiles; la entrega tarda de 2 a 5 días según tu ciudad. El envío a Bogotá / Soacha es <strong>gratis en todos los productos</strong>. A otras ciudades cuesta $18.500.</p>
       </div>
     </div>
 
@@ -1646,7 +1517,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
       <div class="cta-item"><span>🐕</span> <span class="cta-txt">Correa impermeable — <s class="cta-old">$69.000</s> $58.900 COP</span></div>
       <div class="cta-item"><span>🎁</span> <span class="cta-txt">Combo completo — <s class="cta-old">$184.900</s> $157.900 COP</span></div>
       <div class="cta-item"><span>🇨🇴</span> Envíos a toda Colombia</div>
-      <div class="cta-item"><span>🚚</span> Envío gratis en Bogotá y Soacha · Paga al recibir</div>
+      <div class="cta-item"><span>🚚</span> Envío gratis en Bogotá y Soacha</div>
       <div class="cta-item"><span>💳</span> Tarjeta, PSE, Nequi, Daviplata · 4 cuotas sin interés con Bancolombia</div>
     </div>
     <a href="#productos" class="btn-primary cta-comprar">Comprar ahora 🐾</a>
@@ -1695,19 +1566,6 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
       <div class="char-name">Lucas 💻</div>
       <div class="char-desc">El más inteligente del team</div>
     </div>
-  </div>
-</section>
-
-<!-- GALERÍA -->
-<section class="gallery-section">
-  <h2>Perrihijos <span>Wuuff</span> 🐾</h2>
-  <p class="gallery-sub">Así se ven nuestros accesorios en la vida real</p>
-  <div class="gallery-grid">
-    <img src="images/montaje-perro-1.jpg" alt="Perrihijo usando accesorios Wuuff Puppy" class="gallery-img" loading="lazy">
-    <img src="images/montaje-perro-2.jpg" alt="Perrihijo usando accesorios Wuuff Puppy" class="gallery-img" loading="lazy">
-    <img src="images/montaje-perro-3.jpg" alt="Perrihijo usando accesorios Wuuff Puppy" class="gallery-img" loading="lazy">
-    <img src="images/banner-hero-bg.jpg" alt="Accesorios de goma Wuuff Puppy" class="gallery-img" loading="lazy">
-    <img src="images/banner-hero-bg-2.jpg" alt="Accesorios de goma Wuuff Puppy" class="gallery-img" loading="lazy">
   </div>
 </section>
 
@@ -2162,7 +2020,7 @@ function actualizarEnvioGratis(){
   var aviso = document.getElementById('envio-gratis-aviso');
   if(!select || !pendingPurchase) return;
   if(aviso){
-    aviso.innerHTML = '🚚 <strong>Envío gratis en Bogotá / Soacha</strong> y puedes pagar al recibir 💵';
+    aviso.innerHTML = '🚚 <strong>Envío gratis en Bogotá / Soacha</strong> en todos los productos';
     aviso.style.display = 'block';
   }
 }
@@ -2325,16 +2183,12 @@ function iniciarCompra(baseAmountInCents, nombreProducto, talla){
       tallaDisplay.style.display = 'none';
     }
   }
-  actualizarOpcionesPago();
   var conPlaca = /Placa NFC/.test(nombreProducto);
   var perfilBox = document.getElementById('perfil-placa');
   if(perfilBox){
     perfilBox.hidden = !conPlaca;
     ['perfil-especie', 'perfil-sexo', 'perfil-raza'].forEach(function(id){ document.getElementById(id).required = conPlaca; });
   }
-  var regaloBox = document.getElementById('regalo-ruleta');
-  var regaloTxt = typeof window.wuuffRegaloRuleta === 'function' ? window.wuuffRegaloRuleta('') : '';
-  if(regaloBox){ regaloBox.hidden = !regaloTxt; regaloBox.textContent = regaloTxt ? '🎁 Tu regalo de la ruleta va incluido: ' + regaloTxt : ''; }
   document.getElementById('shipping-modal-overlay').classList.add('open');
 }
 
@@ -2367,10 +2221,6 @@ document.addEventListener('submit', function(e){
 
   var totalCents = pendingPurchase.baseAmountInCents + shippingCents;
   var nombreProducto = pendingPurchase.nombreProducto;
-  var regalo = typeof window.wuuffRegaloRuleta === 'function' ? window.wuuffRegaloRuleta(mascota) : '';
-  if(regalo) nombreProducto += ' [Regalo ruleta: ' + regalo + ']';
-  var pagoSel = form.querySelector('input[name="metodo_pago"]:checked');
-  var contraentrega = selectedOption.value === 'Bogotá / Soacha' && pagoSel && pagoSel.value === 'contraentrega';
 
   // Placa NFC: se crea el perfil de la mascota (su dirección es la que se graba en el chip)
   if(/Placa NFC/.test(nombreProducto)){
@@ -2384,15 +2234,6 @@ document.addEventListener('submit', function(e){
   }
   var perfilPlaca = pendingPurchase.perfil && pendingPurchase.perfil.id ? pendingPurchase.perfil : null;
 
-  if(contraentrega){
-    enviarPedidoContraentrega(form, {
-      nombre: nombre, mascota: mascota, telefono: telefono, correo: correo,
-      direccion: direccion, ciudad: ciudadNombre, talla: document.getElementById('envio-talla').value,
-      producto: nombreProducto, totalCents: totalCents, perfil: perfilPlaca,
-      botField: (form.querySelector('[name="bot-field-envio"]') || {}).value || ''
-    });
-    return;
-  }
 
   var customerData = {
     fullName: nombre,
@@ -2423,47 +2264,7 @@ document.addEventListener('submit', function(e){
 });
 
 
-// Pago contraentrega (solo Bogotá / Soacha): muestra las opciones de pago y registra el pedido sin pasar por Wompi
-function actualizarOpcionesPago(){
-  var select = document.getElementById('envio-ciudad');
-  var box = document.getElementById('pago-opciones');
-  var btn = document.getElementById('envio-submit');
-  if(!select || !box || !btn) return;
-  var bogota = select.value === 'Bogotá / Soacha';
-  box.hidden = !bogota;
-  var pago = document.querySelector('input[name="metodo_pago"]:checked');
-  var ce = bogota && pago && pago.value === 'contraentrega';
-  btn.textContent = ce ? 'Confirmar pedido 📦' : 'Continuar al pago 💳';
-}
-document.addEventListener('change', function(e){
-  if(e.target && (e.target.id === 'envio-ciudad' || e.target.name === 'metodo_pago')) actualizarOpcionesPago();
-});
 function formatoPesos(cents){ return '$' + Math.round(cents / 100).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
-function enviarPedidoContraentrega(form, datos){
-  var btn = document.getElementById('envio-submit');
-  if(btn){ btn.disabled = true; btn.textContent = 'Enviando pedido…'; }
-  fetch('/.netlify/functions/pedido-contraentrega', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(datos)
-  })
-  .then(function(resp){ return resp.json().then(function(j){ if(!resp.ok) throw new Error(j && j.error || 'Error'); return j; }); })
-  .then(function(r){
-    var overlay = document.getElementById('shipping-modal-overlay');
-    if(overlay) overlay.classList.remove('open');
-    pendingPurchase = null;
-    form.reset();
-    actualizarOpcionesPago();
-    if(typeof window.wuuffCompraAprobada === 'function') window.wuuffCompraAprobada(r.referencia, datos.totalCents, 'contraentrega');
-    alert('🎉 ¡Pedido confirmado! Pagas ' + formatoPesos(datos.totalCents) + ' al recibir tu pedido en Bogotá / Soacha.\n\nTe escribiremos por WhatsApp para coordinar la entrega. Referencia: ' + r.referencia);
-    if(datos.perfil) ofrecerCompletarPerfil();
-  })
-  .catch(function(err){
-    console.error(err);
-    alert('No pudimos registrar tu pedido. Intenta de nuevo o escríbenos por WhatsApp al 317 643 1286.');
-  })
-  .then(function(){ if(btn) btn.disabled = false; actualizarOpcionesPago(); });
-}
 
 
 // Placa NFC: crea el perfil con los datos básicos y vuelve a enviar el formulario para seguir con la compra
@@ -2626,12 +2427,6 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
       </select>
       <div class="envio-gratis-aviso" id="envio-gratis-aviso" style="display:none;"></div>
       <p class="envio-despacho">🚀 Despachamos tu pedido en <strong>1–2 días hábiles</strong>. Entrega de 2 a 5 días según tu ciudad.</p>
-      <div class="pago-opciones" id="pago-opciones" hidden>
-        <p class="pago-titulo">¿Cómo quieres pagar?</p>
-        <label class="pago-op"><input type="radio" name="metodo_pago" value="contraentrega" checked> <span><strong>💵 Pagar al recibir</strong><small>Contraentrega en Bogotá / Soacha</small></span></label>
-        <label class="pago-op"><input type="radio" name="metodo_pago" value="wompi"> <span><strong>💳 Pagar ahora con Wompi</strong><small>Tarjeta, PSE, Nequi, Daviplata o 4 cuotas</small></span></label>
-      </div>
-      <div class="regalo-ruleta" id="regalo-ruleta" hidden></div>
       <input type="hidden" name="producto" id="envio-producto" value="">
       <input type="hidden" name="total" id="envio-total" value="">
       <button type="submit" class="btn-buy" id="envio-submit">Continuar al pago 💳</button>
@@ -2639,143 +2434,6 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
     <button class="shipping-modal-cancel" id="shipping-modal-cancel">Cancelar</button>
   </div>
 </div>
-<!-- Ruleta de premios: siempre gana un regalo (stickers o marca con el nombre de la mascota) -->
-<script>
-(function(){
-  // 6 casillas de 60°: las pares regalan stickers y las impares la marca con el nombre de la mascota
-  var PREMIOS = {
-    STICKERS: { corto: 'stickers', titulo: '¡Ganaste stickers Wuuff de regalo!', sub: 'Se agregan solos a tu pedido, con cualquier producto 🎁' },
-    NOMBRE: { corto: 'marca con su nombre', titulo: '¡Ganaste una marca con el nombre de tu perrihijo!', sub: 'La personalizamos con el nombre que escribas al comprar 🐾' }
-  };
-  var MOSTRAR_BOTON_TRAS_MS = 6000;   // el botón "Gira y gana" aparece a los 6 s; la ruleta solo se abre si lo tocan
-  var overlay = document.getElementById('ruleta-overlay');
-  if(!overlay) return;
-  var rueda = document.getElementById('ruleta-rueda');
-  var btnCentro = document.getElementById('ruleta-girar');
-  var btnGirar = document.getElementById('ruleta-girar-2');
-  var pill = document.getElementById('ruleta-pill');
-  var teaser = document.getElementById('ruleta-teaser');
-  var mostrada = false, girando = false;
-
-  function get(store, k){ try { return window[store].getItem(k); } catch(e){ return null; } }
-  function set(store, k, v){ try { window[store].setItem(k, v); } catch(e){} }
-  function ev(name, params){
-    try { if(window.gtag) gtag('event', name, params || {}); } catch(e){}
-    try { if(window.clarity) clarity('event', name); } catch(e){}
-  }
-  function premio(){
-    var v = get('localStorage', 'wuuff_ruleta');
-    if(v === 'RULETA15') v = 'STICKERS';   // quienes ganaron el 15 % antes ahora reciben stickers
-    return PREMIOS[v] ? v : '';
-  }
-  function yaGano(){ return !!premio(); }
-  // Texto del regalo para el pedido (lo usa el formulario de envío)
-  window.wuuffRegaloRuleta = function(mascota){
-    var k = premio();
-    if(!k) return '';
-    if(k === 'NOMBRE') return 'marca con el nombre' + (mascota ? ' "' + mascota + '"' : ' de tu perrihijo');
-    return 'stickers Wuuff';
-  };
-  function hayOtroModal(){
-    return !!document.querySelector('.lightbox.open, .details-overlay.open, .shipping-modal-overlay.open, .talla-overlay.open');
-  }
-
-  function abrir(origen){
-    if(mostrada || yaGano() || hayOtroModal()) return;
-    mostrada = true;
-    teaser.hidden = true;
-    overlay.classList.add('open');
-    overlay.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
-    overlay.querySelector('.ruleta-modal').focus({ preventScroll: true });
-    ev('ruleta_mostrada', { origen: origen });
-  }
-  function cerrar(){
-    if(girando) return;
-    overlay.classList.remove('open');
-    overlay.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
-    mostrada = false;
-    if(!yaGano()){ ev('ruleta_cerrada'); mostrarTeaser(); }
-  }
-  function confeti(){
-    var box = document.getElementById('ruleta-confeti');
-    var colores = ['#f17d57', '#d5d50c', '#4964af', '#b8d8f5', '#2d4375'];
-    box.innerHTML = '';
-    for(var i = 0; i < 60; i++){
-      var c = document.createElement('i');
-      c.style.left = (Math.random() * 100) + '%';
-      c.style.background = colores[i % colores.length];
-      c.style.animationDelay = (Math.random() * 0.5) + 's';
-      c.style.animationDuration = (1.4 + Math.random() * 1.1) + 's';
-      box.appendChild(c);
-    }
-  }
-  function mostrarPill(){
-    var k = premio();
-    if(k) document.getElementById('ruleta-pill-premio').textContent = PREMIOS[k].corto;
-    pill.hidden = false; teaser.hidden = true;
-  }
-  function mostrarTeaser(){
-    if(yaGano() || get('sessionStorage', 'wuuff_ruleta_oculta')) return;
-    teaser.hidden = false;
-  }
-  function girar(){
-    if(girando || yaGano()) return;
-    girando = true;
-    btnCentro.disabled = true; btnGirar.disabled = true;
-    btnGirar.textContent = 'Girando… 🤞';
-    ev('ruleta_girada');
-    // Todas las casillas son premio; un pequeño desfase hace que se vea natural
-    var casilla = Math.floor(Math.random() * 6);
-    var ganado = casilla % 2 === 0 ? 'STICKERS' : 'NOMBRE';
-    var desfase = (Math.random() * 36) - 18;
-    var destino = 360 * 6 + (360 - casilla * 60) + desfase;
-    rueda.style.transform = 'rotate(' + destino + 'deg)';
-    var fin = function(){
-      rueda.removeEventListener('transitionend', fin);
-      clearTimeout(respaldo);
-      if(!girando) return;
-      girando = false;
-      set('localStorage', 'wuuff_ruleta', ganado);
-      document.getElementById('ruleta-premio-titulo').textContent = PREMIOS[ganado].titulo;
-      document.getElementById('ruleta-premio-sub').firstChild.textContent = PREMIOS[ganado].sub;
-      document.getElementById('ruleta-paso-girar').hidden = true;
-      document.getElementById('ruleta-paso-premio').hidden = false;
-      confeti();
-      mostrarPill();
-      ev('ruleta_premio', { premio: ganado });
-    };
-    var respaldo = setTimeout(fin, 6000);
-    rueda.addEventListener('transitionend', fin);
-  }
-
-  btnCentro.addEventListener('click', girar);
-  rueda.addEventListener('click', girar);
-  rueda.style.cursor = 'pointer';
-  btnGirar.addEventListener('click', girar);
-  document.getElementById('ruleta-cerrar').addEventListener('click', cerrar);
-  overlay.addEventListener('click', function(e){ if(e.target === overlay) cerrar(); });
-  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && overlay.classList.contains('open')) cerrar(); });
-  function irAProductos(){
-    cerrar();
-    var combo = document.getElementById('combo') || document.getElementById('productos');
-    if(combo) combo.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-  document.getElementById('ruleta-usar').addEventListener('click', function(){ ev('ruleta_usar'); irAProductos(); });
-  pill.addEventListener('click', irAProductos);
-
-  // La ruleta no se abre sola: un botón flotante "Gira y gana un regalo" la abre si la persona quiere
-  document.getElementById('ruleta-teaser-abrir').addEventListener('click', function(){ abrir('boton'); });
-  document.getElementById('ruleta-teaser-x').addEventListener('click', function(){
-    teaser.hidden = true;
-    set('sessionStorage', 'wuuff_ruleta_oculta', '1');
-    ev('ruleta_boton_oculto');
-  });
-  if(yaGano()){ mostrarPill(); return; }
-  setTimeout(function(){ mostrarTeaser(); if(!teaser.hidden) ev('ruleta_boton_visto'); }, MOSTRAR_BOTON_TRAS_MS);
-})();
-</script>
 <!-- Scripts para medir -->
 <script>
 (function(){
@@ -2955,21 +2613,7 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
     });
   });
 
-  // 8. ViewContent: una vez por tarjeta cuando se ve al 50 %
-  if ('IntersectionObserver' in window) {
-    var visto = new IntersectionObserver(function(entries){
-      entries.forEach(function(entry){
-        if (!entry.isIntersecting) return;
-        visto.unobserve(entry.target);
-        var btn = entry.target.querySelector('.btn-buy');
-        var m = btn && (btn.getAttribute('onclick') || '').match(/,\s*(\d+)\s*,\s*'([^']+)'\s*\)/);
-        if (!m || !META_IDS[m[2]]) return;
-        var value = parseInt(m[1], 10) / 100;
-        metaTrack('ViewContent', [{ id: META_IDS[m[2]], quantity: 1, item_price: value }], value);
-      });
-    }, { threshold: 0.5 });
-    document.querySelectorAll('.prod-card').forEach(function(card){ visto.observe(card); });
-  }
+  // 8. ViewContent: lo registra cada página de producto (las tarjetas del inicio solo llevan a ella)
 
   // 9. Medidor de talla por contorno (una vez por visita)
   var slider = document.getElementById('weight-slider');
@@ -2983,27 +2627,26 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
 })();
 </script>
 <script>
-// Llegada desde una página de producto (/?comprar=arnes&talla=S): elige la talla y abre la compra
+// Llegada desde una página de producto (/?comprar=arnes&talla=S): abre la compra con esa talla
 (function(){
   var q = new URLSearchParams(location.search);
   var clave = q.get('comprar');
-  if(!clave || !/^(combo|arnes|collar|correa)$/.test(clave)) return;
+  var PRODUCTOS = {
+    combo:  { cents: 15790000, nombre: 'Combo completo', tallas: ['S', 'M'], url: '/combo-collar-arnes-correa/' },
+    arnes:  { cents: 7290000, nombre: 'Arnés tipo H impermeable', tallas: ['S', 'M'], url: '/arnes-tipo-h-impermeable-perro/' },
+    collar: { cents: 4990000, nombre: 'Collar impermeable', tallas: ['S', 'M'], url: '/collar-impermeable-perro/' },
+    correa: { cents: 5890000, nombre: 'Correa impermeable', tallas: ['ÚNICA'], url: '/correa-impermeable-perro/' }
+  };
+  var prod = PRODUCTOS[clave];
+  if(!prod) return;
   var talla = (q.get('talla') || '').toUpperCase();
+  if(prod.tallas.length === 1) talla = prod.tallas[0];
+  // Sin una talla válida vuelve a la página del producto para elegirla
+  if(prod.tallas.indexOf(talla) === -1){ location.replace(prod.url); return; }
+  var tallaTexto = talla === 'ÚNICA' ? 'Talla única' : 'Talla ' + talla;
   function iniciar(){
-    var card = document.getElementById(clave);
-    if(!card) return;
-    card.scrollIntoView({ block: 'start' });
-    var chips = card.querySelectorAll('.size-chip');
-    var chip = null;
-    chips.forEach(function(c){
-      var t = c.textContent.trim().replace(/^Talla\s+/i, '').toUpperCase();
-      if(t === talla || (chips.length === 1)) chip = c;
-    });
-    if(history.replaceState) history.replaceState(null, '', location.pathname + '#' + clave);
-    if(!chip) return;
-    seleccionarTalla(chip);
-    var btn = card.querySelector('.btn-buy');
-    if(btn) btn.click();
+    if(history.replaceState) history.replaceState(null, '', location.pathname + '#productos');
+    iniciarCompra(prod.cents, prod.nombre + ' (' + tallaTexto + ')', tallaTexto);
   }
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iniciar); else iniciar();
 })();
