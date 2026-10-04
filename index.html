@@ -1,14 +1,39 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-40CYS06P8Y"></script>
+<!-- Google tag (gtag.js): la cola de eventos queda lista ya; el archivo se descarga después de la carga (ver "Servicios externos") -->
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 
   gtag('config', 'G-40CYS06P8Y');
+
+  // Servicios externos (Analytics, Meta, Clarity): se descargan 2,5 s después de que la página cargó,
+  // o antes si la persona toca, desplaza o escribe. Así no le quitan velocidad a la primera pantalla.
+  // Los eventos que pasen antes quedan en cola y se envían apenas carguen.
+  (function(){
+    var cache = {};
+    window.cargarScript = function(src){
+      if(!cache[src]) cache[src] = new Promise(function(ok, falla){
+        var sc = document.createElement('script'); sc.async = true; sc.src = src;
+        sc.onload = ok; sc.onerror = falla; document.head.appendChild(sc);
+      });
+      return cache[src];
+    };
+    // Wompi solo hace falta para pagar: se descarga al abrir el formulario de compra
+    window.cargarWompi = function(){ return window.cargarScript('https://checkout.wompi.co/widget.js'); };
+    var listo = false;
+    function terceros(){
+      if(listo) return; listo = true;
+      window.cargarScript('https://www.googletagmanager.com/gtag/js?id=G-40CYS06P8Y');
+      window.cargarScript('https://connect.facebook.net/en_US/fbevents.js');
+      window.cargarScript('https://www.clarity.ms/tag/ynyc2e4h8h');
+    }
+    function despues(){ setTimeout(terceros, 2500); }
+    if(document.readyState === 'complete') despues(); else addEventListener('load', despues);
+    ['pointerdown', 'keydown', 'touchstart', 'scroll'].forEach(function(ev){ addEventListener(ev, terceros, { once: true, passive: true }); });
+  })();
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -484,7 +509,7 @@
  ]
 }
 </script>
-<link rel="preload" as="image" href="/collar-3d/collar-3d-poster.webp" fetchpriority="high">
+<link rel="preload" as="image" href="/collar-3d/collar-3d-poster.webp" imagesrcset="/collar-3d/collar-3d-poster-600.webp 600w, /collar-3d/collar-3d-poster-760.webp 760w, /collar-3d/collar-3d-poster.webp 960w" imagesizes="(min-width: 769px) 50vw, 100vw" fetchpriority="high">
 <link rel="stylesheet" href="/collar-3d/collar-3d.css">
 <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/fredoka-one-latin-400-normal.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/nunito-latin-800-normal.woff2" crossorigin>
@@ -885,19 +910,7 @@ button.instagram-slide{border:none;padding:0;background:none;font:inherit;-webki
 .feat-desc{font-size:13px;font-weight:600;color:var(--navy);opacity:.8;line-height:1.5;}
 
 /* VIDEO SECTION */
-.video-section{padding:90px 20px;background:var(--lblue);text-align:center;}
-.video-section h2{font-family:'Fredoka One',cursive;font-size:clamp(30px,5vw,48px);color:var(--navy);margin-bottom:8px;}
-.video-section h2 span{color:var(--coral-texto);}
 .video-sub{font-size:17px;font-weight:600;color:var(--navy);opacity:.8;margin-bottom:44px;}
-.video-wrap{
-  max-width:400px;margin:0 auto;
-  border-radius:24px;overflow:hidden;
-  box-shadow:0 20px 60px rgba(73,100,175,.2);
-  border:3px solid var(--blue);
-  position:relative;
-  aspect-ratio:9/16;
-}
-.video-wrap iframe{width:100%;height:100%;border:none;}
 
 /* PRODUCT VIDEO */
 /* INSTAGRAM */
@@ -1009,14 +1022,10 @@ footer{background:var(--navy);padding:48px 20px 36px;text-align:center;}
 </style>
 <!-- Meta Pixel Code -->
 <script>
-!function(f,b,e,v,n,t,s)
-{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+// Cola del píxel: fbevents.js se descarga después (ver "Servicios externos" en el <head>)
+!function(f){if(f.fbq)return;var n=f.fbq=function(){n.callMethod?
 n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-n.queue=[];t=b.createElement(e);t.async=!0;
-t.src=v;s=b.getElementsByTagName(e)[0];
-s.parentNode.insertBefore(t,s)}(window, document,'script',
-'https://connect.facebook.net/en_US/fbevents.js');
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];}(window);
 fbq('init', '1681628992892925');
 fbq('track', 'PageView');
 </script>
@@ -1024,15 +1033,8 @@ fbq('track', 'PageView');
 src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
 /></noscript>
 <!-- End Meta Pixel Code -->
-<script type="text/javascript" src="https://checkout.wompi.co/widget.js" defer></script>
-<!-- Script Tracking Claritify -->
-<script type="text/javascript">
-    (function(c,l,a,r,i,t,y){
-        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-    })(window, document, "clarity", "script", "ynyc2e4h8h");
-</script>
+<!-- Microsoft Clarity: cola lista; el archivo se descarga después (ver "Servicios externos") -->
+<script>window.clarity = window.clarity || function(){ (window.clarity.q = window.clarity.q || []).push(arguments); };</script>
 </head>
 <body>
 
@@ -1087,7 +1089,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
 <!-- NAV -->
 <nav id="menu" aria-label="Principal">
   <a class="nav-logo" href="/" aria-label="Wuuff Puppy, inicio" onclick="if(location.pathname==='/'){event.preventDefault();window.scrollTo({top:0,behavior:'smooth'});}">
-    <img src="images/opt/wuuff-puppy.webp" alt="Wuuff Puppy">
+    <img src="images/opt/wuuff-puppy.webp" alt="Wuuff Puppy" width="182" height="137">
   </a>
   <div class="nav-links" id="nav-links">
     <div class="nav-drop">
@@ -1127,7 +1129,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
         <span class="t-highlight t-coral">mascota</span>
       </h2>
       <div class="hero-3d" data-collar-3d>
-        <img class="hero-3d-poster" src="/collar-3d/collar-3d-poster.webp" width="960" height="800" alt="Collar impermeable Wuuff azul cielo con placa NFC en forma de huella" fetchpriority="high" draggable="false">
+        <img class="hero-3d-poster" src="/collar-3d/collar-3d-poster.webp" srcset="/collar-3d/collar-3d-poster-600.webp 600w, /collar-3d/collar-3d-poster-760.webp 760w, /collar-3d/collar-3d-poster.webp 960w" sizes="(min-width: 769px) 50vw, 100vw" width="960" height="800" alt="Collar impermeable Wuuff azul cielo con placa NFC en forma de huella" fetchpriority="high" draggable="false">
         <a class="hero-3d-chip" href="/placa-nfc/">🏷️ Placa NFC con su nombre · <b>Personalízala</b></a>
       </div>
       <div class="hero-btns">
@@ -1154,12 +1156,12 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
       <div class="prod-img carousel">
         <span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21M10.5 7.5v6M7.5 10.5h6"/></svg></span>
         <div class="carousel-track">
-          <img src="images/opt/productos/arnes-3.webp" alt="Chihuahua con collar, arnés y correa Wuuff Puppy" class="carousel-slide active" loading="lazy">
-          <img src="images/opt/set-completo-nuevo.webp" alt="Combo completo Wuuff Puppy" class="carousel-slide" loading="lazy">
+          <img src="images/opt/productos/arnes-3.webp" alt="Chihuahua con collar, arnés y correa Wuuff Puppy" class="carousel-slide active" loading="lazy" width="800" height="841">
+          <img src="images/opt/set-completo-nuevo.webp" alt="Combo completo Wuuff Puppy" class="carousel-slide" loading="lazy" width="800" height="800">
           <video class="carousel-slide" muted loop playsinline preload="none" data-poster="images/opt/productos/combo-2-poster.webp" aria-label="Video: Combo completo Wuuff Puppy"><source src="images/productos/combo-2.mp4" type="video/mp4"></video>
-          <img src="images/opt/productos/collar-3.webp" alt="Perro salchicha con collar y arnés Wuuff Puppy" class="carousel-slide" loading="lazy">
-          <img src="images/productos/tallas-arnes.png" alt="Guía de tallas del arnés: medidas de la talla S y M en cm" class="carousel-slide fit-contain" loading="lazy">
-          <img src="images/productos/tallas-collar.png" alt="Guía de tallas del collar: contorno de cuello de la talla S y M" class="carousel-slide fit-contain" loading="lazy">
+          <img src="images/opt/productos/collar-3.webp" alt="Perro salchicha con collar y arnés Wuuff Puppy" class="carousel-slide" loading="lazy" width="800" height="1065">
+          <img src="images/productos/tallas-arnes.png" alt="Guía de tallas del arnés: medidas de la talla S y M en cm" class="carousel-slide fit-contain" loading="lazy" width="1045" height="1583">
+          <img src="images/productos/tallas-collar.png" alt="Guía de tallas del collar: contorno de cuello de la talla S y M" class="carousel-slide fit-contain" loading="lazy" width="1045" height="1185">
         </div>
         <button class="carousel-arrow carousel-prev" onclick="moveCarousel(this,-1)" aria-label="Anterior">‹</button>
         <button class="carousel-arrow carousel-next" onclick="moveCarousel(this,1)" aria-label="Siguiente">›</button>
@@ -1188,11 +1190,11 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
       <div class="prod-img carousel">
         <span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21M10.5 7.5v6M7.5 10.5h6"/></svg></span>
         <div class="carousel-track">
-          <img src="images/opt/productos/collar-3.webp" alt="Perro salchicha con arnés y collar Wuuff Puppy" class="carousel-slide active" loading="lazy">
-          <img src="images/opt/arnes-nuevo.webp" alt="Arnés tipo H impermeable" class="carousel-slide" loading="lazy">
+          <img src="images/opt/productos/collar-3.webp" alt="Perro salchicha con arnés y collar Wuuff Puppy" class="carousel-slide active" loading="lazy" width="800" height="1065">
+          <img src="images/opt/arnes-nuevo.webp" alt="Arnés tipo H impermeable" class="carousel-slide" loading="lazy" width="800" height="800">
           <video class="carousel-slide" muted loop playsinline preload="none" data-poster="images/opt/productos/arnes-2-poster.webp" aria-label="Video: Arnés tipo H impermeable"><source src="images/productos/arnes-2.mp4" type="video/mp4"></video>
-          <img src="images/opt/productos/arnes-3.webp" alt="Chihuahua con arnés tipo H de goma Wuuff Puppy" class="carousel-slide" loading="lazy">
-          <img src="images/productos/tallas-arnes.png" alt="Guía de tallas del arnés: medidas de la talla S y M en cm" class="carousel-slide fit-contain" loading="lazy">
+          <img src="images/opt/productos/arnes-3.webp" alt="Chihuahua con arnés tipo H de goma Wuuff Puppy" class="carousel-slide" loading="lazy" width="800" height="841">
+          <img src="images/productos/tallas-arnes.png" alt="Guía de tallas del arnés: medidas de la talla S y M en cm" class="carousel-slide fit-contain" loading="lazy" width="1045" height="1583">
         </div>
         <button class="carousel-arrow carousel-prev" onclick="moveCarousel(this,-1)" aria-label="Anterior">‹</button>
         <button class="carousel-arrow carousel-next" onclick="moveCarousel(this,1)" aria-label="Siguiente">›</button>
@@ -1220,12 +1222,12 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
       <div class="prod-img carousel">
         <span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21M10.5 7.5v6M7.5 10.5h6"/></svg></span>
         <div class="carousel-track">
-          <img src="images/opt/productos/collar-4.webp" alt="Perro sentado con collar y correa Wuuff Puppy" class="carousel-slide active" loading="lazy">
-          <img src="images/opt/collar-nuevo.webp" alt="Collar impermeable" class="carousel-slide" loading="lazy">
+          <img src="images/opt/productos/collar-4.webp" alt="Perro sentado con collar y correa Wuuff Puppy" class="carousel-slide active" loading="lazy" width="800" height="1362">
+          <img src="images/opt/collar-nuevo.webp" alt="Collar impermeable" class="carousel-slide" loading="lazy" width="800" height="532">
           <video class="carousel-slide" muted loop playsinline preload="none" data-poster="images/opt/productos/collar-2-poster.webp" aria-label="Video: Collar impermeable"><source src="images/productos/collar-2.mp4" type="video/mp4"></video>
-          <img src="images/opt/productos/collar-3.webp" alt="Perro salchicha con collar y arnés Wuuff Puppy" class="carousel-slide" loading="lazy">
-          <img src="images/opt/productos/collar-5.webp" alt="Collar y correa Wuuff Puppy sobre el pasto" class="carousel-slide" loading="lazy">
-          <img src="images/productos/tallas-collar.png" alt="Guía de tallas del collar: contorno de cuello de la talla S y M" class="carousel-slide fit-contain" loading="lazy">
+          <img src="images/opt/productos/collar-3.webp" alt="Perro salchicha con collar y arnés Wuuff Puppy" class="carousel-slide" loading="lazy" width="800" height="1065">
+          <img src="images/opt/productos/collar-5.webp" alt="Collar y correa Wuuff Puppy sobre el pasto" class="carousel-slide" loading="lazy" width="720" height="958">
+          <img src="images/productos/tallas-collar.png" alt="Guía de tallas del collar: contorno de cuello de la talla S y M" class="carousel-slide fit-contain" loading="lazy" width="1045" height="1185">
         </div>
         <button class="carousel-arrow carousel-prev" onclick="moveCarousel(this,-1)" aria-label="Anterior">‹</button>
         <button class="carousel-arrow carousel-next" onclick="moveCarousel(this,1)" aria-label="Siguiente">›</button>
@@ -1254,11 +1256,11 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
       <div class="prod-img carousel">
         <span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21M10.5 7.5v6M7.5 10.5h6"/></svg></span>
         <div class="carousel-track">
-          <img src="images/opt/montaje-perro-1.webp" alt="Perro paseando con correa y arnés Wuuff Puppy" class="carousel-slide active" loading="lazy">
-          <img src="images/opt/correa-nuevo.webp" alt="Correa impermeable" class="carousel-slide" loading="lazy">
+          <img src="images/opt/montaje-perro-1.webp" alt="Perro paseando con correa y arnés Wuuff Puppy" class="carousel-slide active" loading="lazy" width="720" height="1080">
+          <img src="images/opt/correa-nuevo.webp" alt="Correa impermeable" class="carousel-slide" loading="lazy" width="800" height="607">
           <video class="carousel-slide" muted loop playsinline preload="none" data-poster="images/opt/productos/correa-2-poster.webp" aria-label="Video: Correa impermeable"><source src="images/productos/correa-2.mp4" type="video/mp4"></video>
-          <img src="images/opt/productos/correa-3.webp" alt="Bulldog francés con collar y correa Wuuff Puppy" class="carousel-slide" loading="lazy">
-          <img src="images/opt/productos/correa-4.webp" alt="Perro sentado con collar y correa Wuuff Puppy" class="carousel-slide" loading="lazy">
+          <img src="images/opt/productos/correa-3.webp" alt="Bulldog francés con collar y correa Wuuff Puppy" class="carousel-slide" loading="lazy" width="800" height="1304">
+          <img src="images/opt/productos/correa-4.webp" alt="Perro sentado con collar y correa Wuuff Puppy" class="carousel-slide" loading="lazy" width="800" height="1362">
         </div>
         <button class="carousel-arrow carousel-prev" onclick="moveCarousel(this,-1)" aria-label="Anterior">‹</button>
         <button class="carousel-arrow carousel-next" onclick="moveCarousel(this,1)" aria-label="Siguiente">›</button>
@@ -1374,11 +1376,11 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
   <p class="video-sub">Mira nuestras publicaciones más recientes</p>
   <div class="instagram-carousel">
     <div class="instagram-track">
-      <button type="button" class="instagram-slide"><img class="ig-img" src="images/opt/montaje-perro-1.webp" alt="Publicación de Instagram Wuuff Puppy" loading="lazy"></button>
-      <button type="button" class="instagram-slide"><img class="ig-img" src="images/opt/montaje-perro-2.webp" alt="Publicación de Instagram Wuuff Puppy" loading="lazy"></button>
-      <button type="button" class="instagram-slide"><img class="ig-img" src="images/opt/montaje-perro-3.webp" alt="Publicación de Instagram Wuuff Puppy" loading="lazy"></button>
-      <button type="button" class="instagram-slide"><img class="ig-img" src="images/opt/banner-hero-bg.webp" alt="Publicación de Instagram Wuuff Puppy" loading="lazy"></button>
-      <button type="button" class="instagram-slide"><img class="ig-img" src="images/opt/banner-hero-bg-2.webp" alt="Publicación de Instagram Wuuff Puppy" loading="lazy"></button>
+      <button type="button" class="instagram-slide"><img class="ig-img" src="images/opt/montaje-perro-1.webp" alt="Publicación de Instagram Wuuff Puppy" loading="lazy" width="720" height="1080"></button>
+      <button type="button" class="instagram-slide"><img class="ig-img" src="images/opt/montaje-perro-2.webp" alt="Publicación de Instagram Wuuff Puppy" loading="lazy" width="800" height="999"></button>
+      <button type="button" class="instagram-slide"><img class="ig-img" src="images/opt/montaje-perro-3.webp" alt="Publicación de Instagram Wuuff Puppy" loading="lazy" width="720" height="912"></button>
+      <button type="button" class="instagram-slide"><img class="ig-img" src="images/opt/banner-hero-bg.webp" alt="Publicación de Instagram Wuuff Puppy" loading="lazy" width="800" height="301"></button>
+      <button type="button" class="instagram-slide"><img class="ig-img" src="images/opt/banner-hero-bg-2.webp" alt="Publicación de Instagram Wuuff Puppy" loading="lazy" width="800" height="379"></button>
     </div>
   </div>
   <a href="https://instagram.com/wuuffpuppy" target="_blank" class="btn-outline" style="display:inline-block;margin-top:8px;">📱 Ver más en @wuuffpuppy</a>
@@ -1431,25 +1433,10 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
   </div>
 </section>
 
-<!-- VIDEO TIKTOK -->
-<section class="video-section">
-  <h2>Wuuff Puppy <span>en acción</span> 🎬</h2>
-  <p class="video-sub">Mira cómo se ven los productos en la vida real</p>
-  <div class="video-wrap">
-    <iframe
-      src="https://www.tiktok.com/embed/v2/7648732489850047765"
-      loading="lazy"
-      title="Video de Wuuff Puppy en TikTok"
-      allowfullscreen
-      allow="autoplay"
-    ></iframe>
-  </div>
-</section>
-
 <!-- STORY -->
 <section class="story" id="nosotros">
   <div class="story-inner">
-    <img class="story-dog" src="images/opt/thor-y-zabache-los-perrihijos-de-angie.webp" alt="Guardian y Zabache — los perrihijos de Angie" loading="lazy">
+    <img class="story-dog" src="images/opt/thor-y-zabache-los-perrihijos-de-angie.webp" alt="Guardian y Zabache — los perrihijos de Angie" loading="lazy" width="800" height="471">
     <p class="story-quote">
       "Wuuff Puppy nació por <em>Guardian y Zabache</em>, mis dos perrihijos.<br>
       Buscaba accesorios bonitos en Colombia y no los encontraba.<br>
@@ -1543,7 +1530,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
     <p>Pequeños detalles que dicen te quiero — para tu perrihijo y para los que esperan un hogar. 🏠</p>
   </div>
   <div class="cause-dog">
-    <img src="images/opt/arecito.webp" alt="Arecito Wuuff" loading="lazy">
+    <img src="images/opt/arecito.webp" alt="Arecito Wuuff" loading="lazy" width="447" height="593">
   </div>
 </section>
 
@@ -1553,22 +1540,22 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
   <p class="chars-sub">Cada perrihijo tiene su propio personaje — ¿cuál es el tuyo?</p>
   <div class="chars-grid">
     <div class="char-card">
-      <img src="images/opt/chawi.webp" alt="Chawi" loading="lazy">
+      <img src="images/opt/chawi.webp" alt="Chawi" loading="lazy" width="425" height="508">
       <div class="char-name">Chawi 🍗</div>
       <div class="char-desc">Hambriento y siempre feliz</div>
     </div>
     <div class="char-card">
-      <img src="images/opt/arecito.webp" alt="Arecito" loading="lazy">
+      <img src="images/opt/arecito.webp" alt="Arecito" loading="lazy" width="447" height="593">
       <div class="char-name">Arecito 🧢</div>
       <div class="char-desc">El más cool del parque</div>
     </div>
     <div class="char-card">
-      <img src="images/opt/guardian.webp" alt="Guardian" loading="lazy">
+      <img src="images/opt/guardian.webp" alt="Guardian" loading="lazy" width="292" height="386">
       <div class="char-name">Guardian 💙</div>
       <div class="char-desc">Noble y leal para siempre</div>
     </div>
     <div class="char-card">
-      <img src="images/opt/lucas.webp" alt="Lucas" loading="lazy">
+      <img src="images/opt/lucas.webp" alt="Lucas" loading="lazy" width="385" height="354">
       <div class="char-name">Lucas 💻</div>
       <div class="char-desc">El más inteligente del team</div>
     </div>
@@ -1580,7 +1567,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
 
 <footer>
   <div class="footer-logo">
-    <img src="images/opt/wuuff-puppy.webp" alt="Wuuff Puppy" loading="lazy">
+    <img src="images/opt/wuuff-puppy.webp" alt="Wuuff Puppy" loading="lazy" width="182" height="137">
   </div>
   <div class="footer-tag">"Pequeños detalles que dicen te quiero."</div>
   <div class="footer-social">
@@ -2168,6 +2155,7 @@ function comprarProducto(btn, amountInCents, nombreBase){
 }
 
 function iniciarCompra(baseAmountInCents, nombreProducto, talla){
+  if(window.cargarWompi) window.cargarWompi().catch(function(){});
   if(!baseAmountInCents || baseAmountInCents <= 0){
     alert('Selecciona al menos un producto antes de continuar.');
     return;
@@ -2351,6 +2339,10 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
   .then(function(resp){
     if(!resp.ok){ throw new Error('No se pudo generar la firma de pago'); }
     return resp.json();
+  })
+  .then(function(data){
+    // espera el widget de Wompi si todavía no terminó de descargarse
+    return window.cargarWompi().then(function(){ return data; }, function(){ return data; });
   })
   .then(function(data){
     var config = {
