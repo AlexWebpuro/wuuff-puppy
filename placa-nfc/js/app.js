@@ -376,7 +376,7 @@ $('#btn-nfc').addEventListener('click', e => {
 $('#btn-agregar').addEventListener('click', () => {
   if (!estado.nombre.trim()) { input.focus(); validarNombre(''); return; }
   const r = ultimo, t = totales();
-  // En wuuffpuppy.co: lleva al mismo pago de la tienda (/?comprar=placa → modal de envío + Wompi o contraentrega)
+  // En wuuffpuppy.co: lleva al mismo pago de la tienda (/?comprar=placa → modal de envío + Wompi)
   if (/wuuffpuppy\.co$/.test(location.hostname) || location.hostname.endsWith('.netlify.app')) {
     const q = new URLSearchParams({ comprar: 'placa', forma: estado.diseno, nombre: estado.nombre.trim(), base: estado.base, letras: estado.letras,
       con: estado.compra === 'set' ? 'combo' : estado.compra, talla: estado.compra === 'sola' ? '' : estado.talla });
