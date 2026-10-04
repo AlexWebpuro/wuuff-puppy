@@ -162,9 +162,15 @@ function construirModelo(g, bb) {
   const piezas = new THREE.Group(); piezas.position.set(-cx, -cy, -(g.grosor + g.altoLetras) / 2);
 
   const matBase = materialPLA(color(estado.base).hex);
-  const base = extruir(g.base, g.grosor, 0, matBase); base.name = 'base';
-  const letras = extruir(g.letras, g.altoLetras, g.grosor, materialPLA(color(estado.letras).hex));
-  piezas.add(base, letras);
+  const matLetras = materialPLA(color(estado.letras).hex);
+  if (g.rebajes) {
+    // Huella: la base trae rebajes de 0,6 mm donde se pegan el nombre y la marca NFC
+    const zR = g.grosor - g.profRebaje;
+    piezas.add(extruir(g.base, zR, 0, matBase), extruir(g.baseRebajada, g.profRebaje, zR, matBase));
+  } else {
+    piezas.add(extruir(g.base, g.grosor, 0, matBase));
+  }
+  piezas.add(extruir(g.letras, g.letrasAlto ?? g.altoLetras, g.letrasZ0 ?? g.grosor, matLetras));
 
   if (g.nfc) {
     const r = g.nfc.d / 2;
@@ -245,7 +251,8 @@ function actualizar(reencuadrar) {
   const g = geometria(estado.diseno, nombre);
   const bb = G.bounds(g.base);
   const grosorTotal = g.grosor + g.altoLetras;
-  const volumen = G.area(g.base) * g.grosor + G.area(g.letras) * g.altoLetras;   // mm³
+  const volumen = G.area(g.base) * g.grosor + G.area(g.letras) * g.altoLetras     // mm³
+    - (g.rebajes ? (G.area(g.rebajes) - G.area(g.letras)) * g.profRebaje : 0);
   const gramos = volumen / 1000 * 1.24 * 0.75;                                       // PLA, relleno típico
   ultimo = { g, bb, nombre, grosorTotal, gramos };
 
