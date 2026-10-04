@@ -2193,13 +2193,31 @@ function iniciarCompra(baseAmountInCents, nombreProducto, talla){
 }
 
 // Delegación de eventos: funciona sin importar el orden del HTML
+// Cerrar la compra: con "Cancelar", tocando afuera del formulario o con Esc.
+// Si la persona llegó desde la página de un producto, vuelve a esa página.
+window.wuuffVolverA = null;
+function cerrarCompra(){
+  var overlay = document.getElementById('shipping-modal-overlay');
+  if(!overlay || !overlay.classList.contains('open')) return;
+  overlay.classList.remove('open');
+  pendingPurchase = null;
+  var volver = window.wuuffVolverA;
+  if(!volver) return;
+  window.wuuffVolverA = null;
+  var ref = null;
+  try { ref = document.referrer ? new URL(document.referrer) : null; } catch(err){}
+  if(ref && ref.origin === location.origin && ref.pathname === volver && history.length > 1) history.back();
+  else location.href = volver;
+}
+var toqueEnFondo = false;
+document.addEventListener('mousedown', function(e){ toqueEnFondo = !!(e.target && e.target.id === 'shipping-modal-overlay'); });
 document.addEventListener('click', function(e){
-  if(e.target && e.target.id === 'shipping-modal-cancel'){
-    var overlay = document.getElementById('shipping-modal-overlay');
-    if(overlay) overlay.classList.remove('open');
-    pendingPurchase = null;
-  }
+  if(!e.target) return;
+  if(e.target.id === 'shipping-modal-cancel') cerrarCompra();
+  // Solo cierra si el toque empezó y terminó en el fondo (no al arrastrar desde un campo)
+  else if(e.target.id === 'shipping-modal-overlay' && toqueEnFondo) cerrarCompra();
 });
+document.addEventListener('keydown', function(e){ if(e.key === 'Escape') cerrarCompra(); });
 
 document.addEventListener('submit', function(e){
   if(!e.target || e.target.id !== 'datos-envio-form') return;
@@ -2646,6 +2664,7 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
   var tallaTexto = talla === 'ÚNICA' ? 'Talla única' : 'Talla ' + talla;
   function iniciar(){
     if(history.replaceState) history.replaceState(null, '', location.pathname + '#productos');
+    window.wuuffVolverA = prod.url;
     iniciarCompra(prod.cents, prod.nombre + ' (' + tallaTexto + ')', tallaTexto);
   }
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iniciar); else iniciar();
@@ -2689,6 +2708,7 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
 
   function abrir(){
     if(history.replaceState) history.replaceState(null, '', location.pathname);
+    window.wuuffVolverA = '/placa-nfc/';
     try { if(window.gtag) gtag('event', 'placa_iniciar_compra', { forma: q.get('forma'), con: con, value: total / 100, currency: 'COP' }); } catch(err){}
     iniciarCompra(total, producto, talla);
   }
