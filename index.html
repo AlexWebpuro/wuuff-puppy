@@ -780,7 +780,7 @@ video.carousel-slide{background:#dfe8f5;}
 .hero-offer{cursor:pointer;}
 .gallery-img,.ig-img{cursor:zoom-in;}
 button.instagram-slide{border:none;padding:0;background:none;font:inherit;-webkit-tap-highlight-color:transparent;}
-.price-row,.prod-name,.prod-desc{cursor:pointer;}
+.prod-card .prod-body{cursor:pointer;}
 .prod-img.carousel{touch-action:pan-y;}
 .carousel-dot.active{background:var(--blue);width:16px;border-radius:4px;}
 .prod-body{padding:22px 18px;}
@@ -1910,17 +1910,14 @@ function cerrarDetalles(){
   window.addEventListener('resize', function(){ if(lb.classList.contains('open')) apply(); });
 })();
 
-// Zonas de la tarjeta que la gente toca: el precio lleva a comprar; el nombre y la descripción abren los detalles
+// Toda la tarjeta lleva a la página del producto (nombre, etiqueta, descripción, precio o puntos destacados);
+// la foto abre el visor y las flechas cambian de foto
 document.addEventListener('click', function(e){
   var card = e.target.closest && e.target.closest('.prod-card');
-  if(!card || e.target.closest('button, a, input, .carousel, .size-chip')) return;
-  if(e.target.closest('.price-row')){
-    var b = card.querySelector('.btn-buy');
-    if(b) b.click();
-  } else if(e.target.closest('.prod-desc')){
-    var link = card.querySelector('.prod-name a');
-    if(link) link.click();
-  }
+  if(!card || e.target.closest('button, a, input, .carousel')) return;
+  if(!e.target.closest('.prod-body')) return;
+  var link = card.querySelector('.prod-name a');
+  if(link) link.click();
 });
 
 // Carrusel: deslizar con el dedo para cambiar de foto

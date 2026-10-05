@@ -15,8 +15,8 @@ nav .logo img{height:38px;width:auto}
 .migas{font-size:13px;font-weight:700;color:#7a86a8;padding:14px 0 6px}
 .migas a{color:#7a86a8;text-decoration:none}.migas a:hover{text-decoration:underline}
 .ficha{display:grid;grid-template-columns:1.05fr 1fr;gap:40px;padding:10px 0 40px;align-items:start}
-.galeria-main{border-radius:22px;overflow:hidden;background:var(--cream);aspect-ratio:1/1}
-.galeria-main img{width:100%;height:100%;object-fit:cover}
+.galeria-main{position:relative;border-radius:22px;overflow:hidden;background:var(--cream);aspect-ratio:1/1}
+.galeria-main img{width:100%;height:100%;object-fit:cover;cursor:zoom-in}
 .galeria-main img.contain{object-fit:contain;background:#fff}
 .thumbs{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:10px}
 .thumbs button{border:2px solid transparent;border-radius:12px;overflow:hidden;padding:0;cursor:pointer;aspect-ratio:1/1;background:var(--cream)}
@@ -127,5 +127,17 @@ main{min-height:60vh}
 .lanzamiento-hasta{font-size:13.5px;font-weight:800;color:var(--coral);margin:2px 0 6px}
 .mas-placa{display:block;text-align:center;margin-top:10px;font-weight:900;font-size:14px;color:var(--navy);background:var(--lime);border-radius:12px;padding:9px 12px;text-decoration:none}
 .mas-placa:hover{filter:brightness(.96)}
-.etiquetas{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
-.etiquetas span{background:#eef3fb;color:#4964af;font-size:12px;font-weight:800;padding:4px 10px;border-radius:20px}
+.etiquetas{margin-top:14px;font-size:12px;font-weight:600;color:#5b6788;line-height:1.6}
+/* Galería: flechas, contador, aviso de ampliar y visor a pantalla completa */
+.gal-flecha{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;border:none;background:rgba(255,255,255,.92);color:var(--navy);font-size:26px;line-height:1;font-weight:900;cursor:pointer;box-shadow:0 3px 10px rgba(45,67,117,.18);display:flex;align-items:center;justify-content:center;padding:0 0 3px}
+.gal-ant{left:10px}.gal-sig{right:10px}
+.gal-lupa,.gal-cont{position:absolute;bottom:10px;background:rgba(45,67,117,.78);color:#fff;font-size:12px;font-weight:800;padding:5px 10px;border-radius:14px;pointer-events:none}
+.gal-lupa{left:10px}.gal-cont{right:10px}
+.visor-foto{display:none;position:fixed;inset:0;z-index:200;background:rgba(20,28,52,.94);align-items:center;justify-content:center}
+.visor-foto.abierto{display:flex}
+.visor-foto img{max-width:100%;max-height:100%;object-fit:contain;touch-action:pan-y pinch-zoom}
+.visor-cerrar{position:absolute;top:12px;right:12px;width:44px;height:44px;border-radius:50%;border:none;background:#fff;color:var(--navy);font-size:28px;font-weight:900;cursor:pointer;line-height:1}
+.visor-foto .gal-cont{bottom:18px;right:50%;transform:translateX(50%)}
+/* Sello de cuotas: al tocarlo explica cómo pagar */
+button.cuotas{border:none;font-family:'Nunito',sans-serif;cursor:pointer;text-align:left}
+.cuotas-info{margin:8px 0 4px;font-size:13px;font-weight:700;color:var(--navy);background:#f4f6d2;border-radius:12px;padding:8px 12px}
