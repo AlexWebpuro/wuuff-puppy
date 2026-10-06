@@ -2305,6 +2305,34 @@ function crearPerfilPlaca(form, datos){
   intentar(1);
 }
 // Después de comprar una placa: invita a completar el perfil (foto, vacunas, veterinaria)
+// Reseñas de Clientes en Google: después de un pago aprobado, Google le ofrece al cliente
+// una encuesta (la recibe por correo cuando ya tiene el pedido) para calificar la tienda.
+var GOOGLE_MERCHANT_ID = 5867505690;
+function guardarDatosResena(reference, email){
+  try { sessionStorage.setItem('wuuff_resena', JSON.stringify({ ref: reference, email: email })); } catch(e){}
+}
+function ofrecerResenaGoogle(reference){
+  var d = null;
+  try { d = JSON.parse(sessionStorage.getItem('wuuff_resena') || 'null'); sessionStorage.removeItem('wuuff_resena'); } catch(e){}
+  if(!d || !d.email || !/@/.test(d.email)) return;
+  // despacho 1–2 días hábiles + entrega 2–5 días: la encuesta llega cuando ya tiene el pedido
+  var entrega = new Date(Date.now() + 8 * 864e5);
+  var fecha = entrega.getFullYear() + '-' + String(entrega.getMonth() + 1).padStart(2, '0') + '-' + String(entrega.getDate()).padStart(2, '0');
+  window.renderOptIn = function(){
+    window.gapi.load('surveyoptin', function(){
+      window.gapi.surveyoptin.render({
+        // REQUIRED FIELDS
+        "merchant_id": GOOGLE_MERCHANT_ID,
+        "order_id": String(reference || d.ref),
+        "email": d.email,
+        "delivery_country": "CO",
+        "estimated_delivery_date": fecha
+      });
+    });
+  };
+  if(window.cargarScript) window.cargarScript('https://apis.google.com/js/platform.js?onload=renderOptIn').catch(function(){});
+}
+
 function ofrecerCompletarPerfil(){
   var p = null;
   try { p = JSON.parse(sessionStorage.getItem('wuuff_perfil') || 'null'); sessionStorage.removeItem('wuuff_perfil'); } catch(e){}
@@ -2338,6 +2366,7 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
     return resp.json();
   })
   .then(function(data){
+    guardarDatosResena(reference, customerData && customerData.email);
     // espera el widget de Wompi si todavía no terminó de descargarse
     return window.cargarWompi().then(function(){ return data; }, function(){ return data; });
   })
@@ -2368,6 +2397,7 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
         }
         alert('🎉 ¡Pago aprobado! Gracias por tu compra' + (nombreProducto ? ' de ' + nombreProducto : '') + '. Te llegará un correo de confirmación en breve.');
         ofrecerCompletarPerfil();
+        ofrecerResenaGoogle(reference);
       } else if(transaction){
         alert('El pago quedó en estado: ' + transaction.status + '. Si el banco lo confirma más tarde, te llegará igual el correo de confirmación.');
       }
@@ -2395,6 +2425,7 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
         }
         alert('🎉 ¡Pago aprobado! Gracias por tu compra. Te llegará un correo de confirmación en breve.');
         ofrecerCompletarPerfil();
+        ofrecerResenaGoogle(data.reference);
       } else {
         alert('El pago quedó en estado: ' + data.status + '. Si el banco lo confirma más tarde, te llegará igual el correo de confirmación.');
       }
