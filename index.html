@@ -607,6 +607,13 @@ body{font-family:'Nunito',sans-serif;background:var(--white);color:var(--navy);o
 .shipping-input::placeholder{color:rgba(45,67,117,.5);}
 .shipping-select{appearance:none;-webkit-appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232d4375' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;background-size:16px;padding-right:40px;}
 .envio-gratis-aviso{background:#e6f7ec;color:#2b8a3e;font-size:12.5px;font-weight:700;border-radius:12px;padding:9px 12px;margin:-4px 0 10px;text-align:left;}
+.codigo-box{margin:2px 0 12px;text-align:left;}
+.codigo-label{display:block;font-size:13px;font-weight:800;color:var(--navy);margin-bottom:6px;}
+.codigo-fila{display:flex;gap:8px;}
+.codigo-fila .codigo-input{flex:1;margin:0;text-transform:uppercase;letter-spacing:.5px;}
+.codigo-aplicar{border:2px solid var(--blue);background:#fff;color:var(--blue);font-family:'Nunito',sans-serif;font-weight:900;font-size:14px;border-radius:12px;padding:0 16px;cursor:pointer;}
+.codigo-msg{font-size:13px;font-weight:700;margin:6px 0 0;min-height:0;}
+.codigo-msg.ok{color:#0b7a3e;}.codigo-msg.error{color:#b3261e;}
 .envio-despacho{font-size:12.5px;font-weight:700;color:var(--navy);opacity:.8;margin:-4px 0 10px;text-align:left;line-height:1.4;}
 .envio-gratis-aviso strong{font-weight:900;}
 .shipping-modal .btn-buy{border:none;cursor:pointer;margin-top:6px;}
@@ -2155,6 +2162,39 @@ function comprarProducto(btn, amountInCents, nombreBase){
   iniciarCompra(amountInCents * qty, nombreCompleto, tallaTexto);
 }
 
+// Códigos de descuento (por ahora solo el del concurso de Halloween)
+var CODIGOS = {
+  WUUFFHALLOWEEN: {
+    desde: new Date('2026-10-26T00:00:00-05:00'),
+    hasta: new Date('2026-11-03T00:00:00-05:00'),   // válido hasta el 2 de noviembre a medianoche (hora Colombia)
+    descuentoCents: 1579000,                         // 10 % del combo completo ($157.900)
+    texto: '10 % en el combo completo'
+  }
+};
+function revisarCodigo(texto){
+  var codigo = String(texto || '').trim().toUpperCase().replace(/\s+/g, '');
+  if(!codigo) return { ok: false, vacio: true };
+  var c = CODIGOS[codigo];
+  if(!c) return { ok: false, msg: 'Ese código no existe. Revísalo e intenta de nuevo.' };
+  var ahora = new Date();
+  if(ahora < c.desde) return { ok: false, msg: 'Este código se puede usar del 26 de octubre al 2 de noviembre de 2026.' };
+  if(ahora >= c.hasta) return { ok: false, msg: 'Este código ya venció: era válido hasta el 2 de noviembre de 2026.' };
+  if(!pendingPurchase || !esComboCompleto(pendingPurchase.nombreProducto)) return { ok: false, msg: 'Este código aplica solo al combo completo (collar + arnés tipo H + correa).' };
+  return { ok: true, codigo: codigo, descuentoCents: c.descuentoCents, msg: '✅ Código aplicado: ' + c.texto + ' (−' + formatoPesos(c.descuentoCents) + ').' };
+}
+function mostrarCodigo(res){
+  var msg = document.getElementById('codigo-msg');
+  if(!msg) return;
+  msg.textContent = res && !res.vacio ? res.msg : '';
+  msg.className = 'codigo-msg' + (res && !res.vacio ? (res.ok ? ' ok' : ' error') : '');
+}
+document.addEventListener('click', function(e){
+  if(e.target && e.target.id === 'codigo-aplicar') mostrarCodigo(revisarCodigo(document.getElementById('envio-codigo').value));
+});
+document.addEventListener('keydown', function(e){
+  if(e.target && e.target.id === 'envio-codigo' && e.key === 'Enter'){ e.preventDefault(); mostrarCodigo(revisarCodigo(e.target.value)); }
+});
+
 function iniciarCompra(baseAmountInCents, nombreProducto, talla){
   if(window.cargarWompi) window.cargarWompi().catch(function(){});
   if(!baseAmountInCents || baseAmountInCents <= 0){
@@ -2162,6 +2202,7 @@ function iniciarCompra(baseAmountInCents, nombreProducto, talla){
     return;
   }
   pendingPurchase = { baseAmountInCents: baseAmountInCents, nombreProducto: nombreProducto, talla: talla, esCombo: esComboCompleto(nombreProducto) };
+  mostrarCodigo(null);
   actualizarEnvioGratis();
   var tallaField = document.getElementById('envio-talla');
   var tallaDisplay = document.getElementById('shipping-talla-display');
@@ -2230,6 +2271,15 @@ document.addEventListener('submit', function(e){
 
   var totalCents = pendingPurchase.baseAmountInCents + shippingCents;
   var nombreProducto = pendingPurchase.nombreProducto;
+  // Código de descuento: si escribieron uno que no aplica, se avisa y no se sigue al pago
+  var campoCodigo = document.getElementById('envio-codigo');
+  var cod = revisarCodigo(campoCodigo ? campoCodigo.value : '');
+  if(!cod.ok && !cod.vacio){ mostrarCodigo(cod); campoCodigo.focus(); return; }
+  if(cod.ok){
+    mostrarCodigo(cod);
+    totalCents -= cod.descuentoCents;
+    nombreProducto += ' [Código ' + cod.codigo + ': -' + formatoPesos(cod.descuentoCents) + ']';
+  }
 
   // Placa NFC: se crea el perfil de la mascota (su dirección es la que se graba en el chip)
   if(/Placa NFC/.test(nombreProducto)){
@@ -2471,6 +2521,14 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
       </select>
       <div class="envio-gratis-aviso" id="envio-gratis-aviso" style="display:none;"></div>
       <p class="envio-despacho">🚀 Despachamos tu pedido en <strong>1–2 días hábiles</strong>. Entrega de 2 a 5 días según tu ciudad.</p>
+      <div class="codigo-box">
+        <label for="envio-codigo" class="codigo-label">¿Tienes un código de descuento?</label>
+        <div class="codigo-fila">
+          <input type="text" id="envio-codigo" class="shipping-input codigo-input" placeholder="Escribe tu código" autocomplete="off" autocapitalize="characters" spellcheck="false">
+          <button type="button" class="codigo-aplicar" id="codigo-aplicar">Aplicar</button>
+        </div>
+        <p class="codigo-msg" id="codigo-msg" role="status" aria-live="polite"></p>
+      </div>
       <input type="hidden" name="producto" id="envio-producto" value="">
       <input type="hidden" name="total" id="envio-total" value="">
       <button type="submit" class="btn-buy" id="envio-submit">Continuar al pago 💳</button>
