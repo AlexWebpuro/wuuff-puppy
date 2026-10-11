@@ -171,9 +171,9 @@ exports.handler = async function (event) {
           body: JSON.stringify({
             from: from,
             to: [process.env.RESEND_REPLY_TO || 'wuuffpuppy@gmail.com'],
-            subject: `🏷️ Pedido con placa NFC pagado · ${nombre || 'cliente'}`,
+            subject: `🏷️ Pedido con Placa Inteligente pagado · ${nombre || 'cliente'}`,
             html: `<div style="font-family:Arial,sans-serif;color:#2d4375;max-width:520px">
-              <h2>🏷️ Pedido con placa NFC (pagado con Wompi)</h2>
+              <h2>🏷️ Pedido con Placa Inteligente Wuuff (pagado con Wompi)</h2>
               <p><strong>Producto:</strong> ${String(nombreProducto).replace(/[<>]/g, '')}</p>
               <p><strong>Cliente:</strong> ${String(nombre).replace(/[<>]/g, '')} · ${String(telefono).replace(/[<>]/g, '')}<br>
               <strong>Dirección:</strong> ${String(direccion).replace(/[<>]/g, '')}, ${String(ciudad).replace(/[<>]/g, '')}</p>

@@ -49,6 +49,14 @@ main{max-width:720px;margin:0 auto;padding:18px 16px 120px}
 .vacuna{position:relative;display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:8px;align-items:end;padding:10px 40px 12px 0;border-bottom:1px solid var(--line)}
 .vacuna .field input{padding:9px 10px;font-size:.92rem}
 @media(max-width:600px){.vacuna{grid-template-columns:1fr 1fr}.vacuna .nombre{grid-column:1/-1}}
+.carnet{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;margin-bottom:12px}
+.carnet .ft{position:relative;aspect-ratio:3/4;border-radius:12px;overflow:hidden;background:var(--cream);border:1.5px solid var(--line)}
+.carnet .ft img{width:100%;height:100%;object-fit:cover;display:block;cursor:zoom-in}
+.carnet .ft .nueva{position:absolute;left:6px;bottom:6px;background:var(--coral);color:#fff;font-size:.7rem;font-weight:800;padding:2px 8px;border-radius:99px}
+.carnet .ft .x{position:absolute;top:4px;right:4px;width:30px;height:30px;border-radius:50%;border:none;background:rgba(255,255,255,.92);color:var(--danger);font-size:1.2rem;line-height:1;cursor:pointer}
+.privado{display:flex;gap:8px;align-items:flex-start;background:#e8f0fb;color:var(--blue-dark);border-radius:10px;padding:10px 12px;font-size:.86rem;font-weight:700;margin-bottom:14px}
+.visor{position:fixed;inset:0;z-index:60;background:rgba(20,24,40,.92);display:flex;align-items:center;justify-content:center;padding:16px}
+.visor img{max-width:100%;max-height:100%;border-radius:8px}
 .quitar{position:absolute;top:6px;right:0;background:none;border:none;color:var(--danger);font-size:1.5rem;line-height:1;cursor:pointer;padding:6px 8px}
 .guardar{position:fixed;left:0;right:0;bottom:0;z-index:20;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:rgba(249,240,238,.94);backdrop-filter:blur(10px);border-top:1px solid var(--line)}
 .guardar .in{max-width:720px;margin:0 auto;display:flex;gap:12px;align-items:center}
@@ -61,7 +69,7 @@ main{max-width:720px;margin:0 auto;padding:18px 16px 120px}
 </head>
 <body>
 <div class="barra">
-  <a href="/placa-nfc/"><img src="/images/wuuff-puppy.png" alt="Wuuff Puppy"></a>
+  <a href="/placa-para-perro/"><img src="/images/wuuff-puppy.png" alt="Wuuff Puppy"></a>
   <a class="ver" id="ver-perfil" href="#" target="_blank" rel="noopener" hidden>👀 Ver como lo verán</a>
 </div>
 <main>
@@ -135,10 +143,22 @@ main{max-width:720px;margin:0 auto;padding:18px 16px 120px}
     </section>
 
     <section class="form-card">
-      <h2>💉 Vacunas</h2>
-      <p class="hint">Sirve también como su carné de vacunas a la mano.</p>
-      <div id="vacunas"></div>
-      <button type="button" class="btn btn-secundario" id="vacuna-agregar" style="margin-top:12px">+ Agregar vacuna</button>
+      <h2>💉 Carné de vacunas</h2>
+      <p class="hint">Tómale foto a su carné y tenlo siempre a la mano, aunque se te pierda el físico.</p>
+      <div class="privado">🔒 Estas fotos son privadas. Quien escanee la placa no puede verlas, a menos que tenga el PIN del carné (abajo).</div>
+      <div class="carnet" id="carnet"></div>
+      <input type="file" id="carnet-input" accept="image/*" multiple hidden>
+      <button type="button" class="btn btn-secundario" id="carnet-agregar">📷 Subir foto del carné</button>
+      <p class="hint" style="margin-top:8px">Puedes subir hasta 6 fotos (una por página del carné).</p>
+      <div class="grid-2" style="margin-top:8px">
+        <div class="field"><label for="proxima-vacuna">Próxima vacuna</label><input id="proxima-vacuna" type="date"><div class="note">Opcional. Así la tienes presente.</div></div>
+        <div class="field"><label class="check"><input type="checkbox" id="vacunas-al-dia"> <span>Mostrar "✅ Vacunas al día" en el perfil público</span></label></div>
+        <div class="field ancho"><label for="carnet-pin">PIN del carné para tu veterinario</label>
+          <div style="display:flex;gap:10px;align-items:center"><input id="carnet-pin" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="new-password" placeholder="4 a 6 números" style="max-width:200px">
+          <span id="pin-estado" class="note" style="margin:0"></span>
+          <button type="button" class="btn btn-ghost" id="pin-quitar" hidden>Quitar PIN</button></div>
+          <div class="note">Tu veterinario escanea la placa, toca "Ver carné de vacunas" y escribe este PIN. Quien encuentre a tu mascota no puede ver el carné sin él.</div></div>
+      </div>
     </section>
 
     <section class="form-card">
@@ -162,6 +182,8 @@ main{max-width:720px;margin:0 auto;padding:18px 16px 120px}
   var ID = (h.get('id') || '').toUpperCase(), CLAVE = h.get('clave') || '';
   var $ = function(id){ return document.getElementById(id); };
   var fotoNueva = null, quitarFoto = false, tieneFoto = false;
+  var carnetGuardado = [], carnetNuevas = [], carnetQuitar = [];
+  var pinQuitar = false;
 
   function mostrar(estado){
     $('cargando').hidden = estado !== 'cargando';
@@ -173,20 +195,42 @@ main{max-width:720px;margin:0 auto;padding:18px 16px 120px}
     var m = $('msg'); m.textContent = texto; m.className = 'msg ' + (ok ? 'ok' : 'err'); m.hidden = false;
     m.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
-  function vacunaFila(v){
-    v = v || {};
-    var d = document.createElement('div'); d.className = 'vacuna';
-    d.innerHTML = '<div class="field nombre"><label>Vacuna</label><input class="vn" maxlength="60" placeholder="Ej: Rabia"></div>' +
-      '<div class="field"><label>Fecha</label><input class="vf" type="date"></div>' +
-      '<div class="field"><label>Próxima dosis</label><input class="vp" type="date"></div>' +
-      '<button type="button" class="quitar" aria-label="Quitar vacuna">×</button>' +
-      '<div class="field nombre" style="grid-column:1/-1"><label>Lugar (opcional)</label><input class="vl" maxlength="80" placeholder="Ej: Vet. Patitas Felices"></div>';
-    d.querySelector('.vn').value = v.nombre || '';
-    d.querySelector('.vf').value = v.fecha || '';
-    d.querySelector('.vp').value = v.proxima || '';
-    d.querySelector('.vl').value = v.lugar || '';
-    d.querySelector('.quitar').addEventListener('click', function(){ d.remove(); });
-    $('vacunas').appendChild(d);
+  function reducir(file, max, cb){
+    var img = new Image(), url = URL.createObjectURL(file);
+    img.onload = function(){
+      var w = img.naturalWidth, hh = img.naturalHeight, k = Math.min(1, max / Math.max(w, hh));
+      var cv = document.createElement('canvas'); cv.width = Math.round(w * k); cv.height = Math.round(hh * k);
+      cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+      URL.revokeObjectURL(url); cb(cv.toDataURL('image/jpeg', 0.8));
+    };
+    img.onerror = function(){ URL.revokeObjectURL(url); cb(null); };
+    img.src = url;
+  }
+  function carnetUrl(k){ return '/.netlify/functions/perfil-carnet?id=' + encodeURIComponent(ID) + '&clave=' + encodeURIComponent(CLAVE) + '&k=' + encodeURIComponent(k); }
+  function verGrande(src){
+    var v = document.createElement('div'); v.className = 'visor';
+    v.innerHTML = '<img alt="Carné de vacunas">'; v.querySelector('img').src = src;
+    v.addEventListener('click', function(){ v.remove(); }); document.body.appendChild(v);
+  }
+  function pintarCarnet(){
+    var c = $('carnet'); c.innerHTML = '';
+    function tarjeta(src, nueva, quitar){
+      var d = document.createElement('div'); d.className = 'ft';
+      d.innerHTML = '<img alt="Foto del carné">' + (nueva ? '<span class="nueva">Nueva</span>' : '') + '<button type="button" class="x" aria-label="Quitar foto">×</button>';
+      d.querySelector('img').src = src;
+      d.querySelector('img').addEventListener('click', function(){ verGrande(src); });
+      d.querySelector('.x').addEventListener('click', quitar);
+      c.appendChild(d);
+    }
+    carnetGuardado.forEach(function(x){
+      if(carnetQuitar.indexOf(x.k) !== -1) return;
+      tarjeta(carnetUrl(x.k), false, function(){ carnetQuitar.push(x.k); pintarCarnet(); });
+    });
+    carnetNuevas.forEach(function(src, i){
+      tarjeta(src, true, function(){ carnetNuevas.splice(i, 1); pintarCarnet(); });
+    });
+    var total = carnetGuardado.length - carnetQuitar.length + carnetNuevas.length;
+    $('carnet-agregar').hidden = total >= 6;
   }
   function pintarFoto(src){
     var p = $('foto-prev');
@@ -203,7 +247,11 @@ main{max-width:720px;margin:0 auto;padding:18px 16px 120px}
     set('c-nombre', c.nombre); set('c-telefono', c.telefono); set('c-telefono2', c.telefono2); $('c-whatsapp').checked = c.whatsapp !== false;
     set('s-alergias', s.alergias); set('s-condiciones', s.condiciones); set('s-medicamentos', s.medicamentos);
     set('v-nombre', v.nombre); set('v-telefono', v.telefono); set('v-direccion', v.direccion);
-    $('vacunas').innerHTML = ''; (p.vacunas || []).forEach(vacunaFila);
+    $('proxima-vacuna').value = p.proximaVacuna || ''; $('vacunas-al-dia').checked = !!p.vacunasAlDia;
+    carnetGuardado = p.carnet || []; carnetNuevas = []; carnetQuitar = []; pintarCarnet();
+    $('carnet-pin').value = ''; pinQuitar = false;
+    $('pin-estado').textContent = p.tienePin ? '✅ PIN activo' : 'Sin PIN';
+    $('pin-quitar').hidden = !p.tienePin;
     tieneFoto = !!p.foto; pintarFoto(p.foto ? '/m/' + ID + '/foto?v=' + p.foto : '');
     $('titulo').textContent = 'Perfil de ' + (m.nombre || 'tu mascota');
   }
@@ -215,9 +263,7 @@ main{max-width:720px;margin:0 auto;padding:18px 16px 120px}
         senas: val('m-senas'), descripcion: val('m-descripcion') },
       contacto: { nombre: val('c-nombre'), telefono: val('c-telefono'), telefono2: val('c-telefono2'), whatsapp: $('c-whatsapp').checked },
       salud: { alergias: val('s-alergias'), condiciones: val('s-condiciones'), medicamentos: val('s-medicamentos') },
-      vacunas: Array.prototype.map.call(document.querySelectorAll('.vacuna'), function(d){
-        return { nombre: d.querySelector('.vn').value.trim(), fecha: d.querySelector('.vf').value, proxima: d.querySelector('.vp').value, lugar: d.querySelector('.vl').value.trim() };
-      }),
+      proximaVacuna: $('proxima-vacuna').value, vacunasAlDia: $('vacunas-al-dia').checked,
       veterinaria: { nombre: val('v-nombre'), telefono: val('v-telefono'), direccion: val('v-direccion') }
     };
   }
@@ -238,7 +284,20 @@ main{max-width:720px;margin:0 auto;padding:18px 16px 120px}
     img.src = url;
   });
   $('foto-quitar').addEventListener('click', function(){ fotoNueva = null; quitarFoto = tieneFoto; pintarFoto(''); $('foto').value = ''; });
-  $('vacuna-agregar').addEventListener('click', function(){ vacunaFila(); });
+  $('pin-quitar').addEventListener('click', function(){ pinQuitar = true; $('carnet-pin').value = ''; $('pin-estado').textContent = 'Se quitará al guardar'; this.hidden = true; });
+  $('carnet-agregar').addEventListener('click', function(){ $('carnet-input').click(); });
+  $('carnet-input').addEventListener('change', function(){
+    var archivos = Array.prototype.slice.call(this.files || []); this.value = '';
+    var libres = 6 - (carnetGuardado.length - carnetQuitar.length + carnetNuevas.length);
+    var porSubir = Math.min(libres, 3 - carnetNuevas.length);
+    if(archivos.length > porSubir) aviso('Puedes agregar ' + Math.max(porSubir, 0) + ' foto(s) más por ahora. Guarda y luego sube las demás.', false);
+    archivos.slice(0, Math.max(porSubir, 0)).forEach(function(f){
+      reducir(f, 1400, function(src){
+        if(!src){ aviso('No pudimos leer una de las fotos. Prueba con otra.', false); return; }
+        carnetNuevas.push(src); pintarCarnet();
+      });
+    });
+  });
 
   $('guardar').addEventListener('click', function(){
     var d = datos(), faltan = [];
@@ -246,9 +305,11 @@ main{max-width:720px;margin:0 auto;padding:18px 16px 120px}
     if(!d.mascota.raza) faltan.push('raza'); if(!d.mascota.sexo) faltan.push('sexo');
     if((d.contacto.telefono.match(/\d/g) || []).length < 7) faltan.push('teléfono de contacto');
     if(faltan.length){ aviso('Falta: ' + faltan.join(', ') + '.', false); return; }
+    var pin = $('carnet-pin').value.trim();
+    if(pin && !/^\d{4,6}$/.test(pin)){ aviso('El PIN del carné debe tener de 4 a 6 números.', false); return; }
     var b = $('guardar'); b.disabled = true; b.textContent = 'Guardando…';
     fetch('/.netlify/functions/perfil-datos', { method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: ID, clave: CLAVE, datos: d, foto: fotoNueva, quitarFoto: quitarFoto }) })
+      body: JSON.stringify({ id: ID, clave: CLAVE, datos: d, foto: fotoNueva, quitarFoto: quitarFoto, carnetNuevas: carnetNuevas, carnetQuitar: carnetQuitar, carnetPin: pin ? pin : (pinQuitar ? '' : undefined) }) })
       .then(function(r){ return r.json().then(function(j){ if(!r.ok) throw new Error(j.error || 'Error'); return j; }); })
       .then(function(j){ fotoNueva = null; quitarFoto = false; llenar(j.perfil); aviso('✅ ¡Listo! El perfil quedó guardado.', true);
         })
