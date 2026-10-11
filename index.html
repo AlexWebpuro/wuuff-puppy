@@ -481,7 +481,7 @@
      "name": "¿Hacen envíos a toda Colombia?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "Sí, hacemos envíos a toda Colombia. Despachamos en 1–2 días hábiles; la entrega tarda de 2 a 5 días según tu ciudad. El envío a Bogotá / Soacha es gratis en todos los productos. A otras ciudades cuesta $18.500."
+      "text": "Sí, hacemos envíos a toda Colombia. Despachamos en 1–2 días hábiles; la entrega tarda de 2 a 5 días según tu ciudad. El envío a Bogotá / Soacha es gratis en pedidos desde $49.900 (la placa sola paga $8.000 de envío). En Bogotá puedes pagar en efectivo al recibir. A otras ciudades cuesta $18.500."
      }
     },
     {
@@ -505,7 +505,7 @@
      "name": "¿Qué métodos de pago aceptan?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "Pagas en la web con Wompi: tarjeta, PSE, Nequi, Daviplata, Botón Bancolombia o en 4 cuotas sin interés con Bancolombia."
+      "text": "En Bogotá puedes pagar en efectivo al recibir tu pedido (contraentrega), en pedidos desde $49.900. También puedes pagar en la web con Wompi: tarjeta, PSE, Nequi, Daviplata, Botón Bancolombia o en 4 cuotas sin interés con Bancolombia."
      }
     }
    ]
@@ -616,6 +616,14 @@ body{font-family:'Nunito',sans-serif;background:var(--white);color:var(--navy);o
 .codigo-msg.ok{color:#0b7a3e;}.codigo-msg.error{color:#b3261e;}
 .envio-despacho{font-size:12.5px;font-weight:700;color:var(--navy);opacity:.8;margin:-4px 0 10px;text-align:left;line-height:1.4;}
 .envio-gratis-aviso strong{font-weight:900;}
+.metodo-pago-box{border:0;padding:0;margin:0 0 10px;text-align:left;}
+.metodo-pago-box legend{font-size:13px;font-weight:800;color:var(--navy);margin-bottom:6px;}
+.metodo-pago-op{display:flex;gap:10px;align-items:flex-start;border:2px solid #e3e8f4;border-radius:12px;padding:10px 12px;margin-bottom:8px;cursor:pointer;font-size:13.5px;color:var(--navy);line-height:1.35;}
+.metodo-pago-op:has(input:checked){border-color:#4964AF;background:#eef2fb;}
+.metodo-pago-op input{margin-top:3px;accent-color:#4964AF;}
+.metodo-pago-op small{display:block;font-weight:600;opacity:.8;margin-top:2px;}
+.pedido-ok-paso{font-size:14px;color:var(--navy);margin:0 0 14px;line-height:1.45;}
+.shipping-modal .pedido-ok-wa{display:block;text-align:center;text-decoration:none;background:#25D366;}
 .shipping-modal .btn-buy{border:none;cursor:pointer;margin-top:6px;}
 .promo-feedback{font-size:12px;font-weight:800;margin-top:-6px;min-height:16px;}
 .pago-opciones{margin:4px 0 12px;text-align:left;}
@@ -1154,7 +1162,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
 <!-- TICKER -->
 <div class="ticker">
   <div class="ticker-inner">
-    <div class="ticker-item"><div class="ticker-dot"></div>Resistente al agua</div><div class="ticker-item"><div class="ticker-dot"></div>Hecho con amor 🐾</div><div class="ticker-item"><div class="ticker-dot"></div>Antiolor y duradero</div><div class="ticker-item"><div class="ticker-dot"></div>Hipoalergénico</div><div class="ticker-item"><div class="ticker-dot"></div>Envíos Colombia 🇨🇴</div><div class="ticker-item"><div class="ticker-dot"></div>Despacho en 1–2 días hábiles 🚀</div><div class="ticker-item"><div class="ticker-dot"></div>Envío gratis en Bogotá con el Combo completo 🚚</div><div class="ticker-item"><div class="ticker-dot"></div>Tallas S y M</div><div class="ticker-item"><div class="ticker-dot"></div>Perrihijos felices ✨</div><div class="ticker-item"><div class="ticker-dot"></div>Resistente al agua</div><div class="ticker-item"><div class="ticker-dot"></div>Hecho con amor 🐾</div><div class="ticker-item"><div class="ticker-dot"></div>Antiolor y duradero</div><div class="ticker-item"><div class="ticker-dot"></div>Hipoalergénico</div><div class="ticker-item"><div class="ticker-dot"></div>Envíos Colombia 🇨🇴</div><div class="ticker-item"><div class="ticker-dot"></div>Despacho en 1–2 días hábiles 🚀</div><div class="ticker-item"><div class="ticker-dot"></div>Envío gratis en Bogotá con el Combo completo 🚚</div><div class="ticker-item"><div class="ticker-dot"></div>Tallas S y M</div><div class="ticker-item"><div class="ticker-dot"></div>Perrihijos felices ✨</div><div class="ticker-item"><div class="ticker-dot"></div>Resistente al agua</div><div class="ticker-item"><div class="ticker-dot"></div>Hecho con amor 🐾</div><div class="ticker-item"><div class="ticker-dot"></div>Antiolor y duradero</div><div class="ticker-item"><div class="ticker-dot"></div>Hipoalergénico</div><div class="ticker-item"><div class="ticker-dot"></div>Envíos Colombia 🇨🇴</div><div class="ticker-item"><div class="ticker-dot"></div>Despacho en 1–2 días hábiles 🚀</div><div class="ticker-item"><div class="ticker-dot"></div>Envío gratis en Bogotá con el Combo completo 🚚</div><div class="ticker-item"><div class="ticker-dot"></div>Tallas S y M</div><div class="ticker-item"><div class="ticker-dot"></div>Perrihijos felices ✨</div>
+    <div class="ticker-item"><div class="ticker-dot"></div>Resistente al agua</div><div class="ticker-item"><div class="ticker-dot"></div>Hecho con amor 🐾</div><div class="ticker-item"><div class="ticker-dot"></div>Antiolor y duradero</div><div class="ticker-item"><div class="ticker-dot"></div>Hipoalergénico</div><div class="ticker-item"><div class="ticker-dot"></div>Envíos Colombia 🇨🇴</div><div class="ticker-item"><div class="ticker-dot"></div>Despacho en 1–2 días hábiles 🚀</div><div class="ticker-item"><div class="ticker-dot"></div>Paga al recibir en Bogotá 💵</div><div class="ticker-item"><div class="ticker-dot"></div>Tallas S y M</div><div class="ticker-item"><div class="ticker-dot"></div>Perrihijos felices ✨</div><div class="ticker-item"><div class="ticker-dot"></div>Resistente al agua</div><div class="ticker-item"><div class="ticker-dot"></div>Hecho con amor 🐾</div><div class="ticker-item"><div class="ticker-dot"></div>Antiolor y duradero</div><div class="ticker-item"><div class="ticker-dot"></div>Hipoalergénico</div><div class="ticker-item"><div class="ticker-dot"></div>Envíos Colombia 🇨🇴</div><div class="ticker-item"><div class="ticker-dot"></div>Despacho en 1–2 días hábiles 🚀</div><div class="ticker-item"><div class="ticker-dot"></div>Paga al recibir en Bogotá 💵</div><div class="ticker-item"><div class="ticker-dot"></div>Tallas S y M</div><div class="ticker-item"><div class="ticker-dot"></div>Perrihijos felices ✨</div><div class="ticker-item"><div class="ticker-dot"></div>Resistente al agua</div><div class="ticker-item"><div class="ticker-dot"></div>Hecho con amor 🐾</div><div class="ticker-item"><div class="ticker-dot"></div>Antiolor y duradero</div><div class="ticker-item"><div class="ticker-dot"></div>Hipoalergénico</div><div class="ticker-item"><div class="ticker-dot"></div>Envíos Colombia 🇨🇴</div><div class="ticker-item"><div class="ticker-dot"></div>Despacho en 1–2 días hábiles 🚀</div><div class="ticker-item"><div class="ticker-dot"></div>Paga al recibir en Bogotá 💵</div><div class="ticker-item"><div class="ticker-dot"></div>Tallas S y M</div><div class="ticker-item"><div class="ticker-dot"></div>Perrihijos felices ✨</div>
   </div>
 </div>
 
@@ -1222,7 +1230,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
         <h3 class="prod-name"><a href="/arnes-tipo-h-impermeable-perro/">Arnés tipo H impermeable</a></h3>
         <div class="prod-desc">Diseño en H que no presiona el cuello ni roza las axilas. De goma suave, antiolor y fácil de limpiar.</div>
         <div class="price-row">
-          <div class="prod-price"><span class="price-old"><s aria-label="Precio antes: $84.900">$84.900</s><span class="price-off">-14%</span></span>$72.900 COP <small>🚚 Envío gratis en Bogotá</small></div>
+          <div class="prod-price"><span class="price-old"><s aria-label="Precio antes: $84.900">$84.900</s><span class="price-off">-14%</span></span>$72.900 COP <small>🚚 Envío gratis y pago al recibir en Bogotá</small></div>
         </div>
         <a class="btn-buy btn-ver" href="/arnes-tipo-h-impermeable-perro/"><svg class="ico-carrito" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.4 10.2a1.5 1.5 0 0 0 1.5 1.1h8.7a1.5 1.5 0 0 0 1.4-1.1L21 8H6.2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9.5" cy="19.5" r="1.6" fill="currentColor"/><circle cx="17.5" cy="19.5" r="1.6" fill="currentColor"/></svg> Ver producto</a>
       </div>
@@ -1256,7 +1264,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
         <h3 class="prod-name"><a href="/collar-impermeable-perro/">Collar impermeable</a></h3>
         <div class="prod-desc">De goma suave, antiolor y fácil de limpiar. Para el cuello más bonito del parque.</div>
         <div class="price-row">
-          <div class="prod-price"><span class="price-old"><s aria-label="Precio antes: $58.000">$58.000</s><span class="price-off">-14%</span></span>$49.900 COP <small>🚚 Envío gratis en Bogotá</small></div>
+          <div class="prod-price"><span class="price-old"><s aria-label="Precio antes: $58.000">$58.000</s><span class="price-off">-14%</span></span>$49.900 COP <small>🚚 Envío gratis y pago al recibir en Bogotá</small></div>
         </div>
         <a class="btn-buy btn-ver" href="/collar-impermeable-perro/"><svg class="ico-carrito" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.4 10.2a1.5 1.5 0 0 0 1.5 1.1h8.7a1.5 1.5 0 0 0 1.4-1.1L21 8H6.2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9.5" cy="19.5" r="1.6" fill="currentColor"/><circle cx="17.5" cy="19.5" r="1.6" fill="currentColor"/></svg> Ver producto</a>
       </div>
@@ -1290,7 +1298,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
         <h3 class="prod-name"><a href="/combo-collar-arnes-correa/">Combo completo</a></h3>
         <div class="prod-desc">Collar + Arnés + Correa impermeables: de goma suave, antiolor y fácil de limpiar. El regalo perfecto para tu perrihijo.</div>
         <div class="price-row">
-          <div class="prod-price"><span class="price-old"><s aria-label="Precio antes: $184.900">$184.900</s><span class="price-off">-15%</span></span>$157.900 COP <small>🚚 Envío gratis en Bogotá</small></div>
+          <div class="prod-price"><span class="price-old"><s aria-label="Precio antes: $184.900">$184.900</s><span class="price-off">-15%</span></span>$157.900 COP <small>🚚 Envío gratis y pago al recibir en Bogotá</small></div>
         </div>
         <a class="btn-buy btn-ver coral" href="/combo-collar-arnes-correa/"><svg class="ico-carrito" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.4 10.2a1.5 1.5 0 0 0 1.5 1.1h8.7a1.5 1.5 0 0 0 1.4-1.1L21 8H6.2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9.5" cy="19.5" r="1.6" fill="currentColor"/><circle cx="17.5" cy="19.5" r="1.6" fill="currentColor"/></svg> Ver producto</a>
       </div>
@@ -1322,7 +1330,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
         <h3 class="prod-name"><a href="/correa-impermeable-perro/">Correa impermeable</a></h3>
         <div class="prod-desc">De goma suave, antiolor y fácil de limpiar. 1,8 m de largo con gancho metálico resistente.</div>
         <div class="price-row">
-          <div class="prod-price"><span class="price-old"><s aria-label="Precio antes: $69.000">$69.000</s><span class="price-off">-15%</span></span>$58.900 COP <small>🚚 Envío gratis en Bogotá</small></div>
+          <div class="prod-price"><span class="price-old"><s aria-label="Precio antes: $69.000">$69.000</s><span class="price-off">-15%</span></span>$58.900 COP <small>🚚 Envío gratis y pago al recibir en Bogotá</small></div>
         </div>
         <a class="btn-buy btn-ver" href="/correa-impermeable-perro/"><svg class="ico-carrito" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.4 10.2a1.5 1.5 0 0 0 1.5 1.1h8.7a1.5 1.5 0 0 0 1.4-1.1L21 8H6.2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9.5" cy="19.5" r="1.6" fill="currentColor"/><circle cx="17.5" cy="19.5" r="1.6" fill="currentColor"/></svg> Ver producto</a>
       </div>
@@ -1488,7 +1496,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
         <span class="faq-icon">+</span>
       </button>
       <div class="faq-answer">
-        <p>Sí, hacemos envíos a toda Colombia. Despachamos en 1–2 días hábiles; la entrega tarda de 2 a 5 días según tu ciudad. El envío a Bogotá / Soacha es <strong>gratis en todos los productos</strong>. A otras ciudades cuesta $18.500.</p>
+        <p>Sí, hacemos envíos a toda Colombia. Despachamos en 1–2 días hábiles; la entrega tarda de 2 a 5 días según tu ciudad. El envío a Bogotá / Soacha es <strong>gratis en pedidos desde $49.900</strong> (la placa sola paga $8.000 de envío). En Bogotá también puedes <strong>pagar en efectivo al recibir</strong>. A otras ciudades cuesta $18.500.</p>
       </div>
     </div>
 
@@ -1518,7 +1526,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
         <span class="faq-icon">+</span>
       </button>
       <div class="faq-answer">
-        <p>Pagas aquí mismo en la web con Wompi, 100&nbsp;% seguro: tarjeta, PSE, Nequi, Daviplata, Botón Bancolombia o en 4 cuotas sin interés con Bancolombia. Si tienes dudas, escríbenos por WhatsApp.</p>
+        <p><strong>En Bogotá puedes pagar en efectivo al recibir</strong> (contraentrega) en pedidos desde $49.900: te confirmamos por WhatsApp antes de enviarlo. También puedes pagar aquí mismo en la web con Wompi, 100&nbsp;% seguro: tarjeta, PSE, Nequi, Daviplata, Botón Bancolombia o en 4 cuotas sin interés con Bancolombia. Si tienes dudas, escríbenos por WhatsApp.</p>
       </div>
     </div>
 
@@ -1538,6 +1546,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
       <div class="cta-item"><span>🎁</span> <span class="cta-txt">Combo completo — <s class="cta-old">$184.900</s> $157.900 COP</span></div>
       <div class="cta-item"><span>🇨🇴</span> Envíos a toda Colombia</div>
       <div class="cta-item"><span>🚚</span> Envío gratis en Bogotá y Soacha</div>
+      <div class="cta-item"><span>💵</span> En Bogotá pagas al recibir</div>
       <div class="cta-item"><span>💳</span> Tarjeta, PSE, Nequi, Daviplata · 4 cuotas sin interés con Bancolombia</div>
     </div>
     <a href="#productos" class="btn-primary cta-comprar">Comprar ahora 🐾</a>
@@ -2023,20 +2032,75 @@ function esComboCompleto(nombreProducto){
   return n.indexOf('Combo completo') === 0 || (n === 'Combo personalizado' && window.wuuffComboEsCompleto === true);
 }
 
-// Envío gratis en Bogotá / Soacha en todos los productos
-function envioGratisAplica(opcion){
+// Reglas de envío en Bogotá / Soacha (oct 2026):
+// - Pedidos desde $49.900: envío GRATIS y, en Bogotá, pago contraentrega (efectivo) o en línea.
+// - Pedidos menores (ej. la placa sola): pagan ENVIO_BOGOTA_PEQUENO y se pagan en línea.
+var MINIMO_ENVIO_GRATIS_CENTS = 4990000;   // $49.900
+var ENVIO_BOGOTA_PEQUENO = 8000;           // envío en Bogotá para pedidos menores al mínimo
+var WHATSAPP_TIENDA = '573176431286';
+function esOpcionBogota(opcion){
   return !!opcion && opcion.value === 'Bogotá / Soacha';
+}
+function pedidoAlcanzaMinimo(){
+  return !!pendingPurchase && pendingPurchase.baseAmountInCents >= MINIMO_ENVIO_GRATIS_CENTS;
+}
+function envioGratisAplica(opcion){
+  return esOpcionBogota(opcion) && pedidoAlcanzaMinimo();
+}
+// Costo del envío (en pesos) según la opción elegida y el valor del pedido
+function costoEnvio(opcion){
+  if(!opcion) return 0;
+  if(esOpcionBogota(opcion)) return pedidoAlcanzaMinimo() ? 0 : ENVIO_BOGOTA_PEQUENO;
+  return parseInt(opcion.dataset.shipping, 10) || 0;
+}
+// La contraentrega solo aplica en Bogotá (no Soacha ni otras ciudades) y desde el mínimo
+function contraentregaDisponible(){
+  var select = document.getElementById('envio-ciudad');
+  var ciudad = document.getElementById('envio-ciudad-nombre');
+  var opcion = select ? select.options[select.selectedIndex] : null;
+  return esOpcionBogota(opcion) && pedidoAlcanzaMinimo() &&
+    !!ciudad && /bogot/i.test(ciudad.value) && !/soacha/i.test(ciudad.value);
+}
+function metodoPagoElegido(){
+  if(!contraentregaDisponible()) return 'wompi';
+  var r = document.querySelector('input[name="metodo_pago"]:checked');
+  return r ? r.value : 'contraentrega';
+}
+// Muestra u oculta la elección de pago y ajusta el texto del botón
+function actualizarMetodoPago(){
+  var box = document.getElementById('metodo-pago-box');
+  var btn = document.getElementById('envio-submit');
+  var disponible = contraentregaDisponible();
+  if(box) box.hidden = !disponible;
+  var metodo = metodoPagoElegido();
+  if(btn && !btn.disabled) btn.textContent = metodo === 'contraentrega' ? 'Confirmar pedido 🐾' : 'Continuar al pago 💳';
 }
 // Actualiza el texto de la opción de Bogotá y el aviso según la compra en curso
 function actualizarEnvioGratis(){
   var select = document.getElementById('envio-ciudad');
   var aviso = document.getElementById('envio-gratis-aviso');
   if(!select || !pendingPurchase) return;
+  var opcionBogota = select.querySelector('option[value="Bogotá / Soacha"]');
+  if(opcionBogota){
+    opcionBogota.textContent = pedidoAlcanzaMinimo()
+      ? 'Bogotá / Soacha — envío GRATIS 🎉'
+      : 'Bogotá / Soacha — envío ' + formatoPesos(ENVIO_BOGOTA_PEQUENO * 100);
+  }
   if(aviso){
-    aviso.innerHTML = '🚚 <strong>Envío gratis en Bogotá / Soacha</strong> en todos los productos';
+    aviso.innerHTML = pedidoAlcanzaMinimo()
+      ? '🚚 <strong>Envío gratis en Bogotá / Soacha</strong>. En Bogotá puedes <strong>pagar en efectivo al recibir</strong> 💵'
+      : '🚚 Envío gratis y pago al recibir en Bogotá en pedidos desde <strong>$49.900</strong>. Agrega un collar, arnés o el set y tu placa queda en $24.900.';
     aviso.style.display = 'block';
   }
+  actualizarMetodoPago();
 }
+document.addEventListener('change', function(e){
+  if(!e.target) return;
+  if(e.target.id === 'envio-ciudad' || e.target.name === 'metodo_pago') actualizarMetodoPago();
+});
+document.addEventListener('input', function(e){
+  if(e.target && e.target.id === 'envio-ciudad-nombre') actualizarMetodoPago();
+});
 
 // Selección de talla en cada tarjeta de producto
 function seleccionarTalla(chip){
@@ -2282,8 +2346,8 @@ document.addEventListener('submit', function(e){
 
   var citySelect = document.getElementById('envio-ciudad');
   var selectedOption = citySelect.options[citySelect.selectedIndex];
-  var shippingCents = parseInt(selectedOption.dataset.shipping, 10) * 100;
-  if(envioGratisAplica(selectedOption)) shippingCents = 0;
+  var shippingCents = costoEnvio(selectedOption) * 100;
+  var metodoPago = metodoPagoElegido();
 
   var totalCents = pendingPurchase.baseAmountInCents + shippingCents;
   var nombreProducto = pendingPurchase.nombreProducto;
@@ -2330,12 +2394,69 @@ document.addEventListener('submit', function(e){
     name: nombre
   };
 
+  if(metodoPago === 'contraentrega'){
+    enviarPedidoContraentrega(form, {
+      nombre: nombre, mascota: mascota, telefono: telefono, correo: correo,
+      direccion: direccion, ciudad: ciudadNombre, talla: pendingPurchase.talla || '',
+      producto: nombreProducto, totalCents: totalCents,
+      perfilId: perfilPlaca ? perfilPlaca.id : '',
+      honeypot: (form.querySelector('[name="bot-field-envio"]') || {}).value || ''
+    });
+    return;
+  }
+
   var overlay = document.getElementById('shipping-modal-overlay');
   if(overlay) overlay.classList.remove('open');
   pendingPurchase = null;
   form.reset();
 
   pagarConWompi(totalCents, nombreProducto, customerData, shippingAddress);
+});
+
+// Pago contraentrega (Bogotá): registra el pedido sin pasar por Wompi y pide confirmarlo por WhatsApp
+function enviarPedidoContraentrega(form, pedido){
+  var btn = document.getElementById('envio-submit');
+  if(btn){ btn.disabled = true; btn.textContent = 'Enviando tu pedido…'; }
+  fetch('/.netlify/functions/pedido-contraentrega', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(pedido)
+  })
+    .then(function(r){ return r.json().then(function(j){ if(!r.ok || !j.ok) throw new Error((j && j.error) || ('HTTP ' + r.status)); return j; }); })
+    .then(function(j){
+      if(btn) btn.disabled = false;
+      var overlay = document.getElementById('shipping-modal-overlay');
+      if(overlay) overlay.classList.remove('open');
+      pendingPurchase = null;
+      form.reset();
+      actualizarMetodoPago();
+      if(typeof window.wuuffCompraAprobada === 'function') window.wuuffCompraAprobada(j.referencia, pedido.totalCents, 'contraentrega');
+      mostrarPedidoRecibido(pedido, j.referencia);
+    })
+    .catch(function(err){
+      console.error('No se pudo registrar el pedido contraentrega', err);
+      if(btn) btn.disabled = false;
+      actualizarMetodoPago();
+      alert('No pudimos registrar tu pedido. Intenta de nuevo o escríbenos por WhatsApp y te lo tomamos por ahí 🐾');
+    });
+}
+
+// Ventana final: total a pagar en efectivo + botón para confirmar por WhatsApp
+function mostrarPedidoRecibido(pedido, referencia){
+  var total = formatoPesos(pedido.totalCents);
+  var texto = '¡Hola Wuuff Puppy! 🐾 Quiero confirmar mi pedido contraentrega ' + referencia + '\n' +
+    '• ' + pedido.producto.replace(/\s*\|\s*Perfil NFC:.*$/, '') + '\n' +
+    '• Total a pagar al recibir: ' + total + '\n' +
+    '• Dirección: ' + pedido.direccion + ', ' + pedido.ciudad + '\n' +
+    '• A nombre de: ' + pedido.nombre;
+  document.getElementById('pedido-ok-total').textContent = total;
+  document.getElementById('pedido-ok-ref').textContent = referencia;
+  document.getElementById('pedido-ok-whatsapp').href = 'https://wa.me/' + WHATSAPP_TIENDA + '?text=' + encodeURIComponent(texto);
+  document.getElementById('pedido-ok-overlay').classList.add('open');
+}
+document.addEventListener('click', function(e){
+  if(e.target && (e.target.id === 'pedido-ok-cerrar' || e.target.id === 'pedido-ok-overlay')){
+    document.getElementById('pedido-ok-overlay').classList.remove('open');
+    if(typeof ofrecerCompletarPerfil === 'function') ofrecerCompletarPerfil();
+  }
 });
 
 
@@ -2536,6 +2657,13 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
         <option value="Otra ciudad de Colombia" data-shipping="18500">Otra ciudad de Colombia — envío $18.500</option>
       </select>
       <div class="envio-gratis-aviso" id="envio-gratis-aviso" style="display:none;"></div>
+      <fieldset class="metodo-pago-box" id="metodo-pago-box" hidden>
+        <legend>¿Cómo quieres pagar?</legend>
+        <label class="metodo-pago-op"><input type="radio" name="metodo_pago" value="contraentrega" checked>
+          <span><strong>💵 Pago contraentrega</strong><small>Pagas en efectivo cuando recibes tu pedido. Te confirmamos por WhatsApp antes de enviarlo.</small></span></label>
+        <label class="metodo-pago-op"><input type="radio" name="metodo_pago" value="wompi">
+          <span><strong>💳 Pagar ahora en línea</strong><small>Tarjeta, PSE, Nequi, Daviplata o Bancolombia con Wompi.</small></span></label>
+      </fieldset>
       <p class="envio-despacho">🚀 Despachamos tu pedido en <strong>1–2 días hábiles</strong>. Entrega de 2 a 5 días según tu ciudad.</p>
       <div class="codigo-box">
         <label for="envio-codigo" class="codigo-label">¿Tienes un código de descuento?</label>
@@ -2550,6 +2678,16 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
       <button type="submit" class="btn-buy" id="envio-submit">Continuar al pago 💳</button>
     </form>
     <button class="shipping-modal-cancel" id="shipping-modal-cancel">Cancelar</button>
+  </div>
+</div>
+<!-- PEDIDO CONTRAENTREGA RECIBIDO -->
+<div class="shipping-modal-overlay" id="pedido-ok-overlay">
+  <div class="shipping-modal pedido-ok" role="dialog" aria-labelledby="pedido-ok-titulo">
+    <h3 id="pedido-ok-titulo">¡Recibimos tu pedido! 🎉</h3>
+    <p class="shipping-modal-sub">Pagas <strong id="pedido-ok-total"></strong> en efectivo cuando lo recibas. Referencia: <strong id="pedido-ok-ref"></strong></p>
+    <p class="pedido-ok-paso"><strong>Último paso:</strong> confírmalo por WhatsApp para que lo despachemos. Te llega al día hábil siguiente.</p>
+    <a class="btn-buy pedido-ok-wa" id="pedido-ok-whatsapp" href="#" target="_blank" rel="noopener">Confirmar por WhatsApp 💬</a>
+    <button type="button" class="shipping-modal-cancel" id="pedido-ok-cerrar">Cerrar</button>
   </div>
 </div>
 <!-- Scripts para medir -->

@@ -53,7 +53,7 @@ exports.handler = async function (event) {
         <p style="margin:0 0 12px;">Es lo que verá quien escanee la placa: agrega su foto, vacunas y veterinaria cuando quieras. Guarda este correo: el enlace es privado y es la única forma de editarlo.</p>
         <a href="${enlacePerfil}" style="display:inline-block;background:#f17d57;color:#fff;font-weight:bold;padding:12px 18px;border-radius:10px;text-decoration:none;">Completar el perfil</a>
       </div>` : ''}
-      <p>Te contactaremos pronto por WhatsApp para coordinar el envío.</p>
+      <p>${contraentrega ? 'Te escribiremos por WhatsApp para confirmar tu pedido antes de enviarlo. Ten listo el efectivo: el mensajero no recibe transferencias.' : 'Te contactaremos pronto por WhatsApp para coordinar el envío.'}</p>
       <p style="margin-top:28px;">— El equipo de Wuuff Puppy 💙</p>
     </div>
   `;
@@ -69,7 +69,7 @@ exports.handler = async function (event) {
         from: fromAddress,
         reply_to: replyTo,
         to: [toEmail],
-        subject: '¡Tu pedido en Wuuff Puppy fue confirmado! 🐾',
+        subject: contraentrega ? '¡Recibimos tu pedido en Wuuff Puppy! 🐾 Pagas al recibir' : '¡Tu pedido en Wuuff Puppy fue confirmado! 🐾',
         html: html
       })
     });
