@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://wuuffpuppy.co/</loc>
-    <lastmod>2026-10-04</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <image:image><image:loc>https://wuuffpuppy.co/images/set-completo-nuevo.jpg</image:loc></image:image>
     <image:image><image:loc>https://wuuffpuppy.co/images/arnes-nuevo.jpg</image:loc></image:image>
     <image:image><image:loc>https://wuuffpuppy.co/images/collar-nuevo.jpg</image:loc></image:image>
@@ -81,8 +81,12 @@
     <image:image><image:loc>https://wuuffpuppy.co/images/set-completo-nuevo.jpg</image:loc></image:image>
   </url>
   <url>
-    <loc>https://wuuffpuppy.co/placa-nfc/</loc>
-    <lastmod>2026-10-04</lastmod>
-    <image:image><image:loc>https://wuuffpuppy.co/placa-nfc/img/og-placa-nfc.png</image:loc></image:image>
+    <loc>https://wuuffpuppy.co/placa-para-perro/</loc>
+    <lastmod>2026-10-11</lastmod>
+    <image:image><image:loc>https://wuuffpuppy.co/images/productos/placa/placa-guardian-calle.webp</image:loc></image:image>
+    <image:image><image:loc>https://wuuffpuppy.co/images/productos/placa/placa-monita-veterinaria.webp</image:loc></image:image>
+    <image:image><image:loc>https://wuuffpuppy.co/images/productos/placa/placa-guardian-perfil.webp</image:loc></image:image>
+    <image:image><image:loc>https://wuuffpuppy.co/images/productos/placa/placa-guardian-de-cerca.webp</image:loc></image:image>
+    <image:image><image:loc>https://wuuffpuppy.co/images/productos/placa/placa-luna-beagle.webp</image:loc></image:image>
   </url>
 </urlset>

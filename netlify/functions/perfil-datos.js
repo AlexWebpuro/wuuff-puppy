@@ -6,6 +6,8 @@ const { getStore, connectLambda } = require('@netlify/blobs');
 const ESPECIES = ['Perro', 'Gato'];
 const SEXOS = ['Macho', 'Hembra'];
 const FOTO_MAX_BYTES = 1500000;
+const CARNET_MAX_FOTOS = 6;      // fotos del carné guardadas por perfil
+const CARNET_MAX_NUEVAS = 3;     // fotos nuevas por cada vez que se guarda
 
 function limpiar(v, max) {
   return String(v == null ? '' : v).replace(/[<>]/g, '').replace(/[ \t]+/g, ' ').trim().slice(0, max);
@@ -24,7 +26,20 @@ function json(status, data) {
 function publico(perfil) {
   const copia = Object.assign({}, perfil);
   delete copia.clave;
+  delete copia.pinHash;
+  delete copia.pinSal;
+  copia.tienePin = !!perfil.pinHash;
   return copia;
+}
+function hashPin(pin, sal) {
+  return crypto.createHash('sha256').update(sal + ':' + pin).digest('hex');
+}
+function imagenDataUrl(v) {
+  const mt = /^data:(image\/(?:jpeg|png|webp));base64,([A-Za-z0-9+/=]+)$/.exec(String(v || ''));
+  if (!mt) return null;
+  const bytes = Buffer.from(mt[2], 'base64');
+  if (bytes.length > FOTO_MAX_BYTES) return null;
+  return { tipo: mt[1], ab: bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.length) };
 }
 
 exports.handler = async function (event) {
@@ -83,11 +98,17 @@ exports.handler = async function (event) {
     condiciones: limpiar(s.condiciones, 300),
     medicamentos: limpiar(s.medicamentos, 300)
   };
-  perfil.vacunas = (Array.isArray(d.vacunas) ? d.vacunas : []).slice(0, 15)
-    .map(function (x) {
-      return { nombre: limpiar(x && x.nombre, 60), fecha: fecha(x && x.fecha), proxima: fecha(x && x.proxima), lugar: limpiar(x && x.lugar, 80) };
-    })
-    .filter(function (x) { return x.nombre; });
+  // Lista de vacunas escrita a mano (versión anterior): se conserva si el formulario ya no la envía
+  if (Array.isArray(d.vacunas)) {
+    perfil.vacunas = d.vacunas.slice(0, 15)
+      .map(function (x) {
+        return { nombre: limpiar(x && x.nombre, 60), fecha: fecha(x && x.fecha), proxima: fecha(x && x.proxima), lugar: limpiar(x && x.lugar, 80) };
+      })
+      .filter(function (x) { return x.nombre; });
+  }
+  // Carné de vacunas: fecha de la próxima vacuna (para recordatorios) y sello público opcional
+  perfil.proximaVacuna = fecha(d.proximaVacuna);
+  perfil.vacunasAlDia = d.vacunasAlDia === true;
   perfil.veterinaria = {
     nombre: limpiar(v.nombre, 80),
     telefono: limpiar(v.telefono, 30),
@@ -106,6 +127,40 @@ exports.handler = async function (event) {
     const ab = bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.length);
     await store.set('foto-' + perfil.id, ab, { metadata: { tipo: mt[1] } });
     perfil.foto = Date.now();
+  }
+
+  // Fotos del carné de vacunas: PRIVADAS. Solo se ven con la clave (función perfil-carnet).
+  let carnet = Array.isArray(perfil.carnet) ? perfil.carnet.slice() : [];
+  const quitar = Array.isArray(body.carnetQuitar) ? body.carnetQuitar.map(String) : [];
+  for (const k of quitar) {
+    if (carnet.some(function (x) { return x.k === k; })) await store.delete('carnet-' + perfil.id + '-' + k);
+  }
+  carnet = carnet.filter(function (x) { return quitar.indexOf(x.k) === -1; });
+  const nuevas = Array.isArray(body.carnetNuevas) ? body.carnetNuevas : [];
+  if (nuevas.length > CARNET_MAX_NUEVAS) return json(400, { error: 'Sube máximo ' + CARNET_MAX_NUEVAS + ' fotos del carné a la vez' });
+  if (carnet.length + nuevas.length > CARNET_MAX_FOTOS) return json(400, { error: 'El carné admite máximo ' + CARNET_MAX_FOTOS + ' fotos. Quita alguna antes de subir otra.' });
+  for (const n of nuevas) {
+    const img = imagenDataUrl(n);
+    if (!img) return json(400, { error: 'Una foto del carné no es válida o es muy pesada' });
+    const k = Date.now().toString(36) + crypto.randomBytes(3).toString('hex');
+    await store.set('carnet-' + perfil.id + '-' + k, img.ab, { metadata: { tipo: img.tipo } });
+    carnet.push({ k: k, subido: new Date().toISOString() });
+  }
+  perfil.carnet = carnet;
+
+  // PIN del carné: lo usa el veterinario para ver las fotos al escanear la placa.
+  // undefined = no se cambia · '' = se quita · 4 a 6 dígitos = se guarda (solo su huella, nunca el PIN).
+  if (typeof body.carnetPin === 'string') {
+    const pin = body.carnetPin.trim();
+    if (pin === '') {
+      delete perfil.pinHash; delete perfil.pinSal;
+    } else if (/^\d{4,6}$/.test(pin)) {
+      perfil.pinSal = crypto.randomBytes(8).toString('hex');
+      perfil.pinHash = hashPin(pin, perfil.pinSal);
+      await store.delete('intentos-' + perfil.id);
+    } else {
+      return json(400, { error: 'El PIN del carné debe tener de 4 a 6 números' });
+    }
   }
 
   perfil.actualizado = new Date().toISOString();

@@ -39,7 +39,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Collares y arneses impermeables para perros | Wuuff Puppy</title>
 <meta name="description" content="Collar, arnés y correa de goma impermeables, antiolor e hipoalergénicos para perros. Combo completo a $157.900 con envío gratis en Bogotá. Envíos a toda Colombia.">
-<meta name="keywords" content="accesorios para perro, collar arnés y correa para perro, accesorios impermeables para perro, arnés tipo H, pechera para perro, traílla para perro, placa NFC para perro, tienda para mascotas Bogotá">
+<meta name="keywords" content="accesorios para perro, collar arnés y correa para perro, accesorios impermeables para perro, arnés tipo H, pechera para perro, traílla para perro, placa para perro, placa de identificación para perro, placa personalizada, tienda para mascotas Bogotá">
 <meta name="author" content="Wuuff Puppy">
 <meta name="publisher" content="Wuuff Puppy">
 <meta name="robots" content="index, follow, max-image-preview:large">
@@ -73,7 +73,7 @@
    "url": "https://wuuffpuppy.co/",
    "logo": "https://wuuffpuppy.co/images/wuuff-puppy.png",
    "slogan": "Pequeños detalles que dicen te quiero.",
-   "description": "Accesorios de goma impermeables para perros pequeños, diseñados en Bogotá: collar, arnés tipo H, correa y placa NFC con nombre.",
+   "description": "Accesorios de goma impermeables para perros pequeños, diseñados en Bogotá: collar, arnés tipo H, correa y la Placa Inteligente Wuuff, una placa de identificación personalizada para perro y gato.",
    "founder": {
     "@type": "Person",
     "name": "Katherine Monroy"
@@ -688,8 +688,7 @@ body{font-family:'Nunito',sans-serif;background:var(--white);color:var(--navy);o
 a.btn-buy{display:block;box-sizing:border-box;text-align:center;text-decoration:none;}
 .btn-ver{display:flex !important;align-items:center;justify-content:center;gap:10px;margin-top:6px;}
 .ico-carrito{width:22px;height:22px;flex:none;}
-.prod-card.placa .prod-img{text-decoration:none;}
-.prod-card.placa .carousel-slide{object-fit:contain;}
+.placa-frase{margin:0 0 8px;font-weight:800;color:var(--navy);font-size:15px;line-height:1.45;}
 @media(min-width:760px){.prod-card.placa{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);align-items:center;}.prod-card.placa .prod-img.carousel{height:100%;min-height:360px;}}
 .prod-img{background:linear-gradient(135deg,var(--lblue),var(--cream));height:220px;display:flex;align-items:center;justify-content:center;padding:20px;}
 .prod-img.carousel{position:relative;overflow:hidden;padding:0;height:min(380px,55vh);}
@@ -1028,6 +1027,7 @@ footer{background:var(--navy);padding:48px 20px 36px;text-align:center;}
   .nav-drop-menu::before{display:none;}
   .nav-drop-menu a{padding:12px 4px;}
   .nav-drop-menu a:first-child,.nav-drop-menu a:last-child{margin:0;}
+  #nav-links > a.nav-placa{display:none;}
   .cta-box{padding:32px 20px;}
 }
 </style>
@@ -1106,13 +1106,14 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
     <div class="nav-drop">
       <a href="#productos" class="nav-drop-btn">Productos <span aria-hidden="true">▾</span></a>
       <div class="nav-drop-menu">
-        <a href="/combo-collar-arnes-correa/">🎁 Combo completo</a>
+        <a href="/placa-para-perro/">🏷️ Placa Inteligente Wuuff</a>
         <a href="/arnes-tipo-h-impermeable-perro/">Arnés tipo H impermeable</a>
         <a href="/collar-impermeable-perro/">Collar impermeable</a>
+        <a href="/combo-collar-arnes-correa/">🎁 Combo completo</a>
         <a href="/correa-impermeable-perro/">Correa impermeable</a>
       </div>
     </div>
-    <a href="/placa-nfc/" class="nav-placa">Placa NFC <span class="nav-nuevo">Nuevo</span></a>
+    <a href="/placa-para-perro/" class="nav-placa">Placa Inteligente <span class="nav-nuevo">Nuevo</span></a>
     <a href="#por-que">¿Por qué goma?</a>
     <a href="/blog/">Blog</a>
     <a href="#nosotros">Nosotros</a>
@@ -1140,8 +1141,8 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
         <span class="t-highlight t-coral">mascota</span>
       </h2>
       <div class="hero-3d" data-collar-3d>
-        <img class="hero-3d-poster" src="/collar-3d/collar-3d-poster.webp" srcset="/collar-3d/collar-3d-poster-600.webp 600w, /collar-3d/collar-3d-poster-760.webp 760w, /collar-3d/collar-3d-poster.webp 960w" sizes="(min-width: 769px) 50vw, 100vw" width="960" height="800" alt="Collar impermeable Wuuff azul cielo con placa NFC en forma de huella" fetchpriority="high" draggable="false">
-        <a class="hero-3d-chip" href="/placa-nfc/">🏷️ Placa NFC con su nombre · <b>Personalízala</b></a>
+        <img class="hero-3d-poster" src="/collar-3d/collar-3d-poster.webp" srcset="/collar-3d/collar-3d-poster-600.webp 600w, /collar-3d/collar-3d-poster-760.webp 760w, /collar-3d/collar-3d-poster.webp 960w" sizes="(min-width: 769px) 50vw, 100vw" width="960" height="800" alt="Collar impermeable Wuuff azul cielo con placa de identificación en forma de huella" fetchpriority="high" draggable="false">
+        <a class="hero-3d-chip" href="/placa-para-perro/">🏷️ Placa Inteligente con su nombre · <b>Personalízala</b></a>
       </div>
       <div class="hero-btns">
         <a href="#combo" class="btn-primary">Ver el combo</a>
@@ -1163,16 +1164,15 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
   <p class="prod-sub">Azul cielo · Hipoalergénico · Tallas S y M</p>
   <div class="products-grid">
 
-    <div class="prod-card featured" id="combo">
+    <div class="prod-card placa" id="placa-nfc">
       <div class="prod-img carousel">
         <span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21M10.5 7.5v6M7.5 10.5h6"/></svg></span>
         <div class="carousel-track">
-          <img src="images/opt/productos/arnes-3.webp" alt="Chihuahua con collar, arnés y correa Wuuff Puppy" class="carousel-slide active" loading="lazy" width="800" height="841">
-          <img src="images/opt/set-completo-nuevo.webp" alt="Combo completo Wuuff Puppy" class="carousel-slide" loading="lazy" width="800" height="800">
-          <video class="carousel-slide" muted loop playsinline preload="none" data-poster="images/opt/productos/combo-2-poster.webp" aria-label="Video: Combo completo Wuuff Puppy"><source src="images/productos/combo-2.mp4" type="video/mp4"></video>
-          <img src="images/opt/productos/collar-3.webp" alt="Perro salchicha con collar y arnés Wuuff Puppy" class="carousel-slide" loading="lazy" width="800" height="1065">
-          <img src="images/productos/tallas-arnes.png" alt="Guía de tallas del arnés: medidas de la talla S y M en cm" class="carousel-slide fit-contain" loading="lazy" width="1045" height="1583">
-          <img src="images/productos/tallas-collar.png" alt="Guía de tallas del collar: contorno de cuello de la talla S y M" class="carousel-slide fit-contain" loading="lazy" width="1045" height="1185">
+          <img src="images/productos/placa/placa-guardian-calle-800.webp" alt="Pastor alemán Guardian con su placa de identificación para perro azul en forma de huella; un vecino lo encontró y ve su perfil en el celular" class="carousel-slide active" loading="lazy" width="800" height="800">
+          <img src="images/productos/placa/placa-monita-veterinaria-800.webp" alt="Golden retriever Monita con su placa de identificación para perro morada con su nombre; la veterinaria abre su carné de vacunas" class="carousel-slide" loading="lazy" width="800" height="800">
+          <img src="images/productos/placa/placa-guardian-perfil-800.webp" alt="Placa de identificación para perro en forma de huella azul con el nombre Guardian junto al celular con su perfil" class="carousel-slide" loading="lazy" width="800" height="800">
+          <img src="images/productos/placa/placa-guardian-de-cerca-800.webp" alt="Primer plano de la placa de identificación para perro azul en forma de huella con el nombre Guardian" class="carousel-slide" loading="lazy" width="800" height="800">
+          <img src="images/productos/placa/placa-luna-beagle-800.webp" alt="Beagle Luna con su placa de identificación para perro roja en forma de huella y su perfil en el celular" class="carousel-slide" loading="lazy" width="800" height="800">
         </div>
         <button class="carousel-arrow carousel-prev" onclick="moveCarousel(this,-1)" aria-label="Anterior">‹</button>
         <button class="carousel-arrow carousel-next" onclick="moveCarousel(this,1)" aria-label="Siguiente">›</button>
@@ -1182,20 +1182,20 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
           <span class="carousel-dot" onclick="goToSlide(this,2)"></span>
           <span class="carousel-dot" onclick="goToSlide(this,3)"></span>
           <span class="carousel-dot" onclick="goToSlide(this,4)"></span>
-          <span class="carousel-dot" onclick="goToSlide(this,5)"></span>
         </div>
       </div>
       <div class="prod-body">
-        <span class="prod-tag tag-coral">⭐ Mejor valor</span>
-        <h3 class="prod-name"><a href="/combo-collar-arnes-correa/">Combo completo</a></h3>
-        <div class="prod-desc">Collar + Arnés + Correa impermeables: de goma suave, antiolor y fácil de limpiar. El regalo perfecto para tu perrihijo.</div>
+        <span class="prod-tag tag-blue">✨ Nuevo · Placa para perro y gato</span>
+        <h3 class="prod-name"><a href="/placa-para-perro/">Placa Inteligente Wuuff</a></h3>
+        <p class="placa-frase">Si tu perrito se pierde, quien lo encuentre acerca el celular a la placa y te escribe por WhatsApp para devolverlo 🏠</p>
+        <div class="prod-desc">Placa de identificación personalizada con el nombre de tu perro o gato. Incluye su perfil con tu WhatsApp y su carné de vacunas digital, que tu veterinario abre con tu PIN.</div>
         <div class="price-row">
-          <div class="prod-price"><span class="price-old"><s aria-label="Precio antes: $184.900">$184.900</s><span class="price-off">-15%</span></span>$157.900 COP <small>🚚 Envío gratis en Bogotá</small></div>
+          <div class="prod-price"><span class="price-old"><s aria-label="Precio antes: $44.900">$44.900</s><span class="price-off">-22%</span></span>$34.900 COP <small>🏷️ $24.900 si la llevas con collar, arnés o combo</small></div>
         </div>
-        <a class="btn-buy btn-ver coral" href="/combo-collar-arnes-correa/"><svg class="ico-carrito" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.4 10.2a1.5 1.5 0 0 0 1.5 1.1h8.7a1.5 1.5 0 0 0 1.4-1.1L21 8H6.2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9.5" cy="19.5" r="1.6" fill="currentColor"/><circle cx="17.5" cy="19.5" r="1.6" fill="currentColor"/></svg> Ver producto</a>
+        <ul class="placa-puntos"><li>🐾 Huella, gato o nombre</li><li>🎨 Tú eliges los colores</li><li>💉 Carné de vacunas digital</li><li>📱 Sin apps ni pilas</li></ul>
+        <a class="btn-buy btn-ver" href="/placa-para-perro/"><svg class="ico-carrito" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.4 10.2a1.5 1.5 0 0 0 1.5 1.1h8.7a1.5 1.5 0 0 0 1.4-1.1L21 8H6.2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9.5" cy="19.5" r="1.6" fill="currentColor"/><circle cx="17.5" cy="19.5" r="1.6" fill="currentColor"/></svg> Ver la Placa Inteligente</a>
       </div>
     </div>
-
 
     <div class="prod-card" id="arnes">
       <div class="prod-img carousel">
@@ -1263,6 +1263,40 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
     </div>
 
 
+    <div class="prod-card" id="combo">
+      <div class="prod-img carousel">
+        <span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21M10.5 7.5v6M7.5 10.5h6"/></svg></span>
+        <div class="carousel-track">
+          <img src="images/opt/productos/arnes-3.webp" alt="Chihuahua con collar, arnés y correa Wuuff Puppy" class="carousel-slide active" loading="lazy" width="800" height="841">
+          <img src="images/opt/set-completo-nuevo.webp" alt="Combo completo Wuuff Puppy" class="carousel-slide" loading="lazy" width="800" height="800">
+          <video class="carousel-slide" muted loop playsinline preload="none" data-poster="images/opt/productos/combo-2-poster.webp" aria-label="Video: Combo completo Wuuff Puppy"><source src="images/productos/combo-2.mp4" type="video/mp4"></video>
+          <img src="images/opt/productos/collar-3.webp" alt="Perro salchicha con collar y arnés Wuuff Puppy" class="carousel-slide" loading="lazy" width="800" height="1065">
+          <img src="images/productos/tallas-arnes.png" alt="Guía de tallas del arnés: medidas de la talla S y M en cm" class="carousel-slide fit-contain" loading="lazy" width="1045" height="1583">
+          <img src="images/productos/tallas-collar.png" alt="Guía de tallas del collar: contorno de cuello de la talla S y M" class="carousel-slide fit-contain" loading="lazy" width="1045" height="1185">
+        </div>
+        <button class="carousel-arrow carousel-prev" onclick="moveCarousel(this,-1)" aria-label="Anterior">‹</button>
+        <button class="carousel-arrow carousel-next" onclick="moveCarousel(this,1)" aria-label="Siguiente">›</button>
+        <div class="carousel-dots">
+          <span class="carousel-dot active" onclick="goToSlide(this,0)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,1)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,2)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,3)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,4)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,5)"></span>
+        </div>
+      </div>
+      <div class="prod-body">
+        <span class="prod-tag tag-coral">⭐ Mejor valor</span>
+        <h3 class="prod-name"><a href="/combo-collar-arnes-correa/">Combo completo</a></h3>
+        <div class="prod-desc">Collar + Arnés + Correa impermeables: de goma suave, antiolor y fácil de limpiar. El regalo perfecto para tu perrihijo.</div>
+        <div class="price-row">
+          <div class="prod-price"><span class="price-old"><s aria-label="Precio antes: $184.900">$184.900</s><span class="price-off">-15%</span></span>$157.900 COP <small>🚚 Envío gratis en Bogotá</small></div>
+        </div>
+        <a class="btn-buy btn-ver coral" href="/combo-collar-arnes-correa/"><svg class="ico-carrito" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.4 10.2a1.5 1.5 0 0 0 1.5 1.1h8.7a1.5 1.5 0 0 0 1.4-1.1L21 8H6.2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9.5" cy="19.5" r="1.6" fill="currentColor"/><circle cx="17.5" cy="19.5" r="1.6" fill="currentColor"/></svg> Ver producto</a>
+      </div>
+    </div>
+
+
     <div class="prod-card" id="correa">
       <div class="prod-img carousel">
         <span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21M10.5 7.5v6M7.5 10.5h6"/></svg></span>
@@ -1291,24 +1325,6 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
           <div class="prod-price"><span class="price-old"><s aria-label="Precio antes: $69.000">$69.000</s><span class="price-off">-15%</span></span>$58.900 COP <small>🚚 Envío gratis en Bogotá</small></div>
         </div>
         <a class="btn-buy btn-ver" href="/correa-impermeable-perro/"><svg class="ico-carrito" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.4 10.2a1.5 1.5 0 0 0 1.5 1.1h8.7a1.5 1.5 0 0 0 1.4-1.1L21 8H6.2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9.5" cy="19.5" r="1.6" fill="currentColor"/><circle cx="17.5" cy="19.5" r="1.6" fill="currentColor"/></svg> Ver producto</a>
-      </div>
-    </div>
-
-    <div class="prod-card placa" id="placa-nfc">
-      <a class="prod-img carousel" href="/placa-nfc/" aria-label="Ver la Placa NFC con nombre">
-        <div class="carousel-track">
-          <img src="images/opt/productos/placa-nfc.webp" alt="Perro con la Placa NFC con su nombre colgada del collar" class="carousel-slide active" loading="lazy" width="800" height="800">
-        </div>
-      </a>
-      <div class="prod-body">
-        <span class="prod-tag tag-blue">✨ Nuevo · Chip NFC</span>
-        <h3 class="prod-name"><a href="/placa-nfc/">Placa NFC con nombre</a></h3>
-        <div class="prod-desc">Placa con el nombre de tu perrihijo y un chip NFC sellado por dentro. Si se pierde, quien lo encuentre acerca el celular y ve cómo contactarte y su información veterinaria. Sin batería y sin app.</div>
-        <div class="price-row">
-          <div class="prod-price"><span class="price-old"><s aria-label="Precio antes: $44.900">$44.900</s><span class="price-off">-22%</span></span>$34.900 COP <small>🏷️ $24.900 si la llevas con collar, arnés o combo</small></div>
-        </div>
-        <ul class="placa-puntos"><li>🐾 Huella, gato o nombre</li><li>🎨 Tú eliges los colores</li><li>📱 Sin batería y sin app</li></ul>
-        <a class="btn-buy btn-ver" href="/placa-nfc/"><svg class="ico-carrito" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.4 10.2a1.5 1.5 0 0 0 1.5 1.1h8.7a1.5 1.5 0 0 0 1.4-1.1L21 8H6.2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9.5" cy="19.5" r="1.6" fill="currentColor"/><circle cx="17.5" cy="19.5" r="1.6" fill="currentColor"/></svg> Ver producto</a>
       </div>
     </div>
 
@@ -1587,11 +1603,11 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
     <a href="https://wuuffpuppy.co/">🌐 wuuffpuppy.co</a>
   </div>
   <div class="footer-productos" role="navigation" aria-label="Productos">
-    <a href="/combo-collar-arnes-correa/">Combo collar, arnés y correa</a>
+    <a href="/placa-para-perro/">Placa Inteligente Wuuff</a>
     <a href="/arnes-tipo-h-impermeable-perro/">Arnés tipo H impermeable</a>
     <a href="/collar-impermeable-perro/">Collar impermeable para perro</a>
+    <a href="/combo-collar-arnes-correa/">Combo collar, arnés y correa</a>
     <a href="/correa-impermeable-perro/">Correa impermeable para perro</a>
-    <a href="/placa-nfc/">Placa NFC con nombre</a>
     <a href="/blog/">Blog</a>
   </div>
   <div class="footer-copy">Bogotá, Colombia · 2026 · Wuuff Puppy ❤️</div>
@@ -2215,7 +2231,7 @@ function iniciarCompra(baseAmountInCents, nombreProducto, talla){
       tallaDisplay.style.display = 'none';
     }
   }
-  var conPlaca = /Placa NFC/.test(nombreProducto);
+  var conPlaca = /Placa Inteligente Wuuff|Placa NFC/.test(nombreProducto);
   var perfilBox = document.getElementById('perfil-placa');
   if(perfilBox){
     perfilBox.hidden = !conPlaca;
@@ -2282,7 +2298,7 @@ document.addEventListener('submit', function(e){
   }
 
   // Placa NFC: se crea el perfil de la mascota (su dirección es la que se graba en el chip)
-  if(/Placa NFC/.test(nombreProducto)){
+  if(/Placa Inteligente Wuuff|Placa NFC/.test(nombreProducto)){
     if(!pendingPurchase.perfil){
       crearPerfilPlaca(form, { mascota: mascota, especie: document.getElementById('perfil-especie').value,
         sexo: document.getElementById('perfil-sexo').value, raza: document.getElementById('perfil-raza').value.trim(),
@@ -2329,7 +2345,7 @@ function formatoPesos(cents){ return '$' + Math.round(cents / 100).toString().re
 // Placa NFC: crea el perfil con los datos básicos y vuelve a enviar el formulario para seguir con la compra
 function crearPerfilPlaca(form, datos){
   if(!datos.especie || !datos.sexo || !datos.raza){
-    alert('Completa la especie, el sexo y la raza para el perfil de la placa NFC.');
+    alert('Completa la especie, el sexo y la raza para el perfil de la placa.');
     return;
   }
   var btn = document.getElementById('envio-submit');
@@ -2391,7 +2407,7 @@ function ofrecerCompletarPerfil(){
   var p = null;
   try { p = JSON.parse(sessionStorage.getItem('wuuff_perfil') || 'null'); sessionStorage.removeItem('wuuff_perfil'); } catch(e){}
   if(!p || !p.id) return;
-  if(confirm('🏷️ Tu placa NFC ya tiene perfil. ¿Quieres completarlo ahora con la foto, vacunas y veterinaria de ' + (p.mascota || 'tu mascota') + '?\n\nTambién te enviamos el enlace al correo.')){
+  if(confirm('🏷️ Tu Placa Inteligente ya tiene perfil. ¿Quieres completarlo ahora con la foto, vacunas y veterinaria de ' + (p.mascota || 'tu mascota') + '?\n\nTambién te enviamos el enlace al correo.')){
     location.href = '/placa-nfc/perfil/#id=' + encodeURIComponent(p.id) + '&clave=' + encodeURIComponent(p.clave);
   }
 }
@@ -2502,7 +2518,7 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
       <input type="text" id="envio-nombre" name="nombre" placeholder="Tu nombre completo" required class="shipping-input" aria-label="Tu nombre completo">
       <input type="text" id="envio-mascota" name="mascota" placeholder="Nombre de tu perrihijo" required class="shipping-input" aria-label="Nombre de tu perrihijo">
       <div class="perfil-placa" id="perfil-placa" hidden>
-        <p class="perfil-titulo">🏷️ Perfil de la placa NFC</p>
+        <p class="perfil-titulo">🏷️ Perfil de la Placa Inteligente</p>
         <p class="perfil-sub">Esto es lo que verá quien escanee la placa: el nombre de tu perrihijo, estos datos y tu teléfono. Después de comprar podrás agregar su foto, vacunas y veterinaria.</p>
         <div class="perfil-grid">
           <select id="perfil-especie" class="shipping-input shipping-select" aria-label="Especie"><option value="">Especie</option><option>Perro</option><option>Gato</option></select>
@@ -2755,7 +2771,7 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
 })();
 </script>
 <script>
-// Llegada desde /placa-nfc/ (/?comprar=placa&forma=…&nombre=…&base=…&letras=…&con=…&talla=…):
+// Llegada desde /placa-para-perro/ (/?comprar=placa&forma=…&nombre=…&base=…&letras=…&con=…&talla=…):
 // arma el pedido de la placa NFC (sola o con collar, arnés o combo) y abre la misma compra de la tienda.
 (function(){
   var q = new URLSearchParams(location.search);
@@ -2779,7 +2795,7 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
   var talla = (q.get('talla') || '').toUpperCase();
   if(talla !== 'S' && talla !== 'M') talla = (con === 'sola') ? '' : 'M';
 
-  var placa = 'Placa NFC ' + forma + ' "' + nombre + '" (placa ' + base + ', letras ' + letras + ')';
+  var placa = 'Placa Inteligente Wuuff ' + forma + ' "' + nombre + '" (placa ' + base + ', letras ' + letras + ')';
   var total, producto;
   if(con === 'sola'){
     total = PLACA_SOLA;
@@ -2792,7 +2808,7 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
 
   function abrir(){
     if(history.replaceState) history.replaceState(null, '', location.pathname);
-    window.wuuffVolverA = '/placa-nfc/';
+    window.wuuffVolverA = '/placa-para-perro/';
     try { if(window.gtag) gtag('event', 'placa_iniciar_compra', { forma: q.get('forma'), con: con, value: total / 100, currency: 'COP' }); } catch(err){}
     iniciarCompra(total, producto, talla);
   }

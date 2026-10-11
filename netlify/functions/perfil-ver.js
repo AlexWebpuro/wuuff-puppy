@@ -82,6 +82,14 @@ h1,h2{font-family:"Baloo 2","Nunito Sans",sans-serif;line-height:1.15;margin:0}a
 .vax-table{width:100%;border-collapse:collapse;font-size:.9rem}
 .vax-table th{text-align:left;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:6px 8px;border-bottom:2px solid var(--line)}
 .vax-table td{padding:9px 8px;border-bottom:1px solid var(--line)}.vax-table tr:last-child td{border-bottom:none}
+.sello{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:99px;background:#e0f2e9;color:#2e7d51;font-weight:800}
+[hidden]{display:none!important}
+.btn-carne{margin-top:12px;background:#fff;color:var(--wuff-blue);border:2px solid var(--wuff-blue)}
+.pin-fila{display:flex;gap:10px;margin-top:8px}.pin-fila input{flex:1;min-width:0;padding:14px;border:2px solid var(--line);border-radius:12px;font:800 1.3rem "Nunito Sans",sans-serif;letter-spacing:.3em;text-align:center}
+.pin-fila .btn{width:auto;padding:14px 22px}.pin-msg{margin:8px 0 0;color:#c0392b;font-weight:700;font-size:.9rem}
+.carne-fotos{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.carne-fotos img{width:100%;border-radius:10px;border:1px solid var(--line);cursor:zoom-in}
+.visor{position:fixed;inset:0;z-index:80;background:rgba(20,24,40,.94);display:flex;align-items:center;justify-content:center;padding:12px}.visor img{max-width:100%;max-height:100%;border-radius:8px}
+.sello-nota{margin:10px 0 0;color:var(--muted);font-size:.88rem}
 .profile-footer{margin:34px 16px 0;text-align:center;color:var(--muted);font-size:.85rem}
 .profile-footer .logo{font-family:"Baloo 2",sans-serif;font-weight:700;color:var(--wuff-blue);text-decoration:none}
 .sticky-bar{position:fixed;left:0;right:0;bottom:0;z-index:50;display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:rgba(249,240,238,.9);backdrop-filter:blur(10px);border-top:1px solid var(--line);max-width:560px;margin:0 auto}
@@ -151,13 +159,20 @@ function perfilHTML(p) {
   const salud = item('Alergias', s.alergias, true, true) + item('Condiciones especiales', s.condiciones, true, true) + item('Medicamentos', s.medicamentos, true, true);
   if (salud) html += '<section class="section"><div class="card"><h2>❤️ Información importante</h2><div class="kv">' + salud + '</div></div></section>';
 
-  // Vacunas
-  if (p.vacunas && p.vacunas.length) {
-    html += '<section class="section"><div class="card"><h2>💉 Vacunas</h2><table class="vax-table"><thead><tr><th>Vacuna</th><th>Fecha</th><th>Próxima dosis</th></tr></thead><tbody>' +
-      p.vacunas.map(function (x) {
-        return '<tr><td><b>' + esc(x.nombre) + '</b>' + (x.lugar ? '<div style="color:var(--muted);font-size:.8rem">' + esc(x.lugar) + '</div>' : '') +
-          '</td><td>' + esc(fechaBonita(x.fecha)) + '</td><td>' + esc(fechaBonita(x.proxima)) + '</td></tr>';
-      }).join('') + '</tbody></table></div></section>';
+  // Vacunas: el carné (fotos) es privado. En público: el sello (si el dueño lo activó) y,
+  // si el dueño puso un PIN, un botón para que el veterinario abra el carné con ese PIN.
+  const conCarnet = !!p.pinHash && (p.carnet || []).length > 0;
+  if (p.vacunasAlDia || conCarnet) {
+    html += '<section class="section"><div class="card"><h2>💉 Vacunas</h2>' +
+      (p.vacunasAlDia ? '<div class="sello">✅ Vacunas al día</div>' : '') +
+      (conCarnet
+        ? '<div id="carne-box"><button type="button" class="btn btn-carne" id="carne-abrir">🔒 Ver carné de vacunas</button>' +
+          '<form id="carne-form" hidden><p class="sello-nota">Pídele el PIN del carné a la familia de ' + esc(nombre) + '.</p>' +
+          '<div class="pin-fila"><input id="carne-pin" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="one-time-code" placeholder="PIN" aria-label="PIN del carné">' +
+          '<button type="submit" class="btn btn-call">Abrir</button></div><p class="pin-msg" id="carne-msg" hidden></p></form>' +
+          '<div class="carne-fotos" id="carne-fotos" hidden></div></div>'
+        : '<p class="sello-nota">Su familia tiene el carné de vacunas registrado en Wuuff Puppy.</p>') +
+      '</div></section>';
   }
 
   // Veterinaria
@@ -168,7 +183,7 @@ function perfilHTML(p) {
       item('Dirección', v.direccion, true, true) + '</div></div></section>';
   }
 
-  html += '<footer class="profile-footer"><p>Perfil creado con <a class="logo" href="https://wuuffpuppy.co/placa-nfc/">🐾 Wuuff Puppy</a><br>Pequeños detalles que dicen te quiero.</p></footer>';
+  html += '<footer class="profile-footer"><p>Perfil creado con <a class="logo" href="https://wuuffpuppy.co/placa-para-perro/">🐾 Wuuff Puppy</a><br>Pequeños detalles que dicen te quiero.</p></footer>';
   html += '<div class="sticky-bar' + (conWa ? '' : ' una') + '"><a class="btn btn-call" href="tel:+' + tel + '">📞 Llamar</a>' +
     (conWa ? '<a class="btn btn-wa" href="' + esc(wa) + '">💬 WhatsApp</a>' : '') + '</div></main>';
 
@@ -181,6 +196,17 @@ function perfilHTML(p) {
       'b.textContent="📍 Obteniendo tu ubicación…";' +
       'navigator.geolocation.getCurrentPosition(function(p){abrir(msg+"https://maps.google.com/?q="+p.coords.latitude.toFixed(6)+","+p.coords.longitude.toFixed(6));},' +
       'function(){abrir(' + JSON.stringify(msg) + ');},{enableHighAccuracy:true,timeout:10000});});})();</script>';
+  }
+  if (conCarnet) {
+    html += '<script>(function(){var $=function(i){return document.getElementById(i)};' +
+      '$("carne-abrir").addEventListener("click",function(){this.hidden=true;$("carne-form").hidden=false;$("carne-pin").focus();});' +
+      '$("carne-form").addEventListener("submit",function(e){e.preventDefault();var m=$("carne-msg");m.hidden=true;' +
+      'fetch("/.netlify/functions/perfil-carnet-pin",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:' + JSON.stringify(p.id) + ',pin:$("carne-pin").value})})' +
+      '.then(function(r){return r.json().then(function(j){if(!r.ok)throw new Error(j.error||"No se pudo abrir");return j;});})' +
+      '.then(function(j){$("carne-form").hidden=true;var c=$("carne-fotos");c.hidden=false;c.innerHTML="";' +
+      'j.fotos.forEach(function(u){var im=document.createElement("img");im.src=u;im.alt="Carné de vacunas";' +
+      'im.addEventListener("click",function(){var v=document.createElement("div");v.className="visor";var g=document.createElement("img");g.src=u;v.appendChild(g);v.addEventListener("click",function(){v.remove();});document.body.appendChild(v);});c.appendChild(im);});})' +
+      '.catch(function(err){m.textContent=err.message;m.hidden=false;});});})();</script>';
   }
   return pagina(nombre + ' · Perfil Wuuff Puppy', html);
 }

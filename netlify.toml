@@ -40,6 +40,34 @@
   status = 301
   force = true
 
+# La página de la placa cambió de dirección: /placa-nfc/ → /placa-para-perro/.
+# Siguen funcionando igual (porque son archivos que existen y Netlify los sirve antes que esta regla):
+# el editor privado /placa-nfc/perfil/, y /placa-nfc/js/, /placa-nfc/img/ y /placa-nfc/datos/.
+[[redirects]]
+  from = "/placa-nfc/perfil"
+  to = "/placa-nfc/perfil/"
+  status = 301
+
+[[redirects]]
+  from = "/placa-nfc"
+  to = "/placa-para-perro/"
+  status = 301
+
+[[redirects]]
+  from = "/placa-nfc/"
+  to = "/placa-para-perro/"
+  status = 301
+
+[[redirects]]
+  from = "/placa-nfc/index.html"
+  to = "/placa-para-perro/"
+  status = 301
+
+[[redirects]]
+  from = "/placa-nfc/*"
+  to = "/placa-para-perro/"
+  status = 301
+
 # URLs anteriores de las fichas ("-para-perro"): redirigen a las actuales
 [[redirects]]
   from = "/combo-collar-arnes-correa-para-perro/*"
@@ -89,7 +117,7 @@
   status = 301
   force = true
 
-# Perfil de la mascota de la placa NFC: es la dirección que se graba en el chip
+# Perfil de la mascota de la Placa Inteligente: es la dirección que se graba en el chip
 [[redirects]]
   from = "/m/:id/foto"
   to = "/.netlify/functions/perfil-foto/:id?id=:id"

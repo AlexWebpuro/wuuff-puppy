@@ -49,7 +49,7 @@ exports.handler = async function (event) {
         ${total ? `<p style="margin:4px 0;"><strong>Total:</strong> ${total}${contraentrega ? ' · se paga al recibir' : ''}</p>` : ''}
       </div>
       ${enlacePerfil ? `<div style="background:#fff4ef;border:2px solid #f17d57;border-radius:12px;padding:16px 20px;margin:20px 0;">
-        <p style="margin:0 0 8px;"><strong>🏷️ Completa el perfil de la placa NFC</strong></p>
+        <p style="margin:0 0 8px;"><strong>🏷️ Completa el perfil de tu Placa Inteligente Wuuff</strong></p>
         <p style="margin:0 0 12px;">Es lo que verá quien escanee la placa: agrega su foto, vacunas y veterinaria cuando quieras. Guarda este correo: el enlace es privado y es la única forma de editarlo.</p>
         <a href="${enlacePerfil}" style="display:inline-block;background:#f17d57;color:#fff;font-weight:bold;padding:12px 18px;border-radius:10px;text-decoration:none;">Completar el perfil</a>
       </div>` : ''}

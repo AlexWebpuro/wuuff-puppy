@@ -162,7 +162,7 @@ function montar(THREE, stage) {
   const canvas = renderer.domElement;
   canvas.setAttribute('role', 'img');
   canvas.setAttribute('tabindex', '0');
-  canvas.setAttribute('aria-label', 'Collar impermeable Wuuff azul cielo con placa NFC en forma de huella. Arrástralo para girarlo.');
+  canvas.setAttribute('aria-label', 'Collar impermeable Wuuff azul cielo con placa de identificación en forma de huella. Arrástralo para girarlo.');
   stage.insertBefore(canvas, stage.querySelector('.hero-3d-chip'));
 
   const scene = new THREE.Scene();

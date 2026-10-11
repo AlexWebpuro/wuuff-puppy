@@ -276,10 +276,10 @@ function textoProduccion() {
 }
 
 function totales() {
-  if (estado.compra === 'sola') return { total: PRECIOS.placaSola, antes: PRECIOS.placaSolaAntes, lineas: [['Placa NFC', PRECIOS.placaSola]] };
+  if (estado.compra === 'sola') return { total: PRECIOS.placaSola, antes: PRECIOS.placaSolaAntes, lineas: [['Placa Inteligente Wuuff', PRECIOS.placaSola]] };
   const p = PRODUCTOS.find(x => x.id === estado.compra);
   return { total: p.precio + PRECIOS.placaConProducto, antes: p.antes + PRECIOS.placaSolaAntes, producto: p,
-    lineas: [[`${p.corto} talla ${estado.talla}`, p.precio], ['Placa NFC', PRECIOS.placaConProducto]] };
+    lineas: [[`${p.corto} talla ${estado.talla}`, p.precio], ['Placa Inteligente Wuuff', PRECIOS.placaConProducto]] };
 }
 function actualizarPrecio() {
   const t = totales();
@@ -308,7 +308,7 @@ function pintarProductos() {
       <h3 class="prod-name">${p.nombre}</h3>
       <p class="prod-desc">${p.texto}</p>
       <div class="prod-precios"><span class="price-old"><s>${cop(p.antes)}</s></span><span class="prod-price">${cop(p.precio)} COP</span></div>
-      <span class="mas-placa">+ placa NFC por ${cop(PRECIOS.placaConProducto)}</span>
+      <span class="mas-placa">+ Placa Inteligente Wuuff por ${cop(PRECIOS.placaConProducto)}</span>
       <button type="button" class="btn-buy" data-prod="${p.id}">Llévalo con placa 🐾</button>
       <a class="ver-detalles" href="${TIENDA}${p.url}">Ver detalles y guía de tallas →</a>
     </div>
@@ -392,7 +392,7 @@ $('#btn-agregar').addEventListener('click', () => {
     return;
   }
   const filas = [
-    ['Placa', `NFC · forma ${DISENOS[estado.diseno].nombre.toLowerCase()}`],
+    ['Placa', `Inteligente Wuuff · forma ${DISENOS[estado.diseno].nombre.toLowerCase()}`],
     ['Nombre', estado.nombre.trim()],
     ['Colores', `Base ${color(estado.base).nombre} · letras ${color(estado.letras).nombre}`],
     ['Medidas', `${mm(r.bb.w)} × ${mm(r.bb.h)} × ${mm(r.grosorTotal, 1)} mm`],
