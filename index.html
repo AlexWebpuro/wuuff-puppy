@@ -489,7 +489,7 @@
      "name": "¿Cómo sé qué talla pedir?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "Mide el contorno de cuello de tu perrihijo con una cinta métrica. Talla S: cuello 20–34 cm, pecho 23–38 cm. Talla M: cuello 24–38 cm, pecho 32–53 cm. Si está en el rango límite, escríbenos y te ayudamos a elegir."
+      "text": "Mide el contorno de cuello de tu perrihijo con una cinta métrica. Talla S: cuello 20–34 cm, pecho 23–38 cm. Talla M: cuello 24–38 cm, pecho 32–53 cm. Si su cuello mide entre 28 y 32 cm, escríbenos por WhatsApp y te ayudamos a elegir."
      }
     },
     {
@@ -705,6 +705,8 @@ a.btn-buy{display:block;box-sizing:border-box;text-align:center;text-decoration:
 .carousel-slide.active{opacity:1;pointer-events:auto;}
 .prod-card .carousel-slide.active{cursor:zoom-in;}
 .carousel-slide.fit-contain{object-fit:contain;background:#fff;padding:10px;}
+.portada-tag{position:absolute;top:12px;left:12px;z-index:3;background:var(--lime);color:var(--navy);font-size:10px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;padding:4px 12px;border-radius:20px;pointer-events:none;box-shadow:0 2px 8px rgba(45,67,117,.15);}
+.carousel:not(.en-portada) .portada-tag{display:none;}
 video.carousel-slide{background:#dfe8f5;}
 .zoom-hint{position:absolute;top:10px;right:10px;z-index:2;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.92);box-shadow:0 2px 10px rgba(45,67,117,.18);display:flex;align-items:center;justify-content:center;pointer-events:none;color:var(--navy);}
 .zoom-hint svg{width:18px;height:18px;}
@@ -1145,8 +1147,8 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
     <div class="hero-text">
       <h2 class="hero-title">
         <span class="t-highlight">Accesorios</span><br>
-        <span class="t-highlight">para tu</span><br>
-        <span class="t-highlight t-coral">mascota</span>
+        <span class="t-highlight">que se lavan</span><br>
+        <span class="t-highlight t-coral">con agua</span>
       </h2>
       <div class="hero-3d" data-collar-3d>
         <img class="hero-3d-poster" src="/collar-3d/collar-3d-poster.webp" srcset="/collar-3d/collar-3d-poster-600.webp 600w, /collar-3d/collar-3d-poster-760.webp 760w, /collar-3d/collar-3d-poster.webp 960w" sizes="(min-width: 769px) 50vw, 100vw" width="960" height="800" alt="Collar impermeable Wuuff azul cielo con placa de identificación en forma de huella" fetchpriority="high" draggable="false">
@@ -1206,13 +1208,14 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
     </div>
 
     <div class="prod-card" id="arnes">
-      <div class="prod-img carousel">
+      <div class="prod-img carousel en-portada">
+        <span class="portada-tag">Solo el arnés</span>
         <span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21M10.5 7.5v6M7.5 10.5h6"/></svg></span>
         <div class="carousel-track">
-          <img src="images/opt/productos/collar-3.webp" alt="Perro salchicha con arnés y collar Wuuff Puppy" class="carousel-slide active" loading="lazy" width="800" height="1065">
-          <img src="images/opt/arnes-nuevo.webp" alt="Arnés tipo H impermeable" class="carousel-slide" loading="lazy" width="800" height="800">
+          <img src="images/opt/arnes-nuevo.webp" alt="Arnés tipo H impermeable Wuuff Puppy azul cielo" class="carousel-slide fit-contain active" loading="lazy" width="800" height="800">
+          <img src="images/opt/productos/collar-3.webp" alt="Perro salchicha con arnés tipo H Wuuff Puppy" class="carousel-slide" loading="lazy" width="800" height="1065">
+          <img src="images/opt/productos/arnes-3.webp" alt="Chihuahua con arnés tipo H Wuuff Puppy" class="carousel-slide" loading="lazy" width="800" height="841">
           <video class="carousel-slide" muted loop playsinline preload="none" data-poster="images/opt/productos/arnes-2-poster.webp" aria-label="Video: Arnés tipo H impermeable"><source src="images/productos/arnes-2.mp4" type="video/mp4"></video>
-          <img src="images/opt/productos/arnes-3.webp" alt="Chihuahua con arnés tipo H de goma Wuuff Puppy" class="carousel-slide" loading="lazy" width="800" height="841">
           <img src="images/productos/tallas-arnes.png" alt="Guía de tallas del arnés: medidas de la talla S y M en cm" class="carousel-slide fit-contain" loading="lazy" width="1045" height="1583">
         </div>
         <button class="carousel-arrow carousel-prev" onclick="moveCarousel(this,-1)" aria-label="Anterior">‹</button>
@@ -1238,14 +1241,14 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
 
 
     <div class="prod-card" id="collar">
-      <div class="prod-img carousel">
+      <div class="prod-img carousel en-portada">
+        <span class="portada-tag">Solo el collar</span>
         <span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21M10.5 7.5v6M7.5 10.5h6"/></svg></span>
         <div class="carousel-track">
-          <img src="images/opt/productos/collar-4.webp" alt="Perro sentado con collar y correa Wuuff Puppy" class="carousel-slide active" loading="lazy" width="800" height="1362">
-          <img src="images/opt/collar-nuevo.webp" alt="Collar impermeable" class="carousel-slide" loading="lazy" width="800" height="532">
-          <video class="carousel-slide" muted loop playsinline preload="none" data-poster="images/opt/productos/collar-2-poster.webp" aria-label="Video: Collar impermeable"><source src="images/productos/collar-2.mp4" type="video/mp4"></video>
-          <img src="images/opt/productos/collar-3.webp" alt="Perro salchicha con collar y arnés Wuuff Puppy" class="carousel-slide" loading="lazy" width="800" height="1065">
+          <img src="images/opt/collar-nuevo.webp" alt="Collar impermeable Wuuff Puppy azul cielo" class="carousel-slide fit-contain active" loading="lazy" width="800" height="532">
+          <img src="images/opt/productos/collar-4.webp" alt="Perro con collar impermeable Wuuff Puppy" class="carousel-slide" loading="lazy" width="800" height="1362">
           <img src="images/opt/productos/collar-5.webp" alt="Collar y correa Wuuff Puppy sobre el pasto" class="carousel-slide" loading="lazy" width="720" height="958">
+          <video class="carousel-slide" muted loop playsinline preload="none" data-poster="images/opt/productos/collar-2-poster.webp" aria-label="Video: Collar impermeable"><source src="images/productos/collar-2.mp4" type="video/mp4"></video>
           <img src="images/productos/tallas-collar.png" alt="Guía de tallas del collar: contorno de cuello de la talla S y M" class="carousel-slide fit-contain" loading="lazy" width="1045" height="1185">
         </div>
         <button class="carousel-arrow carousel-prev" onclick="moveCarousel(this,-1)" aria-label="Anterior">‹</button>
@@ -1256,7 +1259,6 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
           <span class="carousel-dot" onclick="goToSlide(this,2)"></span>
           <span class="carousel-dot" onclick="goToSlide(this,3)"></span>
           <span class="carousel-dot" onclick="goToSlide(this,4)"></span>
-          <span class="carousel-dot" onclick="goToSlide(this,5)"></span>
         </div>
       </div>
       <div class="prod-body">
@@ -1272,13 +1274,14 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
 
 
     <div class="prod-card" id="combo">
-      <div class="prod-img carousel">
+      <div class="prod-img carousel en-portada">
+        <span class="portada-tag">Incluye 3 piezas</span>
         <span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21M10.5 7.5v6M7.5 10.5h6"/></svg></span>
         <div class="carousel-track">
-          <img src="images/opt/productos/arnes-3.webp" alt="Chihuahua con collar, arnés y correa Wuuff Puppy" class="carousel-slide active" loading="lazy" width="800" height="841">
-          <img src="images/opt/set-completo-nuevo.webp" alt="Combo completo Wuuff Puppy" class="carousel-slide" loading="lazy" width="800" height="800">
+          <img src="images/opt/set-completo-nuevo.webp" alt="Combo completo Wuuff Puppy: collar, arnés y correa impermeables" class="carousel-slide fit-contain active" loading="lazy" width="800" height="800">
+          <img src="images/opt/productos/arnes-3.webp" alt="Chihuahua con arnés y correa Wuuff Puppy" class="carousel-slide" loading="lazy" width="800" height="841">
+          <img src="images/opt/montaje-perro-1.webp" alt="Perro paseando con arnés y correa Wuuff Puppy" class="carousel-slide" loading="lazy" width="720" height="1080">
           <video class="carousel-slide" muted loop playsinline preload="none" data-poster="images/opt/productos/combo-2-poster.webp" aria-label="Video: Combo completo Wuuff Puppy"><source src="images/productos/combo-2.mp4" type="video/mp4"></video>
-          <img src="images/opt/productos/collar-3.webp" alt="Perro salchicha con collar y arnés Wuuff Puppy" class="carousel-slide" loading="lazy" width="800" height="1065">
           <img src="images/productos/tallas-arnes.png" alt="Guía de tallas del arnés: medidas de la talla S y M en cm" class="carousel-slide fit-contain" loading="lazy" width="1045" height="1583">
           <img src="images/productos/tallas-collar.png" alt="Guía de tallas del collar: contorno de cuello de la talla S y M" class="carousel-slide fit-contain" loading="lazy" width="1045" height="1185">
         </div>
@@ -1306,14 +1309,13 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
 
 
     <div class="prod-card" id="correa">
-      <div class="prod-img carousel">
+      <div class="prod-img carousel en-portada">
+        <span class="portada-tag">Solo la correa</span>
         <span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21M10.5 7.5v6M7.5 10.5h6"/></svg></span>
         <div class="carousel-track">
-          <img src="images/opt/montaje-perro-1.webp" alt="Perro paseando con correa y arnés Wuuff Puppy" class="carousel-slide active" loading="lazy" width="720" height="1080">
-          <img src="images/opt/correa-nuevo.webp" alt="Correa impermeable" class="carousel-slide" loading="lazy" width="800" height="607">
-          <video class="carousel-slide" muted loop playsinline preload="none" data-poster="images/opt/productos/correa-2-poster.webp" aria-label="Video: Correa impermeable"><source src="images/productos/correa-2.mp4" type="video/mp4"></video>
+          <img src="images/opt/correa-nuevo.webp" alt="Correa impermeable Wuuff Puppy de 1,8 m" class="carousel-slide fit-contain active" loading="lazy" width="800" height="607">
           <img src="images/opt/productos/correa-3.webp" alt="Bulldog francés con collar y correa Wuuff Puppy" class="carousel-slide" loading="lazy" width="800" height="1304">
-          <img src="images/opt/productos/correa-4.webp" alt="Perro sentado con collar y correa Wuuff Puppy" class="carousel-slide" loading="lazy" width="800" height="1362">
+          <video class="carousel-slide" muted loop playsinline preload="none" data-poster="images/opt/productos/correa-2-poster.webp" aria-label="Video: Correa impermeable"><source src="images/productos/correa-2.mp4" type="video/mp4"></video>
         </div>
         <button class="carousel-arrow carousel-prev" onclick="moveCarousel(this,-1)" aria-label="Anterior">‹</button>
         <button class="carousel-arrow carousel-next" onclick="moveCarousel(this,1)" aria-label="Siguiente">›</button>
@@ -1321,8 +1323,6 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
           <span class="carousel-dot active" onclick="goToSlide(this,0)"></span>
           <span class="carousel-dot" onclick="goToSlide(this,1)"></span>
           <span class="carousel-dot" onclick="goToSlide(this,2)"></span>
-          <span class="carousel-dot" onclick="goToSlide(this,3)"></span>
-          <span class="carousel-dot" onclick="goToSlide(this,4)"></span>
         </div>
       </div>
       <div class="prod-body">
@@ -1435,7 +1435,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
         <span class="size-result-badge" id="size-badge">Talla S</span>
         <span class="size-result-text" id="size-text">Cuello 20–34 cm · Pecho 23–38 cm</span>
       </div>
-      <p class="size-disclaimer">*Medida oficial de fábrica. Si tu perrihijo está en el rango límite (24–34 cm), cualquiera de las dos tallas le queda — escríbenos y te ayudamos a elegir 🐾</p>
+      <p class="size-disclaimer">*Medida oficial de fábrica. Hasta 29 cm de cuello → Talla S; desde 30 cm → Talla M. Si mide entre 28 y 32 cm, escríbenos por WhatsApp y te ayudamos a elegir 🐾</p>
     </div>
   </div>
 </section>
@@ -1506,7 +1506,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
         <span class="faq-icon">+</span>
       </button>
       <div class="faq-answer">
-        <p>Usa nuestro selector de talla más arriba: solo mide el contorno de cuello de tu perrihijo con una cinta métrica. Por ahora manejamos <strong>Talla S</strong> (cuello 20–34 cm, pecho 23–38 cm) y <strong>Talla M</strong> (cuello 24–38 cm, pecho 32–53 cm). Si tu perrihijo está en el rango límite, escríbenos por Instagram y te ayudamos a elegir.</p>
+        <p>Usa nuestro selector de talla más arriba: solo mide el contorno de cuello de tu perrihijo con una cinta métrica. Por ahora manejamos <strong>Talla S</strong> (cuello 20–34 cm, pecho 23–38 cm) y <strong>Talla M</strong> (cuello 24–38 cm, pecho 32–53 cm). Si su cuello mide entre 28 y 32 cm, escríbenos por WhatsApp y te ayudamos a elegir.</p>
       </div>
     </div>
 
@@ -1562,7 +1562,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
   <h2>Nuestro <em>propósito</em> 🐾</h2>
   <div class="cause-box">
     <p>En Wuuff Puppy creemos que cada perro merece verse tan querido como se siente.</p>
-    <p class="big">"Por cada combo vendido,<br>un perrito rescatado recibe el suyo."</p>
+    <p class="big">"Con cada combo vendido,<br>ayudamos a alimentar a perritos rescatados."</p>
     <p>Pequeños detalles que dicen te quiero — para tu perrihijo y para los que esperan un hogar. 🏠</p>
   </div>
   <div class="cause-dog">
@@ -2002,6 +2002,8 @@ function goToSlide(dot, index){
 
 // Reproduce el video del carrusel solo si es la diapositiva activa y la tarjeta está en pantalla
 function sincronizarVideos(carousel){
+  var primera = carousel.querySelector('.carousel-slide');
+  carousel.classList.toggle('en-portada', !!primera && primera.classList.contains('active'));
   carousel.querySelectorAll('video.carousel-slide').forEach(function(v){
     if(v.classList.contains('active') && carousel._visible !== false){
       var pr = v.play();
