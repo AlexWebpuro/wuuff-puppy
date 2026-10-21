@@ -69,11 +69,23 @@ exports.handler = async function (event) {
     console.error('No se pudo guardar el pedido contraentrega en Netlify Forms', err.message);
   }
 
+  // 1b. Guarda el pedido para poder crear la guía de Envia.com con un clic (función envia-guia)
+  let urlGuia = '';
+  try {
+    connectLambda(event);
+    const token = require('crypto').randomBytes(18).toString('hex');
+    await getStore('pedidos-contraentrega').setJSON(referencia, Object.assign({}, pedido, {
+      referencia: referencia, totalCents: totalCents, token: token, estado: 'pendiente-confirmar', creado: new Date().toISOString()
+    }));
+    urlGuia = SITE_URL + '.netlify/functions/envia-guia?ref=' + encodeURIComponent(referencia) + '&t=' + token;
+  } catch (err) {
+    console.error('No se pudo guardar el pedido para Envia', err.message);
+  }
+
   // 2. Placa NFC: se marca el perfil y se arman los enlaces (chip y edición)
   let urlChip = '', urlEditar = '';
   if (pedido.perfilId) {
     try {
-      connectLambda(event);
       const store = getStore('perfiles-nfc');
       const perfil = await store.get(pedido.perfilId, { type: 'json' });
       if (perfil) {
@@ -110,6 +122,7 @@ exports.handler = async function (event) {
             ${urlChip ? `<p style="background:#fffbe6;padding:10px 12px;border-radius:10px"><strong>Grabar en el chip NFC:</strong><br><a href="${urlChip}">${urlChip}</a></p>` : ''}
             <p><a href="https://wa.me/${telCliente}" style="display:inline-block;background:#25D366;color:#fff;font-weight:bold;padding:10px 16px;border-radius:10px;text-decoration:none;">Escribirle por WhatsApp</a></p>
             <p style="font-size:13px">Antes de crear la guía en Envia.com: confirma dirección, que haya alguien para recibir y que tenga el efectivo listo.</p>
+            ${urlGuia ? `<p><a href="${urlGuia}" style="display:inline-block;background:#4964AF;color:#fff;font-weight:bold;padding:10px 16px;border-radius:10px;text-decoration:none;">📦 Ya confirmé: crear guía en Envia</a></p>` : ''}
           </div>`
         })
       });
@@ -120,7 +133,7 @@ exports.handler = async function (event) {
 
   // 4. Aviso a la tienda por WhatsApp (opcional, con CallMeBot)
   if (process.env.CALLMEBOT_PHONE && process.env.CALLMEBOT_APIKEY) {
-    const texto = `💵 Pedido contraentrega ${referencia}\n${pedido.producto.replace(/\s*\|\s*Perfil NFC:.*$/, '')}\nCobrar: ${total}\n${pedido.nombre} · ${pedido.telefono}\n${pedido.direccion}, ${pedido.ciudad}`;
+    const texto = `💵 Pedido contraentrega ${referencia}\n${pedido.producto.replace(/\s*\|\s*Perfil NFC:.*$/, '')}\nCobrar: ${total}\n${pedido.nombre} · ${pedido.telefono}\n${pedido.direccion}, ${pedido.ciudad}${urlGuia ? '\n\nCrear guía (después de confirmar): ' + urlGuia : ''}`;
     try {
       await fetch('https://api.callmebot.com/whatsapp.php?phone=' + encodeURIComponent(process.env.CALLMEBOT_PHONE) +
         '&text=' + encodeURIComponent(texto) + '&apikey=' + encodeURIComponent(process.env.CALLMEBOT_APIKEY));
