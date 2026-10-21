@@ -1,0 +1,3051 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<!-- Google tag (gtag.js): la cola de eventos queda lista ya; el archivo se descarga después de la carga (ver "Servicios externos") -->
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-40CYS06P8Y');
+
+  // Servicios externos (Analytics, Meta, Clarity): se descargan 2,5 s después de que la página cargó,
+  // o antes si la persona toca, desplaza o escribe. Así no le quitan velocidad a la primera pantalla.
+  // Los eventos que pasen antes quedan en cola y se envían apenas carguen.
+  (function(){
+    var cache = {};
+    window.cargarScript = function(src){
+      if(!cache[src]) cache[src] = new Promise(function(ok, falla){
+        var sc = document.createElement('script'); sc.async = true; sc.src = src;
+        sc.onload = ok; sc.onerror = falla; document.head.appendChild(sc);
+      });
+      return cache[src];
+    };
+    // Wompi solo hace falta para pagar: se descarga al abrir el formulario de compra
+    window.cargarWompi = function(){ return window.cargarScript('https://checkout.wompi.co/widget.js'); };
+    var listo = false;
+    function terceros(){
+      if(listo) return; listo = true;
+      window.cargarScript('https://www.googletagmanager.com/gtag/js?id=G-40CYS06P8Y');
+      window.cargarScript('https://connect.facebook.net/en_US/fbevents.js');
+      window.cargarScript('https://www.clarity.ms/tag/ynyc2e4h8h');
+    }
+    function despues(){ setTimeout(terceros, 2500); }
+    if(document.readyState === 'complete') despues(); else addEventListener('load', despues);
+    ['pointerdown', 'keydown', 'touchstart', 'scroll'].forEach(function(ev){ addEventListener(ev, terceros, { once: true, passive: true }); });
+  })();
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Collares y arneses impermeables para perros | Wuuff Puppy</title>
+<meta name="description" content="Collar, arnés y correa de goma impermeables, antiolor e hipoalergénicos para perros. Combo completo a $157.900 con envío gratis en Bogotá. Envíos a toda Colombia.">
+<meta name="keywords" content="accesorios para perro, collar arnés y correa para perro, accesorios impermeables para perro, arnés tipo H, pechera para perro, traílla para perro, placa para perro, placa de identificación para perro, placa personalizada, tienda para mascotas Bogotá">
+<meta name="author" content="Wuuff Puppy">
+<meta name="publisher" content="Wuuff Puppy">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://wuuffpuppy.co/">
+<link rel="alternate" hreflang="es-CO" href="https://wuuffpuppy.co/">
+<meta name="theme-color" content="#4964af">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Wuuff Puppy">
+<meta property="og:locale" content="es_CO">
+<meta property="og:url" content="https://wuuffpuppy.co/">
+<meta property="og:title" content="Accesorios impermeables para tu perrihijo | Wuuff Puppy">
+<meta property="og:description" content="Collar, arnés y correa de goma impermeables, antiolor e hipoalergénicos para perros. Combo completo a $157.900 con envío gratis en Bogotá. Envíos a toda Colombia.">
+<meta property="og:image" content="https://wuuffpuppy.co/images/og-wuuff-puppy.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Collar, arnés y correa de goma azul cielo Wuuff Puppy">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Accesorios impermeables para tu perrihijo | Wuuff Puppy">
+<meta name="twitter:description" content="Collar, arnés y correa de goma impermeables, antiolor e hipoalergénicos para perros. Combo completo a $157.900 con envío gratis en Bogotá. Envíos a toda Colombia.">
+<meta name="twitter:image" content="https://wuuffpuppy.co/images/og-wuuff-puppy.jpg">
+<link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+<link rel="apple-touch-icon" href="images/wuuff-puppy.png">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "Organization",
+   "@id": "https://wuuffpuppy.co/#marca",
+   "name": "Wuuff Puppy",
+   "url": "https://wuuffpuppy.co/",
+   "logo": "https://wuuffpuppy.co/images/wuuff-puppy.png",
+   "slogan": "Pequeños detalles que dicen te quiero.",
+   "description": "Accesorios de goma impermeables para perros pequeños, diseñados en Bogotá: collar, arnés tipo H, correa y la Placa Inteligente Wuuff, una placa de identificación personalizada para perro y gato.",
+   "founder": {
+    "@type": "Person",
+    "name": "Katherine Monroy"
+   },
+   "sameAs": [
+    "https://instagram.com/wuuffpuppy",
+    "https://tiktok.com/@wuuff.puppy"
+   ],
+   "contactPoint": {
+    "@type": "ContactPoint",
+    "telephone": "+57 317 643 1286",
+    "contactType": "customer service",
+    "areaServed": "CO",
+    "availableLanguage": "es"
+   }
+  },
+  {
+   "@type": "OnlineStore",
+   "@id": "https://wuuffpuppy.co/#tienda",
+   "name": "Wuuff Puppy",
+   "url": "https://wuuffpuppy.co/",
+   "image": "https://wuuffpuppy.co/images/og-wuuff-puppy.jpg",
+   "brand": {
+    "@id": "https://wuuffpuppy.co/#marca"
+   },
+   "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Bogotá",
+    "addressCountry": "CO"
+   },
+   "areaServed": "CO",
+   "currenciesAccepted": "COP",
+   "paymentAccepted": "Tarjeta de crédito, PSE, Nequi, Daviplata, Botón Bancolombia"
+  },
+  {
+   "@type": "WebSite",
+   "@id": "https://wuuffpuppy.co/#web",
+   "url": "https://wuuffpuppy.co/",
+   "name": "Wuuff Puppy",
+   "inLanguage": "es-CO",
+   "publisher": {
+    "@id": "https://wuuffpuppy.co/#marca"
+   }
+  },
+  {
+   "@type": "Product",
+   "@id": "https://wuuffpuppy.co/#wp-set",
+   "sku": "WP-SET",
+   "name": "Combo completo Wuuff Puppy: collar, arnés y correa impermeables",
+   "description": "Combo de collar, arnés y correa de goma impermeables, antiolor e hipoalergénicos, en azul cielo. Para razas pequeñas. Tallas S y M.",
+   "image": [
+    "https://wuuffpuppy.co/images/set-completo-nuevo.jpg",
+    "https://wuuffpuppy.co/images/productos/arnes-3.jpg",
+    "https://wuuffpuppy.co/images/productos/collar-3.jpg"
+   ],
+   "brand": {
+    "@id": "https://wuuffpuppy.co/#marca"
+   },
+   "color": "Azul cielo",
+   "material": "Goma",
+   "category": "Animals & Pet Supplies > Pet Supplies > Pet Collars & Harnesses",
+   "offers": {
+    "@type": "Offer",
+    "hasMerchantReturnPolicy": {"@type": "MerchantReturnPolicy", "applicableCountry": "CO", "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow", "merchantReturnDays": 5, "returnMethod": "https://schema.org/ReturnByMail", "returnFees": "https://schema.org/ReturnFeesCustomerResponsibility", "merchantReturnLink": "https://wuuffpuppy.co/politica-de-devoluciones.html"},
+    "url": "https://wuuffpuppy.co/combo-collar-arnes-correa/",
+    "priceCurrency": "COP",
+    "price": "157900",
+    "availability": "https://schema.org/InStock",
+    "itemCondition": "https://schema.org/NewCondition",
+    "seller": {
+     "@id": "https://wuuffpuppy.co/#tienda"
+    },
+    "shippingDetails": [
+     {
+      "@type": "OfferShippingDetails",
+      "shippingDestination": {
+       "@type": "DefinedRegion",
+       "addressCountry": "CO",
+       "addressRegion": "Bogotá"
+      },
+      "shippingRate": {
+       "@type": "MonetaryAmount",
+       "value": "0",
+       "currency": "COP"
+      },
+      "deliveryTime": {
+       "@type": "ShippingDeliveryTime",
+       "handlingTime": {
+        "@type": "QuantitativeValue",
+        "minValue": 1,
+        "maxValue": 2,
+        "unitCode": "DAY"
+       },
+       "transitTime": {
+        "@type": "QuantitativeValue",
+        "minValue": 2,
+        "maxValue": 5,
+        "unitCode": "DAY"
+       }
+      }
+     },
+     {
+      "@type": "OfferShippingDetails",
+      "shippingDestination": {
+       "@type": "DefinedRegion",
+       "addressCountry": "CO"
+      },
+      "shippingRate": {
+       "@type": "MonetaryAmount",
+       "value": "18500",
+       "currency": "COP"
+      },
+      "deliveryTime": {
+       "@type": "ShippingDeliveryTime",
+       "handlingTime": {
+        "@type": "QuantitativeValue",
+        "minValue": 1,
+        "maxValue": 2,
+        "unitCode": "DAY"
+       },
+       "transitTime": {
+        "@type": "QuantitativeValue",
+        "minValue": 2,
+        "maxValue": 5,
+        "unitCode": "DAY"
+       }
+      }
+     }
+    ],
+    "priceValidUntil": "2026-10-30"
+   },
+   "url": "https://wuuffpuppy.co/combo-collar-arnes-correa/"
+  },
+  {
+   "@type": "Product",
+   "@id": "https://wuuffpuppy.co/#wp-arnes",
+   "sku": "WP-ARNES",
+   "name": "Arnés tipo H impermeable para perro Wuuff Puppy",
+   "description": "Arnés tipo H de goma impermeable, antiolor y fácil de limpiar. No presiona el cuello ni la tráquea y no roza las axilas. Ajustable en cuello y pecho, para razas pequeñas. Tallas S y M.",
+   "image": [
+    "https://wuuffpuppy.co/images/arnes-nuevo.jpg",
+    "https://wuuffpuppy.co/images/productos/arnes-3.jpg"
+   ],
+   "brand": {
+    "@id": "https://wuuffpuppy.co/#marca"
+   },
+   "color": "Azul cielo",
+   "material": "Goma",
+   "category": "Animals & Pet Supplies > Pet Supplies > Pet Collars & Harnesses",
+   "offers": {
+    "@type": "Offer",
+    "hasMerchantReturnPolicy": {"@type": "MerchantReturnPolicy", "applicableCountry": "CO", "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow", "merchantReturnDays": 5, "returnMethod": "https://schema.org/ReturnByMail", "returnFees": "https://schema.org/ReturnFeesCustomerResponsibility", "merchantReturnLink": "https://wuuffpuppy.co/politica-de-devoluciones.html"},
+    "url": "https://wuuffpuppy.co/arnes-tipo-h-impermeable-perro/",
+    "priceCurrency": "COP",
+    "price": "72900",
+    "availability": "https://schema.org/InStock",
+    "itemCondition": "https://schema.org/NewCondition",
+    "seller": {
+     "@id": "https://wuuffpuppy.co/#tienda"
+    },
+    "shippingDetails": [
+     {
+      "@type": "OfferShippingDetails",
+      "shippingDestination": {
+       "@type": "DefinedRegion",
+       "addressCountry": "CO",
+       "addressRegion": "Bogotá"
+      },
+      "shippingRate": {
+       "@type": "MonetaryAmount",
+       "value": "0",
+       "currency": "COP"
+      },
+      "deliveryTime": {
+       "@type": "ShippingDeliveryTime",
+       "handlingTime": {
+        "@type": "QuantitativeValue",
+        "minValue": 1,
+        "maxValue": 2,
+        "unitCode": "DAY"
+       },
+       "transitTime": {
+        "@type": "QuantitativeValue",
+        "minValue": 2,
+        "maxValue": 5,
+        "unitCode": "DAY"
+       }
+      }
+     },
+     {
+      "@type": "OfferShippingDetails",
+      "shippingDestination": {
+       "@type": "DefinedRegion",
+       "addressCountry": "CO"
+      },
+      "shippingRate": {
+       "@type": "MonetaryAmount",
+       "value": "18500",
+       "currency": "COP"
+      },
+      "deliveryTime": {
+       "@type": "ShippingDeliveryTime",
+       "handlingTime": {
+        "@type": "QuantitativeValue",
+        "minValue": 1,
+        "maxValue": 2,
+        "unitCode": "DAY"
+       },
+       "transitTime": {
+        "@type": "QuantitativeValue",
+        "minValue": 2,
+        "maxValue": 5,
+        "unitCode": "DAY"
+       }
+      }
+     }
+    ],
+    "priceValidUntil": "2026-10-30"
+   },
+   "url": "https://wuuffpuppy.co/arnes-tipo-h-impermeable-perro/"
+  },
+  {
+   "@type": "Product",
+   "@id": "https://wuuffpuppy.co/#wp-collar",
+   "sku": "WP-COLLAR",
+   "name": "Collar impermeable para perro Wuuff Puppy",
+   "description": "Collar de goma impermeable, antiolor e hipoalergénico, con hebilla segura y argolla metálica. Tallas S y M.",
+   "image": [
+    "https://wuuffpuppy.co/images/collar-nuevo.jpg",
+    "https://wuuffpuppy.co/images/productos/collar-3.jpg",
+    "https://wuuffpuppy.co/images/productos/collar-4.jpg"
+   ],
+   "brand": {
+    "@id": "https://wuuffpuppy.co/#marca"
+   },
+   "color": "Azul cielo",
+   "material": "Goma",
+   "category": "Animals & Pet Supplies > Pet Supplies > Pet Collars & Harnesses",
+   "offers": {
+    "@type": "Offer",
+    "hasMerchantReturnPolicy": {"@type": "MerchantReturnPolicy", "applicableCountry": "CO", "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow", "merchantReturnDays": 5, "returnMethod": "https://schema.org/ReturnByMail", "returnFees": "https://schema.org/ReturnFeesCustomerResponsibility", "merchantReturnLink": "https://wuuffpuppy.co/politica-de-devoluciones.html"},
+    "url": "https://wuuffpuppy.co/collar-impermeable-perro/",
+    "priceCurrency": "COP",
+    "price": "49900",
+    "availability": "https://schema.org/InStock",
+    "itemCondition": "https://schema.org/NewCondition",
+    "seller": {
+     "@id": "https://wuuffpuppy.co/#tienda"
+    },
+    "shippingDetails": [
+     {
+      "@type": "OfferShippingDetails",
+      "shippingDestination": {
+       "@type": "DefinedRegion",
+       "addressCountry": "CO",
+       "addressRegion": "Bogotá"
+      },
+      "shippingRate": {
+       "@type": "MonetaryAmount",
+       "value": "0",
+       "currency": "COP"
+      },
+      "deliveryTime": {
+       "@type": "ShippingDeliveryTime",
+       "handlingTime": {
+        "@type": "QuantitativeValue",
+        "minValue": 1,
+        "maxValue": 2,
+        "unitCode": "DAY"
+       },
+       "transitTime": {
+        "@type": "QuantitativeValue",
+        "minValue": 2,
+        "maxValue": 5,
+        "unitCode": "DAY"
+       }
+      }
+     },
+     {
+      "@type": "OfferShippingDetails",
+      "shippingDestination": {
+       "@type": "DefinedRegion",
+       "addressCountry": "CO"
+      },
+      "shippingRate": {
+       "@type": "MonetaryAmount",
+       "value": "18500",
+       "currency": "COP"
+      },
+      "deliveryTime": {
+       "@type": "ShippingDeliveryTime",
+       "handlingTime": {
+        "@type": "QuantitativeValue",
+        "minValue": 1,
+        "maxValue": 2,
+        "unitCode": "DAY"
+       },
+       "transitTime": {
+        "@type": "QuantitativeValue",
+        "minValue": 2,
+        "maxValue": 5,
+        "unitCode": "DAY"
+       }
+      }
+     }
+    ],
+    "priceValidUntil": "2026-10-30"
+   },
+   "url": "https://wuuffpuppy.co/collar-impermeable-perro/"
+  },
+  {
+   "@type": "Product",
+   "@id": "https://wuuffpuppy.co/#wp-correa",
+   "sku": "WP-CORREA",
+   "name": "Correa impermeable para perro Wuuff Puppy",
+   "description": "Correa de goma impermeable y antiolor, de 1,8 m con gancho metálico resistente. Talla única.",
+   "image": [
+    "https://wuuffpuppy.co/images/correa-nuevo.jpg",
+    "https://wuuffpuppy.co/images/productos/correa-3.jpg"
+   ],
+   "brand": {
+    "@id": "https://wuuffpuppy.co/#marca"
+   },
+   "color": "Azul cielo",
+   "material": "Goma",
+   "category": "Animals & Pet Supplies > Pet Supplies > Pet Leashes",
+   "offers": {
+    "@type": "Offer",
+    "hasMerchantReturnPolicy": {"@type": "MerchantReturnPolicy", "applicableCountry": "CO", "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow", "merchantReturnDays": 5, "returnMethod": "https://schema.org/ReturnByMail", "returnFees": "https://schema.org/ReturnFeesCustomerResponsibility", "merchantReturnLink": "https://wuuffpuppy.co/politica-de-devoluciones.html"},
+    "url": "https://wuuffpuppy.co/correa-impermeable-perro/",
+    "priceCurrency": "COP",
+    "price": "58900",
+    "availability": "https://schema.org/InStock",
+    "itemCondition": "https://schema.org/NewCondition",
+    "seller": {
+     "@id": "https://wuuffpuppy.co/#tienda"
+    },
+    "shippingDetails": [
+     {
+      "@type": "OfferShippingDetails",
+      "shippingDestination": {
+       "@type": "DefinedRegion",
+       "addressCountry": "CO",
+       "addressRegion": "Bogotá"
+      },
+      "shippingRate": {
+       "@type": "MonetaryAmount",
+       "value": "0",
+       "currency": "COP"
+      },
+      "deliveryTime": {
+       "@type": "ShippingDeliveryTime",
+       "handlingTime": {
+        "@type": "QuantitativeValue",
+        "minValue": 1,
+        "maxValue": 2,
+        "unitCode": "DAY"
+       },
+       "transitTime": {
+        "@type": "QuantitativeValue",
+        "minValue": 2,
+        "maxValue": 5,
+        "unitCode": "DAY"
+       }
+      }
+     },
+     {
+      "@type": "OfferShippingDetails",
+      "shippingDestination": {
+       "@type": "DefinedRegion",
+       "addressCountry": "CO"
+      },
+      "shippingRate": {
+       "@type": "MonetaryAmount",
+       "value": "18500",
+       "currency": "COP"
+      },
+      "deliveryTime": {
+       "@type": "ShippingDeliveryTime",
+       "handlingTime": {
+        "@type": "QuantitativeValue",
+        "minValue": 1,
+        "maxValue": 2,
+        "unitCode": "DAY"
+       },
+       "transitTime": {
+        "@type": "QuantitativeValue",
+        "minValue": 2,
+        "maxValue": 5,
+        "unitCode": "DAY"
+       }
+      }
+     }
+    ],
+    "priceValidUntil": "2026-10-30"
+   },
+   "url": "https://wuuffpuppy.co/correa-impermeable-perro/"
+  },
+  {
+   "@type": "FAQPage",
+   "@id": "https://wuuffpuppy.co/#faq",
+   "mainEntity": [
+    {
+     "@type": "Question",
+     "name": "¿Hacen envíos a toda Colombia?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Sí, hacemos envíos a toda Colombia. Despachamos en 1–2 días hábiles; la entrega tarda de 2 a 5 días según tu ciudad. El envío a Bogotá / Soacha es gratis en pedidos desde $49.900 (la placa sola paga $8.000 de envío). En Bogotá puedes pagar en efectivo al recibir. A otras ciudades cuesta $18.500."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "¿Cómo sé qué talla pedir?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Mide el contorno de cuello de tu perrihijo con una cinta métrica. Talla S: cuello 20–34 cm, pecho 23–38 cm. Talla M: cuello 24–38 cm, pecho 32–53 cm. Si su cuello mide entre 28 y 32 cm, escríbenos por WhatsApp y te ayudamos a elegir."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "¿Puedo cambiar la talla si no le queda?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Sí. Escríbenos por WhatsApp o Instagram con tu pedido y gestionamos el cambio. El accesorio debe estar sin uso y en su empaque original."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "¿Qué métodos de pago aceptan?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "En Bogotá puedes pagar en efectivo al recibir tu pedido (contraentrega), en pedidos desde $49.900. También puedes pagar en la web con Wompi: tarjeta, PSE, Nequi, Daviplata, Botón Bancolombia o en 4 cuotas sin interés con Bancolombia."
+     }
+    }
+   ]
+  }
+ ]
+}
+</script>
+<link rel="preload" as="image" href="/collar-3d/collar-3d-poster.webp" imagesrcset="/collar-3d/collar-3d-poster-600.webp 600w, /collar-3d/collar-3d-poster-760.webp 760w, /collar-3d/collar-3d-poster.webp 960w" imagesizes="(min-width: 769px) 50vw, 100vw" fetchpriority="high">
+<link rel="stylesheet" href="/collar-3d/collar-3d.css">
+<link rel="preload" as="font" type="font/woff2" href="/assets/fonts/fredoka-one-latin-400-normal.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="/assets/fonts/nunito-latin-800-normal.woff2" crossorigin>
+<style>
+/* Fuentes servidas desde el sitio (más rápido que Google Fonts) */
+@font-face{font-family:'Fredoka One';font-style:normal;font-weight:400;font-display:swap;src:url(/assets/fonts/fredoka-one-latin-400-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;}
+@font-face{font-family:'Nunito';font-style:normal;font-weight:400;font-display:swap;src:url(/assets/fonts/nunito-latin-400-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;}
+@font-face{font-family:'Nunito';font-style:normal;font-weight:700;font-display:swap;src:url(/assets/fonts/nunito-latin-700-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;}
+@font-face{font-family:'Nunito';font-style:normal;font-weight:800;font-display:swap;src:url(/assets/fonts/nunito-latin-800-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;}
+@font-face{font-family:'Nunito';font-style:normal;font-weight:900;font-display:swap;src:url(/assets/fonts/nunito-latin-900-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;}
+:root{
+  --blue:#4964af; --lime:#d5d50c; --coral:#f17d57;
+  --navy:#2d4375; --cream:#f9f0ee; --pink:#cc8d9f;
+  --sky:#b8d8f5; --white:#ffffff; --lblue:#e8f0fb;
+  --coral-fuerte:#c94d27; /* coral para fondos con letra blanca pequeña (botones, etiquetas) */
+  --coral-texto:#e0623a; /* coral para textos: contraste suficiente sobre crema y con letra blanca */
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+section[id],.prod-card[id]{scroll-margin-top:78px;}
+body{font-family:'Nunito',sans-serif;background:var(--white);color:var(--navy);overflow-x:hidden;}
+
+/* NAV */
+#menu{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  background:rgba(255,255,255,0.96);backdrop-filter:blur(12px);
+  padding:12px 32px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:2px solid var(--lblue);
+}
+.nav-logo{display:flex;align-items:center;gap:10px;padding:6px 14px 6px 0;margin:-6px 0;}
+.nav-logo img{height:36px;object-fit:contain;}
+.nav-links{display:flex;gap:28px;align-items:center;}
+.nav-right{display:flex;align-items:center;gap:10px;}
+.nav-drop{position:relative;}
+.nav-drop-menu{display:none;position:absolute;top:100%;left:-16px;padding-top:12px;min-width:240px;}
+.nav-drop-menu::before{content:"";position:absolute;inset:12px 0 0;background:#fff;border-radius:16px;box-shadow:0 12px 30px rgba(45,67,117,.16);border:2px solid var(--lblue);}
+.nav-drop-menu a{position:relative;display:block;padding:10px 18px;opacity:.85 !important;}
+.nav-drop-menu a:first-child{margin-top:8px;}.nav-drop-menu a:last-child{margin-bottom:8px;}
+.nav-drop:hover .nav-drop-menu,.nav-drop:focus-within .nav-drop-menu{display:block;}
+.nav-burger{display:none;width:42px;height:42px;border:none;background:var(--lblue);border-radius:12px;cursor:pointer;flex-direction:column;align-items:center;justify-content:center;gap:4px;-webkit-tap-highlight-color:transparent;}
+.nav-burger span{display:block;width:18px;height:2.5px;border-radius:2px;background:var(--navy);transition:transform .2s,opacity .2s;}
+#menu.abierto .nav-burger span:nth-child(1){transform:translateY(6.5px) rotate(45deg);}
+#menu.abierto .nav-burger span:nth-child(2){opacity:0;}
+#menu.abierto .nav-burger span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
+.nav-links a{font-size:13px;font-weight:800;color:var(--navy);text-decoration:none;opacity:.8;transition:opacity .2s;}
+.nav-links a:hover{opacity:1;color:var(--blue);}
+.nav-links a.nav-placa{opacity:1;display:inline-flex;align-items:center;gap:6px;}
+.nav-nuevo{background:var(--coral);color:#fff;font-size:9px;font-weight:900;letter-spacing:1px;text-transform:uppercase;padding:3px 7px;border-radius:20px;}
+.nav-cta{background:var(--blue);color:#fff;font-weight:900;font-size:13px;padding:10px 24px;border-radius:30px;text-decoration:none;transition:transform .2s;box-shadow:0 4px 14px rgba(73,100,175,.3);}
+.nav-cta:hover{transform:translateY(-2px);}
+
+/* HERO */
+.hero{
+  min-height:640px;padding-top:72px;
+  display:flex;align-items:center;position:relative;overflow:hidden;
+}
+.hero-bg-carousel{position:absolute;inset:0;z-index:0;}
+.hero-bg-slide{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;opacity:0;transition:opacity 1.2s ease;}
+.hero-bg-slide.active{opacity:1;}
+.hero-inner{position:relative;z-index:2;max-width:1100px;margin:0 auto;padding:60px 32px;width:100%;}
+.hero-text{position:relative;z-index:2;max-width:560px;text-align:left;}
+.hero-title{font-family:'Fredoka One',cursive;font-size:clamp(42px,6vw,72px);color:var(--navy);line-height:1.35;margin-bottom:28px;}
+.hero-title .t-highlight{background:var(--navy);color:#fff;padding:4px 22px;border-radius:26px;box-decoration-break:clone;-webkit-box-decoration-break:clone;}
+.hero-title .t-coral{background:var(--coral-texto);color:#fff;}
+.hero-offer{display:inline-block;background:#fff;color:var(--navy);font-weight:800;font-size:16px;line-height:1.4;padding:10px 18px;border-radius:18px;margin:0 0 22px;box-shadow:0 8px 24px rgba(45,67,117,.18);}
+.hero-offer s{opacity:.5;font-weight:700;margin:0 2px;}
+.hero-offer strong{font-family:'Fredoka One',cursive;font-weight:400;font-size:1.25em;color:var(--coral);}
+.hero-ship{display:inline-flex;align-items:center;gap:6px;background:var(--lime);color:var(--navy);font-weight:800;font-size:14px;padding:7px 14px;border-radius:14px;margin:-12px 0 22px;box-shadow:0 6px 18px rgba(45,67,117,.15);}
+.hero-ship strong{font-weight:900;}
+.hero-offer + .hero-ship{display:flex;width:max-content;}
+@media(max-width:768px){.hero-offer + .hero-ship{margin-left:auto;margin-right:auto;}}
+.hero-offer-ship{white-space:nowrap;}
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap;}
+.btn-primary{background:var(--blue);color:#fff;font-weight:900;font-size:15px;padding:15px 32px;border-radius:50px;text-decoration:none;box-shadow:0 8px 24px rgba(73,100,175,.35);transition:transform .2s;display:inline-flex;align-items:center;gap:8px;}
+.btn-primary:hover{transform:translateY(-3px);}
+.btn-outline{background:#fff;color:var(--navy);font-weight:800;font-size:15px;padding:13px 28px;border-radius:50px;text-decoration:none;border:2.5px solid var(--navy);transition:all .2s;}
+.btn-outline:hover{background:var(--navy);color:#fff;}
+
+/* MODAL ENVÍO */
+.hp-field{position:absolute;left:-9999px;}
+.shipping-modal-overlay{display:none;position:fixed;inset:0;background:rgba(45,67,117,.55);z-index:1000;align-items:center;justify-content:center;padding:20px;overflow-y:auto;}
+.shipping-modal-overlay.open{display:flex;}
+.shipping-modal{background:#fff;border-radius:24px;padding:32px 26px;max-width:380px;width:100%;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.25);margin:auto;}
+.shipping-modal h3{font-family:'Fredoka One',cursive;font-size:20px;color:var(--navy);margin-bottom:8px;}
+.shipping-modal-sub{font-size:13px;font-weight:600;color:var(--navy);opacity:.8;margin-bottom:22px;}
+.shipping-talla-display{display:none;background:var(--lime);color:var(--navy);font-weight:900;font-size:13px;padding:8px 14px;border-radius:12px;margin-bottom:14px;}
+.shipping-modal form{display:flex;flex-direction:column;gap:12px;}
+.shipping-input{width:100%;padding:13px 16px;border-radius:14px;border:1.5px solid var(--lblue);font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;color:var(--navy);outline:none;box-sizing:border-box;background:var(--cream);}
+.shipping-input:focus{border-color:var(--blue);}
+.shipping-input::placeholder{color:rgba(45,67,117,.5);}
+.shipping-select{appearance:none;-webkit-appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232d4375' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;background-size:16px;padding-right:40px;}
+.envio-gratis-aviso{background:#e6f7ec;color:#2b8a3e;font-size:12.5px;font-weight:700;border-radius:12px;padding:9px 12px;margin:-4px 0 10px;text-align:left;}
+.codigo-box{margin:2px 0 12px;text-align:left;}
+.codigo-label{display:block;font-size:13px;font-weight:800;color:var(--navy);margin-bottom:6px;}
+.codigo-fila{display:flex;gap:8px;}
+.codigo-fila .codigo-input{flex:1;margin:0;text-transform:uppercase;letter-spacing:.5px;}
+.codigo-aplicar{border:2px solid var(--blue);background:#fff;color:var(--blue);font-family:'Nunito',sans-serif;font-weight:900;font-size:14px;border-radius:12px;padding:0 16px;cursor:pointer;}
+.codigo-msg{font-size:13px;font-weight:700;margin:6px 0 0;min-height:0;}
+.codigo-msg.ok{color:#0b7a3e;}.codigo-msg.error{color:#b3261e;}
+.envio-despacho{font-size:12.5px;font-weight:700;color:var(--navy);opacity:.8;margin:-4px 0 10px;text-align:left;line-height:1.4;}
+.envio-gratis-aviso strong{font-weight:900;}
+.metodo-pago-box{border:0;padding:0;margin:0 0 10px;text-align:left;}
+.metodo-pago-box legend{font-size:13px;font-weight:800;color:var(--navy);margin-bottom:6px;}
+.metodo-pago-op{display:flex;gap:10px;align-items:flex-start;border:2px solid #e3e8f4;border-radius:12px;padding:10px 12px;margin-bottom:8px;cursor:pointer;font-size:13.5px;color:var(--navy);line-height:1.35;}
+.metodo-pago-op:has(input:checked){border-color:#4964AF;background:#eef2fb;}
+.metodo-pago-op input{margin-top:3px;accent-color:#4964AF;}
+.metodo-pago-op small{display:block;font-weight:600;opacity:.8;margin-top:2px;}
+.pedido-ok-paso{font-size:14px;color:var(--navy);margin:0 0 14px;line-height:1.45;}
+.shipping-modal .pedido-ok-wa{display:block;text-align:center;text-decoration:none;background:#25D366;}
+.shipping-modal .btn-buy{border:none;cursor:pointer;margin-top:6px;}
+.promo-feedback{font-size:12px;font-weight:800;margin-top:-6px;min-height:16px;}
+.pago-opciones{margin:4px 0 12px;text-align:left;}
+.pago-titulo{font-size:13px;font-weight:900;color:var(--navy);margin-bottom:6px;}
+.pago-op{display:flex;align-items:center;gap:10px;border:2px solid var(--lblue);border-radius:14px;padding:10px 12px;margin-bottom:8px;cursor:pointer;background:#fff;}
+.pago-op:has(input:checked){border-color:var(--blue);background:#f4f8ff;}
+.pago-op input{accent-color:var(--blue);width:18px;height:18px;flex:none;}
+.pago-op strong{display:block;font-size:14px;color:var(--navy);}
+.pago-op small{display:block;font-size:12px;color:#55607e;font-weight:700;}
+.perfil-placa[hidden]{display:none;}
+.perfil-placa{background:#f4f8ff;border:2px solid var(--lblue);border-radius:14px;padding:12px;margin:0 0 12px;text-align:left;display:grid;gap:8px;}
+.perfil-placa .shipping-input{margin:0;}
+.perfil-titulo{font-size:13px;font-weight:900;color:var(--navy);margin:0;}
+.perfil-sub{font-size:12px;font-weight:700;color:#55607e;margin:0;}
+.perfil-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.lanzamiento-hasta{font-size:12.5px;font-weight:800;color:var(--coral);margin:-2px 0 10px;}
+.hero-offer-hasta{display:block;font-size:12.5px;font-weight:800;color:var(--coral);margin-top:2px;}
+.promo-feedback.valido{color:#2b8a3e;}
+.promo-feedback.invalido{color:#c0392b;}
+.shipping-modal-cancel{background:none;border:none;color:var(--navy);opacity:.8;font-weight:700;font-size:13px;cursor:pointer;margin-top:14px;font-family:'Nunito',sans-serif;}
+
+/* WHATSAPP FLOTANTE */
+.whatsapp-float{
+  position:fixed;bottom:24px;left:24px;z-index:300;
+  width:56px;height:56px;
+  background:#25D366;border-radius:50%;
+  box-shadow:0 6px 24px rgba(37,211,102,.4);
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .2s;cursor:pointer;
+  text-decoration:none;
+}
+.whatsapp-float:hover{transform:scale(1.12);}
+
+/* TICKER */
+.ticker{background:var(--blue);padding:14px 0;overflow:hidden;border-top:3px solid var(--navy);border-bottom:3px solid var(--navy);}
+.visualmente-oculto{position:absolute !important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+.ticker-inner{display:flex;gap:48px;animation:ticker 80s linear infinite;width:max-content;}
+.ticker-item{display:flex;align-items:center;gap:12px;font-family:'Fredoka One',cursive;font-size:16px;color:#fff;white-space:nowrap;}
+.ticker-dot{width:8px;height:8px;background:var(--lime);border-radius:50%;flex-shrink:0;}
+@keyframes ticker{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+/* CHARACTERS */
+.characters{padding:90px 20px;background:var(--lblue);}
+.characters h2{font-family:'Fredoka One',cursive;font-size:clamp(32px,5vw,52px);text-align:center;color:var(--navy);margin-bottom:8px;}
+.characters h2 span{color:var(--blue);}
+.chars-sub{text-align:center;font-size:17px;font-weight:600;color:var(--navy);opacity:.8;margin-bottom:56px;}
+.chars-grid{display:flex;gap:24px;justify-content:center;flex-wrap:wrap;max-width:1000px;margin:0 auto;}
+.char-card{background:#fff;border-radius:28px;padding:32px 24px;text-align:center;width:210px;transition:transform .25s,box-shadow .25s;box-shadow:0 6px 24px rgba(73,100,175,.1);border:2px solid var(--lblue);}
+.char-card:hover{transform:translateY(-8px) rotate(-1deg);box-shadow:0 20px 50px rgba(73,100,175,.18);}
+.char-card.saltar{animation:charSalto .5s ease;}
+@keyframes charSalto{0%,100%{transform:none}35%{transform:translateY(-14px) rotate(-3deg)}70%{transform:translateY(0) rotate(2deg)}}
+.char-card img{width:130px;height:130px;object-fit:contain;margin-bottom:14px;}
+.char-name{font-family:'Fredoka One',cursive;font-size:18px;color:var(--navy);margin-bottom:4px;}
+.char-desc{font-size:12px;font-weight:700;color:var(--navy);opacity:.8;}
+
+/* PRODUCTS */
+.products{padding:90px 20px;background:var(--cream);}
+.products h2{font-family:'Fredoka One',cursive;font-size:clamp(32px,5vw,52px);text-align:center;color:var(--navy);margin-bottom:8px;}
+.products h2 span{color:var(--coral-texto);}
+.prod-sub{text-align:center;font-size:17px;font-weight:600;color:var(--navy);opacity:.8;margin-bottom:56px;}
+.products-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px;max-width:1200px;margin:0 auto;}
+.prod-card{background:#fff;border-radius:28px;overflow:hidden;box-shadow:0 8px 32px rgba(73,100,175,.1);transition:transform .25s,box-shadow .25s;border:2px solid transparent;}
+.prod-card:hover{transform:translateY(-6px);box-shadow:0 24px 60px rgba(73,100,175,.18);border-color:var(--sky);}
+.prod-card{scroll-margin-top:80px;}
+.prod-card.featured{border:3px solid var(--lime);}
+.prod-card.placa{grid-column:1/-1;border:3px solid var(--blue);background:linear-gradient(135deg,#dbe8fb 0%,var(--lblue) 50%,#f4f6d2 100%);}
+.prod-card.placa .prod-body{background:transparent;}
+.placa-puntos{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 6px;padding:0;list-style:none;}
+.placa-puntos li{background:#fff;border-radius:20px;padding:6px 12px;font-size:13px;font-weight:800;color:var(--navy);box-shadow:0 2px 8px rgba(73,100,175,.12);}
+a.btn-buy{display:block;box-sizing:border-box;text-align:center;text-decoration:none;}
+.btn-ver{display:flex !important;align-items:center;justify-content:center;gap:10px;margin-top:6px;}
+.ico-carrito{width:22px;height:22px;flex:none;}
+.placa-frase{margin:0 0 8px;font-weight:800;color:var(--navy);font-size:15px;line-height:1.45;}
+@media(min-width:760px){.prod-card.placa{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);align-items:center;}.prod-card.placa .prod-img.carousel{height:100%;min-height:360px;}}
+.prod-img{background:linear-gradient(135deg,var(--lblue),var(--cream));height:220px;display:flex;align-items:center;justify-content:center;padding:20px;}
+.prod-img.carousel{position:relative;overflow:hidden;padding:0;height:min(380px,55vh);}
+.carousel-track{width:100%;height:100%;position:relative;}
+.carousel-slide{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;object-position:center;padding:0;box-sizing:border-box;opacity:0;transition:opacity .3s ease;pointer-events:none;max-height:none;}
+.carousel-slide.active{opacity:1;pointer-events:auto;}
+.prod-card .carousel-slide.active{cursor:zoom-in;}
+.carousel-slide.fit-contain{object-fit:contain;background:#fff;padding:10px;}
+.portada-tag{position:absolute;top:12px;left:12px;z-index:3;background:var(--lime);color:var(--navy);font-size:10px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;padding:4px 12px;border-radius:20px;pointer-events:none;box-shadow:0 2px 8px rgba(45,67,117,.15);}
+.carousel:not(.en-portada) .portada-tag{display:none;}
+video.carousel-slide{background:#dfe8f5;}
+.zoom-hint{position:absolute;top:10px;right:10px;z-index:2;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.92);box-shadow:0 2px 10px rgba(45,67,117,.18);display:flex;align-items:center;justify-content:center;pointer-events:none;color:var(--navy);}
+.zoom-hint svg{width:18px;height:18px;}
+
+@keyframes confeti{0%{opacity:1;transform:translateY(0) rotate(0)}100%{opacity:0;transform:translateY(520px) rotate(620deg)}}
+
+/* DETALLES DEL PRODUCTO */
+.btn-details{-webkit-tap-highlight-color:transparent;display:inline-flex;align-items:center;gap:6px;background:none;border:none;padding:6px 0;margin:-6px 0 12px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;color:var(--blue);text-decoration:underline;text-underline-offset:3px;cursor:pointer;}
+.btn-details:hover{color:var(--navy);}
+.btn-details{text-decoration:none;}
+.prod-name a{color:inherit;text-decoration:none;}
+.prod-name a:hover{color:var(--blue);text-decoration:underline;text-underline-offset:3px;}
+.details-overlay{display:none;position:fixed;inset:0;z-index:1500;background:rgba(45,67,117,.55);align-items:flex-end;justify-content:center;}
+.details-overlay.open{display:flex;animation:lbIn .2s ease;}
+.details-sheet{position:relative;background:#fff;width:100%;max-width:600px;max-height:88vh;overflow-y:auto;border-radius:24px 24px 0 0;padding:26px 22px 28px;box-shadow:0 -12px 40px rgba(0,0,0,.2);animation:sheetUp .28s cubic-bezier(.2,.9,.3,1);}
+@media(min-width:700px){.details-overlay{align-items:center;padding:20px;}.details-sheet{border-radius:24px;padding:30px 30px 32px;}}
+@keyframes sheetUp{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.details-close{position:absolute;top:14px;right:14px;width:40px;height:40px;border-radius:50%;border:none;background:var(--lblue);color:var(--navy);font-size:24px;font-weight:900;cursor:pointer;line-height:1;}
+.details-title{font-family:'Fredoka One',cursive;font-size:24px;color:var(--navy);margin:0 48px 14px 0;}
+.details-tabs{display:flex;gap:6px;background:var(--lblue);padding:5px;border-radius:14px;margin-bottom:18px;}
+.details-tab{flex:1;-webkit-tap-highlight-color:transparent;border:none;background:none;padding:10px 6px;border-radius:10px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;color:var(--navy);opacity:.8;cursor:pointer;min-height:40px;}
+.details-tab.active{background:#fff;opacity:1;color:var(--blue);box-shadow:0 2px 8px rgba(73,100,175,.15);}
+.details-panel{display:none;color:var(--navy);font-size:14px;line-height:1.6;}
+.details-panel.active{display:block;}
+.details-panel p{margin:0 0 12px;}
+.details-panel ul{margin:0 0 12px;padding-left:20px;}
+.details-panel li{margin-bottom:4px;}
+.details-panel h4{font-family:'Fredoka One',cursive;font-weight:400;font-size:18px;color:var(--navy);margin:18px 0 10px;}
+.details-panel h4:first-child{margin-top:0;}
+.size-guide{display:flex;align-items:center;gap:16px;background:var(--cream);border-radius:18px;padding:14px;margin-bottom:12px;}
+.size-guide svg{flex-shrink:0;width:140px;height:auto;}
+.size-guide-steps{font-size:13px;line-height:1.5;}
+.size-guide-steps strong{color:var(--blue);}
+@media(max-width:420px){.size-guide{flex-direction:column;text-align:center;}.size-guide svg{width:170px;}}
+.size-table-wrap{overflow-x:auto;margin-bottom:10px;border-radius:14px;border:1.5px solid var(--lblue);}
+.size-table{width:100%;border-collapse:collapse;font-size:13px;text-align:center;}
+.size-table th{background:var(--blue);color:#fff;font-weight:800;padding:10px 8px;font-size:12px;line-height:1.25;}
+.size-table td{padding:10px 8px;font-weight:700;border-top:1px solid var(--lblue);white-space:nowrap;}
+.size-table th:first-child,.size-table td:first-child{text-align:left;padding-left:14px;}
+.size-table td:first-child{white-space:normal;font-weight:800;color:var(--navy);opacity:.8;}
+.size-table th:not(:first-child){font-family:'Fredoka One',cursive;font-weight:400;font-size:15px;}
+.size-table tr:nth-child(even) td{background:#f6f9fe;}
+.size-note{font-size:12.5px;opacity:.8;margin:0 0 6px;}
+.details-tip{background:var(--lblue);border-radius:14px;padding:12px 14px;font-size:13px;font-weight:700;margin-top:12px;}
+
+/* SELECTOR DE TALLA */
+.talla-overlay{display:none;position:fixed;inset:0;z-index:1600;background:rgba(45,67,117,.55);align-items:flex-end;justify-content:center;}
+.talla-overlay.open{display:flex;animation:lbIn .2s ease;}
+.talla-sheet{position:relative;background:#fff;width:100%;max-width:480px;border-radius:24px 24px 0 0;padding:24px 20px 26px;box-shadow:0 -12px 40px rgba(0,0,0,.2);animation:sheetUp .28s cubic-bezier(.2,.9,.3,1);}
+@media(min-width:700px){.talla-overlay{align-items:center;padding:20px;}.talla-sheet{border-radius:24px;}}
+.talla-titulo{font-family:'Fredoka One',cursive;font-weight:400;font-size:22px;color:var(--navy);margin:0 48px 4px 0;}
+.talla-sub{font-size:13.5px;font-weight:700;color:var(--navy);opacity:.8;margin:0 0 16px;}
+.talla-opciones{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;}
+.talla-op{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:92px;padding:12px 10px;border:2px solid var(--lblue);background:var(--lblue);border-radius:18px;cursor:pointer;font-family:'Nunito',sans-serif;color:var(--navy);-webkit-tap-highlight-color:transparent;transition:border-color .15s,transform .1s;}
+.talla-op:hover,.talla-op:focus-visible{border-color:var(--blue);}
+.talla-op:active{transform:scale(.97);}
+.talla-op strong{font-family:'Fredoka One',cursive;font-weight:400;font-size:28px;color:var(--blue);line-height:1;}
+.talla-op span{white-space:pre-line;font-size:12.5px;font-weight:700;opacity:.75;line-height:1.35;text-align:center;}
+.talla-wa{display:inline-flex;align-items:center;gap:6px;margin:-6px 0 14px;font-size:13px;font-weight:800;color:#1e9e56;text-decoration:underline;text-underline-offset:3px;-webkit-tap-highlight-color:transparent;}
+.talla-wa::before{content:'';width:16px;height:16px;flex-shrink:0;background:#25d366;border-radius:50%;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2z'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2z'/%3E%3C/svg%3E") center/contain no-repeat;}
+.talla-wa-btn{display:flex;justify-content:center;width:100%;box-sizing:border-box;margin:0 0 4px;padding:13px 14px;background:#e8f9ef;border:2px solid #25d366;border-radius:16px;color:#0b7a3e;text-decoration:none;font-size:13px;text-align:center;line-height:1.3;}
+.talla-guia{display:block;width:100%;background:none;border:none;padding:8px 0 0;font-family:'Nunito',sans-serif;font-size:13.5px;font-weight:800;color:var(--blue);text-decoration:underline;text-underline-offset:3px;cursor:pointer;}
+
+/* VISOR DE IMÁGENES */
+.lightbox{display:none;position:fixed;inset:0;z-index:2000;background:rgba(24,34,64,.97);flex-direction:column;}
+.lightbox.open{display:flex;animation:lbIn .2s ease;}
+@keyframes lbIn{from{opacity:0}to{opacity:1}}
+.lb-stage{position:relative;flex:1;overflow:hidden;display:flex;align-items:center;justify-content:center;touch-action:none;user-select:none;-webkit-user-select:none;}
+.lb-img{max-width:100%;max-height:100%;object-fit:contain;transform-origin:center center;transition:transform .22s ease;will-change:transform;cursor:zoom-in;-webkit-user-drag:none;}
+.lightbox.zoomed .lb-img{cursor:grab;}
+.lightbox.dragging .lb-img{transition:none;cursor:grabbing;}
+.lb-video{display:none;max-width:100%;max-height:100%;background:#000;}
+.lightbox.is-video .lb-img{display:none;}
+.lightbox.is-video .lb-video{display:block;}
+.lb-btn{position:absolute;z-index:2;border:none;background:rgba(255,255,255,.95);color:var(--navy);width:44px;height:44px;border-radius:50%;font-size:24px;font-weight:900;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.25);}
+.lb-close{top:14px;right:14px;font-size:26px;}
+.lb-prev{left:14px;top:50%;transform:translateY(-50%);}
+.lb-next{right:14px;top:50%;transform:translateY(-50%);}
+.lightbox.single .lb-prev,.lightbox.single .lb-next{display:none;}
+.lb-bar{display:flex;align-items:center;justify-content:center;gap:14px;padding:12px 16px 18px;color:#fff;font-size:13px;font-weight:800;}
+.lb-count{background:rgba(255,255,255,.15);padding:5px 12px;border-radius:20px;}
+.lb-tip{opacity:.8;}
+
+.carousel-arrow{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.9);border:none;width:28px;height:28px;border-radius:50%;font-size:16px;font-weight:900;color:var(--navy);cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;box-shadow:0 2px 8px rgba(0,0,0,.15);line-height:1;padding:0;}
+.carousel-prev{left:8px;}
+.carousel-next{right:8px;}
+.carousel-dots{position:absolute;bottom:8px;left:0;right:0;display:flex;justify-content:center;gap:6px;z-index:2;}
+.carousel-dot{width:6px;height:6px;border-radius:50%;background:rgba(45,67,117,.35);cursor:pointer;transition:background .2s,width .2s;padding:0;border:none;}
+.carousel-dot{position:relative;}
+.carousel-dot::after{content:'';position:absolute;inset:-9px -5px;}
+.hero-offer{cursor:pointer;}
+.gallery-img,.ig-img{cursor:zoom-in;}
+button.instagram-slide{border:none;padding:0;background:none;font:inherit;-webkit-tap-highlight-color:transparent;}
+.prod-card .prod-body{cursor:pointer;}
+.prod-img.carousel{touch-action:pan-y;}
+.carousel-dot.active{background:var(--blue);width:16px;border-radius:4px;}
+.prod-body{padding:22px 18px;}
+.prod-tag{display:inline-block;font-size:10px;font-weight:900;letter-spacing:2px;text-transform:uppercase;padding:3px 12px;border-radius:20px;margin-bottom:10px;}
+.tag-blue{background:var(--lime);color:var(--navy);}
+.tag-coral{background:var(--coral-fuerte);color:#fff;}
+.prod-name{font-family:'Fredoka One',cursive;font-weight:400;font-size:20px;color:var(--navy);margin-bottom:6px;}
+.prod-desc{font-size:13px;font-weight:600;color:var(--navy);opacity:.82;margin-bottom:14px;line-height:1.5;}
+.prod-price{font-family:'Fredoka One',cursive;font-size:24px;color:var(--blue);margin-bottom:4px;}
+.price-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:14px;container-type:inline-size;}
+.price-row .prod-price{flex:1 1 auto;min-width:0;margin-bottom:0;line-height:1.1;font-size:min(24px,8.2cqi);white-space:nowrap;}
+.price-old{display:flex;align-items:center;gap:6px;margin-bottom:2px;font-family:'Nunito',sans-serif;font-size:min(14px,5.4cqi);font-weight:700;color:var(--navy);}
+.price-old s{opacity:.75;text-decoration-thickness:1.5px;}
+.price-off{background:var(--coral);color:#fff;font-weight:900;font-size:.85em;padding:1px 7px;border-radius:8px;letter-spacing:.3px;}
+.price-row .prod-price small{display:block;margin-top:4px;font-size:min(13px,6.2cqi);white-space:normal;}
+.cuotas-badge{position:relative;flex-shrink:0;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;margin-left:1em;padding:.45em 1em .45em .55em;background:var(--lime);color:var(--navy);font-family:'Fredoka One',cursive;font-size:min(14px,4.6cqi);line-height:1.05;text-align:center;text-transform:uppercase;letter-spacing:.3px;border-radius:0 1em 1em 0;white-space:nowrap;}
+.cuotas-badge small{display:block;margin-top:2px;font-family:'Nunito',sans-serif;font-weight:900;font-size:.62em;letter-spacing:.2px;text-transform:none;}
+.cuotas-badge::before{content:'';position:absolute;top:0;bottom:0;left:-.95em;width:1em;background:inherit;clip-path:polygon(100% 0,100% 100%,0 50%);}
+.prod-price small{font-size:13px;font-weight:700;color:var(--navy);opacity:.8;font-family:'Nunito',sans-serif;}
+.prod-trust{display:flex;flex-wrap:wrap;gap:4px 12px;margin:-4px 0 16px;font-size:11.5px;font-weight:800;color:var(--navy);line-height:1.35;}
+.prod-trust span{opacity:.72;}
+.buy-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 12px;margin-bottom:16px;}
+.buy-row .size-row,.buy-row .qty-row{margin-bottom:0;}
+.buy-row .size-alert{flex-basis:100%;margin-bottom:6px;}
+.buy-row + .size-medidas{margin-top:-6px;margin-bottom:14px;}
+@media(max-width:480px){
+  .buy-row .qty-label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);}
+  .buy-row .size-chip{padding:10px 14px;min-width:48px;}
+  .prod-body{padding:18px 16px 20px;}
+  .prod-desc{margin-bottom:8px;}
+  .btn-details{margin:-4px 0 8px;}
+  .prod-trust{margin-bottom:12px;}
+}
+.prod-trust .trust-ship{background:#e6f7ec;color:#2b8a3e;padding:2px 8px;border-radius:8px;opacity:1;}
+.prod-trust{align-items:center;}
+.size-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px;}
+.size-alert{display:none;position:relative;align-items:center;gap:10px;background:#fff4ef;border:2px solid var(--coral);color:var(--navy);border-radius:16px;padding:10px 14px;margin-bottom:14px;box-shadow:0 8px 20px rgba(241,125,87,.18);}
+.size-alert.show{display:flex;animation:sizeAlertIn .28s cubic-bezier(.2,1.4,.4,1);}
+.size-alert::after{content:'';position:absolute;left:26px;bottom:-9px;width:14px;height:14px;background:#fff4ef;border-right:2px solid var(--coral);border-bottom:2px solid var(--coral);transform:rotate(45deg);border-bottom-right-radius:3px;}
+.size-alert-icon{flex-shrink:0;width:34px;height:34px;border-radius:50%;background:var(--coral);display:flex;align-items:center;justify-content:center;font-size:17px;}
+.size-alert-link{background:none;border:none;padding:4px 0 0;font-family:'Nunito',sans-serif;font-size:12.5px;font-weight:900;color:var(--coral);text-decoration:underline;text-underline-offset:2px;cursor:pointer;}
+.size-alert strong{display:block;font-family:'Fredoka One',cursive;font-weight:400;font-size:16px;color:var(--navy);line-height:1.2;}
+.size-alert span.size-alert-text{display:block;font-size:12.5px;font-weight:700;color:var(--navy);opacity:.8;line-height:1.35;}
+@keyframes sizeAlertIn{from{opacity:0;transform:translateY(6px) scale(.96)}to{opacity:1;transform:none}}
+.size-row.needs-size .size-chip{border-color:var(--coral);background:#fff;animation:chipPulse 1s ease 2;}
+.size-row.shake{animation:sizeShake .45s ease;}
+@keyframes sizeShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+@keyframes chipPulse{0%,100%{box-shadow:0 0 0 0 rgba(241,125,87,.45)}50%{box-shadow:0 0 0 6px rgba(241,125,87,0)}}
+.size-medidas{display:none;background:var(--lblue);border-radius:10px;padding:8px 12px;font-size:11px;font-weight:800;color:var(--navy);margin-top:-10px;margin-bottom:18px;}
+.qty-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+.qty-label{font-size:12px;font-weight:800;color:var(--navy);opacity:.8;text-transform:uppercase;letter-spacing:.5px;}
+.qty-control{display:flex;align-items:center;gap:12px;background:var(--lblue);border-radius:12px;padding:4px 8px;}
+.qty-btn{background:#fff;border:none;width:24px;height:24px;border-radius:8px;font-size:16px;font-weight:900;color:var(--blue);cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;box-shadow:0 2px 6px rgba(0,0,0,.08);}
+.qty-btn:hover{background:var(--blue);color:#fff;}
+.qty-value{font-size:14px;font-weight:900;color:var(--navy);min-width:16px;text-align:center;}
+.size-chip{display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:56px;background:var(--lblue);border-radius:10px;padding:10px 18px;font-size:13px;-webkit-tap-highlight-color:transparent;font-weight:800;color:var(--navy);cursor:pointer;border:1.5px solid transparent;transition:background .2s,color .2s,border-color .2s;}
+.size-chip:hover{border-color:var(--blue);}
+.size-chip.selected{background:var(--blue);color:#fff;}
+.btn-buy{width:100%;background:var(--blue);color:#fff;font-weight:900;font-size:17px;letter-spacing:.2px;padding:15px;border-radius:16px;border:none;cursor:pointer;transition:background .2s,transform .1s;font-family:'Nunito',sans-serif;}
+.btn-buy:hover{background:var(--navy);transform:scale(1.02);}
+.btn-buy.coral{background:var(--coral-fuerte);}
+.btn-buy.coral:hover{background:#b34322;}
+
+/* TOOLS */
+.tools-section{padding:70px 20px;background:#fff;}
+.real-section{padding:64px 20px 70px;background:var(--cream);text-align:center;}
+.real-section h2{font-family:'Fredoka One',cursive;font-size:clamp(28px,4vw,42px);color:var(--navy);margin-bottom:8px;}
+.real-section h2 span{color:var(--coral-texto);}
+.real-sub{font-size:16px;font-weight:700;color:#55607e;max-width:560px;margin:0 auto 28px;}
+.real-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:980px;margin:0 auto;}
+.real-card{margin:0;background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 8px 24px rgba(45,67,117,.08);text-align:left;}
+.real-video{position:relative;aspect-ratio:9/16;background:var(--lblue);}
+.real-sonido{position:absolute;right:10px;bottom:10px;width:40px;height:40px;border-radius:50%;border:none;background:rgba(45,67,117,.82);color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;}
+.real-sonido[aria-pressed=true]{background:var(--coral);}
+.real-video video{width:100%;height:100%;object-fit:cover;display:block;}
+.real-badge{position:absolute;top:10px;left:10px;background:rgba(45,67,117,.82);color:#fff;font-size:11px;font-weight:900;letter-spacing:.5px;padding:4px 10px;border-radius:12px;}
+.real-card figcaption{padding:14px 16px 16px;display:flex;flex-direction:column;gap:4px;}
+.real-card strong{font-family:'Fredoka One',cursive;font-weight:400;font-size:19px;color:var(--navy);}
+.real-card figcaption span{font-size:14px;font-weight:700;color:#55607e;}
+.real-card figcaption a{font-size:14px;font-weight:900;color:var(--blue);text-decoration:none;margin-top:4px;}
+.yt-wrap{max-width:980px;margin:28px auto 0;}
+.yt-facade{position:relative;display:block;width:100%;aspect-ratio:16/9;border:0;padding:0;border-radius:22px;overflow:hidden;background:#000;cursor:pointer;box-shadow:0 8px 24px rgba(45,67,117,.12);}
+.yt-facade img{width:100%;height:100%;object-fit:cover;display:block;}
+.yt-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+.yt-play svg{width:76px;height:54px;filter:drop-shadow(0 4px 10px rgba(0,0,0,.35));transition:transform .2s;}
+.yt-facade:hover .yt-play svg,.yt-facade:focus-visible .yt-play svg{transform:scale(1.08);}
+.yt-wrap iframe{display:block;width:100%;aspect-ratio:16/9;border:0;border-radius:22px;background:#000;}
+.yt-pie{font-size:14px;font-weight:700;color:#55607e;margin-top:10px;}
+.yt-pie a{color:var(--blue);font-weight:900;}
+.real-wa{font-size:15px;font-weight:700;color:#55607e;margin-top:24px;}
+.real-wa a{color:#0b7a3e;font-weight:900;}
+@media(max-width:900px){
+  .real-grid{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:76%;overflow-x:auto;scroll-snap-type:x mandatory;padding:0 4px 10px;margin:0 -20px;padding-left:20px;padding-right:20px;scrollbar-width:none;}
+  .real-grid::-webkit-scrollbar{display:none;}
+  .real-card{scroll-snap-align:center;}
+}
+.tools-single{max-width:520px;margin:0 auto;}
+.tools-section-alt{background:var(--cream);}
+.tools-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;max-width:940px;margin:0 auto;}
+.tool-card{background:var(--lblue);border-radius:28px;padding:34px 28px;}
+.tool-card h3{font-family:'Fredoka One',cursive;font-size:19px;color:var(--navy);margin-bottom:6px;}
+.tool-sub{font-size:13px;font-weight:600;color:var(--navy);opacity:.8;margin-bottom:24px;}
+.size-slider-wrap{margin-bottom:18px;}
+.size-slider{width:100%;accent-color:var(--blue);height:6px;}
+.size-weight-label{text-align:center;font-family:'Fredoka One',cursive;font-size:22px;color:var(--blue);margin-top:10px;}
+.size-result{background:#fff;border-radius:18px;padding:16px 18px;display:flex;align-items:center;gap:14px;margin-bottom:14px;flex-wrap:wrap;}
+.size-result-badge{background:var(--blue);color:#fff;font-weight:900;font-size:14px;padding:8px 16px;border-radius:14px;white-space:nowrap;}
+.size-result-text{font-size:13px;font-weight:700;color:var(--navy);opacity:.8;}
+.size-disclaimer{font-size:11px;color:var(--navy);opacity:.8;font-weight:600;line-height:1.5;}
+.combo-list{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;}
+.combo-item{display:flex;align-items:center;gap:12px;background:#fff;border-radius:14px;padding:12px 16px;cursor:pointer;border:2px solid transparent;transition:border-color .2s;}
+.combo-item.is-checked{border-color:var(--blue);}
+.combo-check{width:18px;height:18px;accent-color:var(--blue);flex-shrink:0;}
+.combo-item-name{flex:1;font-size:13px;font-weight:800;color:var(--navy);}
+.combo-item-price{font-size:13px;font-weight:900;color:var(--blue);}
+.combo-total-row{display:flex;justify-content:space-between;align-items:center;background:#fff;border-radius:14px;padding:14px 18px;margin-bottom:12px;}
+.combo-total-row span:first-child{font-size:12px;font-weight:800;color:var(--navy);opacity:.8;text-transform:uppercase;letter-spacing:1px;}
+.combo-total{font-family:'Fredoka One',cursive;font-size:22px;color:var(--blue);}
+.combo-savings{background:var(--lime);color:var(--navy);font-size:12px;font-weight:800;padding:10px 14px;border-radius:12px;margin-bottom:16px;line-height:1.4;}
+
+/* FEATURES */
+.features{padding:80px 20px;background:#fff;}
+.features h2{font-family:'Fredoka One',cursive;font-size:clamp(30px,5vw,48px);text-align:center;color:var(--navy);margin-bottom:8px;}
+.features h2 span{color:var(--blue);}
+.feat-sub{text-align:center;font-size:17px;font-weight:600;color:var(--navy);opacity:.8;margin-bottom:52px;}
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;max-width:880px;margin:0 auto;}
+.feat-card{background:var(--cream);border-radius:24px;padding:32px 22px;text-align:center;position:relative;overflow:hidden;transition:transform .2s;}
+.feat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;border-radius:5px 5px 0 0;}
+.feat-card.c1::before{background:var(--blue);}
+.feat-card.c2::before{background:var(--coral);}
+.feat-card.c3::before{background:var(--lime);}
+.feat-card.c4::before{background:var(--pink);}
+.feat-card:hover{transform:translateY(-5px);}
+.feat-icon{font-size:42px;margin-bottom:14px;display:block;}
+.feat-title{font-family:'Fredoka One',cursive;font-size:17px;color:var(--navy);margin-bottom:8px;}
+.feat-desc{font-size:13px;font-weight:600;color:var(--navy);opacity:.8;line-height:1.5;}
+
+/* VIDEO SECTION */
+.video-sub{font-size:17px;font-weight:600;color:var(--navy);opacity:.8;margin-bottom:44px;}
+
+/* PRODUCT VIDEO */
+/* INSTAGRAM */
+.instagram-section{padding:90px 20px;background:#fff;text-align:center;}
+.instagram-section h2{font-family:'Fredoka One',cursive;font-size:clamp(30px,5vw,48px);color:var(--navy);margin-bottom:8px;}
+.instagram-section h2 span{color:var(--coral-texto);}
+.instagram-carousel{max-width:1100px;margin:0 auto 28px;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.instagram-track{display:flex;gap:16px;padding:8px 4px 16px;width:max-content;}
+.instagram-slide{flex:0 0 220px;width:220px;height:220px;border-radius:16px;overflow:hidden;display:block;box-shadow:0 8px 20px rgba(73,100,175,.12);}
+.instagram-slide img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s;}
+.instagram-slide:hover img{transform:scale(1.06);}
+
+/* CAUSE */
+.cause{padding:90px 20px;background:linear-gradient(135deg,var(--blue) 0%,#3a52a0 100%);text-align:center;position:relative;overflow:hidden;}
+.cause-blob{position:absolute;border-radius:50%;background:rgba(255,255,255,.07);}
+.cause h2{font-family:'Fredoka One',cursive;font-size:clamp(30px,5vw,48px);color:#fff;margin-bottom:16px;}
+.cause h2 em{font-style:normal;color:var(--lime);}
+.cause-box{max-width:660px;margin:0 auto;background:rgba(255,255,255,.12);border-radius:28px;padding:40px 36px;border:1.5px solid rgba(255,255,255,.2);}
+.cause-box p{color:rgba(255,255,255,.9);font-size:18px;font-weight:700;line-height:1.7;margin-bottom:6px;}
+.cause-box .big{font-family:'Fredoka One',cursive;font-size:26px;color:var(--lime);margin:16px 0;}
+.cause-dog{margin-top:40px;}
+.cause-dog img{height:160px;object-fit:contain;filter:drop-shadow(0 10px 30px rgba(0,0,0,.2));animation:float 3.5s ease-in-out infinite;}
+
+/* STORY */
+.story{padding:90px 20px;background:var(--cream);}
+.story-inner{max-width:760px;margin:0 auto;text-align:center;}
+.story-inner .story-dog{max-height:260px;width:auto;max-width:100%;object-fit:contain;margin-bottom:28px;filter:drop-shadow(0 12px 30px rgba(73,100,175,.25));}
+.story-quote{font-family:'Fredoka One',cursive;font-size:clamp(22px,4vw,30px);color:var(--navy);line-height:1.3;margin-bottom:20px;}
+.story-quote em{font-style:normal;color:var(--blue);}
+.story-by{font-size:14px;font-weight:700;color:var(--navy);opacity:.8;margin-bottom:32px;}
+.social-row{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;}
+.social-btn{color:var(--navy);font-weight:800;font-size:14px;padding:11px 22px;border-radius:30px;text-decoration:none;border:2px solid var(--navy);transition:all .2s;}
+.social-btn:hover{background:var(--navy);color:#fff;}
+
+/* FAQ */
+.faq-section{padding:80px 20px;background:#fff;}
+.faq-section h2{font-family:'Fredoka One',cursive;font-size:clamp(30px,5vw,48px);text-align:center;color:var(--navy);margin-bottom:44px;}
+.faq-section h2 span{color:var(--coral-texto);}
+.faq-list{max-width:700px;margin:0 auto;display:flex;flex-direction:column;gap:14px;}
+.faq-item{background:var(--cream);border-radius:20px;overflow:hidden;border:2px solid transparent;transition:border-color .2s;}
+.faq-item.is-open{border-color:var(--sky);}
+.faq-question{width:100%;background:none;border:none;cursor:pointer;padding:20px 22px;display:flex;align-items:center;justify-content:space-between;gap:12px;text-align:left;font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;color:var(--navy);}
+.faq-icon{font-family:'Fredoka One',cursive;font-size:20px;color:var(--blue);flex-shrink:0;transition:transform .25s;}
+.faq-item.is-open .faq-icon{transform:rotate(45deg);}
+.faq-answer{max-height:0;overflow:hidden;transition:max-height .3s ease;}
+.faq-answer p{padding:0 22px 20px;font-size:14px;font-weight:600;color:var(--navy);opacity:.8;line-height:1.6;}
+.faq-answer strong{color:var(--blue);}
+
+/* CTA */
+.cta-section{padding:90px 20px;background:linear-gradient(160deg,var(--lblue),var(--cream));text-align:center;}
+.cta-section h2{font-family:'Fredoka One',cursive;font-size:clamp(30px,5vw,48px);color:var(--navy);margin-bottom:10px;}
+.cta-section h2 span{color:var(--coral-texto);}
+.cta-sub{font-size:17px;font-weight:600;color:var(--navy);opacity:.8;margin-bottom:48px;}
+.cta-box{background:#fff;border-radius:36px;padding:50px 44px;max-width:560px;margin:0 auto;box-shadow:0 24px 70px rgba(73,100,175,.15);}
+.cta-emoji{font-size:56px;margin-bottom:8px;}
+.cta-box h3{font-family:'Fredoka One',cursive;font-size:26px;color:var(--navy);margin-bottom:6px;}
+.cta-sub2{font-size:14px;font-weight:700;color:var(--navy);opacity:.8;margin-bottom:28px;}
+.cta-list{text-align:left;margin-bottom:28px;display:flex;flex-direction:column;gap:11px;}
+.cta-comprar,.cta-dudas{display:block;width:100%;max-width:340px;margin:18px auto 0;text-align:center;box-sizing:border-box;}
+.cta-dudas{margin-top:10px;}
+.cta-note a{color:inherit;font-weight:800;}
+.cta-old{opacity:.75;font-weight:700;margin-right:4px;}
+.cta-item{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:700;color:var(--navy);}
+.cta-item span{font-size:18px;}
+.btn-ig{width:100%;background:var(--blue);color:#fff;font-weight:900;font-size:17px;padding:18px;border-radius:20px;border:none;cursor:pointer;text-decoration:none;display:block;box-shadow:0 8px 24px rgba(73,100,175,.35);transition:transform .2s;font-family:'Nunito',sans-serif;}
+.btn-ig:hover{transform:translateY(-2px);}
+.cta-note{margin-top:14px;font-size:12px;color:var(--navy);opacity:.8;font-weight:700;}
+
+/* FOOTER */
+/* GALERÍA */
+
+footer{background:var(--navy);padding:48px 20px 36px;text-align:center;}
+.footer-logo img{height:44px;object-fit:contain;margin-bottom:8px;filter:brightness(0) invert(1);}
+.footer-tag{font-size:13px;font-weight:700;color:rgba(255,255,255,.8);margin-bottom:24px;font-style:italic;}
+.footer-social{display:flex;justify-content:center;gap:14px;margin-bottom:28px;flex-wrap:wrap;}
+.footer-social a{color:rgba(255,255,255,.75);font-size:13px;font-weight:800;text-decoration:none;padding:7px 18px;border-radius:22px;border:1.5px solid rgba(255,255,255,.2);transition:all .2s;}
+.footer-social a:hover{background:#fff;color:var(--navy);}
+.footer-copy{font-size:12px;color:rgba(255,255,255,.75);font-weight:600;}
+.footer-productos{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 18px;margin:-8px 0 24px;}
+.footer-productos a{color:rgba(255,255,255,.8);font-size:13px;font-weight:800;text-decoration:none;}
+.footer-productos a:hover{color:#fff;text-decoration:underline;}
+
+
+@media(max-width:768px){
+  .hero{min-height:560px;}
+  .hero-text{text-align:center;margin:0 auto;}
+  .hero-title{font-size:28px;line-height:1.5;margin-bottom:20px;}
+  .hero-title .t-highlight{padding:2px 14px;border-radius:18px;}
+  .hero-btns{justify-content:center;}
+  .hero{min-height:0;}
+  .hero-inner{padding:26px 16px 24px;}
+  .hero-title{font-size:25px;line-height:1.42;margin-bottom:14px;}
+  .hero-offer{font-size:14.5px;padding:8px 14px;margin-bottom:12px;}
+  .hero-ship{font-size:13px;padding:6px 12px;margin-top:-2px;margin-bottom:14px;}
+  .hero-btns .btn-outline{display:none;}
+  .products{padding-top:36px;}
+  .nav-burger{display:flex;}
+  .nav-cta{padding:10px 16px;}
+  .nav-links{display:none;position:absolute;top:100%;left:0;right:0;flex-direction:column;align-items:stretch;gap:0;background:#fff;border-bottom:2px solid var(--lblue);box-shadow:0 14px 30px rgba(45,67,117,.14);padding:8px 16px 14px;max-height:calc(100vh - 70px);overflow-y:auto;}
+  #menu.abierto .nav-links{display:flex;}
+  .nav-links a{font-size:16px;opacity:.9;padding:12px 4px;border-bottom:1px solid var(--lblue);}
+  .nav-drop-btn{display:none !important;}
+  .nav-drop-menu{display:block;position:static;padding:0;min-width:0;}
+  .nav-drop-menu::before{display:none;}
+  .nav-drop-menu a{padding:12px 4px;}
+  .nav-drop-menu a:first-child,.nav-drop-menu a:last-child{margin:0;}
+  #nav-links > a.nav-placa{display:none;}
+  .cta-box{padding:32px 20px;}
+}
+</style>
+<!-- Meta Pixel Code -->
+<script>
+// Cola del píxel: fbevents.js se descarga después (ver "Servicios externos" en el <head>)
+!function(f){if(f.fbq)return;var n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];}(window);
+fbq('init', '1681628992892925');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
+<!-- Microsoft Clarity: cola lista; el archivo se descarga después (ver "Servicios externos") -->
+<script>window.clarity = window.clarity || function(){ (window.clarity.q = window.clarity.q || []).push(arguments); };</script>
+</head>
+<body>
+
+<!-- DETALLES DEL PRODUCTO -->
+<div class="details-overlay" id="details-overlay">
+  <div class="details-sheet" role="dialog" aria-modal="true" aria-labelledby="details-title">
+    <button type="button" class="details-close" id="details-close" aria-label="Cerrar">×</button>
+    <h3 class="details-title" id="details-title"></h3>
+    <div class="details-tabs" role="tablist">
+      <button type="button" class="details-tab" role="tab" data-tab="desc">Descripción</button>
+      <button type="button" class="details-tab" role="tab" data-tab="tallas">Guía de tallas</button>
+      <button type="button" class="details-tab" role="tab" data-tab="cuidado">Cuidado</button>
+    </div>
+    <div class="details-panel" data-panel="desc" id="details-desc"></div>
+    <div class="details-panel" data-panel="tallas" id="details-tallas"></div>
+    <div class="details-panel" data-panel="cuidado">
+      <p>Todo nuestro equipo es 100 % impermeable y muy fácil de limpiar.</p>
+      <ul>
+        <li><strong>Suciedad del día a día:</strong> enjuágalo con agua o pásale un paño o una toallita húmeda.</li>
+        <li><strong>Barro o manchas difíciles:</strong> usa un poco de jabón suave (de manos o de loza) y frota con suavidad.</li>
+        <li><strong>Secado:</strong> enjuaga bien y déjalo secar al aire unos minutos, o sécalo con una toalla para usarlo de una vez.</li>
+      </ul>
+      <p>No guarda olores, así que no necesita lavados largos ni tiempos de secado eternos. 🐾</p>
+    </div>
+  </div>
+</div>
+
+<!-- SELECTOR DE TALLA (al comprar sin talla) -->
+<div class="talla-overlay" id="talla-overlay" aria-hidden="true">
+  <div class="talla-sheet" role="dialog" aria-modal="true" aria-labelledby="talla-titulo">
+    <button type="button" class="details-close" id="talla-cerrar" aria-label="Cerrar">×</button>
+    <h3 class="talla-titulo" id="talla-titulo">Elige la talla</h3>
+    <p class="talla-sub" id="talla-sub"></p>
+    <div class="talla-opciones" id="talla-opciones"></div>
+    <a href="https://wa.me/573176431286?text=Hola%2C%20quiero%20saber%20qu%C3%A9%20talla%20le%20queda%20a%20mi%20perrito" target="_blank" rel="noopener" class="talla-wa talla-wa-btn">¿No sabes su talla? Escríbenos con una foto 📸</a>
+    <button type="button" class="talla-guia" id="talla-guia">📏 Ver guía de tallas</button>
+  </div>
+</div>
+
+<!-- VISOR DE IMÁGENES -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Imagen del producto">
+  <div class="lb-stage" id="lb-stage">
+    <img class="lb-img" id="lb-img" alt="" draggable="false">
+    <video class="lb-video" id="lb-video" controls playsinline muted loop></video>
+    <button type="button" class="lb-btn lb-close" id="lb-close" aria-label="Cerrar">×</button>
+    <button type="button" class="lb-btn lb-prev" id="lb-prev" aria-label="Anterior">‹</button>
+    <button type="button" class="lb-btn lb-next" id="lb-next" aria-label="Siguiente">›</button>
+  </div>
+  <div class="lb-bar"><span class="lb-count" id="lb-count"></span><span class="lb-tip" id="lb-tip"></span></div>
+</div>
+
+<!-- NAV -->
+<nav id="menu" aria-label="Principal">
+  <a class="nav-logo" href="/" aria-label="Wuuff Puppy, inicio" onclick="if(location.pathname==='/'){event.preventDefault();window.scrollTo({top:0,behavior:'smooth'});}">
+    <img src="images/opt/wuuff-puppy.webp" alt="Wuuff Puppy" width="182" height="137">
+  </a>
+  <div class="nav-links" id="nav-links">
+    <div class="nav-drop">
+      <a href="#productos" class="nav-drop-btn">Productos <span aria-hidden="true">▾</span></a>
+      <div class="nav-drop-menu">
+        <a href="/placa-para-perro/">🏷️ Placa Inteligente Wuuff</a>
+        <a href="/arnes-tipo-h-impermeable-perro/">Arnés tipo H impermeable</a>
+        <a href="/collar-impermeable-perro/">Collar impermeable</a>
+        <a href="/combo-collar-arnes-correa/">🎁 Combo completo</a>
+        <a href="/correa-impermeable-perro/">Correa impermeable</a>
+      </div>
+    </div>
+    <a href="/placa-para-perro/" class="nav-placa">Placa Inteligente <span class="nav-nuevo">Nuevo</span></a>
+    <a href="#por-que">¿Por qué goma?</a>
+    <a href="/blog/">Blog</a>
+    <a href="#nosotros">Nosotros</a>
+  </div>
+  <div class="nav-right">
+    <a href="#productos" class="nav-cta">Ver productos 🐾</a>
+    <button type="button" class="nav-burger" id="nav-burger" aria-label="Abrir menú" aria-expanded="false" aria-controls="nav-links"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<!-- WHATSAPP FLOTANTE -->
+<a href="https://wa.me/573176431286?text=Hola%2C%20quiero%20más%20información%20sobre%20Wuuff%20Puppy%20🐾" target="_blank" class="whatsapp-float" aria-label="Escríbenos por WhatsApp">
+  <svg viewBox="0 0 32 32" width="30" height="30" fill="#fff"><path d="M16.001 3C9.373 3 4 8.373 4 15c0 2.386.699 4.611 1.902 6.475L4 29l7.727-1.86A11.94 11.94 0 0 0 16.001 27C22.629 27 28 21.627 28 15S22.629 3 16.001 3zm0 21.818c-1.95 0-3.85-.523-5.5-1.51l-.394-.233-4.587 1.104 1.127-4.474-.257-.408A9.77 9.77 0 0 1 5.182 15c0-5.964 4.855-10.818 10.819-10.818S26.818 9.036 26.818 15 21.965 24.818 16.001 24.818zm5.977-8.137c-.328-.164-1.94-.957-2.241-1.066-.301-.11-.52-.164-.738.164-.219.328-.848 1.066-1.04 1.285-.191.219-.383.246-.71.082-.328-.164-1.384-.51-2.637-1.627-.975-.869-1.633-1.943-1.824-2.271-.191-.328-.02-.505.144-.668.148-.147.328-.383.492-.574.164-.191.219-.328.328-.547.109-.219.055-.41-.027-.574-.082-.164-.738-1.78-1.012-2.44-.267-.64-.538-.553-.738-.563l-.629-.011c-.219 0-.574.082-.875.41-.301.328-1.148 1.123-1.148 2.74s1.176 3.176 1.34 3.395c.164.219 2.316 3.535 5.61 4.958.784.339 1.396.541 1.873.692.787.25 1.503.215 2.07.13.631-.094 1.94-.793 2.213-1.559.273-.766.273-1.422.191-1.559-.082-.137-.301-.219-.629-.383z"/></svg>
+</a>
+
+<!-- HERO -->
+<main id="contenido">
+<section class="hero hero-3d-set">
+  <h1 class="visualmente-oculto">Collar, arnés tipo H y correa impermeables para perro</h1>
+  <div class="hero-inner">
+    <div class="hero-text">
+      <h2 class="hero-title">
+        <span class="t-highlight">Accesorios</span><br>
+        <span class="t-highlight">que se lavan</span><br>
+        <span class="t-highlight t-coral">con agua</span>
+      </h2>
+      <div class="hero-3d" data-collar-3d>
+        <img class="hero-3d-poster" src="/collar-3d/collar-3d-poster.webp" srcset="/collar-3d/collar-3d-poster-600.webp 600w, /collar-3d/collar-3d-poster-760.webp 760w, /collar-3d/collar-3d-poster.webp 960w" sizes="(min-width: 769px) 50vw, 100vw" width="960" height="800" alt="Collar impermeable Wuuff azul cielo con placa de identificación en forma de huella" fetchpriority="high" draggable="false">
+        <a class="hero-3d-chip" href="/placa-para-perro/">🏷️ Placa Inteligente con su nombre · <b>Personalízala</b></a>
+      </div>
+      <div class="hero-btns">
+        <a href="#combo" class="btn-primary">Ver el combo</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-inner">
+    <div class="ticker-item"><div class="ticker-dot"></div>Resistente al agua</div><div class="ticker-item"><div class="ticker-dot"></div>Hecho con amor 🐾</div><div class="ticker-item"><div class="ticker-dot"></div>Antiolor y duradero</div><div class="ticker-item"><div class="ticker-dot"></div>Hipoalergénico</div><div class="ticker-item"><div class="ticker-dot"></div>Envíos Colombia 🇨🇴</div><div class="ticker-item"><div class="ticker-dot"></div>Despacho en 1–2 días hábiles 🚀</div><div class="ticker-item"><div class="ticker-dot"></div>Paga al recibir en Bogotá 💵</div><div class="ticker-item"><div class="ticker-dot"></div>Tallas S y M</div><div class="ticker-item"><div class="ticker-dot"></div>Perrihijos felices ✨</div><div class="ticker-item"><div class="ticker-dot"></div>Resistente al agua</div><div class="ticker-item"><div class="ticker-dot"></div>Hecho con amor 🐾</div><div class="ticker-item"><div class="ticker-dot"></div>Antiolor y duradero</div><div class="ticker-item"><div class="ticker-dot"></div>Hipoalergénico</div><div class="ticker-item"><div class="ticker-dot"></div>Envíos Colombia 🇨🇴</div><div class="ticker-item"><div class="ticker-dot"></div>Despacho en 1–2 días hábiles 🚀</div><div class="ticker-item"><div class="ticker-dot"></div>Paga al recibir en Bogotá 💵</div><div class="ticker-item"><div class="ticker-dot"></div>Tallas S y M</div><div class="ticker-item"><div class="ticker-dot"></div>Perrihijos felices ✨</div><div class="ticker-item"><div class="ticker-dot"></div>Resistente al agua</div><div class="ticker-item"><div class="ticker-dot"></div>Hecho con amor 🐾</div><div class="ticker-item"><div class="ticker-dot"></div>Antiolor y duradero</div><div class="ticker-item"><div class="ticker-dot"></div>Hipoalergénico</div><div class="ticker-item"><div class="ticker-dot"></div>Envíos Colombia 🇨🇴</div><div class="ticker-item"><div class="ticker-dot"></div>Despacho en 1–2 días hábiles 🚀</div><div class="ticker-item"><div class="ticker-dot"></div>Paga al recibir en Bogotá 💵</div><div class="ticker-item"><div class="ticker-dot"></div>Tallas S y M</div><div class="ticker-item"><div class="ticker-dot"></div>Perrihijos felices ✨</div>
+  </div>
+</div>
+
+<!-- PRODUCTS -->
+<section class="products" id="productos">
+  <h2>Nuestros <span>productos</span></h2>
+  <p class="prod-sub">Azul cielo · Hipoalergénico · Tallas S y M</p>
+  <div class="products-grid">
+
+    <div class="prod-card placa" id="placa-nfc">
+      <div class="prod-img carousel">
+        <span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21M10.5 7.5v6M7.5 10.5h6"/></svg></span>
+        <div class="carousel-track">
+          <img src="images/productos/placa/placa-guardian-de-cerca-800.webp" alt="Primer plano de la placa de identificación para perro azul en forma de huella con el nombre Guardian" class="carousel-slide active" loading="lazy" width="800" height="800">
+          <img src="images/productos/placa/placa-guardian-calle-800.webp" alt="Pastor alemán Guardian con su placa de identificación para perro azul en forma de huella; un vecino lo encontró y ve su perfil en el celular" class="carousel-slide" loading="lazy" width="800" height="800">
+          <img src="images/productos/placa/placa-monita-veterinaria-800.webp" alt="Golden retriever Monita con su placa de identificación para perro morada con su nombre; la veterinaria abre su carné de vacunas" class="carousel-slide" loading="lazy" width="800" height="800">
+          <img src="images/productos/placa/placa-guardian-perfil-800.webp" alt="Placa de identificación para perro en forma de huella azul con el nombre Guardian junto al celular con su perfil" class="carousel-slide" loading="lazy" width="800" height="800">
+          <img src="images/productos/placa/placa-luna-beagle-800.webp" alt="Beagle Luna con su placa de identificación para perro roja en forma de huella y su perfil en el celular" class="carousel-slide" loading="lazy" width="800" height="800">
+        </div>
+        <button class="carousel-arrow carousel-prev" onclick="moveCarousel(this,-1)" aria-label="Anterior">‹</button>
+        <button class="carousel-arrow carousel-next" onclick="moveCarousel(this,1)" aria-label="Siguiente">›</button>
+        <div class="carousel-dots">
+          <span class="carousel-dot active" onclick="goToSlide(this,0)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,1)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,2)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,3)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,4)"></span>
+        </div>
+      </div>
+      <div class="prod-body">
+        <span class="prod-tag tag-blue">✨ Nuevo · Placa para perro y gato</span>
+        <h3 class="prod-name"><a href="/placa-para-perro/">Placa Inteligente Wuuff</a></h3>
+        <p class="placa-frase">Si tu perrito se pierde, quien lo encuentre acerca el celular a la placa y te escribe por WhatsApp para devolverlo 🏠</p>
+        <div class="prod-desc">Placa de identificación personalizada con el nombre de tu perro o gato. Incluye su perfil con tu WhatsApp y su carné de vacunas digital, que tu veterinario abre con tu PIN.</div>
+        <div class="price-row">
+          <div class="prod-price"><span class="price-old"><s aria-label="Precio antes: $44.900">$44.900</s><span class="price-off">-22%</span></span>$34.900 COP <small>🏷️ $24.900 si la llevas con collar, arnés o combo</small></div>
+        </div>
+        <ul class="placa-puntos"><li>🐾 Huella, gato o nombre</li><li>🎨 Tú eliges los colores</li><li>💉 Carné de vacunas digital</li><li>📱 Sin apps ni pilas</li></ul>
+        <a class="btn-buy btn-ver" href="/placa-para-perro/"><svg class="ico-carrito" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.4 10.2a1.5 1.5 0 0 0 1.5 1.1h8.7a1.5 1.5 0 0 0 1.4-1.1L21 8H6.2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9.5" cy="19.5" r="1.6" fill="currentColor"/><circle cx="17.5" cy="19.5" r="1.6" fill="currentColor"/></svg> Ver la Placa Inteligente</a>
+      </div>
+    </div>
+
+    <div class="prod-card" id="arnes">
+      <div class="prod-img carousel en-portada">
+        <span class="portada-tag">Solo el arnés</span>
+        <span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21M10.5 7.5v6M7.5 10.5h6"/></svg></span>
+        <div class="carousel-track">
+          <img src="images/opt/arnes-nuevo.webp" alt="Arnés tipo H impermeable Wuuff Puppy azul cielo" class="carousel-slide fit-contain active" loading="lazy" width="800" height="800">
+          <img src="images/opt/productos/collar-3.webp" alt="Perro salchicha con arnés tipo H Wuuff Puppy" class="carousel-slide" loading="lazy" width="800" height="1065">
+          <img src="images/opt/productos/arnes-3.webp" alt="Chihuahua con arnés tipo H Wuuff Puppy" class="carousel-slide" loading="lazy" width="800" height="841">
+          <video class="carousel-slide" muted loop playsinline preload="none" data-poster="images/opt/productos/arnes-2-poster.webp" aria-label="Video: Arnés tipo H impermeable"><source src="images/productos/arnes-2.mp4" type="video/mp4"></video>
+          <img src="images/productos/tallas-arnes.png" alt="Guía de tallas del arnés: medidas de la talla S y M en cm" class="carousel-slide fit-contain" loading="lazy" width="1045" height="1583">
+        </div>
+        <button class="carousel-arrow carousel-prev" onclick="moveCarousel(this,-1)" aria-label="Anterior">‹</button>
+        <button class="carousel-arrow carousel-next" onclick="moveCarousel(this,1)" aria-label="Siguiente">›</button>
+        <div class="carousel-dots">
+          <span class="carousel-dot active" onclick="goToSlide(this,0)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,1)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,2)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,3)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,4)"></span>
+        </div>
+      </div>
+      <div class="prod-body">
+        <span class="prod-tag tag-blue">Más vendido</span>
+        <h3 class="prod-name"><a href="/arnes-tipo-h-impermeable-perro/">Arnés tipo H impermeable</a></h3>
+        <div class="prod-desc">Diseño en H que no presiona el cuello ni roza las axilas. De goma suave, antiolor y fácil de limpiar.</div>
+        <div class="price-row">
+          <div class="prod-price"><span class="price-old"><s aria-label="Precio antes: $84.900">$84.900</s><span class="price-off">-14%</span></span>$72.900 COP <small>🚚 Envío gratis y pago al recibir en Bogotá</small></div>
+        </div>
+        <a class="btn-buy btn-ver" href="/arnes-tipo-h-impermeable-perro/"><svg class="ico-carrito" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.4 10.2a1.5 1.5 0 0 0 1.5 1.1h8.7a1.5 1.5 0 0 0 1.4-1.1L21 8H6.2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9.5" cy="19.5" r="1.6" fill="currentColor"/><circle cx="17.5" cy="19.5" r="1.6" fill="currentColor"/></svg> Ver producto</a>
+      </div>
+    </div>
+
+
+    <div class="prod-card" id="collar">
+      <div class="prod-img carousel en-portada">
+        <span class="portada-tag">Solo el collar</span>
+        <span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21M10.5 7.5v6M7.5 10.5h6"/></svg></span>
+        <div class="carousel-track">
+          <img src="images/opt/collar-nuevo.webp" alt="Collar impermeable Wuuff Puppy azul cielo" class="carousel-slide fit-contain active" loading="lazy" width="800" height="532">
+          <img src="images/opt/productos/collar-4.webp" alt="Perro con collar impermeable Wuuff Puppy" class="carousel-slide" loading="lazy" width="800" height="1362">
+          <img src="images/opt/productos/collar-5.webp" alt="Collar y correa Wuuff Puppy sobre el pasto" class="carousel-slide" loading="lazy" width="720" height="958">
+          <video class="carousel-slide" muted loop playsinline preload="none" data-poster="images/opt/productos/collar-2-poster.webp" aria-label="Video: Collar impermeable"><source src="images/productos/collar-2.mp4" type="video/mp4"></video>
+          <img src="images/productos/tallas-collar.png" alt="Guía de tallas del collar: contorno de cuello de la talla S y M" class="carousel-slide fit-contain" loading="lazy" width="1045" height="1185">
+        </div>
+        <button class="carousel-arrow carousel-prev" onclick="moveCarousel(this,-1)" aria-label="Anterior">‹</button>
+        <button class="carousel-arrow carousel-next" onclick="moveCarousel(this,1)" aria-label="Siguiente">›</button>
+        <div class="carousel-dots">
+          <span class="carousel-dot active" onclick="goToSlide(this,0)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,1)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,2)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,3)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,4)"></span>
+        </div>
+      </div>
+      <div class="prod-body">
+        <span class="prod-tag tag-blue">Nuevo</span>
+        <h3 class="prod-name"><a href="/collar-impermeable-perro/">Collar impermeable</a></h3>
+        <div class="prod-desc">De goma suave, antiolor y fácil de limpiar. Para el cuello más bonito del parque.</div>
+        <div class="price-row">
+          <div class="prod-price"><span class="price-old"><s aria-label="Precio antes: $58.000">$58.000</s><span class="price-off">-14%</span></span>$49.900 COP <small>🚚 Envío gratis y pago al recibir en Bogotá</small></div>
+        </div>
+        <a class="btn-buy btn-ver" href="/collar-impermeable-perro/"><svg class="ico-carrito" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.4 10.2a1.5 1.5 0 0 0 1.5 1.1h8.7a1.5 1.5 0 0 0 1.4-1.1L21 8H6.2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9.5" cy="19.5" r="1.6" fill="currentColor"/><circle cx="17.5" cy="19.5" r="1.6" fill="currentColor"/></svg> Ver producto</a>
+      </div>
+    </div>
+
+
+    <div class="prod-card" id="combo">
+      <div class="prod-img carousel en-portada">
+        <span class="portada-tag">Incluye 3 piezas</span>
+        <span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21M10.5 7.5v6M7.5 10.5h6"/></svg></span>
+        <div class="carousel-track">
+          <img src="images/opt/set-completo-nuevo.webp" alt="Combo completo Wuuff Puppy: collar, arnés y correa impermeables" class="carousel-slide fit-contain active" loading="lazy" width="800" height="800">
+          <img src="images/opt/productos/arnes-3.webp" alt="Chihuahua con arnés y correa Wuuff Puppy" class="carousel-slide" loading="lazy" width="800" height="841">
+          <img src="images/opt/montaje-perro-1.webp" alt="Perro paseando con arnés y correa Wuuff Puppy" class="carousel-slide" loading="lazy" width="720" height="1080">
+          <video class="carousel-slide" muted loop playsinline preload="none" data-poster="images/opt/productos/combo-2-poster.webp" aria-label="Video: Combo completo Wuuff Puppy"><source src="images/productos/combo-2.mp4" type="video/mp4"></video>
+          <img src="images/productos/tallas-arnes.png" alt="Guía de tallas del arnés: medidas de la talla S y M en cm" class="carousel-slide fit-contain" loading="lazy" width="1045" height="1583">
+          <img src="images/productos/tallas-collar.png" alt="Guía de tallas del collar: contorno de cuello de la talla S y M" class="carousel-slide fit-contain" loading="lazy" width="1045" height="1185">
+        </div>
+        <button class="carousel-arrow carousel-prev" onclick="moveCarousel(this,-1)" aria-label="Anterior">‹</button>
+        <button class="carousel-arrow carousel-next" onclick="moveCarousel(this,1)" aria-label="Siguiente">›</button>
+        <div class="carousel-dots">
+          <span class="carousel-dot active" onclick="goToSlide(this,0)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,1)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,2)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,3)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,4)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,5)"></span>
+        </div>
+      </div>
+      <div class="prod-body">
+        <span class="prod-tag tag-coral">⭐ Mejor valor</span>
+        <h3 class="prod-name"><a href="/combo-collar-arnes-correa/">Combo completo</a></h3>
+        <div class="prod-desc">Collar + Arnés + Correa impermeables: de goma suave, antiolor y fácil de limpiar. El regalo perfecto para tu perrihijo.</div>
+        <div class="price-row">
+          <div class="prod-price"><span class="price-old"><s aria-label="Precio antes: $184.900">$184.900</s><span class="price-off">-15%</span></span>$157.900 COP <small>🚚 Envío gratis y pago al recibir en Bogotá</small></div>
+        </div>
+        <a class="btn-buy btn-ver coral" href="/combo-collar-arnes-correa/"><svg class="ico-carrito" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.4 10.2a1.5 1.5 0 0 0 1.5 1.1h8.7a1.5 1.5 0 0 0 1.4-1.1L21 8H6.2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9.5" cy="19.5" r="1.6" fill="currentColor"/><circle cx="17.5" cy="19.5" r="1.6" fill="currentColor"/></svg> Ver producto</a>
+      </div>
+    </div>
+
+
+    <div class="prod-card" id="correa">
+      <div class="prod-img carousel en-portada">
+        <span class="portada-tag">Solo la correa</span>
+        <span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21M10.5 7.5v6M7.5 10.5h6"/></svg></span>
+        <div class="carousel-track">
+          <img src="images/opt/correa-nuevo.webp" alt="Correa impermeable Wuuff Puppy de 1,8 m" class="carousel-slide fit-contain active" loading="lazy" width="800" height="607">
+          <img src="images/opt/productos/correa-3.webp" alt="Bulldog francés con collar y correa Wuuff Puppy" class="carousel-slide" loading="lazy" width="800" height="1304">
+          <video class="carousel-slide" muted loop playsinline preload="none" data-poster="images/opt/productos/correa-2-poster.webp" aria-label="Video: Correa impermeable"><source src="images/productos/correa-2.mp4" type="video/mp4"></video>
+        </div>
+        <button class="carousel-arrow carousel-prev" onclick="moveCarousel(this,-1)" aria-label="Anterior">‹</button>
+        <button class="carousel-arrow carousel-next" onclick="moveCarousel(this,1)" aria-label="Siguiente">›</button>
+        <div class="carousel-dots">
+          <span class="carousel-dot active" onclick="goToSlide(this,0)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,1)"></span>
+          <span class="carousel-dot" onclick="goToSlide(this,2)"></span>
+        </div>
+      </div>
+      <div class="prod-body">
+        <span class="prod-tag tag-blue">Nuevo</span>
+        <h3 class="prod-name"><a href="/correa-impermeable-perro/">Correa impermeable</a></h3>
+        <div class="prod-desc">De goma suave, antiolor y fácil de limpiar. 1,8 m de largo con gancho metálico resistente.</div>
+        <div class="price-row">
+          <div class="prod-price"><span class="price-old"><s aria-label="Precio antes: $69.000">$69.000</s><span class="price-off">-15%</span></span>$58.900 COP <small>🚚 Envío gratis y pago al recibir en Bogotá</small></div>
+        </div>
+        <a class="btn-buy btn-ver" href="/correa-impermeable-perro/"><svg class="ico-carrito" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.4 10.2a1.5 1.5 0 0 0 1.5 1.1h8.7a1.5 1.5 0 0 0 1.4-1.1L21 8H6.2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9.5" cy="19.5" r="1.6" fill="currentColor"/><circle cx="17.5" cy="19.5" r="1.6" fill="currentColor"/></svg> Ver producto</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ARMA TU COMBO -->
+<section class="tools-section" id="arma-tu-combo">
+  <div class="tools-single">
+    <div class="tool-card">
+      <h3>Arma tu combo 🎁</h3>
+      <p class="tool-sub">Elige las piezas que quieres y mira el total</p>
+      <div class="combo-list">
+        <label class="combo-item">
+          <input type="checkbox" class="combo-check" data-price="49900" checked>
+          <span class="combo-item-name">Collar impermeable</span>
+          <span class="combo-item-price">$49.900</span>
+        </label>
+        <label class="combo-item">
+          <input type="checkbox" class="combo-check" data-price="72900">
+          <span class="combo-item-name">Arnés tipo H impermeable</span>
+          <span class="combo-item-price">$72.900</span>
+        </label>
+        <label class="combo-item">
+          <input type="checkbox" class="combo-check" data-price="58900">
+          <span class="combo-item-name">Correa impermeable</span>
+          <span class="combo-item-price">$58.900</span>
+        </label>
+      </div>
+      <div class="combo-total-row">
+        <span>Total</span>
+        <span class="combo-total" id="combo-total">$49.900 COP</span>
+      </div>
+      <p class="combo-savings" id="combo-savings" style="display:none;">🎉 ¡Llévate las 3 piezas en el Combo completo por $157.900 y ahorra $23.800!</p>
+      <button class="btn-buy" id="combo-buy-btn" onclick="iniciarCompra(window.wuuffComboTotalCents, 'Combo personalizado')">Quiero mi combo 🐾</button>
+    </div>
+  </div>
+</section>
+
+<!-- ASÍ ES EN LA VIDA REAL -->
+<section class="real-section" id="en-video">
+  <h2>Así es <span>en la vida real</span> 🎥</h2>
+  <p class="real-sub">Perritos reales estrenando su Wuuff: así se pone el arnés tipo H y así de fácil se limpia.</p>
+  <div class="real-grid">
+    <figure class="real-card">
+      <div class="real-video">
+        <video muted loop playsinline preload="none" data-poster="images/opt/productos/real-lupe-poster.webp" aria-label="Video real: Así se pone el arnés tipo H" data-nombre="Así se pone el arnés tipo H"><source src="images/productos/real-lupe.mp4" type="video/mp4"></video>
+        <span class="real-badge">▶ Video real</span>
+        <button type="button" class="real-sonido" aria-pressed="false" aria-label="Activar sonido">🔇</button>
+      </div>
+      <figcaption><strong>Así se pone el arnés tipo H</strong><span>Lupe lo estrena: se abre con hebillas, se ajusta y sale a pasear.</span><a href="/arnes-tipo-h-impermeable-perro/">Ver el arnés tipo H →</a></figcaption>
+    </figure>
+    <figure class="real-card">
+      <div class="real-video">
+        <video muted loop playsinline preload="none" data-poster="images/opt/productos/real-saske-poster.webp" aria-label="Video real: Paso a paso con Saske" data-nombre="Paso a paso con Saske"><source src="images/productos/real-saske.mp4" type="video/mp4"></video>
+        <span class="real-badge">▶ Video real</span>
+        <button type="button" class="real-sonido" aria-pressed="false" aria-label="Activar sonido">🔇</button>
+      </div>
+      <figcaption><strong>Paso a paso con Saske</strong><span>Cuello, pecho y ajuste: así le queda a un perrito peludo.</span><a href="/arnes-tipo-h-impermeable-perro/">Ver el arnés tipo H →</a></figcaption>
+    </figure>
+    <figure class="real-card">
+      <div class="real-video">
+        <video muted loop playsinline preload="none" data-poster="images/opt/productos/real-asi-queda-poster.webp" aria-label="Video real: Adiós al arnés manchado" data-nombre="Adiós al arnés manchado"><source src="images/productos/real-asi-queda.mp4" type="video/mp4"></video>
+        <span class="real-badge">▶ Video real</span>
+        <button type="button" class="real-sonido" aria-pressed="false" aria-label="Activar sonido">🔇</button>
+      </div>
+      <figcaption><strong>Adiós al arnés manchado</strong><span>Tela vs. goma: el Wuuff se limpia con agua y un trapo.</span><a href="/combo-collar-arnes-correa/">Ver el combo →</a></figcaption>
+    </figure>
+  </div>
+  <div class="yt-wrap">
+    <button type="button" class="yt-facade" data-yt="WJH1H7uErm8" aria-label="Reproducir el video de Wuuff Puppy en YouTube">
+      <img src="https://i.ytimg.com/vi/WJH1H7uErm8/hqdefault.jpg" alt="Video de Wuuff Puppy en YouTube" loading="lazy" width="480" height="360">
+      <span class="yt-play" aria-hidden="true"><svg viewBox="0 0 68 48"><path d="M66.5 7.7a8.5 8.5 0 0 0-6-6C55.2.3 34 .3 34 .3s-21.2 0-26.5 1.4a8.5 8.5 0 0 0-6 6C.1 13 .1 24 .1 24s0 11 1.4 16.3a8.5 8.5 0 0 0 6 6C12.8 47.7 34 47.7 34 47.7s21.2 0 26.5-1.4a8.5 8.5 0 0 0 6-6C67.9 35 67.9 24 67.9 24s0-11-1.4-16.3z" fill="#f00"/><path d="M45 24 27 14v20z" fill="#fff"/></svg></span>
+    </button>
+    <p class="yt-pie">📺 Míralo también en <a href="https://www.youtube.com/watch?v=WJH1H7uErm8" target="_blank" rel="noopener">nuestro canal de YouTube</a></p>
+  </div>
+  <p class="real-wa">¿Quieres ver cómo le queda a un perrito de tu tamaño? <a href="https://wa.me/573176431286?text=Hola%2C%20quiero%20ver%20un%20video%20de%20c%C3%B3mo%20se%20pone%20el%20arn%C3%A9s" target="_blank" rel="noopener">Escríbenos por WhatsApp</a> y te mandamos un video.</p>
+</section>
+
+<!-- ¿QUÉ TALLA NECESITA? -->
+<section class="tools-section tools-section-alt" id="que-talla">
+  <div class="tools-single">
+    <div class="tool-card">
+      <h3>¿Qué talla necesita tu perrihijo? 📏</h3>
+      <p class="tool-sub">Mide el contorno de cuello de tu perrihijo con una cinta métrica</p>
+      <div class="size-slider-wrap">
+        <input type="range" min="18" max="40" value="27" id="weight-slider" class="size-slider" aria-label="Contorno de cuello en centímetros">
+        <div class="size-weight-label"><span id="weight-value">27</span> cm de cuello</div>
+      </div>
+      <div class="size-result">
+        <span class="size-result-badge" id="size-badge">Talla S</span>
+        <span class="size-result-text" id="size-text">Cuello 20–34 cm · Pecho 23–38 cm</span>
+      </div>
+      <p class="size-disclaimer">*Medida oficial de fábrica. Hasta 29 cm de cuello → Talla S; desde 30 cm → Talla M. Si mide entre 28 y 32 cm, escríbenos por WhatsApp y te ayudamos a elegir 🐾</p>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="por-que">
+  <h2>¿Por qué elegir <span>goma</span>?</h2>
+  <p class="feat-sub">Material premium que resiste todo lo que tu perrihijo le ponga.</p>
+  <div class="feat-grid">
+    <div class="feat-card c1">
+      <span class="feat-icon">💧</span>
+      <div class="feat-title">Resistente al agua</div>
+      <div class="feat-desc">Lluvia, barro, río — da igual. Solo enjuágalo y listo.</div>
+    </div>
+    <div class="feat-card c2">
+      <span class="feat-icon">🌿</span>
+      <div class="feat-title">Hipoalergénico</div>
+      <div class="feat-desc">Suave con la piel de tu perrihijo. No irrita ni causa alergias.</div>
+    </div>
+    <div class="feat-card c3">
+      <span class="feat-icon">✨</span>
+      <div class="feat-title">Fácil de limpiar</div>
+      <div class="feat-desc">No acumula olores ni bacterias. Siempre como nuevo.</div>
+    </div>
+    <div class="feat-card c4">
+      <span class="feat-icon">❤️</span>
+      <div class="feat-title">Hecho con amor</div>
+      <div class="feat-desc">Creado por dueños de perrihijos, para dueños de perrihijos.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CAUSE -->
+<section class="cause">
+  <div class="cause-blob" style="width:400px;height:400px;top:-150px;right:-100px;"></div>
+  <div class="cause-blob" style="width:250px;height:250px;bottom:-80px;left:-60px;"></div>
+  <h2>Nuestro <em>propósito</em> 🐾</h2>
+  <div class="cause-box">
+    <p>En Wuuff Puppy creemos que cada perro merece verse tan querido como se siente.</p>
+    <p class="big">"Con cada combo vendido,<br>ayudamos a alimentar a perritos rescatados."</p>
+    <p>Pequeños detalles que dicen te quiero — para tu perrihijo y para los que esperan un hogar. 🏠</p>
+  </div>
+  <div class="cause-dog">
+    <img src="images/opt/arecito.webp" alt="Arecito Wuuff" loading="lazy" width="447" height="593">
+  </div>
+</section>
+
+<!-- STORY -->
+<section class="story" id="nosotros">
+  <div class="story-inner">
+    <img class="story-dog" src="images/opt/thor-y-zabache-los-perrihijos-de-angie.webp" alt="Guardian y Zabache — los perrihijos de Angie" loading="lazy" width="800" height="471">
+    <p class="story-quote">
+      "Wuuff Puppy nació por <em>Guardian y Zabache</em>, mis dos perrihijos.<br>
+      Buscaba accesorios bonitos en Colombia y no los encontraba.<br>
+      Así que decidí crearlos yo misma."
+    </p>
+    <div class="story-by">— Katherine Monroy · Fundadora · Bogotá, Colombia</div>
+    <div class="social-row">
+      <a href="https://instagram.com/wuuffpuppy" target="_blank" class="social-btn">📱 @wuuffpuppy</a>
+      <a href="https://tiktok.com/@wuuff.puppy" target="_blank" class="social-btn">🎵 @wuuff.puppy</a>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq-section" id="faq">
+  <h2>Preguntas <span>frecuentes</span></h2>
+  <div class="faq-list">
+
+    <div class="faq-item">
+      <button class="faq-question">
+        <span>📦 ¿Hacen envíos a toda Colombia?</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>Sí, hacemos envíos a toda Colombia. Despachamos en 1–2 días hábiles; la entrega tarda de 2 a 5 días según tu ciudad. El envío a Bogotá / Soacha es <strong>gratis en pedidos desde $49.900</strong> (la placa sola paga $8.000 de envío). En Bogotá también puedes <strong>pagar en efectivo al recibir</strong>. A otras ciudades cuesta $18.500.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question">
+        <span>📏 ¿Cómo sé qué talla pedir?</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>Usa nuestro selector de talla más arriba: solo mide el contorno de cuello de tu perrihijo con una cinta métrica. Por ahora manejamos <strong>Talla S</strong> (cuello 20–34 cm, pecho 23–38 cm) y <strong>Talla M</strong> (cuello 24–38 cm, pecho 32–53 cm). Si su cuello mide entre 28 y 32 cm, escríbenos por WhatsApp y te ayudamos a elegir.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question">
+        <span>🔄 ¿Puedo cambiar la talla si no le queda?</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>Sí. Si la talla no le queda bien a tu perrihijo, escríbenos por WhatsApp o Instagram con tu pedido y gestionamos el cambio. El accesorio debe estar sin uso y en su empaque original. Lee nuestra <a href="politica-de-devoluciones.html">política de cambios y devoluciones</a>.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question">
+        <span>💳 ¿Qué métodos de pago aceptan?</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p><strong>En Bogotá puedes pagar en efectivo al recibir</strong> (contraentrega) en pedidos desde $49.900: te confirmamos por WhatsApp antes de enviarlo. También puedes pagar aquí mismo en la web con Wompi, 100&nbsp;% seguro: tarjeta, PSE, Nequi, Daviplata, Botón Bancolombia o en 4 cuotas sin interés con Bancolombia. Si tienes dudas, escríbenos por WhatsApp.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CHARACTERS -->
+<section class="characters">
+  <h2>La pandilla <span>Wuuff</span> 🐶</h2>
+  <p class="chars-sub">Cada perrihijo tiene su propio personaje — ¿cuál es el tuyo?</p>
+  <div class="chars-grid">
+    <div class="char-card">
+      <img src="images/opt/chawi.webp" alt="Chawi" loading="lazy" width="425" height="508">
+      <div class="char-name">Chawi 🍗</div>
+      <div class="char-desc">Hambriento y siempre feliz</div>
+    </div>
+    <div class="char-card">
+      <img src="images/opt/arecito.webp" alt="Arecito" loading="lazy" width="447" height="593">
+      <div class="char-name">Arecito 🧢</div>
+      <div class="char-desc">El más cool del parque</div>
+    </div>
+    <div class="char-card">
+      <img src="images/opt/guardian.webp" alt="Guardian" loading="lazy" width="292" height="386">
+      <div class="char-name">Guardian 💙</div>
+      <div class="char-desc">Noble y leal para siempre</div>
+    </div>
+    <div class="char-card">
+      <img src="images/opt/lucas.webp" alt="Lucas" loading="lazy" width="385" height="354">
+      <div class="char-name">Lucas 💻</div>
+      <div class="char-desc">El más inteligente del team</div>
+    </div>
+  </div>
+</section>
+
+<script>
+// Video de YouTube: solo se carga al tocar "play" (no frena la página)
+document.addEventListener('click', function(e){
+  var b = e.target.closest && e.target.closest('.yt-facade');
+  if(!b) return;
+  var f = document.createElement('iframe');
+  f.src = 'https://www.youtube-nocookie.com/embed/' + b.dataset.yt + '?autoplay=1&rel=0&playsinline=1';
+  f.title = 'Video de Wuuff Puppy en YouTube';
+  f.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+  f.allowFullscreen = true;
+  b.replaceWith(f);
+  document.querySelectorAll('#en-video video').forEach(function(v){ v.pause(); });
+  try { if(window.gtag) gtag('event','video_youtube_play',{video_id:b.dataset.yt}); } catch(err){}
+});
+</script>
+<!-- FOOTER -->
+</main>
+
+<footer>
+  <div class="footer-logo">
+    <img src="images/opt/wuuff-puppy.webp" alt="Wuuff Puppy" loading="lazy" width="182" height="137">
+  </div>
+  <div class="footer-tag">"Pequeños detalles que dicen te quiero."</div>
+  <div class="footer-social">
+    <a href="https://instagram.com/wuuffpuppy" target="_blank">📱 @wuuffpuppy</a>
+    <a href="https://tiktok.com/@wuuff.puppy" target="_blank">🎵 @wuuff.puppy</a>
+    <a href="https://wuuffpuppy.co/">🌐 wuuffpuppy.co</a>
+  </div>
+  <div class="footer-productos" role="navigation" aria-label="Productos">
+    <a href="/placa-para-perro/">Placa Inteligente Wuuff</a>
+    <a href="/arnes-tipo-h-impermeable-perro/">Arnés tipo H impermeable</a>
+    <a href="/collar-impermeable-perro/">Collar impermeable para perro</a>
+    <a href="/combo-collar-arnes-correa/">Combo collar, arnés y correa</a>
+    <a href="/correa-impermeable-perro/">Correa impermeable para perro</a>
+    <a href="/blog/">Blog</a>
+  </div>
+  <div class="footer-copy">Bogotá, Colombia · 2026 · Wuuff Puppy ❤️</div>
+  <div class="footer-copy" style="margin-top:8px;"><a href="politica-de-privacidad.html" style="color:rgba(255,255,255,.8);text-decoration:underline;">Política de Privacidad</a> · <a href="politica-de-devoluciones.html" style="color:rgba(255,255,255,.8);text-decoration:underline;">Cambios y Devoluciones</a></div>
+</footer>
+
+<script>
+// Selector de talla por contorno de cuello (tabla oficial de fábrica)
+(function(){
+  var slider = document.getElementById('weight-slider');
+  if(!slider) return;
+  var weightValue = document.getElementById('weight-value');
+  var sizeBadge = document.getElementById('size-badge');
+  var sizeText = document.getElementById('size-text');
+  function updateSize(){
+    var n = parseInt(slider.value, 10);
+    weightValue.textContent = n;
+    if(n <= 29){
+      sizeBadge.textContent = 'Talla S';
+      sizeText.textContent = 'Cuello 20–34 cm · Pecho 23–38 cm';
+    } else {
+      sizeBadge.textContent = 'Talla M';
+      sizeText.textContent = 'Cuello 24–38 cm · Pecho 32–53 cm';
+    }
+  }
+  slider.addEventListener('input', updateSize);
+  updateSize();
+})();
+
+// Armador de combo
+(function(){
+  var checks = document.querySelectorAll('.combo-check');
+  if(!checks.length) return;
+  var totalEl = document.getElementById('combo-total');
+  var savingsEl = document.getElementById('combo-savings');
+  function formatCOP(n){
+    return '$' + n.toLocaleString('es-CO') + ' COP';
+  }
+  function update(){
+    var total = 0, count = 0;
+    checks.forEach(function(c){
+      var label = c.closest('.combo-item');
+      if(c.checked){
+        total += parseInt(c.dataset.price, 10);
+        count++;
+        if(label) label.classList.add('is-checked');
+      } else {
+        if(label) label.classList.remove('is-checked');
+      }
+    });
+    if(count === 3){
+      total = 157900; // precio del Combo completo, con descuento ya aplicado
+    }
+    totalEl.textContent = formatCOP(total);
+    window.wuuffComboTotalCents = total * 100;
+    savingsEl.style.display = (count === 3) ? 'block' : 'none';
+    window.wuuffComboEsCompleto = (count === 3);
+  }
+  checks.forEach(function(c){ c.addEventListener('change', update); });
+  update();
+})();
+
+// FAQ acordeón
+(function(){
+  var items = document.querySelectorAll('.faq-item');
+  items.forEach(function(item){
+    var btn = item.querySelector('.faq-question');
+    var answer = item.querySelector('.faq-answer');
+    btn.addEventListener('click', function(){
+      var isOpen = item.classList.contains('is-open');
+      items.forEach(function(other){
+        other.classList.remove('is-open');
+        other.querySelector('.faq-answer').style.maxHeight = null;
+      });
+      if(!isOpen){
+        item.classList.add('is-open');
+        answer.style.maxHeight = answer.scrollHeight + 'px';
+      }
+    });
+  });
+})();
+
+// Carrusel del banner hero (rota automáticamente)
+(function(){
+  var slides = document.querySelectorAll('.hero-bg-slide');
+  if(slides.length < 2) return;
+  var current = 0;
+  setInterval(function(){
+    slides[current].classList.remove('active');
+    current = (current + 1) % slides.length;
+    slides[current].classList.add('active');
+  }, 5000);
+})();
+
+var TPL_COLLAR = "<h4>Collar</h4>\n<div class=\"size-guide\"><svg viewBox=\"0 0 200 230\" role=\"img\" aria-label=\"Perro con collar: se mide el contorno del cuello\">\n  <g fill=\"#b8d8f5\">\n    <path d=\"M52 200 C20 196 14 170 30 160 C38 176 50 182 64 184 Z\"/>\n    <ellipse cx=\"88\" cy=\"160\" rx=\"46\" ry=\"52\"/>\n    <ellipse cx=\"72\" cy=\"196\" rx=\"40\" ry=\"24\"/>\n    <path d=\"M86 120 C92 96 100 82 110 74 L146 84 C140 104 134 124 128 146 Z\"/>\n    <rect x=\"102\" y=\"140\" width=\"17\" height=\"76\" rx=\"8\"/>\n    <rect x=\"120\" y=\"140\" width=\"17\" height=\"76\" rx=\"8\"/>\n    <circle cx=\"128\" cy=\"62\" r=\"30\"/>\n    <ellipse cx=\"160\" cy=\"72\" rx=\"24\" ry=\"15\"/>\n  </g>\n  <ellipse cx=\"108\" cy=\"64\" rx=\"11\" ry=\"22\" transform=\"rotate(18 108 64)\" fill=\"#8fbfe8\"/>\n  <circle cx=\"137\" cy=\"54\" r=\"3.6\" fill=\"#2d4375\"/>\n  <circle cx=\"182\" cy=\"67\" r=\"5\" fill=\"#2d4375\"/>\n  <path d=\"M162 82 Q170 86 177 82\" stroke=\"#2d4375\" stroke-width=\"2\" fill=\"none\" stroke-linecap=\"round\"/>\n  <ellipse cx=\"122\" cy=\"98\" rx=\"24\" ry=\"7\" transform=\"rotate(14 122 98)\" fill=\"none\" stroke=\"#4964af\" stroke-width=\"7\"/>\n  <circle cx=\"140\" cy=\"108\" r=\"4\" fill=\"#d5d50c\" stroke=\"#2d4375\" stroke-width=\"1.5\"/>\n  <path d=\"M146 100 L176 118\" stroke=\"#f17d57\" stroke-width=\"2\" stroke-dasharray=\"4 3\"/>\n  <rect x=\"150\" y=\"116\" width=\"48\" height=\"20\" rx=\"10\" fill=\"#f17d57\"/>\n  <text x=\"174\" y=\"130\" text-anchor=\"middle\" font-family=\"Nunito,Arial\" font-weight=\"800\" font-size=\"11\" fill=\"#fff\">Cuello</text>\n</svg><div class=\"size-guide-steps\">La talla del collar depende del <strong>contorno del cuello</strong>. Mídelo con una cinta métrica flexible, en la parte donde normalmente va el collar.</div></div>\n<div class=\"size-table-wrap\"><table class=\"size-table\"><thead><tr><th>Medida</th><th>Talla S</th><th>Talla M</th></tr></thead><tbody><tr><td>Contorno de cuello</td><td>20–34 cm</td><td>24–38 cm</td></tr></tbody></table></div>";
+var TPL_ARNES = "<h4>Arnés</h4>\n<div class=\"size-guide\"><svg viewBox=\"0 0 260 190\" role=\"img\" aria-label=\"Perro con arnés: se mide el cuello y el pecho\">\n  <g fill=\"#b8d8f5\">\n    <path d=\"M56 88 C40 78 30 58 34 40 C44 56 52 66 64 74 Z\"/>\n    <ellipse cx=\"120\" cy=\"98\" rx=\"70\" ry=\"34\"/>\n    <rect x=\"66\" y=\"108\" width=\"15\" height=\"62\" rx=\"7\"/>\n    <rect x=\"86\" y=\"108\" width=\"15\" height=\"62\" rx=\"7\"/>\n    <rect x=\"148\" y=\"108\" width=\"15\" height=\"62\" rx=\"7\"/>\n    <rect x=\"168\" y=\"108\" width=\"15\" height=\"62\" rx=\"7\"/>\n    <path d=\"M160 72 C176 52 188 40 200 36 L222 56 C212 76 196 100 184 118 Z\"/>\n    <circle cx=\"208\" cy=\"42\" r=\"25\"/>\n    <ellipse cx=\"234\" cy=\"52\" rx=\"19\" ry=\"12\"/>\n  </g>\n  <ellipse cx=\"195\" cy=\"38\" rx=\"9\" ry=\"18\" transform=\"rotate(-20 195 38)\" fill=\"#8fbfe8\"/>\n  <circle cx=\"214\" cy=\"34\" r=\"3.4\" fill=\"#2d4375\"/>\n  <circle cx=\"251\" cy=\"48\" r=\"4.6\" fill=\"#2d4375\"/>\n  <ellipse cx=\"186\" cy=\"84\" rx=\"10\" ry=\"26\" transform=\"rotate(-28 186 84)\" fill=\"none\" stroke=\"#4964af\" stroke-width=\"6\"/>\n  <ellipse cx=\"146\" cy=\"98\" rx=\"10\" ry=\"35\" fill=\"none\" stroke=\"#4964af\" stroke-width=\"6\"/>\n  <path d=\"M148 64 L178 64\" stroke=\"#4964af\" stroke-width=\"9\" stroke-linecap=\"round\"/>\n  <circle cx=\"163\" cy=\"63\" r=\"4\" fill=\"#d5d50c\" stroke=\"#2d4375\" stroke-width=\"1.5\"/>\n  <path d=\"M200 96 L222 118\" stroke=\"#f17d57\" stroke-width=\"2\" stroke-dasharray=\"4 3\"/>\n  <rect x=\"200\" y=\"116\" width=\"50\" height=\"20\" rx=\"10\" fill=\"#f17d57\"/>\n  <text x=\"225\" y=\"130\" text-anchor=\"middle\" font-family=\"Nunito,Arial\" font-weight=\"800\" font-size=\"11\" fill=\"#fff\">Cuello</text>\n  <path d=\"M140 134 L128 178\" stroke=\"#f17d57\" stroke-width=\"2\" stroke-dasharray=\"4 3\"/>\n  <rect x=\"104\" y=\"170\" width=\"48\" height=\"20\" rx=\"10\" fill=\"#f17d57\"/>\n  <text x=\"128\" y=\"184\" text-anchor=\"middle\" font-family=\"Nunito,Arial\" font-weight=\"800\" font-size=\"11\" fill=\"#fff\">Pecho</text>\n</svg><div class=\"size-guide-steps\"><strong>Cuello:</strong> mide la base del cuello, donde se apoya el arnés.<br><strong>Pecho:</strong> mide el contorno justo detrás de las patas delanteras.</div></div>\n<div class=\"size-table-wrap\"><table class=\"size-table\"><thead><tr><th>Medida</th><th>Talla S</th><th>Talla M</th></tr></thead><tbody><tr><td>Contorno de cuello</td><td>20–34 cm</td><td>24–38 cm</td></tr><tr><td>Contorno de pecho</td><td>23–38 cm</td><td>32–53 cm</td></tr><tr><td>Correa del abdomen</td><td>15–20 cm</td><td>16–22 cm</td></tr><tr><td>Panel de la espalda</td><td>12,5 cm</td><td>14 cm</td></tr><tr><td>Ancho de la cinta</td><td>1,5 cm</td><td>1,85 cm</td></tr></tbody></table></div>\n<p class=\"size-note\">El arnés es ajustable en el cuello y en el pecho. Grosor del material: 0,2 cm.</p>";
+var TIP = "<div class=\"details-tip\">💡 Deja espacio para dos dedos entre el accesorio y el cuerpo. Si tu perrihijo está entre dos tallas, tiene mucho pelo o aún está creciendo, elige la talla más grande. ¿Dudas? Escríbenos por WhatsApp y te ayudamos a elegir.</div>";
+// Descripción y guía de tallas de cada producto
+var DETALLES_PRODUCTO = {
+  collar: {
+    titulo: 'Collar impermeable',
+    desc: '<p>Nuestro collar de goma es resistente al agua, no guarda olores y es hipoalergénico. Se limpia en segundos y siempre se ve como nuevo, así llueva o tu perrihijo se meta al charco.</p><ul><li>Material impermeable y antiolor</li><li>Hebilla segura, fácil de abrir y cerrar</li><li>Argolla metálica para la correa y la placa</li><li>Color azul cielo</li></ul>',
+    tallas: TPL_COLLAR + TIP
+  },
+  arnes: {
+    titulo: 'Arnés tipo H impermeable',
+    desc: '<p><strong>Arnés tipo H:</strong> sus correas forman una H, una en la base del cuello y otra en el pecho. Así la fuerza se reparte en el pecho y los hombros: no presiona el cuello ni la tráquea, no roza las axilas y deja las patas delanteras libres.</p><p>Mejora tus paseos con nuestro arnés de goma resistente e impermeable. Sus correas no guardan olores y se secan en minutos: olvídate de los arneses malolientes y de esperar horas a que se sequen.</p><p>Las correas ajustables dan un ajuste seguro y cómodo, y sus hebillas resistentes con doble argolla en D refuerzan la seguridad en cada salida.</p><ul><li>No lastima: no presiona el cuello ni la tráquea</li><li>No roza las axilas</li><li>Ajustable en el cuello y en el pecho</li><li>Doble argolla en D</li><li>Fácil de limpiar y con un look elegante</li></ul>',
+    tallas: TPL_ARNES + TIP
+  },
+  correa: {
+    titulo: 'Correa impermeable',
+    desc: '<p>La compañera perfecta para cada paseo. Hecha del mismo material impermeable y antiolor que el collar y el arnés, así que se limpia fácil y combina con todo el set.</p><ul><li>1,8 m de largo</li><li>Gancho metálico resistente</li><li>Impermeable y antiolor</li><li>Color azul cielo</li></ul>',
+    tallas: '<p><strong>Talla única.</strong> La correa mide 1,8 m de largo y funciona para perros de cualquier tamaño.</p>'
+  },
+  combo: {
+    titulo: 'Combo completo',
+    desc: '<p>Collar + Arnés + Correa impermeable Wuuff Puppy en azul cielo, el regalo perfecto para tu perrihijo. Todo el set es impermeable, antiolor e hipoalergénico, y te ahorras $23.800 frente a comprar las piezas por separado.</p><ul><li><strong>Collar:</strong> hebilla segura y argolla metálica</li><li><strong>Arnés:</strong> ajustable en cuello y pecho, con doble argolla en D</li><li><strong>Correa:</strong> 1,8 m de largo con gancho metálico</li></ul><p>Al comprar eliges una sola talla (S o M) para el collar y el arnés.</p>',
+    tallas: TPL_COLLAR + TPL_ARNES + '<p class="size-note"><strong>Correa:</strong> talla única de 1,8 m.</p>' + TIP
+  }
+};
+
+function abrirDetalles(clave, tab){
+  var d = DETALLES_PRODUCTO[clave];
+  if(!d) return;
+  document.getElementById('details-title').textContent = d.titulo;
+  document.getElementById('details-desc').innerHTML = d.desc;
+  document.getElementById('details-tallas').innerHTML = d.tallas;
+  cambiarTabDetalles(tab || 'desc');
+  var overlay = document.getElementById('details-overlay');
+  overlay._lastFocus = document.activeElement;
+  overlay.classList.add('open');
+  overlay.querySelector('.details-sheet').scrollTop = 0;
+  document.body.style.overflow = 'hidden';
+  document.getElementById('details-close').focus();
+}
+function cambiarTabDetalles(tab){
+  var overlay = document.getElementById('details-overlay');
+  overlay.querySelectorAll('.details-tab').forEach(function(b){
+    var on = b.dataset.tab === tab;
+    b.classList.toggle('active', on);
+    b.setAttribute('aria-selected', on ? 'true' : 'false');
+  });
+  overlay.querySelectorAll('.details-panel').forEach(function(p){ p.classList.toggle('active', p.dataset.panel === tab); });
+}
+function cerrarDetalles(){
+  var overlay = document.getElementById('details-overlay');
+  if(!overlay.classList.contains('open')) return;
+  overlay.classList.remove('open');
+  document.body.style.overflow = '';
+  if(overlay._lastFocus && overlay._lastFocus.focus) overlay._lastFocus.focus();
+}
+(function(){
+  var overlay = document.getElementById('details-overlay');
+  if(!overlay) return;
+  overlay.addEventListener('click', function(e){
+    if(e.target === overlay) return cerrarDetalles();
+    var tab = e.target.closest('.details-tab');
+    if(tab) cambiarTabDetalles(tab.dataset.tab);
+  });
+  document.getElementById('details-close').addEventListener('click', cerrarDetalles);
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') cerrarDetalles(); });
+})();
+
+// Visor de imágenes de producto con zoom (clic/toque doble, pellizco, rueda y arrastre)
+(function(){
+  var lb = document.getElementById('lightbox');
+  if(!lb) return;
+  var stage = document.getElementById('lb-stage');
+  var img = document.getElementById('lb-img');
+  var video = document.getElementById('lb-video');
+  var countEl = document.getElementById('lb-count');
+  var tipEl = document.getElementById('lb-tip');
+  var MAX = 4, ZOOM = 2.5;
+  var list = [], idx = 0, scale = 1, tx = 0, ty = 0;
+  var pointers = {}, gesture = null, lastTap = 0, lastFocus = null;
+  var isTouch = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+
+  function clampPan(){
+    var w = img.offsetWidth * scale, h = img.offsetHeight * scale;
+    var maxX = Math.max(0, (w - stage.clientWidth) / 2);
+    var maxY = Math.max(0, (h - stage.clientHeight) / 2);
+    tx = Math.min(maxX, Math.max(-maxX, tx));
+    ty = Math.min(maxY, Math.max(-maxY, ty));
+  }
+  function apply(){
+    if(scale <= 1.01){ scale = 1; tx = 0; ty = 0; }
+    clampPan();
+    img.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')';
+    lb.classList.toggle('zoomed', scale > 1);
+  }
+  // Cambia el zoom manteniendo fijo el punto (cx, cy) de la pantalla
+  function zoomTo(next, cx, cy){
+    next = Math.min(MAX, Math.max(1, next));
+    var r = stage.getBoundingClientRect();
+    var px = cx - (r.left + r.width / 2), py = cy - (r.top + r.height / 2);
+    tx = px - (px - tx) * next / scale;
+    ty = py - (py - ty) * next / scale;
+    scale = next;
+    apply();
+  }
+  function isVideo(){ return lb.classList.contains('is-video'); }
+  function toggleZoom(cx, cy){ if(isVideo()) return; zoomTo(scale > 1 ? 1 : ZOOM, cx, cy); }
+  function show(i){
+    idx = (i + list.length) % list.length;
+    scale = 1; tx = 0; ty = 0; apply();
+    var item = list[idx];
+    var esVideo = item.tagName === 'VIDEO';
+    lb.classList.toggle('is-video', esVideo);
+    video.pause();
+    if(esVideo){
+      var src = item.currentSrc || (item.querySelector('source') || {}).src;
+      if(video.getAttribute('src') !== src) video.src = src;
+      video.poster = item.poster || item.getAttribute('data-poster') || '';
+      var pr = video.play(); if(pr && pr.catch) pr.catch(function(){});
+    } else {
+      img.src = item.src;
+      img.alt = item.alt || '';
+    }
+    tipEl.style.visibility = esVideo ? 'hidden' : '';
+    countEl.textContent = (idx + 1) + ' / ' + list.length;
+  }
+  function open(slides, i){
+    list = slides;
+    lastFocus = document.activeElement;
+    lb.classList.toggle('single', slides.length < 2);
+    tipEl.textContent = isTouch ? 'Toca dos veces o pellizca para hacer zoom' : 'Haz clic o usa la rueda para hacer zoom';
+    show(i);
+    lb.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    document.getElementById('lb-close').focus();
+  }
+  function close(){
+    video.pause();
+    lb.classList.remove('open', 'zoomed', 'dragging', 'is-video');
+    if(typeof sincronizarVideos === 'function') document.querySelectorAll('.prod-card .carousel').forEach(sincronizarVideos);
+    document.body.style.overflow = '';
+    pointers = {}; gesture = null;
+    if(lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  window.wuuffAbrirVisor = open;
+
+  // Abrir al tocar la imagen de un producto
+  document.addEventListener('click', function(e){
+    var gal = e.target.closest && (e.target.closest('.gallery-img') || e.target.closest('.ig-img'));
+    if(gal){
+      var fotos = Array.prototype.slice.call(document.querySelectorAll(gal.classList.contains('ig-img') ? '.ig-img' : '.gallery-img'));
+      open(fotos, fotos.indexOf(gal));
+      return;
+    }
+    var slide = e.target.closest && e.target.closest('.prod-card .carousel-slide');
+    if(!slide) return;
+    var car = slide.closest('.carousel');
+    if(car && car._swipeAt && Date.now() - car._swipeAt < 400) return;
+    var slides = Array.prototype.slice.call(slide.closest('.carousel').querySelectorAll('.carousel-slide'));
+    if(slide.tagName === 'VIDEO') slide.pause();
+    open(slides, slides.indexOf(slide));
+  });
+
+  document.getElementById('lb-close').addEventListener('click', close);
+  document.getElementById('lb-prev').addEventListener('click', function(){ show(idx - 1); });
+  document.getElementById('lb-next').addEventListener('click', function(){ show(idx + 1); });
+  document.addEventListener('keydown', function(e){
+    if(!lb.classList.contains('open')) return;
+    if(e.key === 'Escape') close();
+    else if(e.key === 'ArrowLeft' && list.length > 1) show(idx - 1);
+    else if(e.key === 'ArrowRight' && list.length > 1) show(idx + 1);
+  });
+
+  stage.addEventListener('wheel', function(e){
+    if(isVideo()) return;
+    e.preventDefault();
+    zoomTo(scale * Math.exp(-e.deltaY * 0.0022), e.clientX, e.clientY);
+  }, { passive: false });
+
+  function dist(a, b){ return Math.hypot(a.x - b.x, a.y - b.y); }
+  stage.addEventListener('pointerdown', function(e){
+    if(e.target.closest('.lb-btn') || e.target === video) return;
+    stage.setPointerCapture(e.pointerId);
+    pointers[e.pointerId] = { x: e.clientX, y: e.clientY };
+    var ids = Object.keys(pointers);
+    if(ids.length === 2){
+      var a = pointers[ids[0]], b = pointers[ids[1]];
+      gesture = { type: 'pinch', d: dist(a, b), s: scale, moved: true };
+    } else if(ids.length === 1){
+      gesture = { type: 'pan', x: e.clientX, y: e.clientY, tx: tx, ty: ty, moved: false, onImg: e.target === img && !isVideo() };
+    }
+  });
+  stage.addEventListener('pointermove', function(e){
+    if(!pointers[e.pointerId] || !gesture) return;
+    pointers[e.pointerId] = { x: e.clientX, y: e.clientY };
+    var ids = Object.keys(pointers);
+    if(gesture.type === 'pinch' && ids.length === 2){
+      var a = pointers[ids[0]], b = pointers[ids[1]];
+      lb.classList.add('dragging');
+      zoomTo(gesture.s * dist(a, b) / gesture.d, (a.x + b.x) / 2, (a.y + b.y) / 2);
+    } else if(gesture.type === 'pan'){
+      var dx = e.clientX - gesture.x, dy = e.clientY - gesture.y;
+      if(Math.abs(dx) + Math.abs(dy) > 6) gesture.moved = true;
+      if(scale > 1){
+        lb.classList.add('dragging');
+        tx = gesture.tx + dx; ty = gesture.ty + dy; apply();
+      }
+    }
+  });
+  function endPointer(e){
+    if(!pointers[e.pointerId]) return;
+    delete pointers[e.pointerId];
+    lb.classList.remove('dragging');
+    if(!gesture) return;
+    if(Object.keys(pointers).length) { gesture = { type: 'none', moved: true }; return; }
+    var g = gesture; gesture = null;
+    if(g.type !== 'pan') return;
+    var dx = e.clientX - g.x;
+    if(g.moved){
+      // Deslizar para cambiar de foto cuando no hay zoom
+      if(scale === 1 && list.length > 1 && Math.abs(dx) > 50) show(idx + (dx < 0 ? 1 : -1));
+      return;
+    }
+    if(!g.onImg && scale === 1){ close(); return; }  // toque en el fondo
+    if(e.pointerType === 'mouse'){ toggleZoom(e.clientX, e.clientY); return; }
+    var now = Date.now();
+    if(now - lastTap < 320){ toggleZoom(e.clientX, e.clientY); lastTap = 0; }
+    else lastTap = now;
+  }
+  stage.addEventListener('pointerup', endPointer);
+  stage.addEventListener('pointercancel', endPointer);
+  window.addEventListener('resize', function(){ if(lb.classList.contains('open')) apply(); });
+})();
+
+// Toda la tarjeta lleva a la página del producto (nombre, etiqueta, descripción, precio o puntos destacados);
+// la foto abre el visor y las flechas cambian de foto
+document.addEventListener('click', function(e){
+  var card = e.target.closest && e.target.closest('.prod-card');
+  if(!card || e.target.closest('button, a, input, .carousel')) return;
+  if(!e.target.closest('.prod-body')) return;
+  var link = card.querySelector('.prod-name a');
+  if(link) link.click();
+});
+
+// Carrusel: deslizar con el dedo para cambiar de foto
+(function(){
+  document.querySelectorAll('.prod-card .carousel').forEach(function(c){
+    var x0 = null, y0 = null;
+    c.addEventListener('touchstart', function(e){ if(e.touches.length !== 1) return; x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
+    c.addEventListener('touchend', function(e){
+      if(x0 === null) return;
+      var t = e.changedTouches[0], dx = t.clientX - x0, dy = t.clientY - y0;
+      x0 = null;
+      if(Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.3){
+        c._swipeAt = Date.now();
+        var btn = c.querySelector(dx < 0 ? '.carousel-next' : '.carousel-prev');
+        if(btn) moveCarousel(btn, dx < 0 ? 1 : -1);
+      }
+    }, { passive: true });
+  });
+})();
+
+// Carrusel de imágenes de producto
+function moveCarousel(btn, dir){
+  var carousel = btn.closest('.carousel');
+  var slides = carousel.querySelectorAll('.carousel-slide');
+  var dots = carousel.querySelectorAll('.carousel-dot');
+  var current = 0;
+  slides.forEach(function(s, i){ if(s.classList.contains('active')) current = i; });
+  var next = (current + dir + slides.length) % slides.length;
+  slides[current].classList.remove('active');
+  dots[current].classList.remove('active');
+  slides[next].classList.add('active');
+  dots[next].classList.add('active');
+  sincronizarVideos(carousel);
+}
+
+function goToSlide(dot, index){
+  var carousel = dot.closest('.carousel');
+  var slides = carousel.querySelectorAll('.carousel-slide');
+  var dots = carousel.querySelectorAll('.carousel-dot');
+  slides.forEach(function(s){ s.classList.remove('active'); });
+  dots.forEach(function(d){ d.classList.remove('active'); });
+  slides[index].classList.add('active');
+  dots[index].classList.add('active');
+  sincronizarVideos(carousel);
+}
+
+// Reproduce el video del carrusel solo si es la diapositiva activa y la tarjeta está en pantalla
+function sincronizarVideos(carousel){
+  var primera = carousel.querySelector('.carousel-slide');
+  carousel.classList.toggle('en-portada', !!primera && primera.classList.contains('active'));
+  carousel.querySelectorAll('video.carousel-slide').forEach(function(v){
+    if(v.classList.contains('active') && carousel._visible !== false){
+      var pr = v.play();
+      if(pr && pr.catch) pr.catch(function(){});
+    } else {
+      v.pause();
+    }
+  });
+}
+(function(){
+  var carousels = document.querySelectorAll('.prod-card .carousel');
+  if(!('IntersectionObserver' in window)) return;
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      e.target._visible = e.isIntersecting;
+      sincronizarVideos(e.target);
+    });
+  }, { threshold: 0.4 });
+  carousels.forEach(function(c){ io.observe(c); });
+})();
+
+// Paso 1: elegir ciudad (envío) antes de pagar
+var pendingPurchase = null;
+
+// ¿La compra en curso es el Combo completo? (tarjeta del combo o armador con las 3 piezas)
+function esComboCompleto(nombreProducto){
+  var n = String(nombreProducto || '');
+  return n.indexOf('Combo completo') === 0 || (n === 'Combo personalizado' && window.wuuffComboEsCompleto === true);
+}
+
+// Reglas de envío en Bogotá / Soacha (oct 2026):
+// - Pedidos desde $49.900: envío GRATIS y, en Bogotá, pago contraentrega (efectivo) o en línea.
+// - Pedidos menores (ej. la placa sola): pagan ENVIO_BOGOTA_PEQUENO y se pagan en línea.
+var MINIMO_ENVIO_GRATIS_CENTS = 4990000;   // $49.900
+var ENVIO_BOGOTA_PEQUENO = 8000;           // envío en Bogotá para pedidos menores al mínimo
+var WHATSAPP_TIENDA = '573176431286';
+function esOpcionBogota(opcion){
+  return !!opcion && opcion.value === 'Bogotá / Soacha';
+}
+function pedidoAlcanzaMinimo(){
+  return !!pendingPurchase && pendingPurchase.baseAmountInCents >= MINIMO_ENVIO_GRATIS_CENTS;
+}
+function envioGratisAplica(opcion){
+  return esOpcionBogota(opcion) && pedidoAlcanzaMinimo();
+}
+// Costo del envío (en pesos) según la opción elegida y el valor del pedido
+function costoEnvio(opcion){
+  if(!opcion) return 0;
+  if(esOpcionBogota(opcion)) return pedidoAlcanzaMinimo() ? 0 : ENVIO_BOGOTA_PEQUENO;
+  return parseInt(opcion.dataset.shipping, 10) || 0;
+}
+// La contraentrega solo aplica en Bogotá (no Soacha ni otras ciudades) y desde el mínimo
+function contraentregaDisponible(){
+  var select = document.getElementById('envio-ciudad');
+  var ciudad = document.getElementById('envio-ciudad-nombre');
+  var opcion = select ? select.options[select.selectedIndex] : null;
+  return esOpcionBogota(opcion) && pedidoAlcanzaMinimo() &&
+    !!ciudad && /bogot/i.test(ciudad.value) && !/soacha/i.test(ciudad.value);
+}
+function metodoPagoElegido(){
+  if(!contraentregaDisponible()) return 'wompi';
+  var r = document.querySelector('input[name="metodo_pago"]:checked');
+  return r ? r.value : 'contraentrega';
+}
+// Muestra u oculta la elección de pago y ajusta el texto del botón
+function actualizarMetodoPago(){
+  var box = document.getElementById('metodo-pago-box');
+  var btn = document.getElementById('envio-submit');
+  var disponible = contraentregaDisponible();
+  if(box) box.hidden = !disponible;
+  var metodo = metodoPagoElegido();
+  if(btn && !btn.disabled) btn.textContent = metodo === 'contraentrega' ? 'Confirmar pedido 🐾' : 'Continuar al pago 💳';
+}
+// Actualiza el texto de la opción de Bogotá y el aviso según la compra en curso
+function actualizarEnvioGratis(){
+  var select = document.getElementById('envio-ciudad');
+  var aviso = document.getElementById('envio-gratis-aviso');
+  if(!select || !pendingPurchase) return;
+  var opcionBogota = select.querySelector('option[value="Bogotá / Soacha"]');
+  if(opcionBogota){
+    opcionBogota.textContent = pedidoAlcanzaMinimo()
+      ? 'Bogotá / Soacha — envío GRATIS 🎉'
+      : 'Bogotá / Soacha — envío ' + formatoPesos(ENVIO_BOGOTA_PEQUENO * 100);
+  }
+  if(aviso){
+    aviso.innerHTML = pedidoAlcanzaMinimo()
+      ? '🚚 <strong>Envío gratis en Bogotá / Soacha</strong>. En Bogotá puedes <strong>pagar en efectivo al recibir</strong> 💵'
+      : '🚚 Envío gratis y pago al recibir en Bogotá en pedidos desde <strong>$49.900</strong>. Agrega un collar, arnés o el set y tu placa queda en $24.900.';
+    aviso.style.display = 'block';
+  }
+  actualizarMetodoPago();
+}
+document.addEventListener('change', function(e){
+  if(!e.target) return;
+  if(e.target.id === 'envio-ciudad' || e.target.name === 'metodo_pago') actualizarMetodoPago();
+});
+document.addEventListener('input', function(e){
+  if(e.target && e.target.id === 'envio-ciudad-nombre') actualizarMetodoPago();
+});
+
+// Selección de talla en cada tarjeta de producto
+function seleccionarTalla(chip){
+  var row = chip.closest('.size-row');
+  if(!row) return;
+  row.querySelectorAll('.size-chip').forEach(function(c){ c.classList.remove('selected'); });
+  chip.classList.add('selected');
+  row.classList.remove('needs-size', 'shake');
+  var aviso = row.parentNode.querySelector('.size-alert');
+  if(aviso) aviso.classList.remove('show');
+
+  // Muestra la tabla de medidas de la talla elegida
+  var card = chip.closest('.prod-card');
+  var medidas = card ? card.querySelector('.size-medidas') : null;
+  if(!medidas) return;
+  var texto = chip.textContent.trim();
+  var tablaMedidas = {
+    'Talla S': 'Talla S: cuello 20–34 cm · pecho 23–38 cm',
+    'S': 'Talla S: cuello 20–34 cm · pecho 23–38 cm',
+    'Talla M': 'Talla M: cuello 24–38 cm · pecho 32–53 cm',
+    'M': 'Talla M: cuello 24–38 cm · pecho 32–53 cm'
+  };
+  if(tablaMedidas[texto]){
+    medidas.textContent = '📏 ' + tablaMedidas[texto];
+    medidas.style.display = 'block';
+  }
+}
+
+// Selector de cantidad por producto
+function cambiarCantidad(btn, delta){
+  var row = btn.closest('.qty-row');
+  if(!row) return;
+  var span = row.querySelector('.qty-value');
+  var val = parseInt(span.textContent, 10) + delta;
+  if(val < 1) val = 1;
+  if(val > 10) val = 10;
+  span.textContent = val;
+}
+
+// Aviso (en la tarjeta) cuando intentan comprar sin elegir talla
+function avisarTalla(card){
+  if(!card) return;
+  var row = card.querySelector('.size-row');
+  if(!row) return;
+  var tip = card.querySelector('.size-alert');
+  if(!tip){
+    tip = document.createElement('div');
+    tip.className = 'size-alert';
+    tip.setAttribute('role', 'alert');
+    var clave = claveProducto(card);
+    var m = clave && clave !== 'correa' ? [null, clave] : null;
+    tip.innerHTML = '<span class="size-alert-icon">📏</span><div><strong>Elige una talla</strong><span class="size-alert-text">Selecciona la talla de tu perrihijo para continuar con la compra.</span>' +
+      (m ? '<button type="button" class="size-alert-link" onclick="abrirDetalles(\'' + m[1] + '\', \'tallas\')">Ver guía de tallas →</button>' : '') + '</div>';
+    row.parentNode.insertBefore(tip, row);
+  }
+  tip.classList.remove('show'); row.classList.remove('shake', 'needs-size');
+  void tip.offsetWidth;
+  tip.classList.add('show'); row.classList.add('shake', 'needs-size');
+  var r = tip.getBoundingClientRect();
+  if(r.top < 80 || r.bottom > window.innerHeight) tip.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  clearTimeout(tip._timer);
+  tip._timer = setTimeout(function(){ tip.classList.remove('show'); row.classList.remove('needs-size'); }, 5000);
+}
+
+// Selector de talla: aparece al pulsar Comprar (o el precio) sin haber elegido talla.
+// Al escoger una talla, la marca en la tarjeta y continúa la compra.
+var MEDIDAS_TALLA = {
+  collar: { S: 'Cuello 20–34 cm', M: 'Cuello 24–38 cm' },
+  arnes:  { S: 'Cuello 20–34 cm\nPecho 23–38 cm', M: 'Cuello 24–38 cm\nPecho 32–53 cm' },
+  combo:  { S: 'Cuello 20–34 cm\nPecho 23–38 cm', M: 'Cuello 24–38 cm\nPecho 32–53 cm' }
+};
+function claveProducto(card){
+  var det = card && card.querySelector('.btn-details');
+  return (det && det.getAttribute('data-clave')) || '';
+}
+function abrirSelectorTalla(card, btn){
+  var overlay = document.getElementById('talla-overlay');
+  if(!overlay || !card) return false;
+  var chips = card.querySelectorAll('.size-chip');
+  if(!chips.length) return false;
+  var clave = claveProducto(card);
+  var nombre = (card.querySelector('.prod-name') || {}).textContent || '';
+  document.getElementById('talla-sub').textContent = nombre ? 'Para tu ' + nombre.toLowerCase() + '. Luego sigues con tus datos de envío.' : '';
+  var cont = document.getElementById('talla-opciones');
+  cont.innerHTML = '';
+  chips.forEach(function(chip){
+    var t = chip.textContent.trim().replace(/^Talla\s+/i, '');
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'talla-op';
+    var med = (MEDIDAS_TALLA[clave] || {})[t] || '';
+    b.innerHTML = '<strong>' + t + '</strong>' + (med ? '<span>' + med + '</span>' : '');
+    b.addEventListener('click', function(){
+      seleccionarTalla(chip);
+      cerrarSelectorTalla();
+      try { if(window.gtag) gtag('event', 'talla_desde_selector', { talla: t, item_name: nombre }); } catch(e){}
+      (btn || card.querySelector('.btn-buy')).click();
+    });
+    cont.appendChild(b);
+  });
+  var guia = document.getElementById('talla-guia');
+  guia.style.display = clave ? '' : 'none';
+  guia.onclick = function(){ cerrarSelectorTalla(); abrirDetalles(clave, 'tallas'); };
+  overlay._lastFocus = document.activeElement;
+  overlay.classList.add('open');
+  overlay.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+  var primero = cont.querySelector('.talla-op');
+  if(primero) primero.focus({ preventScroll: true });
+  return true;
+}
+function cerrarSelectorTalla(){
+  var overlay = document.getElementById('talla-overlay');
+  if(!overlay || !overlay.classList.contains('open')) return;
+  overlay.classList.remove('open');
+  overlay.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+}
+(function(){
+  var overlay = document.getElementById('talla-overlay');
+  if(!overlay) return;
+  overlay.addEventListener('click', function(e){ if(e.target === overlay) cerrarSelectorTalla(); });
+  document.getElementById('talla-cerrar').addEventListener('click', cerrarSelectorTalla);
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') cerrarSelectorTalla(); });
+})();
+
+function comprarProducto(btn, amountInCents, nombreBase){
+  var card = btn.closest('.prod-card');
+  var chip = card ? card.querySelector('.size-chip.selected') : null;
+  if(!chip){
+    if(!abrirSelectorTalla(card, btn)) avisarTalla(card);
+    return;
+  }
+  var qtyEl = card ? card.querySelector('.qty-value') : null;
+  var qty = qtyEl ? parseInt(qtyEl.textContent, 10) : 1;
+  var tallaTexto = chip.textContent.trim();
+  var nombreCompleto = nombreBase + ' (' + tallaTexto + ')';
+  if(qty > 1) nombreCompleto += ' x' + qty;
+  iniciarCompra(amountInCents * qty, nombreCompleto, tallaTexto);
+}
+
+// Códigos de descuento (por ahora solo el del concurso de Halloween)
+var CODIGOS = {
+  WUUFFHALLOWEEN: {
+    desde: new Date('2026-10-26T00:00:00-05:00'),
+    hasta: new Date('2026-11-03T00:00:00-05:00'),   // válido hasta el 2 de noviembre a medianoche (hora Colombia)
+    descuentoCents: 1579000,                         // 10 % del combo completo ($157.900)
+    texto: '10 % en el combo completo'
+  }
+};
+function revisarCodigo(texto){
+  var codigo = String(texto || '').trim().toUpperCase().replace(/\s+/g, '');
+  if(!codigo) return { ok: false, vacio: true };
+  var c = CODIGOS[codigo];
+  if(!c) return { ok: false, msg: 'Ese código no existe. Revísalo e intenta de nuevo.' };
+  var ahora = new Date();
+  if(ahora < c.desde) return { ok: false, msg: 'Este código se puede usar del 26 de octubre al 2 de noviembre de 2026.' };
+  if(ahora >= c.hasta) return { ok: false, msg: 'Este código ya venció: era válido hasta el 2 de noviembre de 2026.' };
+  if(!pendingPurchase || !esComboCompleto(pendingPurchase.nombreProducto)) return { ok: false, msg: 'Este código aplica solo al combo completo (collar + arnés tipo H + correa).' };
+  return { ok: true, codigo: codigo, descuentoCents: c.descuentoCents, msg: '✅ Código aplicado: ' + c.texto + ' (−' + formatoPesos(c.descuentoCents) + ').' };
+}
+function mostrarCodigo(res){
+  var msg = document.getElementById('codigo-msg');
+  if(!msg) return;
+  msg.textContent = res && !res.vacio ? res.msg : '';
+  msg.className = 'codigo-msg' + (res && !res.vacio ? (res.ok ? ' ok' : ' error') : '');
+}
+document.addEventListener('click', function(e){
+  if(e.target && e.target.id === 'codigo-aplicar') mostrarCodigo(revisarCodigo(document.getElementById('envio-codigo').value));
+});
+document.addEventListener('keydown', function(e){
+  if(e.target && e.target.id === 'envio-codigo' && e.key === 'Enter'){ e.preventDefault(); mostrarCodigo(revisarCodigo(e.target.value)); }
+});
+
+function iniciarCompra(baseAmountInCents, nombreProducto, talla){
+  if(window.cargarWompi) window.cargarWompi().catch(function(){});
+  if(!baseAmountInCents || baseAmountInCents <= 0){
+    alert('Selecciona al menos un producto antes de continuar.');
+    return;
+  }
+  pendingPurchase = { baseAmountInCents: baseAmountInCents, nombreProducto: nombreProducto, talla: talla, esCombo: esComboCompleto(nombreProducto) };
+  mostrarCodigo(null);
+  actualizarEnvioGratis();
+  var tallaField = document.getElementById('envio-talla');
+  var tallaDisplay = document.getElementById('shipping-talla-display');
+  if(tallaField) tallaField.value = talla || '';
+  if(tallaDisplay){
+    if(talla){
+      tallaDisplay.textContent = 'Talla elegida: ' + talla;
+      tallaDisplay.style.display = 'block';
+    } else {
+      tallaDisplay.style.display = 'none';
+    }
+  }
+  var conPlaca = /Placa Inteligente Wuuff|Placa NFC/.test(nombreProducto);
+  var perfilBox = document.getElementById('perfil-placa');
+  if(perfilBox){
+    perfilBox.hidden = !conPlaca;
+    ['perfil-especie', 'perfil-sexo', 'perfil-raza'].forEach(function(id){ document.getElementById(id).required = conPlaca; });
+  }
+  document.getElementById('shipping-modal-overlay').classList.add('open');
+}
+
+// Delegación de eventos: funciona sin importar el orden del HTML
+// Cerrar la compra: con "Cancelar", tocando afuera del formulario o con Esc.
+// Si la persona llegó desde la página de un producto, vuelve a esa página.
+window.wuuffVolverA = null;
+function cerrarCompra(){
+  var overlay = document.getElementById('shipping-modal-overlay');
+  if(!overlay || !overlay.classList.contains('open')) return;
+  overlay.classList.remove('open');
+  pendingPurchase = null;
+  var volver = window.wuuffVolverA;
+  if(!volver) return;
+  window.wuuffVolverA = null;
+  var ref = null;
+  try { ref = document.referrer ? new URL(document.referrer) : null; } catch(err){}
+  if(ref && ref.origin === location.origin && ref.pathname === volver && history.length > 1) history.back();
+  else location.href = volver;
+}
+var toqueEnFondo = false;
+document.addEventListener('mousedown', function(e){ toqueEnFondo = !!(e.target && e.target.id === 'shipping-modal-overlay'); });
+document.addEventListener('click', function(e){
+  if(!e.target) return;
+  if(e.target.id === 'shipping-modal-cancel') cerrarCompra();
+  // Solo cierra si el toque empezó y terminó en el fondo (no al arrastrar desde un campo)
+  else if(e.target.id === 'shipping-modal-overlay' && toqueEnFondo) cerrarCompra();
+});
+document.addEventListener('keydown', function(e){ if(e.key === 'Escape') cerrarCompra(); });
+
+document.addEventListener('submit', function(e){
+  if(!e.target || e.target.id !== 'datos-envio-form') return;
+  e.preventDefault();
+  if(!pendingPurchase) return;
+
+  var form = e.target;
+  var nombre = document.getElementById('envio-nombre').value;
+  var mascota = document.getElementById('envio-mascota').value;
+  var telefono = document.getElementById('envio-telefono').value;
+  var correo = document.getElementById('envio-correo').value;
+  var direccion = document.getElementById('envio-direccion').value;
+  var ciudadNombre = document.getElementById('envio-ciudad-nombre').value;
+
+  var citySelect = document.getElementById('envio-ciudad');
+  var selectedOption = citySelect.options[citySelect.selectedIndex];
+  var shippingCents = costoEnvio(selectedOption) * 100;
+  var metodoPago = metodoPagoElegido();
+
+  var totalCents = pendingPurchase.baseAmountInCents + shippingCents;
+  var nombreProducto = pendingPurchase.nombreProducto;
+  // Código de descuento: si escribieron uno que no aplica, se avisa y no se sigue al pago
+  var campoCodigo = document.getElementById('envio-codigo');
+  var cod = revisarCodigo(campoCodigo ? campoCodigo.value : '');
+  if(!cod.ok && !cod.vacio){ mostrarCodigo(cod); campoCodigo.focus(); return; }
+  if(cod.ok){
+    mostrarCodigo(cod);
+    totalCents -= cod.descuentoCents;
+    nombreProducto += ' [Código ' + cod.codigo + ': -' + formatoPesos(cod.descuentoCents) + ']';
+  }
+
+  // Placa NFC: se crea el perfil de la mascota (su dirección es la que se graba en el chip)
+  if(/Placa Inteligente Wuuff|Placa NFC/.test(nombreProducto)){
+    if(!pendingPurchase.perfil){
+      crearPerfilPlaca(form, { mascota: mascota, especie: document.getElementById('perfil-especie').value,
+        sexo: document.getElementById('perfil-sexo').value, raza: document.getElementById('perfil-raza').value.trim(),
+        contactoNombre: nombre, telefono: telefono, ciudad: ciudadNombre, correo: correo });
+      return;
+    }
+    nombreProducto += ' | Perfil NFC: ' + (pendingPurchase.perfil.pendiente || pendingPurchase.perfil.id);
+  }
+  var perfilPlaca = pendingPurchase.perfil && pendingPurchase.perfil.id ? pendingPurchase.perfil : null;
+
+
+  var customerData = {
+    fullName: nombre,
+    email: correo,
+    phoneNumber: telefono,
+    phoneNumberPrefix: '+57'
+  };
+
+  // Guardamos correo, mascota y producto en addressLine2 para que viajen
+  // junto con la transacción de Wompi (visibles en su panel y en el webhook) —
+  // así el registro del pedido no depende del navegador del cliente.
+  var shippingAddress = {
+    addressLine1: direccion,
+    addressLine2: 'Correo: ' + correo + ' | Mascota: ' + mascota + ' | Producto: ' + nombreProducto,
+    city: ciudadNombre,
+    region: 'Colombia',
+    country: 'CO',
+    phoneNumber: telefono,
+    name: nombre
+  };
+
+  if(metodoPago === 'contraentrega'){
+    enviarPedidoContraentrega(form, {
+      nombre: nombre, mascota: mascota, telefono: telefono, correo: correo,
+      direccion: direccion, ciudad: ciudadNombre, talla: pendingPurchase.talla || '',
+      producto: nombreProducto, totalCents: totalCents,
+      perfilId: perfilPlaca ? perfilPlaca.id : '',
+      honeypot: (form.querySelector('[name="bot-field-envio"]') || {}).value || ''
+    });
+    return;
+  }
+
+  var overlay = document.getElementById('shipping-modal-overlay');
+  if(overlay) overlay.classList.remove('open');
+  pendingPurchase = null;
+  form.reset();
+
+  pagarConWompi(totalCents, nombreProducto, customerData, shippingAddress);
+});
+
+// Pago contraentrega (Bogotá): registra el pedido sin pasar por Wompi y pide confirmarlo por WhatsApp
+function enviarPedidoContraentrega(form, pedido){
+  var btn = document.getElementById('envio-submit');
+  if(btn){ btn.disabled = true; btn.textContent = 'Enviando tu pedido…'; }
+  fetch('/.netlify/functions/pedido-contraentrega', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(pedido)
+  })
+    .then(function(r){ return r.json().then(function(j){ if(!r.ok || !j.ok) throw new Error((j && j.error) || ('HTTP ' + r.status)); return j; }); })
+    .then(function(j){
+      if(btn) btn.disabled = false;
+      var overlay = document.getElementById('shipping-modal-overlay');
+      if(overlay) overlay.classList.remove('open');
+      pendingPurchase = null;
+      form.reset();
+      actualizarMetodoPago();
+      if(typeof window.wuuffCompraAprobada === 'function') window.wuuffCompraAprobada(j.referencia, pedido.totalCents, 'contraentrega');
+      mostrarPedidoRecibido(pedido, j.referencia);
+    })
+    .catch(function(err){
+      console.error('No se pudo registrar el pedido contraentrega', err);
+      if(btn) btn.disabled = false;
+      actualizarMetodoPago();
+      alert('No pudimos registrar tu pedido. Intenta de nuevo o escríbenos por WhatsApp y te lo tomamos por ahí 🐾');
+    });
+}
+
+// Ventana final: total a pagar en efectivo + botón para confirmar por WhatsApp
+function mostrarPedidoRecibido(pedido, referencia){
+  var total = formatoPesos(pedido.totalCents);
+  var texto = '¡Hola Wuuff Puppy! 🐾 Quiero confirmar mi pedido contraentrega ' + referencia + '\n' +
+    '• ' + pedido.producto.replace(/\s*\|\s*Perfil NFC:.*$/, '') + '\n' +
+    '• Total a pagar al recibir: ' + total + '\n' +
+    '• Dirección: ' + pedido.direccion + ', ' + pedido.ciudad + '\n' +
+    '• A nombre de: ' + pedido.nombre;
+  document.getElementById('pedido-ok-total').textContent = total;
+  document.getElementById('pedido-ok-ref').textContent = referencia;
+  document.getElementById('pedido-ok-whatsapp').href = 'https://wa.me/' + WHATSAPP_TIENDA + '?text=' + encodeURIComponent(texto);
+  document.getElementById('pedido-ok-overlay').classList.add('open');
+}
+document.addEventListener('click', function(e){
+  if(e.target && (e.target.id === 'pedido-ok-cerrar' || e.target.id === 'pedido-ok-overlay')){
+    document.getElementById('pedido-ok-overlay').classList.remove('open');
+    if(typeof ofrecerCompletarPerfil === 'function') ofrecerCompletarPerfil();
+  }
+});
+
+
+function formatoPesos(cents){ return '$' + Math.round(cents / 100).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
+
+
+// Placa NFC: crea el perfil con los datos básicos y vuelve a enviar el formulario para seguir con la compra
+function crearPerfilPlaca(form, datos){
+  if(!datos.especie || !datos.sexo || !datos.raza){
+    alert('Completa la especie, el sexo y la raza para el perfil de la placa.');
+    return;
+  }
+  var btn = document.getElementById('envio-submit');
+  if(btn){ btn.disabled = true; btn.textContent = 'Creando el perfil…'; }
+  function seguir(){
+    if(btn) btn.disabled = false;
+    form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+  }
+  function intentar(n){
+    fetch('/.netlify/functions/perfil-crear', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) })
+      .then(function(r){ return r.json().then(function(j){ if(!r.ok || !j.id) throw new Error((j && j.error) || ('HTTP ' + r.status)); return j; }); })
+      .then(function(j){
+        if(!pendingPurchase) return;
+        pendingPurchase.perfil = { id: j.id, clave: j.clave };
+        try { sessionStorage.setItem('wuuff_perfil', JSON.stringify({ id: j.id, clave: j.clave, mascota: datos.mascota })); } catch(e){}
+        seguir();
+      })
+      .catch(function(err){
+        console.error('No se pudo crear el perfil NFC', err);
+        if(n < 2){ setTimeout(function(){ intentar(n + 1); }, 1500); return; }
+        // La venta no se bloquea: el pedido lleva los datos y el servidor crea el perfil al registrarlo
+        if(!pendingPurchase) return;
+        pendingPurchase.perfil = { pendiente: 'pendiente (' + datos.especie + ', ' + datos.sexo + ', ' + datos.raza.replace(/[(),|]/g, ' ') + ')' };
+        seguir();
+      });
+  }
+  intentar(1);
+}
+// Después de comprar una placa: invita a completar el perfil (foto, vacunas, veterinaria)
+// Reseñas de Clientes en Google: después de un pago aprobado, Google le ofrece al cliente
+// una encuesta (la recibe por correo cuando ya tiene el pedido) para calificar la tienda.
+var GOOGLE_MERCHANT_ID = 5867505690;
+function guardarDatosResena(reference, email){
+  try { sessionStorage.setItem('wuuff_resena', JSON.stringify({ ref: reference, email: email })); } catch(e){}
+}
+function ofrecerResenaGoogle(reference){
+  var d = null;
+  try { d = JSON.parse(sessionStorage.getItem('wuuff_resena') || 'null'); sessionStorage.removeItem('wuuff_resena'); } catch(e){}
+  if(!d || !d.email || !/@/.test(d.email)) return;
+  // despacho 1–2 días hábiles + entrega 2–5 días: la encuesta llega cuando ya tiene el pedido
+  var entrega = new Date(Date.now() + 8 * 864e5);
+  var fecha = entrega.getFullYear() + '-' + String(entrega.getMonth() + 1).padStart(2, '0') + '-' + String(entrega.getDate()).padStart(2, '0');
+  window.renderOptIn = function(){
+    window.gapi.load('surveyoptin', function(){
+      window.gapi.surveyoptin.render({
+        // REQUIRED FIELDS
+        "merchant_id": GOOGLE_MERCHANT_ID,
+        "order_id": String(reference || d.ref),
+        "email": d.email,
+        "delivery_country": "CO",
+        "estimated_delivery_date": fecha
+      });
+    });
+  };
+  if(window.cargarScript) window.cargarScript('https://apis.google.com/js/platform.js?onload=renderOptIn').catch(function(){});
+}
+
+function ofrecerCompletarPerfil(){
+  var p = null;
+  try { p = JSON.parse(sessionStorage.getItem('wuuff_perfil') || 'null'); sessionStorage.removeItem('wuuff_perfil'); } catch(e){}
+  if(!p || !p.id) return;
+  if(confirm('🏷️ Tu Placa Inteligente ya tiene perfil. ¿Quieres completarlo ahora con la foto, vacunas y veterinaria de ' + (p.mascota || 'tu mascota') + '?\n\nTambién te enviamos el enlace al correo.')){
+    location.href = '/placa-nfc/perfil/#id=' + encodeURIComponent(p.id) + '&clave=' + encodeURIComponent(p.clave);
+  }
+}
+
+// Paso 2: pago con Wompi (producción)
+var WOMPI_PUBLIC_KEY = 'pub_prod_bMJoSYDpbi1X897N35gXBmAZ5OArOgJr';
+
+function generarReferenciaWompi(){
+  return 'WP-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8).toUpperCase();
+}
+
+function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddress){
+  if(!amountInCents || amountInCents <= 0){
+    alert('Selecciona al menos un producto antes de continuar.');
+    return;
+  }
+  var reference = generarReferenciaWompi();
+
+  fetch('/.netlify/functions/wompi-signature', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ reference: reference, amountInCents: amountInCents })
+  })
+  .then(function(resp){
+    if(!resp.ok){ throw new Error('No se pudo generar la firma de pago'); }
+    return resp.json();
+  })
+  .then(function(data){
+    guardarDatosResena(reference, customerData && customerData.email);
+    // espera el widget de Wompi si todavía no terminó de descargarse
+    return window.cargarWompi().then(function(){ return data; }, function(){ return data; });
+  })
+  .then(function(data){
+    var config = {
+      currency: 'COP',
+      amountInCents: amountInCents,
+      reference: reference,
+      publicKey: WOMPI_PUBLIC_KEY,
+      signature: { integrity: data.signature },
+      redirectUrl: window.location.origin + window.location.pathname
+    };
+    if(customerData){ config.customerData = customerData; }
+    if(shippingAddress){ config.shippingAddress = shippingAddress; }
+    if(typeof WidgetCheckout !== 'function'){
+      alert('El pago aún está cargando. Espera un segundo e inténtalo de nuevo.');
+      return;
+    }
+    var checkout = new WidgetCheckout(config);
+    checkout.open(function(result){
+      // El registro del pedido y el correo de confirmación los maneja
+      // el webhook de Wompi (más confiable que depender de que el
+      // cliente vuelva a esta página). Aquí solo damos aviso inmediato.
+      var transaction = result.transaction;
+      if(transaction && transaction.status === 'APPROVED'){
+        if(typeof window.wuuffCompraAprobada === 'function'){
+          window.wuuffCompraAprobada(transaction.id, transaction.amountInCents || amountInCents);
+        }
+        alert('🎉 ¡Pago aprobado! Gracias por tu compra' + (nombreProducto ? ' de ' + nombreProducto : '') + '. Te llegará un correo de confirmación en breve.');
+        ofrecerCompletarPerfil();
+        ofrecerResenaGoogle(reference);
+      } else if(transaction){
+        alert('El pago quedó en estado: ' + transaction.status + '. Si el banco lo confirma más tarde, te llegará igual el correo de confirmación.');
+      }
+    });
+  })
+  .catch(function(err){
+    console.error(err);
+    alert('Hubo un problema iniciando el pago. Intenta de nuevo o escríbenos por WhatsApp.');
+  });
+}
+
+// Aviso al volver de Wompi (algunos métodos redirigen fuera y regresan aquí)
+(function(){
+  var params = new URLSearchParams(window.location.search);
+  var transactionId = params.get('id');
+  if(!transactionId) return;
+
+  fetch('/.netlify/functions/wompi-check-status?id=' + encodeURIComponent(transactionId))
+    .then(function(resp){ return resp.json(); })
+    .then(function(data){
+      if(!data || !data.status) return;
+      if(data.status === 'APPROVED'){
+        if(typeof window.wuuffCompraAprobada === 'function'){
+          window.wuuffCompraAprobada(transactionId, data.amountInCents);
+        }
+        alert('🎉 ¡Pago aprobado! Gracias por tu compra. Te llegará un correo de confirmación en breve.');
+        ofrecerCompletarPerfil();
+        ofrecerResenaGoogle(data.reference);
+      } else {
+        alert('El pago quedó en estado: ' + data.status + '. Si el banco lo confirma más tarde, te llegará igual el correo de confirmación.');
+      }
+      var urlLimpia = window.location.origin + window.location.pathname;
+      window.history.replaceState({}, document.title, urlLimpia);
+    })
+    .catch(function(err){ console.error('No se pudo verificar el pago al volver', err); });
+})();
+</script>
+<!-- MODAL ENVÍO -->
+<div class="shipping-modal-overlay" id="shipping-modal-overlay">
+  <div class="shipping-modal">
+    <h3>Datos de envío 📦</h3>
+    <div class="shipping-talla-display" id="shipping-talla-display"></div>
+    <p class="shipping-modal-sub">Los necesitamos para tu pedido y para incluir una tarjeta personalizada 💌</p>
+    <form id="datos-envio-form" name="datos-envio" method="POST" data-netlify="true" netlify-honeypot="bot-field-envio">
+      <input type="hidden" name="form-name" value="datos-envio">
+      <input type="hidden" id="envio-talla" name="talla" value="">
+      <p class="hp-field"><label>No llenar: <input name="bot-field-envio"></label></p>
+      <input type="text" id="envio-nombre" name="nombre" placeholder="Tu nombre completo" required class="shipping-input" aria-label="Tu nombre completo">
+      <input type="text" id="envio-mascota" name="mascota" placeholder="Nombre de tu perrihijo" required class="shipping-input" aria-label="Nombre de tu perrihijo">
+      <div class="perfil-placa" id="perfil-placa" hidden>
+        <p class="perfil-titulo">🏷️ Perfil de la Placa Inteligente</p>
+        <p class="perfil-sub">Esto es lo que verá quien escanee la placa: el nombre de tu perrihijo, estos datos y tu teléfono. Después de comprar podrás agregar su foto, vacunas y veterinaria.</p>
+        <div class="perfil-grid">
+          <select id="perfil-especie" class="shipping-input shipping-select" aria-label="Especie"><option value="">Especie</option><option>Perro</option><option>Gato</option></select>
+          <select id="perfil-sexo" class="shipping-input shipping-select" aria-label="Sexo"><option value="">Sexo</option><option>Macho</option><option>Hembra</option></select>
+        </div>
+        <input type="text" id="perfil-raza" class="shipping-input" maxlength="60" placeholder="Raza (ej: Beagle, criollo…)" aria-label="Raza">
+      </div>
+      <input type="tel" id="envio-telefono" name="telefono" placeholder="Teléfono / WhatsApp" required class="shipping-input" aria-label="Teléfono / WhatsApp">
+      <input type="email" id="envio-correo" name="correo" placeholder="Correo electrónico" required class="shipping-input" aria-label="Correo electrónico">
+      <input type="text" id="envio-direccion" name="direccion" placeholder="Dirección exacta (calle, número, apto/casa)" required class="shipping-input" aria-label="Dirección exacta (calle, número, apto/casa)">
+      <input type="text" id="envio-ciudad-nombre" name="ciudad" placeholder="Ciudad (ej: Bogotá, Medellín, Cali...)" required class="shipping-input" aria-label="Ciudad (ej: Bogotá, Medellín, Cali...)">
+      <select id="envio-ciudad" name="tipo_envio" required class="shipping-input shipping-select" aria-label="Tipo de envío">
+        <option value="" disabled selected>Tipo de envío</option>
+        <option value="Bogotá / Soacha" data-shipping="0">Bogotá / Soacha — envío GRATIS 🎉</option>
+        <option value="Otra ciudad de Colombia" data-shipping="18500">Otra ciudad de Colombia — envío $18.500</option>
+      </select>
+      <div class="envio-gratis-aviso" id="envio-gratis-aviso" style="display:none;"></div>
+      <fieldset class="metodo-pago-box" id="metodo-pago-box" hidden>
+        <legend>¿Cómo quieres pagar?</legend>
+        <label class="metodo-pago-op"><input type="radio" name="metodo_pago" value="contraentrega" checked>
+          <span><strong>💵 Pago contraentrega</strong><small>Pagas en efectivo cuando recibes tu pedido. Te confirmamos por WhatsApp antes de enviarlo.</small></span></label>
+        <label class="metodo-pago-op"><input type="radio" name="metodo_pago" value="wompi">
+          <span><strong>💳 Pagar ahora en línea</strong><small>Tarjeta, PSE, Nequi, Daviplata o Bancolombia con Wompi.</small></span></label>
+      </fieldset>
+      <p class="envio-despacho">🚀 Despachamos tu pedido en <strong>1–2 días hábiles</strong>. Entrega de 2 a 5 días según tu ciudad.</p>
+      <div class="codigo-box">
+        <label for="envio-codigo" class="codigo-label">¿Tienes un código de descuento?</label>
+        <div class="codigo-fila">
+          <input type="text" id="envio-codigo" class="shipping-input codigo-input" placeholder="Escribe tu código" autocomplete="off" autocapitalize="characters" spellcheck="false">
+          <button type="button" class="codigo-aplicar" id="codigo-aplicar">Aplicar</button>
+        </div>
+        <p class="codigo-msg" id="codigo-msg" role="status" aria-live="polite"></p>
+      </div>
+      <input type="hidden" name="producto" id="envio-producto" value="">
+      <input type="hidden" name="total" id="envio-total" value="">
+      <button type="submit" class="btn-buy" id="envio-submit">Continuar al pago 💳</button>
+    </form>
+    <button class="shipping-modal-cancel" id="shipping-modal-cancel">Cancelar</button>
+  </div>
+</div>
+<!-- PEDIDO CONTRAENTREGA RECIBIDO -->
+<div class="shipping-modal-overlay" id="pedido-ok-overlay">
+  <div class="shipping-modal pedido-ok" role="dialog" aria-labelledby="pedido-ok-titulo">
+    <h3 id="pedido-ok-titulo">¡Recibimos tu pedido! 🎉</h3>
+    <p class="shipping-modal-sub">Pagas <strong id="pedido-ok-total"></strong> en efectivo cuando lo recibas. Referencia: <strong id="pedido-ok-ref"></strong></p>
+    <p class="pedido-ok-paso"><strong>Último paso:</strong> confírmalo por WhatsApp para que lo despachemos. Te llega al día hábil siguiente.</p>
+    <a class="btn-buy pedido-ok-wa" id="pedido-ok-whatsapp" href="#" target="_blank" rel="noopener">Confirmar por WhatsApp 💬</a>
+    <button type="button" class="shipping-modal-cancel" id="pedido-ok-cerrar">Cerrar</button>
+  </div>
+</div>
+<!-- Scripts para medir -->
+<script>
+(function(){
+  var CURRENCY = 'COP';
+
+  // Envía un evento a GA4 y a Clarity (y a Meta si se indica).
+  function track(name, params, metaEvent){
+    params = params || {};
+    try { if (window.gtag) gtag('event', name, params); } catch(e){}
+    try { if (window.clarity) clarity('event', name); } catch(e){}
+    if (metaEvent) {
+      try {
+        if (window.fbq) fbq('track', metaEvent,
+          params.value ? { value: params.value, currency: CURRENCY } : {});
+      } catch(e){}
+    }
+  }
+  function tag(key, value){ try { if (window.clarity) clarity('set', key, String(value)); } catch(e){} }
+  function save(k, v){ try { sessionStorage.setItem(k, JSON.stringify(v)); } catch(e){} }
+  function load(k){ try { return JSON.parse(sessionStorage.getItem(k)); } catch(e){ return null; } }
+
+  // IDs del catálogo de Meta según el nombre base del producto
+  var META_IDS = {
+    'Collar impermeable': 'WP-COLLAR',
+    'Arnés tipo H impermeable': 'WP-ARNES',
+    'Arnés impermeable': 'WP-ARNES',
+    'Correa impermeable': 'WP-CORREA',
+    'Combo completo': 'WP-SET'
+  };
+  // Envía un evento de Meta con los datos del catálogo.
+  function metaTrack(event, contents, value, options){
+    try {
+      if (!window.fbq || !contents || !contents.length) return;
+      fbq('track', event, {
+        content_ids: contents.map(function(c){ return c.id; }),
+        contents: contents,
+        content_type: 'product',
+        value: value,
+        currency: CURRENCY
+      }, options);
+    } catch(e){}
+  }
+  // Productos (contents de Meta) de una compra que inicia en iniciarCompra.
+  function contentsFor(cents, nombre){
+    if (nombre === 'Combo personalizado') {
+      var checked = document.querySelectorAll('.combo-check:checked');
+      if (checked.length === 3) return [{ id: 'WP-SET', quantity: 1, item_price: cents / 100 }];
+      var list = [];
+      checked.forEach(function(c){
+        var label = c.closest('.combo-item');
+        var n = label ? label.querySelector('.combo-item-name').textContent.trim() : '';
+        if (META_IDS[n]) list.push({ id: META_IDS[n], quantity: 1, item_price: parseInt(c.dataset.price, 10) });
+      });
+      return list;
+    }
+    var id = META_IDS[baseName(nombre)];
+    if (!id) return [];
+    var qty = qtyFrom(nombre);
+    return [{ id: id, quantity: qty, item_price: cents / 100 / qty }];
+  }
+  var carrito = null;  // contents de la compra en curso
+
+  // "Collar impermeable (Talla S) x2 [código X]" -> "Collar impermeable"
+  function baseName(n){ return String(n || '').replace(/\s*[\(\[].*$/, '').replace(/\s*x\d+$/, '').trim(); }
+  function qtyFrom(n){ var m = String(n || '').match(/\)\s*x(\d+)/); return m ? parseInt(m[1], 10) : 1; }
+  function productOfCard(card){
+    var btn = card && card.querySelector('.btn-buy');
+    var m = btn && (btn.getAttribute('onclick') || '').match(/'([^']+)'\s*\)/);
+    return m ? m[1] : '';
+  }
+
+  // Envuelve una función existente de la página para medir antes de ejecutarla.
+  function wrap(name, before){
+    var original = window[name];
+    if (typeof original !== 'function') return;
+    window[name] = function(){
+      try { before.apply(this, arguments); } catch(e){}
+      return original.apply(this, arguments);
+    };
+  }
+
+  // 1. Elige una talla en una tarjeta de producto
+  wrap('seleccionarTalla', function(chip){
+    var talla = chip.textContent.trim().replace(/^Talla\s+/i, '');
+    track('talla_seleccionada', { talla: talla, item_name: productOfCard(chip.closest('.prod-card')) });
+    tag('talla', talla);
+  });
+
+  // 1b. Abre la descripción / guía de tallas de un producto
+  wrap('abrirDetalles', function(clave, tab){
+    track('detalles_producto', { item_name: clave, seccion: tab || 'desc' });
+  });
+
+  // 2. Clic en "Comprar": detecta si lo intentan sin elegir talla
+  wrap('comprarProducto', function(btn, cents, nombre){
+    var card = btn.closest('.prod-card');
+    if (card && !card.querySelector('.size-chip.selected')) {
+      track('compra_sin_talla', { item_name: nombre });
+    }
+  });
+
+  // 3. Se abre el formulario de envío = inicio de checkout
+  wrap('iniciarCompra', function(cents, nombre, talla){
+    if (!cents || cents <= 0) return;
+    var value = cents / 100;
+    track('begin_checkout', {
+      currency: CURRENCY, value: value,
+      items: [{ item_name: baseName(nombre), item_variant: String(talla || '').replace(/^Talla\s+/i, ''), price: value / qtyFrom(nombre), quantity: qtyFrom(nombre) }]
+    });
+    carrito = contentsFor(cents, nombre);
+    metaTrack('AddToCart', carrito, value);
+    metaTrack('InitiateCheckout', carrito, value);
+    tag('checkout', 'abierto');
+    try { if (window.clarity) clarity('upgrade', 'checkout'); } catch(e){}  // prioriza grabar esta sesión
+  });
+
+  // 4. "Continuar al pago": se abre Wompi (incluye envío y descuento)
+  wrap('pagarConWompi', function(cents, nombre){
+    if (!cents || cents <= 0) return;
+    var value = cents / 100;
+    save('wuuff_pago', { cents: cents, nombre: nombre, contents: carrito });
+    track('add_payment_info', {
+      currency: CURRENCY, value: value, payment_type: 'wompi',
+      items: [{ item_name: baseName(nombre), price: value, quantity: 1 }]
+    });
+    metaTrack('AddPaymentInfo', carrito, value);
+    tag('checkout', 'wompi_abierto');
+  });
+
+  // 5. Compra aprobada. Tu código la llama (ver instrucciones).
+  window.wuuffCompraAprobada = function(transactionId, amountInCents, metodoPago){
+    if (!transactionId) return;
+    var key = 'wuuff_tx_' + transactionId;
+    try { if (localStorage.getItem(key)) return; localStorage.setItem(key, '1'); } catch(e){}
+    var pago = load('wuuff_pago') || {};
+    var value = (amountInCents || pago.cents || 0) / 100;
+    try {
+      if (window.gtag) gtag('event', 'purchase', {
+        transaction_id: String(transactionId), currency: CURRENCY, value: value, payment_type: metodoPago || 'wompi',
+        items: [{ item_name: baseName(pago.nombre) || 'Pedido Wuuff', price: value, quantity: 1 }]
+      });
+    } catch(e){}
+    if (pago.contents && pago.contents.length) {
+      metaTrack('Purchase', pago.contents, value, { eventID: String(transactionId) });
+    } else {
+      try { if (window.fbq) fbq('track', 'Purchase', { value: value, currency: CURRENCY }, { eventID: String(transactionId) }); } catch(e){}
+    }
+    try { if (window.clarity) clarity('event', 'purchase'); } catch(e){}
+    tag('compro', 'si');
+    try { sessionStorage.removeItem('wuuff_pago'); } catch(e){}
+  };
+
+  // 6. Clics que no pasan por funciones: WhatsApp, preguntas frecuentes, cancelar
+  document.addEventListener('click', function(e){
+    var el = e.target.closest && e.target.closest('a, button');
+    if (!el) return;
+    var href = el.getAttribute('href') || '';
+    if (href.indexOf('wa.me') !== -1) {
+      track('whatsapp_click', { method: 'whatsapp', link_classes: el.className || '' }, 'Contact');
+    } else if (el.classList.contains('faq-question')) {
+      track('faq_abierta', { pregunta: el.textContent.replace(/[+\-−]\s*$/, '').trim().slice(0, 90) });
+    } else if (el.id === 'shipping-modal-cancel') {
+      track('checkout_cancelado', {});
+      tag('checkout', 'cancelado');
+    } else if (href === '#comprar' || href === '#combo' || href === '#productos') {
+      track('cta_click', { cta: el.textContent.trim().slice(0, 40) || 'isotipo' });
+    }
+  }, true);
+
+  // 7. Combo: marca/desmarca productos
+  document.querySelectorAll('.combo-check').forEach(function(input){
+    input.addEventListener('change', function(){
+      track('combo_armado', {
+        value: (window.wuuffComboTotalCents || 0) / 100, currency: CURRENCY,
+        productos: document.querySelectorAll('.combo-check:checked').length
+      });
+    });
+  });
+
+  // 8. ViewContent: lo registra cada página de producto (las tarjetas del inicio solo llevan a ella)
+
+  // 9. Medidor de talla por contorno (una vez por visita)
+  var slider = document.getElementById('weight-slider');
+  if (slider) {
+    var usado = false;
+    slider.addEventListener('change', function(){
+      if (usado) return; usado = true;
+      track('medidor_talla_usado', { valor: slider.value });
+    });
+  }
+})();
+</script>
+<script>
+// Llegada desde una página de producto (/?comprar=arnes&talla=S): abre la compra con esa talla
+(function(){
+  var q = new URLSearchParams(location.search);
+  var clave = q.get('comprar');
+  var PRODUCTOS = {
+    combo:  { cents: 15790000, nombre: 'Combo completo', tallas: ['S', 'M'], url: '/combo-collar-arnes-correa/' },
+    arnes:  { cents: 7290000, nombre: 'Arnés tipo H impermeable', tallas: ['S', 'M'], url: '/arnes-tipo-h-impermeable-perro/' },
+    collar: { cents: 4990000, nombre: 'Collar impermeable', tallas: ['S', 'M'], url: '/collar-impermeable-perro/' },
+    correa: { cents: 5890000, nombre: 'Correa impermeable', tallas: ['ÚNICA'], url: '/correa-impermeable-perro/' }
+  };
+  var prod = PRODUCTOS[clave];
+  if(!prod) return;
+  var talla = (q.get('talla') || '').toUpperCase();
+  if(prod.tallas.length === 1) talla = prod.tallas[0];
+  // Sin una talla válida vuelve a la página del producto para elegirla
+  if(prod.tallas.indexOf(talla) === -1){ location.replace(prod.url); return; }
+  var tallaTexto = talla === 'ÚNICA' ? 'Talla única' : 'Talla ' + talla;
+  function iniciar(){
+    if(history.replaceState) history.replaceState(null, '', location.pathname + '#productos');
+    window.wuuffVolverA = prod.url;
+    iniciarCompra(prod.cents, prod.nombre + ' (' + tallaTexto + ')', tallaTexto);
+  }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iniciar); else iniciar();
+})();
+</script>
+<script>
+// Llegada desde /placa-para-perro/ (/?comprar=placa&forma=…&nombre=…&base=…&letras=…&con=…&talla=…):
+// arma el pedido de la placa NFC (sola o con collar, arnés o combo) y abre la misma compra de la tienda.
+(function(){
+  var q = new URLSearchParams(location.search);
+  if(q.get('comprar') !== 'placa') return;
+
+  // Precios en centavos (deben coincidir con /placa-nfc/js/app.js)
+  var PLACA_SOLA = 3490000, PLACA_CON_PRODUCTO = 2490000;
+  var PRODUCTOS = {
+    collar: { nombre: 'Collar impermeable', cents: 4990000 },
+    arnes:  { nombre: 'Arnés tipo H impermeable', cents: 7290000 },
+    combo:  { nombre: 'Combo completo', cents: 15790000 }
+  };
+  var FORMAS  = { huella: 'Huella', gato: 'Gato', nombre: 'Nombre' };
+  var COLORES = { morado: 'Morado', azul: 'Azul', blanco: 'Blanco', rojo: 'Rojo' };
+
+  var nombre = (q.get('nombre') || '').replace(/[^A-Za-z0-9ÁÉÍÓÚÑÜáéíóúñü '\-.&]/g, '').slice(0, 10).trim();
+  var forma = FORMAS[q.get('forma')], base = COLORES[q.get('base')], letras = COLORES[q.get('letras')];
+  if(!nombre || !forma || !base || !letras) return;
+
+  var con = PRODUCTOS.hasOwnProperty(q.get('con')) ? q.get('con') : 'sola';
+  var talla = (q.get('talla') || '').toUpperCase();
+  if(talla !== 'S' && talla !== 'M') talla = (con === 'sola') ? '' : 'M';
+
+  var placa = 'Placa Inteligente Wuuff ' + forma + ' "' + nombre + '" (placa ' + base + ', letras ' + letras + ')';
+  var total, producto;
+  if(con === 'sola'){
+    total = PLACA_SOLA;
+    producto = placa;
+  } else {
+    // El nombre empieza igual que en la tienda ("Combo completo …") para que se apliquen sus reglas de envío
+    total = PRODUCTOS[con].cents + PLACA_CON_PRODUCTO;
+    producto = PRODUCTOS[con].nombre + ' (Talla ' + talla + ') + ' + placa;
+  }
+
+  function abrir(){
+    if(history.replaceState) history.replaceState(null, '', location.pathname);
+    window.wuuffVolverA = '/placa-para-perro/';
+    try { if(window.gtag) gtag('event', 'placa_iniciar_compra', { forma: q.get('forma'), con: con, value: total / 100, currency: 'COP' }); } catch(err){}
+    iniciarCompra(total, producto, talla);
+  }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', abrir); else abrir();
+})();
+</script>
+<script>
+// Menú en celular (☰) y medición de clics hacia las páginas de producto y el blog
+(function(){
+  var menu = document.getElementById('menu'), btn = document.getElementById('nav-burger');
+  if(menu && btn){
+    btn.addEventListener('click', function(){
+      var abierto = menu.classList.toggle('abierto');
+      btn.setAttribute('aria-expanded', abierto ? 'true' : 'false');
+      btn.setAttribute('aria-label', abierto ? 'Cerrar menú' : 'Abrir menú');
+    });
+    menu.querySelectorAll('.nav-links a').forEach(function(a){
+      a.addEventListener('click', function(){ menu.classList.remove('abierto'); btn.setAttribute('aria-expanded', 'false'); });
+    });
+    document.addEventListener('click', function(e){
+      if(menu.classList.contains('abierto') && !menu.contains(e.target)){ menu.classList.remove('abierto'); btn.setAttribute('aria-expanded', 'false'); }
+    });
+  }
+  document.addEventListener('click', function(e){
+    var a = e.target.closest && e.target.closest('a[href^="/"]');
+    if(!a || a.getAttribute('href') === '/') return;
+    var origen = a.closest('#menu') ? 'menu' : a.closest('.prod-card') ? 'tarjeta' : a.closest('footer') ? 'pie' : 'otro';
+    try { if(window.gtag) gtag('event', 'ir_a_pagina', { destino: a.getAttribute('href'), origen: origen }); } catch(err){}
+    try { if(window.clarity) clarity('event', 'ir_a_pagina_' + origen); } catch(err){}
+  }, true);
+})();
+</script>
+<script>
+// Videos reales: se reproducen solos (sin sonido) mientras están en pantalla
+(function(){
+  var vids = document.querySelectorAll('#en-video video');
+  if(!vids.length || !('IntersectionObserver' in window)) return;
+  var vistos = {};
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      var v = en.target;
+      if(en.isIntersecting && en.intersectionRatio >= 0.6){
+        if(v.preload !== 'auto'){ v.preload = 'auto'; }
+        var pr = v.play(); if(pr && pr.catch) pr.catch(function(){});
+        var n = v.getAttribute('data-nombre');
+        if(!vistos[n]){
+          vistos[n] = 1;
+          try { if(window.gtag) gtag('event', 'video_real_visto', { item_name: n }); } catch(e){}
+          try { if(window.clarity) clarity('event', 'video_real_visto'); } catch(e){}
+        }
+      } else if(!v.paused){ v.pause(); }
+    });
+  }, { threshold: [0, 0.6] });
+  vids.forEach(function(v){ io.observe(v); });
+  vids.forEach(function(v){
+    v.style.cursor = 'pointer';
+    v.addEventListener('click', function(){ v.parentNode.querySelector('.real-sonido').click(); });
+  });
+  document.querySelectorAll('#en-video .real-sonido').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var v = btn.parentNode.querySelector('video');
+      var activar = v.muted;
+      vids.forEach(function(o){
+        o.muted = true;
+        var b = o.parentNode.querySelector('.real-sonido');
+        b.textContent = '🔇'; b.setAttribute('aria-pressed', 'false'); b.setAttribute('aria-label', 'Activar sonido');
+      });
+      if(activar){
+        v.muted = false; v.preload = 'auto';
+        var pr = v.play(); if(pr && pr.catch) pr.catch(function(){});
+        btn.textContent = '🔊'; btn.setAttribute('aria-pressed', 'true'); btn.setAttribute('aria-label', 'Silenciar');
+        try { if(window.gtag) gtag('event', 'video_real_sonido', { item_name: v.getAttribute('data-nombre') }); } catch(e){}
+      }
+    });
+  });
+})();
+</script>
+<script>
+// El aviso "Precio de lanzamiento hasta el 30 de octubre" se oculta solo cuando pasa la fecha
+(function(){
+  if(new Date() < new Date('2026-10-31T00:00:00-05:00')) return;
+  document.querySelectorAll('.lanzamiento-fecha').forEach(function(el){ el.style.display = 'none'; });
+})();
+</script>
+<script>
+// La pandilla Wuuff: al tocar un personaje da un saltito (antes el toque no hacía nada)
+document.addEventListener('click', function(e){
+  var c = e.target.closest && e.target.closest('.char-card');
+  if(!c) return;
+  c.classList.remove('saltar'); void c.offsetWidth; c.classList.add('saltar');
+});
+</script>
+<script>
+// Portadas de los videos: se cargan cuando el video se acerca a la pantalla (no todas al abrir la página)
+(function(){
+  var vids = document.querySelectorAll('video[data-poster]');
+  function poner(v){ if(!v.poster) v.poster = v.getAttribute('data-poster'); }
+  if(!('IntersectionObserver' in window)){ vids.forEach(poner); return; }
+  var io = new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ poner(e.target); io.unobserve(e.target); } });
+  }, { rootMargin: '400px 0px' });
+  vids.forEach(function(v){ io.observe(v); });
+})();
+</script>
+<script type="module" src="/collar-3d/collar-3d.js"></script>
+</body>
+</html>

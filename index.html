@@ -513,8 +513,7 @@
  ]
 }
 </script>
-<link rel="preload" as="image" href="/collar-3d/collar-3d-poster.webp" imagesrcset="/collar-3d/collar-3d-poster-600.webp 600w, /collar-3d/collar-3d-poster-760.webp 760w, /collar-3d/collar-3d-poster.webp 960w" imagesizes="(min-width: 769px) 50vw, 100vw" fetchpriority="high">
-<link rel="stylesheet" href="/collar-3d/collar-3d.css">
+<link rel="preload" as="image" href="/images/opt/hero/chihuahua-combo-800.webp" imagesrcset="/images/opt/hero/chihuahua-combo-800.webp 800w, /images/opt/hero/chihuahua-combo-1200.webp 1200w" imagesizes="(min-width: 769px) 560px, calc(100vw - 32px)" fetchpriority="high">
 <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/fredoka-one-latin-400-normal.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/nunito-latin-800-normal.woff2" crossorigin>
 <style>
@@ -881,6 +880,15 @@ button.instagram-slide{border:none;padding:0;background:none;font:inherit;-webki
 .real-card strong{font-family:'Fredoka One',cursive;font-weight:400;font-size:19px;color:var(--navy);}
 .real-card figcaption span{font-size:14px;font-weight:700;color:#55607e;}
 .real-card figcaption a{font-size:14px;font-weight:900;color:var(--blue);text-decoration:none;margin-top:4px;}
+.yt-wrap{max-width:980px;margin:28px auto 0;}
+.yt-facade{position:relative;display:block;width:100%;aspect-ratio:16/9;border:0;padding:0;border-radius:22px;overflow:hidden;background:#000;cursor:pointer;box-shadow:0 8px 24px rgba(45,67,117,.12);}
+.yt-facade img{width:100%;height:100%;object-fit:cover;display:block;}
+.yt-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+.yt-play svg{width:76px;height:54px;filter:drop-shadow(0 4px 10px rgba(0,0,0,.35));transition:transform .2s;}
+.yt-facade:hover .yt-play svg,.yt-facade:focus-visible .yt-play svg{transform:scale(1.08);}
+.yt-wrap iframe{display:block;width:100%;aspect-ratio:16/9;border:0;border-radius:22px;background:#000;}
+.yt-pie{font-size:14px;font-weight:700;color:#55607e;margin-top:10px;}
+.yt-pie a{color:var(--blue);font-weight:900;}
 .real-wa{font-size:15px;font-weight:700;color:#55607e;margin-top:24px;}
 .real-wa a{color:#0b7a3e;font-weight:900;}
 @media(max-width:900px){
@@ -1040,6 +1048,79 @@ footer{background:var(--navy);padding:48px 20px 36px;text-align:center;}
   #nav-links > a.nav-placa{display:none;}
   .cta-box{padding:32px 20px;}
 }
+/* ===== HERO v2 (oct 2026) — pegar al FINAL del <style> de index.html ===== */
+.hero-v2{background:var(--cream);min-height:0;}
+.hero-v2-inner{
+  max-width:1220px;padding:48px 32px 56px;
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:56px;
+  grid-template-rows:1fr auto auto auto auto auto auto 1fr;
+  grid-template-areas:". gal" "pill gal" "tit gal" "sub gal" "precio gal" "btns gal" "conf gal" ". gal";
+}
+.hero-pill{grid-area:pill;justify-self:start;margin:0 0 18px;background:var(--lime);color:var(--navy);font-weight:900;font-size:14px;padding:7px 14px;border-radius:14px;}
+.hero-v2 .hero-title{grid-area:tit;font-size:clamp(44px,4.6vw,64px);line-height:1.4;margin:0 0 18px;}
+.hero-sub{grid-area:sub;margin:0 0 20px;max-width:500px;font-size:19px;line-height:1.5;font-weight:600;color:var(--navy);}
+.hero-precio{grid-area:precio;justify-self:start;display:flex;align-items:center;gap:20px;margin-bottom:22px;background:#fff;border-radius:20px;padding:14px 22px;box-shadow:0 8px 24px rgba(45,67,117,.12);text-decoration:none;color:var(--navy);}
+.hero-precio-info{display:flex;flex-direction:column;text-align:left;}
+.hero-precio-info strong{font-weight:900;font-size:15px;}
+.hero-precio-info span{font-weight:700;font-size:13px;color:#5a6a8f;}
+.hero-precio-valor{display:flex;align-items:baseline;gap:10px;white-space:nowrap;}
+.hero-precio-valor s{font-weight:700;font-size:17px;color:#5a6a8f;}
+.hero-precio-valor b{font-family:'Fredoka One',cursive;font-weight:400;font-size:32px;color:var(--coral-fuerte);}
+.hero-v2 .hero-btns{grid-area:btns;align-items:center;margin-bottom:22px;}
+.hero-link{color:var(--navy);font-weight:800;font-size:16px;padding:13px 26px;border-radius:50px;border:2.5px solid var(--navy);text-decoration:none;}
+.hero-link:hover{background:var(--navy);color:#fff;}
+.hero-confianza{grid-area:conf;list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px 22px;font-weight:800;font-size:15px;color:var(--navy);}
+.hero-confianza li{display:flex;align-items:center;gap:7px;}
+
+.hero-galeria{grid-area:gal;align-self:center;position:relative;height:600px;}
+.hero-galeria-marco{position:absolute;inset:0;border-radius:36px;overflow:hidden;background:#c9cdf5;box-shadow:0 20px 50px rgba(45,67,117,.18);}
+.hero-slide{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .5s ease;}
+.hero-slide.active{opacity:1;}
+.hero-slide-1{object-position:50% 30%;}
+.hero-slide-2{object-position:60% 40%;}
+.hero-badge{position:absolute;right:24px;top:24px;z-index:2;background:var(--navy);color:#fff;border-radius:16px;padding:9px 16px;font-weight:900;font-size:14px;}
+.hero-agua{position:absolute;left:-28px;bottom:72px;z-index:2;display:flex;align-items:center;gap:10px;background:#fff;border-radius:18px;padding:12px 18px;font-weight:900;font-size:15px;color:var(--navy);box-shadow:0 10px 28px rgba(45,67,117,.18);}
+.hero-agua small{display:block;font-weight:700;font-size:13px;color:#5a6a8f;}
+.hero-flecha{position:absolute;top:50%;margin-top:-24px;z-index:2;width:48px;height:48px;border-radius:50%;border:none;background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 14px rgba(45,67,117,.18);}
+.hero-flecha.prev{left:16px;}
+.hero-flecha.next{right:16px;}
+.hero-puntos{position:absolute;left:0;right:0;bottom:10px;z-index:2;display:flex;justify-content:center;gap:2px;}
+.hero-puntos button{width:44px;height:44px;border:none;background:none;padding:0;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.hero-puntos span{display:block;width:10px;height:10px;border-radius:5px;background:rgba(255,255,255,.6);box-shadow:0 1px 4px rgba(45,67,117,.35);transition:width .3s;}
+.hero-puntos button[aria-current="true"] span{width:28px;background:#fff;}
+
+@media(max-width:768px){
+  .hero-v2-inner{
+    padding:18px 16px 24px;grid-template-columns:minmax(0,1fr);grid-template-rows:none;
+    grid-template-areas:"pill" "tit" "sub" "gal" "precio" "btns" "conf";
+    justify-items:center;text-align:center;
+  }
+  .hero-pill{justify-self:center;font-size:12.5px;padding:6px 12px;margin-bottom:14px;}
+  .hero-v2 .hero-title{font-size:36px;line-height:1.42;margin-bottom:12px;}
+  .hero-sub{font-size:15.5px;max-width:340px;margin-bottom:16px;}
+  .hero-galeria{width:100%;height:auto;aspect-ratio:4/3;margin-bottom:14px;}
+  .hero-galeria-marco{border-radius:26px;}
+  .hero-slide-2{object-position:70% 0%;}
+  .hero-agua,.hero-flecha{display:none;}
+  .hero-badge{right:12px;top:12px;font-size:12.5px;padding:6px 12px;border-radius:12px;}
+  .hero-precio{justify-self:stretch;justify-content:space-between;padding:12px 16px;margin-bottom:14px;}
+  .hero-precio{gap:10px;}
+  .hero-precio-info span{white-space:nowrap;font-size:12.5px;}
+  .hero-precio-valor{gap:6px;}
+  .hero-precio-valor s{font-size:13px;}
+  .hero-precio-valor b{font-size:24px;}
+  /* el botón "Ver productos" del menú se partía en 2 líneas y el menú tapaba el inicio del hero */
+  .nav-cta{white-space:nowrap;font-size:12.5px;padding:9px 14px;}
+  .hero-v2 .hero-btns{flex-direction:column;width:100%;gap:4px;margin-bottom:12px;}
+  .hero-v2 .btn-primary{width:100%;box-sizing:border-box;justify-content:center;font-size:17px;}
+  .hero-link{border:none;text-decoration:underline;font-size:15px;padding:10px 12px;}
+  .hero-link:hover{background:none;color:var(--navy);}
+  .hero-confianza{justify-content:center;gap:6px 14px;font-size:13px;}
+}
+@media(max-width:480px){
+  /* en celular el hero ya trae su botón "Ver el combo"; así el menú no se corta */
+  .nav-cta{display:none;}
+}
 </style>
 <!-- Meta Pixel Code -->
 <script>
@@ -1141,23 +1222,61 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
 
 <!-- HERO -->
 <main id="contenido">
-<section class="hero hero-3d-set">
-  <h1 class="visualmente-oculto">Collar, arnés tipo H y correa impermeables para perro</h1>
-  <div class="hero-inner">
-    <div class="hero-text">
-      <h2 class="hero-title">
-        <span class="t-highlight">Accesorios</span><br>
-        <span class="t-highlight">que se lavan</span><br>
-        <span class="t-highlight t-coral">con agua</span>
-      </h2>
-      <div class="hero-3d" data-collar-3d>
-        <img class="hero-3d-poster" src="/collar-3d/collar-3d-poster.webp" srcset="/collar-3d/collar-3d-poster-600.webp 600w, /collar-3d/collar-3d-poster-760.webp 760w, /collar-3d/collar-3d-poster.webp 960w" sizes="(min-width: 769px) 50vw, 100vw" width="960" height="800" alt="Collar impermeable Wuuff azul cielo con placa de identificación en forma de huella" fetchpriority="high" draggable="false">
-        <a class="hero-3d-chip" href="/placa-para-perro/">🏷️ Placa Inteligente con su nombre · <b>Personalízala</b></a>
+<section class="hero hero-v2">
+  <div class="hero-inner hero-v2-inner">
+    <p class="hero-pill lanzamiento-fecha">Precio de lanzamiento · hasta el 30 de octubre</p>
+
+    <h1 class="hero-title">
+      <span class="t-highlight">Accesorios</span><br>
+      <span class="t-highlight">para perro</span><br>
+      <span class="t-highlight t-coral">que no huelen</span>
+    </h1>
+
+    <p class="hero-sub">Collar, arnés tipo H y correa de goma impermeable. Se limpian bajo la llave y quedan como nuevos.</p>
+
+    <div class="hero-galeria" data-hero-galeria>
+      <div class="hero-galeria-marco">
+        <img class="hero-slide hero-slide-1 active"
+             src="/images/opt/hero/chihuahua-combo-800.webp"
+             srcset="/images/opt/hero/chihuahua-combo-800.webp 800w, /images/opt/hero/chihuahua-combo-1200.webp 1200w"
+             sizes="(min-width: 769px) 560px, calc(100vw - 32px)"
+             width="1200" height="1262" fetchpriority="high"
+             alt="Chihuahua con collar, arnés tipo H y correa Wuuff Puppy azul cielo">
+        <img class="hero-slide hero-slide-2"
+             src="/images/opt/hero/perro-combo-lila-800.webp"
+             srcset="/images/opt/hero/perro-combo-lila-800.webp 800w, /images/opt/hero/perro-combo-lila-944.webp 944w"
+             sizes="(min-width: 769px) 560px, calc(100vw - 32px)"
+             width="944" height="1080" loading="lazy" aria-hidden="true"
+             alt="Perro con arnés tipo H y correa Wuuff Puppy azul cielo">
       </div>
-      <div class="hero-btns">
-        <a href="#combo" class="btn-primary">Ver el combo</a>
+      <span class="hero-badge">Incluye 3 piezas</span>
+      <div class="hero-agua">
+        <svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#4964af" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5c3.2 4 5.5 7.1 5.5 10a5.5 5.5 0 0 1-11 0c0-2.9 2.3-6 5.5-10z"/></svg>
+        <span>Se limpia con agua<small>sin lavadora, sin olor</small></span>
+      </div>
+      <button type="button" class="hero-flecha prev" aria-label="Foto anterior"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2d4375" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <button type="button" class="hero-flecha next" aria-label="Foto siguiente"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2d4375" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>
+      <div class="hero-puntos">
+        <button type="button" aria-label="Ver foto 1" aria-current="true"><span></span></button>
+        <button type="button" aria-label="Ver foto 2" aria-current="false"><span></span></button>
       </div>
     </div>
+
+    <a href="#combo" class="hero-precio">
+      <span class="hero-precio-info"><strong>Combo 3 piezas</strong><span>Collar + arnés + correa</span></span>
+      <span class="hero-precio-valor"><s>$184.900</s> <b>$157.900</b></span>
+    </a>
+
+    <div class="hero-btns">
+      <a href="#combo" class="btn-primary">Ver el combo</a>
+      <a href="#productos" class="hero-link">Ver por separado</a>
+    </div>
+
+    <ul class="hero-confianza">
+      <li><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4964af" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Paga al recibir en Bogotá</li>
+      <li><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4964af" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Envío gratis en Bogotá</li>
+      <li><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4964af" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Tallas S y M</li>
+    </ul>
   </div>
 </section>
 
@@ -1402,6 +1521,13 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
       <figcaption><strong>Adiós al arnés manchado</strong><span>Tela vs. goma: el Wuuff se limpia con agua y un trapo.</span><a href="/combo-collar-arnes-correa/">Ver el combo →</a></figcaption>
     </figure>
   </div>
+  <div class="yt-wrap">
+    <button type="button" class="yt-facade" data-yt="WJH1H7uErm8" aria-label="Reproducir el video de Wuuff Puppy en YouTube">
+      <img src="https://i.ytimg.com/vi/WJH1H7uErm8/hqdefault.jpg" alt="Video de Wuuff Puppy en YouTube" loading="lazy" width="480" height="360">
+      <span class="yt-play" aria-hidden="true"><svg viewBox="0 0 68 48"><path d="M66.5 7.7a8.5 8.5 0 0 0-6-6C55.2.3 34 .3 34 .3s-21.2 0-26.5 1.4a8.5 8.5 0 0 0-6 6C.1 13 .1 24 .1 24s0 11 1.4 16.3a8.5 8.5 0 0 0 6 6C12.8 47.7 34 47.7 34 47.7s21.2 0 26.5-1.4a8.5 8.5 0 0 0 6-6C67.9 35 67.9 24 67.9 24s0-11-1.4-16.3z" fill="#f00"/><path d="M45 24 27 14v20z" fill="#fff"/></svg></span>
+    </button>
+    <p class="yt-pie">📺 Míralo también en <a href="https://www.youtube.com/watch?v=WJH1H7uErm8" target="_blank" rel="noopener">nuestro canal de YouTube</a></p>
+  </div>
   <p class="real-wa">¿Quieres ver cómo le queda a un perrito de tu tamaño? <a href="https://wa.me/573176431286?text=Hola%2C%20quiero%20ver%20un%20video%20de%20c%C3%B3mo%20se%20pone%20el%20arn%C3%A9s" target="_blank" rel="noopener">Escríbenos por WhatsApp</a> y te mandamos un video.</p>
 </section>
 
@@ -1560,6 +1686,21 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
   </div>
 </section>
 
+<script>
+// Video de YouTube: solo se carga al tocar "play" (no frena la página)
+document.addEventListener('click', function(e){
+  var b = e.target.closest && e.target.closest('.yt-facade');
+  if(!b) return;
+  var f = document.createElement('iframe');
+  f.src = 'https://www.youtube-nocookie.com/embed/' + b.dataset.yt + '?autoplay=1&rel=0&playsinline=1';
+  f.title = 'Video de Wuuff Puppy en YouTube';
+  f.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+  f.allowFullscreen = true;
+  b.replaceWith(f);
+  document.querySelectorAll('#en-video video').forEach(function(v){ v.pause(); });
+  try { if(window.gtag) gtag('event','video_youtube_play',{video_id:b.dataset.yt}); } catch(err){}
+});
+</script>
 <!-- FOOTER -->
 </main>
 
@@ -3015,6 +3156,35 @@ document.addEventListener('click', function(e){
   vids.forEach(function(v){ io.observe(v); });
 })();
 </script>
-<script type="module" src="/collar-3d/collar-3d.js"></script>
+
+<script>
+// Carrusel del hero: flechas, puntos y deslizar en celular. Sin cambio automático.
+(function(){
+  var g = document.querySelector('[data-hero-galeria]');
+  if(!g) return;
+  var slides = g.querySelectorAll('.hero-slide');
+  var dots = g.querySelectorAll('.hero-puntos button');
+  var i = 0;
+  function ir(n){
+    i = (n + slides.length) % slides.length;
+    slides.forEach(function(s, k){
+      s.classList.toggle('active', k === i);
+      s.setAttribute('aria-hidden', k === i ? 'false' : 'true');
+    });
+    dots.forEach(function(d, k){ d.setAttribute('aria-current', k === i ? 'true' : 'false'); });
+  }
+  g.querySelector('.hero-flecha.prev').addEventListener('click', function(){ ir(i - 1); });
+  g.querySelector('.hero-flecha.next').addEventListener('click', function(){ ir(i + 1); });
+  dots.forEach(function(d, k){ d.addEventListener('click', function(){ ir(k); }); });
+  var x0 = null;
+  g.addEventListener('touchstart', function(e){ x0 = e.touches[0].clientX; }, {passive:true});
+  g.addEventListener('touchend', function(e){
+    if(x0 === null) return;
+    var dx = e.changedTouches[0].clientX - x0;
+    if(Math.abs(dx) > 40) ir(dx < 0 ? i + 1 : i - 1);
+    x0 = null;
+  }, {passive:true});
+})();
+</script>
 </body>
 </html>
