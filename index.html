@@ -881,6 +881,15 @@ button.instagram-slide{border:none;padding:0;background:none;font:inherit;-webki
 .real-card strong{font-family:'Fredoka One',cursive;font-weight:400;font-size:19px;color:var(--navy);}
 .real-card figcaption span{font-size:14px;font-weight:700;color:#55607e;}
 .real-card figcaption a{font-size:14px;font-weight:900;color:var(--blue);text-decoration:none;margin-top:4px;}
+.yt-wrap{max-width:980px;margin:28px auto 0;}
+.yt-facade{position:relative;display:block;width:100%;aspect-ratio:16/9;border:0;padding:0;border-radius:22px;overflow:hidden;background:#000;cursor:pointer;box-shadow:0 8px 24px rgba(45,67,117,.12);}
+.yt-facade img{width:100%;height:100%;object-fit:cover;display:block;}
+.yt-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+.yt-play svg{width:76px;height:54px;filter:drop-shadow(0 4px 10px rgba(0,0,0,.35));transition:transform .2s;}
+.yt-facade:hover .yt-play svg,.yt-facade:focus-visible .yt-play svg{transform:scale(1.08);}
+.yt-wrap iframe{display:block;width:100%;aspect-ratio:16/9;border:0;border-radius:22px;background:#000;}
+.yt-pie{font-size:14px;font-weight:700;color:#55607e;margin-top:10px;}
+.yt-pie a{color:var(--blue);font-weight:900;}
 .real-wa{font-size:15px;font-weight:700;color:#55607e;margin-top:24px;}
 .real-wa a{color:#0b7a3e;font-weight:900;}
 @media(max-width:900px){
@@ -1402,6 +1411,13 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
       <figcaption><strong>Adiós al arnés manchado</strong><span>Tela vs. goma: el Wuuff se limpia con agua y un trapo.</span><a href="/combo-collar-arnes-correa/">Ver el combo →</a></figcaption>
     </figure>
   </div>
+  <div class="yt-wrap">
+    <button type="button" class="yt-facade" data-yt="WJH1H7uErm8" aria-label="Reproducir el video de Wuuff Puppy en YouTube">
+      <img src="https://i.ytimg.com/vi/WJH1H7uErm8/hqdefault.jpg" alt="Video de Wuuff Puppy en YouTube" loading="lazy" width="480" height="360">
+      <span class="yt-play" aria-hidden="true"><svg viewBox="0 0 68 48"><path d="M66.5 7.7a8.5 8.5 0 0 0-6-6C55.2.3 34 .3 34 .3s-21.2 0-26.5 1.4a8.5 8.5 0 0 0-6 6C.1 13 .1 24 .1 24s0 11 1.4 16.3a8.5 8.5 0 0 0 6 6C12.8 47.7 34 47.7 34 47.7s21.2 0 26.5-1.4a8.5 8.5 0 0 0 6-6C67.9 35 67.9 24 67.9 24s0-11-1.4-16.3z" fill="#f00"/><path d="M45 24 27 14v20z" fill="#fff"/></svg></span>
+    </button>
+    <p class="yt-pie">📺 Míralo también en <a href="https://www.youtube.com/watch?v=WJH1H7uErm8" target="_blank" rel="noopener">nuestro canal de YouTube</a></p>
+  </div>
   <p class="real-wa">¿Quieres ver cómo le queda a un perrito de tu tamaño? <a href="https://wa.me/573176431286?text=Hola%2C%20quiero%20ver%20un%20video%20de%20c%C3%B3mo%20se%20pone%20el%20arn%C3%A9s" target="_blank" rel="noopener">Escríbenos por WhatsApp</a> y te mandamos un video.</p>
 </section>
 
@@ -1560,6 +1576,21 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
   </div>
 </section>
 
+<script>
+// Video de YouTube: solo se carga al tocar "play" (no frena la página)
+document.addEventListener('click', function(e){
+  var b = e.target.closest && e.target.closest('.yt-facade');
+  if(!b) return;
+  var f = document.createElement('iframe');
+  f.src = 'https://www.youtube-nocookie.com/embed/' + b.dataset.yt + '?autoplay=1&rel=0&playsinline=1';
+  f.title = 'Video de Wuuff Puppy en YouTube';
+  f.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+  f.allowFullscreen = true;
+  b.replaceWith(f);
+  document.querySelectorAll('#en-video video').forEach(function(v){ v.pause(); });
+  try { if(window.gtag) gtag('event','video_youtube_play',{video_id:b.dataset.yt}); } catch(err){}
+});
+</script>
 <!-- FOOTER -->
 </main>
 
