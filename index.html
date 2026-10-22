@@ -2967,8 +2967,9 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
       if(elegidaCiu && op && op.value){
         var metodo = typeof metodoPagoElegido === 'function' ? metodoPagoElegido() : 'wompi';
         var clave = metodo === 'contraentrega' ? 'contraentrega' : (op.value === 'Bogotá / Soacha' ? 'bogota' : 'otras');
-        entrega.innerHTML = '📅 Si confirmas hoy, te llega <strong>' + wuuffEntrega.textoRango(wuuffEntrega.rango(clave)) + '</strong>' +
-          (metodo === 'contraentrega' ? ' y pagas al recibir.' : '.');
+        var conPlaca = typeof pendingPurchase !== 'undefined' && !!pendingPurchase && /Placa Inteligente|Placa NFC/.test(pendingPurchase.nombreProducto || '');
+        entrega.innerHTML = '📅 Si confirmas hoy, te llega <strong>' + wuuffEntrega.textoRango(wuuffEntrega.rango(clave, conPlaca ? wuuffEntrega.config.produccionPlaca : 0)) + '</strong>' +
+          (metodo === 'contraentrega' ? ' y pagas al recibir.' : '.') + (conPlaca ? ' Incluye ' + wuuffEntrega.config.produccionPlaca + ' días hábiles para hacer tu placa.' : '');
       } else {
         entrega.innerHTML = '🚀 Despachamos tu pedido en <strong>1–2 días hábiles</strong>. Elige tu ciudad para ver cuándo te llega.';
       }

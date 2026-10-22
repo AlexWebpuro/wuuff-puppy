@@ -327,6 +327,17 @@ footer a:hover { opacity: 1; text-decoration: underline; }
 .footer-copy { font-size: 13px; opacity: .7; }
 .wa-float { position: fixed; right: 16px; bottom: calc(env(safe-area-inset-bottom, 0px) + 20px); width: 54px; height: 54px; border-radius: 50%; background: #25d366; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 18px rgba(0, 0, 0, .2); z-index: 60; }
 .wa-float svg { width: 28px; height: 28px; fill: #fff; }
+.cuando-llega { margin: 14px 0 4px; padding: 14px 16px; border-radius: 18px; background: var(--white); border: 2px solid var(--lblue); text-align: left; }
+.cl-titulo { margin: 0 0 10px; font-weight: 900; font-size: 15px; color: var(--navy); }
+.cl-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; background: var(--lblue); padding: 4px; border-radius: 12px; margin-bottom: 10px; }
+.cl-tabs button { border: 0; background: none; padding: 9px 6px; border-radius: 9px; font: inherit; font-size: 13px; font-weight: 800; color: var(--navy); cursor: pointer; }
+.cl-tabs button[aria-pressed="true"] { background: var(--white); color: var(--blue); box-shadow: 0 2px 8px rgba(73, 100, 175, .15); }
+.cl-linea { display: flex; flex-direction: column; gap: 1px; margin: 0 0 8px; font-size: 14px; color: var(--navy); }
+.cl-linea span { font-weight: 700; opacity: .75; font-size: 12px; text-transform: uppercase; letter-spacing: .5px; }
+.cl-linea strong { font-weight: 900; font-size: 15px; }
+.cl-nota { margin: 4px 0 0; font-size: 12.5px; font-weight: 700; color: var(--tenue); }
+.cl-reloj { margin: 10px 0 0; padding-top: 10px; border-top: 1px dashed #d6dff2; font-size: 13px; font-weight: 700; color: var(--aviso); }
+.cl-reloj b { font-weight: 900; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .ticker-pista { animation: none; } .btn-primary { transition: none; } }
 </style>
 
@@ -455,6 +466,7 @@ footer a:hover { opacity: 1; text-decoration: underline; }
             <div class="precio"><span id="total"></span><span id="antes"></span></div>
             <ul id="desglose"></ul>
             <button type="button" class="btn-buy" id="btn-agregar">Comprar ahora 🐾</button>
+            <div class="cuando-llega" data-entrega data-produccion="3"><p class="cl-titulo">📅 ¿Cuándo te llega?</p><p class="cl-nota">🛠️ La hacemos en 3 días hábiles con su nombre y te la enviamos.</p></div>
             <div class="seguros"><span>🔒 Pago seguro con Wompi</span><span>🚚 Envío gratis y pago al recibir en Bogotá con collar, arnés o set</span><span>📦 Sola: Bogotá $8.000 · otras ciudades $18.500</span></div>
           </div>
 
@@ -607,6 +619,7 @@ footer a:hover { opacity: 1; text-decoration: underline; }
 <script src="/placa-nfc/js/geom.js"></script>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 <script type="module" src="/placa-nfc/js/app.js"></script>
+<script src="/assets/entrega.js" defer></script>
 
 <script>
 !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');

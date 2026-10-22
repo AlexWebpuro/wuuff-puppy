@@ -4,6 +4,7 @@
   // Reglas: cámbialas aquí si cambian los tiempos de despacho o de la transportadora.
   var CFG = {
     corteHora: 14,              // pedidos antes de las 2:00 p. m. de un día hábil se procesan ese mismo día
+    produccionPlaca: 3,         // días hábiles para hacer la Placa Inteligente con su nombre
     contraentrega: [1, 2],      // días hábiles desde el día en que se procesa (solo Bogotá)
     lineaBogota: [2, 3],        // pago en línea, Bogotá y Soacha
     lineaOtras: [3, 6]          // pago en línea, resto de Colombia
@@ -50,11 +51,11 @@
     return { hoy: hoy, base: base, faltanMin: faltan };
   }
 
-  // tipo: 'contraentrega' | 'bogota' | 'otras'
-  function rango(tipo) {
+  // tipo: 'contraentrega' | 'bogota' | 'otras'; produccion: días hábiles extra para hacerlo (la placa tarda 3)
+  function rango(tipo, produccion) {
     var r = tipo === 'contraentrega' ? CFG.contraentrega : tipo === 'bogota' ? CFG.lineaBogota : CFG.lineaOtras;
-    var e = estado();
-    return { desde: sumarHabiles(e.base, r[0]), hasta: sumarHabiles(e.base, r[1]) };
+    var e = estado(), p = produccion || 0;
+    return { desde: sumarHabiles(e.base, r[0] + p), hasta: sumarHabiles(e.base, r[1] + p) };
   }
 
   function fecha(d, conMes) { return DIAS[d.getUTCDay()] + ' ' + d.getUTCDate() + (conMes ? ' de ' + MESES[d.getUTCMonth()] : ''); }
@@ -77,12 +78,14 @@
   // Caja "¿Cuándo te llega?" en las fichas de producto: <div data-entrega></div>
   function pintar(caja) {
     var pago = caja.getAttribute('data-pago') || 'contraentrega';
+    var prod = +(caja.getAttribute('data-produccion') || 0);
+    var notaProd = prod ? '<p class="cl-nota">🛠️ Incluye ' + prod + ' días hábiles para hacerla con su nombre.</p>' : '';
     var res = pago === 'contraentrega'
-      ? '<p class="cl-linea"><span>Bogotá</span><strong>Te llega ' + textoRango(rango('contraentrega')) + '</strong></p>' +
-        '<p class="cl-nota">💵 Pagas en efectivo cuando lo recibes. Te confirmamos por WhatsApp antes de enviarlo.</p>'
-      : '<p class="cl-linea"><span>Bogotá y Soacha</span><strong>Te llega ' + textoRango(rango('bogota')) + '</strong></p>' +
-        '<p class="cl-linea"><span>Otras ciudades</span><strong>Te llega ' + textoRango(rango('otras')) + '</strong></p>' +
-        '<p class="cl-nota">💳 Tarjeta, PSE, Nequi, Daviplata o Bancolombia con Wompi.</p>';
+      ? '<p class="cl-linea"><span>Bogotá</span><strong>Te llega ' + textoRango(rango('contraentrega', prod)) + '</strong></p>' +
+        '<p class="cl-nota">💵 Pagas en efectivo cuando lo recibes' + (prod ? ' (con collar, arnés o set)' : '') + '. Te confirmamos por WhatsApp antes de enviarlo.</p>' + notaProd
+      : '<p class="cl-linea"><span>Bogotá y Soacha</span><strong>Te llega ' + textoRango(rango('bogota', prod)) + '</strong></p>' +
+        '<p class="cl-linea"><span>Otras ciudades</span><strong>Te llega ' + textoRango(rango('otras', prod)) + '</strong></p>' +
+        '<p class="cl-nota">💳 Tarjeta, PSE, Nequi, Daviplata o Bancolombia con Wompi.</p>' + notaProd;
     caja.innerHTML =
       '<p class="cl-titulo">📅 ¿Cuándo te llega?</p>' +
       '<div class="cl-tabs" role="group" aria-label="Forma de pago">' +
