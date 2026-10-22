@@ -605,6 +605,21 @@ body{font-family:'Nunito',sans-serif;background:var(--white);color:var(--navy);o
 .shipping-input:focus{border-color:var(--blue);}
 .shipping-input::placeholder{color:rgba(45,67,117,.5);}
 .shipping-select{appearance:none;-webkit-appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232d4375' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;background-size:16px;padding-right:40px;}
+.tel-campo{position:relative;}
+.tel-pais{position:absolute;left:12px;top:50%;transform:translateY(-50%);display:flex;align-items:center;gap:6px;font-size:14px;font-weight:800;color:var(--navy);padding-right:10px;border-right:1.5px solid var(--lblue);pointer-events:none;}
+.tel-bandera{width:22px;height:15px;border-radius:3px;box-shadow:0 0 0 1px rgba(45,67,117,.15);}
+.shipping-input.tel-input{padding-left:92px;letter-spacing:.3px;}
+.combo-campo{position:relative;}
+.combo-input{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232d4375' stroke-width='2.5' stroke-linecap='round'%3E%3Ccircle cx='10.5' cy='10.5' r='6.5'/%3E%3Cpath d='M15.5 15.5L20 20'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;background-size:16px;padding-right:40px;}
+.combo-input:disabled{opacity:.55;cursor:not-allowed;}
+.combo-lista{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:30;max-height:230px;overflow-y:auto;margin:0;padding:6px;list-style:none;background:#fff;border:1.5px solid var(--lblue);border-radius:14px;box-shadow:0 14px 30px rgba(45,67,117,.18);text-align:left;}
+.combo-lista li{padding:10px 12px;border-radius:10px;font-size:14px;font-weight:700;color:var(--navy);cursor:pointer;}
+.combo-lista li[aria-selected="true"],.combo-lista li:hover{background:var(--lblue);}
+.combo-lista li.combo-vacio{cursor:default;opacity:.7;font-weight:600;}
+.combo-lista li.combo-vacio:hover{background:none;}
+.combo-lista li small{font-weight:700;opacity:.6;margin-left:6px;}
+.envio-costo{margin:-4px 0 0;text-align:left;font-size:13px;font-weight:800;color:var(--navy);}
+.envio-costo b{color:#2b8a3e;}
 .envio-gratis-aviso{background:#e6f7ec;color:#2b8a3e;font-size:12.5px;font-weight:700;border-radius:12px;padding:9px 12px;margin:-4px 0 10px;text-align:left;}
 .codigo-box{margin:2px 0 12px;text-align:left;}
 .codigo-label{display:block;font-size:13px;font-weight:800;color:var(--navy);margin-bottom:6px;}
@@ -2179,6 +2194,7 @@ function actualizarMetodoPago(){
   if(box) box.hidden = !disponible;
   var metodo = metodoPagoElegido();
   if(btn && !btn.disabled) btn.textContent = metodo === 'contraentrega' ? 'Confirmar pedido 🐾' : 'Continuar al pago 💳';
+  if(typeof actualizarCostoYEntrega === 'function') actualizarCostoYEntrega();
 }
 // Actualiza el texto de la opción de Bogotá y el aviso según la compra en curso
 function actualizarEnvioGratis(){
@@ -2444,7 +2460,7 @@ document.addEventListener('submit', function(e){
   var form = e.target;
   var nombre = document.getElementById('envio-nombre').value;
   var mascota = document.getElementById('envio-mascota').value;
-  var telefono = document.getElementById('envio-telefono').value;
+  var telefono = document.getElementById('envio-telefono').value.replace(/\D/g, '');
   var correo = document.getElementById('envio-correo').value;
   var direccion = document.getElementById('envio-direccion').value;
   var ciudadNombre = document.getElementById('envio-ciudad-nombre').value;
@@ -2493,7 +2509,7 @@ document.addEventListener('submit', function(e){
     addressLine1: direccion,
     addressLine2: 'Correo: ' + correo + ' | Mascota: ' + mascota + ' | Producto: ' + nombreProducto,
     city: ciudadNombre,
-    region: 'Colombia',
+    region: document.getElementById('envio-departamento').value || 'Colombia',
     country: 'CO',
     phoneNumber: telefono,
     name: nombre
@@ -2752,11 +2768,22 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
         </div>
         <input type="text" id="perfil-raza" class="shipping-input" maxlength="60" placeholder="Raza (ej: Beagle, criollo…)" aria-label="Raza">
       </div>
-      <input type="tel" id="envio-telefono" name="telefono" placeholder="Teléfono / WhatsApp" required class="shipping-input" aria-label="Teléfono / WhatsApp">
+      <div class="tel-campo">
+        <span class="tel-pais"><svg class="tel-bandera" viewBox="0 0 3 2" aria-hidden="true"><rect width="3" height="2" fill="#ce1126"/><rect width="3" height="1.5" fill="#003893"/><rect width="3" height="1" fill="#fcd116"/></svg>+57</span>
+        <input type="tel" id="envio-telefono" name="telefono" placeholder="Celular / WhatsApp: 300 123 4567" required class="shipping-input tel-input" aria-label="Celular o WhatsApp (Colombia, +57)" inputmode="numeric" autocomplete="tel-national" maxlength="12">
+      </div>
       <input type="email" id="envio-correo" name="correo" placeholder="Correo electrónico" required class="shipping-input" aria-label="Correo electrónico">
       <input type="text" id="envio-direccion" name="direccion" placeholder="Dirección exacta (calle, número, apto/casa)" required class="shipping-input" aria-label="Dirección exacta (calle, número, apto/casa)">
-      <input type="text" id="envio-ciudad-nombre" name="ciudad" placeholder="Ciudad (ej: Bogotá, Medellín, Cali...)" required class="shipping-input" aria-label="Ciudad (ej: Bogotá, Medellín, Cali...)">
-      <select id="envio-ciudad" name="tipo_envio" required class="shipping-input shipping-select" aria-label="Tipo de envío">
+      <div class="combo-campo">
+        <input type="text" id="envio-departamento" name="departamento" placeholder="Departamento" required class="shipping-input combo-input" aria-label="Departamento" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="lista-departamento" autocomplete="off" spellcheck="false">
+        <ul class="combo-lista" id="lista-departamento" role="listbox" aria-label="Departamentos" hidden></ul>
+      </div>
+      <div class="combo-campo">
+        <input type="text" id="envio-ciudad-nombre" name="ciudad" placeholder="Ciudad o municipio" required disabled class="shipping-input combo-input" aria-label="Ciudad o municipio" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="lista-ciudad" autocomplete="off" spellcheck="false">
+        <ul class="combo-lista" id="lista-ciudad" role="listbox" aria-label="Ciudades" hidden></ul>
+      </div>
+      <p class="envio-costo" id="envio-costo" hidden></p>
+      <select id="envio-ciudad" name="tipo_envio" class="shipping-input shipping-select" aria-label="Tipo de envío" hidden tabindex="-1">
         <option value="" disabled selected>Tipo de envío</option>
         <option value="Bogotá / Soacha" data-shipping="0">Bogotá / Soacha — envío GRATIS 🎉</option>
         <option value="Otra ciudad de Colombia" data-shipping="18500">Otra ciudad de Colombia — envío $18.500</option>
@@ -2769,7 +2796,7 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
         <label class="metodo-pago-op"><input type="radio" name="metodo_pago" value="wompi">
           <span><strong>💳 Pagar ahora en línea</strong><small>Tarjeta, PSE, Nequi, Daviplata o Bancolombia con Wompi.</small></span></label>
       </fieldset>
-      <p class="envio-despacho">🚀 Despachamos tu pedido en <strong>1–2 días hábiles</strong>. Entrega de 2 a 5 días según tu ciudad.</p>
+      <p class="envio-despacho" id="envio-entrega">🚀 Despachamos tu pedido en <strong>1–2 días hábiles</strong>. Entrega de 2 a 5 días según tu ciudad.</p>
       <div class="codigo-box">
         <label for="envio-codigo" class="codigo-label">¿Tienes un código de descuento?</label>
         <div class="codigo-fila">
@@ -2795,6 +2822,168 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
     <button type="button" class="shipping-modal-cancel" id="pedido-ok-cerrar">Cerrar</button>
   </div>
 </div>
+<script>
+// Formulario de envío: celular con +57 y departamento/ciudad con buscador (lista de /assets/colombia.json)
+(function(){
+  var tel = document.getElementById('envio-telefono');
+  var dep = document.getElementById('envio-departamento');
+  var ciu = document.getElementById('envio-ciudad-nombre');
+  var tipo = document.getElementById('envio-ciudad');
+  if(!tel || !dep || !ciu || !tipo) return;
+  var DATA = null, cargando = null, elegidoDep = '', elegidaCiu = '', libre = false;
+
+  // --- Celular: solo números, se muestra como 300 123 4567
+  function formatoTel(){
+    var d = tel.value.replace(/\D/g, '');
+    if(d.length > 10 && d.indexOf('57') === 0) d = d.slice(2);
+    d = d.slice(0, 10);
+    tel.value = d.replace(/^(\d{3})(\d{0,3})(\d{0,4}).*/, function(_, a, b, c){ return [a, b, c].filter(Boolean).join(' '); });
+    tel.setCustomValidity(/^(3\d{9}|60\d{8})$/.test(d) ? '' : 'Escribe un celular de 10 dígitos, por ejemplo 300 123 4567');
+  }
+  tel.addEventListener('input', formatoTel);
+  tel.addEventListener('blur', formatoTel);
+
+  // --- Lista de departamentos y municipios (se carga la primera vez que se abre el formulario)
+  function cargar(){
+    if(DATA) return Promise.resolve(DATA);
+    if(!cargando) cargando = fetch('/assets/colombia.json').then(function(r){ if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(function(d){ DATA = d; return d; })
+      .catch(function(err){
+        // Respaldo: si la lista no carga, se escribe a mano y la compra sigue
+        console.error('No se pudo cargar la lista de ciudades', err);
+        libre = true; ciu.disabled = false;
+        [dep, ciu].forEach(function(i){ i.setCustomValidity(''); i.removeAttribute('role'); });
+        document.getElementById('lista-departamento').hidden = true; document.getElementById('lista-ciudad').hidden = true;
+        elegidoDep = dep.value; elegidaCiu = ciu.value; actualizarTipo();
+        return null;
+      });
+    return cargando;
+  }
+  function norm(s){ return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim(); }
+
+  function combo(input, lista, opciones, alElegir, mensaje){
+    var activo = -1, vistos = [];
+    function abrir(){ input.setAttribute('aria-expanded', 'true'); lista.hidden = false; }
+    function cerrar(){ input.setAttribute('aria-expanded', 'false'); lista.hidden = true; input.removeAttribute('aria-activedescendant'); activo = -1; }
+    function pintar(){
+      var q = norm(input.value), todas = opciones();
+      var empiezan = [], contienen = [];
+      todas.forEach(function(o){ var n = norm(o); if(!q || n.indexOf(q) === 0) empiezan.push(o); else if(n.indexOf(q) > -1) contienen.push(o); });
+      vistos = empiezan.concat(contienen).slice(0, 80);
+      activo = vistos.length ? 0 : -1;
+      lista.innerHTML = vistos.length ? vistos.map(function(o, i){
+        return '<li role="option" id="' + lista.id + '-' + i + '" aria-selected="' + (i === activo) + '" data-i="' + i + '">' + o.replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</li>';
+      }).join('') : '<li class="combo-vacio">No encontramos “' + input.value.replace(/</g, '&lt;') + '”</li>';
+      if(activo > -1) input.setAttribute('aria-activedescendant', lista.id + '-0');
+      abrir();
+    }
+    function marcar(i){
+      var items = lista.querySelectorAll('[role=option]');
+      if(!items.length) return;
+      activo = (i + items.length) % items.length;
+      items.forEach(function(li, k){ li.setAttribute('aria-selected', k === activo ? 'true' : 'false'); });
+      items[activo].scrollIntoView({ block: 'nearest' });
+      input.setAttribute('aria-activedescendant', items[activo].id);
+    }
+    function elegir(valor){
+      input.value = valor || '';
+      input.setCustomValidity(valor ? '' : mensaje);
+      cerrar();
+      alElegir(valor || '');
+    }
+    input.addEventListener('focus', function(){ cargar().then(function(){ if(!libre) pintar(); }); });
+    input.addEventListener('input', function(){
+      if(libre){ alElegir(input.value.trim()); return; }
+      alElegir(''); input.setCustomValidity(mensaje); cargar().then(function(){ if(!libre) pintar(); else alElegir(input.value.trim()); });
+    });
+    input.addEventListener('keydown', function(e){
+      if(e.key === 'ArrowDown'){ e.preventDefault(); if(lista.hidden) pintar(); else marcar(activo + 1); }
+      else if(e.key === 'ArrowUp'){ e.preventDefault(); marcar(activo - 1); }
+      else if(e.key === 'Enter' && !lista.hidden){ e.preventDefault(); if(activo > -1) elegir(vistos[activo]); }
+      else if(e.key === 'Escape'){ cerrar(); }
+    });
+    lista.addEventListener('mousedown', function(e){
+      var li = e.target.closest('[data-i]');
+      e.preventDefault();
+      if(li) elegir(vistos[+li.getAttribute('data-i')]);
+    });
+    input.addEventListener('blur', function(){
+      if(libre || (lista.hidden && input.value === '')) return;
+      var q = norm(input.value), todas = opciones();
+      var exacta = todas.filter(function(o){ return norm(o) === q; })[0];
+      if(exacta){ elegir(exacta); return; }
+      var parecidas = todas.filter(function(o){ return norm(o).indexOf(q) > -1; });
+      if(q && parecidas.length === 1){ elegir(parecidas[0]); return; }
+      cerrar();
+      if(input.value) input.setCustomValidity(mensaje);
+    });
+    return { elegir: elegir };
+  }
+
+  var comboCiu = combo(ciu, document.getElementById('lista-ciudad'),
+    function(){ return (DATA && elegidoDep && DATA[elegidoDep]) || []; },
+    function(v){ elegidaCiu = v; actualizarTipo(); },
+    'Elige tu ciudad o municipio de la lista');
+  combo(dep, document.getElementById('lista-departamento'),
+    function(){ return DATA ? Object.keys(DATA) : []; },
+    function(v){
+      if(v === elegidoDep) return;
+      elegidoDep = v;
+      if(libre) return;
+      ciu.value = ''; elegidaCiu = '';
+      ciu.disabled = !v;
+      ciu.setCustomValidity(v ? 'Elige tu ciudad o municipio de la lista' : '');
+      var lista = v && DATA ? DATA[v] : [];
+      if(lista.length === 1) comboCiu.elegir(lista[0]); // Bogotá, D.C. → Bogotá
+      actualizarTipo();
+    },
+    'Elige tu departamento de la lista');
+
+  // Bogotá y Soacha usan la tarifa de Bogotá; el resto, la de otras ciudades
+  function actualizarTipo(){
+    var esBog = libre ? /bogot|soacha/i.test(elegidaCiu) : (elegidoDep === 'Bogotá, D.C.' || (elegidoDep === 'Cundinamarca' && elegidaCiu === 'Soacha'));
+    var nuevo = !elegidaCiu ? '' : esBog ? 'Bogotá / Soacha' : 'Otra ciudad de Colombia';
+    if(tipo.value !== nuevo){ tipo.value = nuevo; tipo.dispatchEvent(new Event('change', { bubbles: true })); }
+    else actualizarCostoYEntrega();
+  }
+  // Para las pruebas automáticas y para volver a llenar el formulario
+  window.wuuffElegirUbicacion = function(d, c){ return cargar().then(function(){ dep.value = d; dep.dispatchEvent(new Event('blur')); if(c && !ciu.value){ ciu.value = c; ciu.dispatchEvent(new Event('blur')); } }); };
+
+  window.actualizarCostoYEntrega = function(){
+    var costo = document.getElementById('envio-costo');
+    var entrega = document.getElementById('envio-entrega');
+    var op = tipo.options[tipo.selectedIndex];
+    if(costo){
+      if(elegidaCiu && op && op.value){
+        var c = typeof costoEnvio === 'function' ? costoEnvio(op) : 0;
+        costo.innerHTML = '🚚 Envío a ' + elegidaCiu.replace(/</g, '&lt;') + ': ' + (c === 0 ? '<b>GRATIS 🎉</b>' : formatoPesos(c * 100));
+        // en Bogotá/Soacha ya lo dice el aviso verde; en otras ciudades se oculta ese aviso (habla de Bogotá)
+        costo.hidden = op.value === 'Bogotá / Soacha' && c === 0;
+      } else { costo.hidden = true; }
+    }
+    var aviso = document.getElementById('envio-gratis-aviso');
+    if(aviso && aviso.innerHTML) aviso.style.display = (elegidaCiu && op && op.value === 'Otra ciudad de Colombia') ? 'none' : 'block';
+    if(entrega && window.wuuffEntrega){
+      if(elegidaCiu && op && op.value){
+        var metodo = typeof metodoPagoElegido === 'function' ? metodoPagoElegido() : 'wompi';
+        var clave = metodo === 'contraentrega' ? 'contraentrega' : (op.value === 'Bogotá / Soacha' ? 'bogota' : 'otras');
+        var conPlaca = typeof pendingPurchase !== 'undefined' && !!pendingPurchase && /Placa Inteligente|Placa NFC/.test(pendingPurchase.nombreProducto || '');
+        entrega.innerHTML = '📅 Si confirmas hoy, te llega <strong>' + wuuffEntrega.textoRango(wuuffEntrega.rango(clave, conPlaca ? wuuffEntrega.config.produccionPlaca : 0)) + '</strong>' +
+          (metodo === 'contraentrega' ? ' y pagas al recibir.' : '.') + (conPlaca ? ' Incluye ' + wuuffEntrega.config.produccionPlaca + ' días hábiles para hacer tu placa.' : '');
+      } else {
+        entrega.innerHTML = '🚀 Despachamos tu pedido en <strong>1–2 días hábiles</strong>. Elige tu ciudad para ver cuándo te llega.';
+      }
+    }
+  };
+  document.addEventListener('change', function(e){ if(e.target && e.target.name === 'metodo_pago') actualizarCostoYEntrega(); });
+  // Al cancelar o terminar una compra, el formulario se reinicia
+  document.getElementById('datos-envio-form').addEventListener('reset', function(){
+    setTimeout(function(){ elegidoDep = ''; elegidaCiu = ''; ciu.disabled = true; dep.setCustomValidity(''); ciu.setCustomValidity(''); tipo.value = ''; actualizarCostoYEntrega(); }, 0);
+  });
+  actualizarCostoYEntrega();
+})();
+</script>
+<script src="/assets/entrega.js" defer></script>
 <!-- Scripts para medir -->
 <script>
 (function(){
