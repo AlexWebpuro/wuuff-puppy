@@ -621,7 +621,28 @@ body{font-family:'Nunito',sans-serif;background:var(--white);color:var(--navy);o
 .envio-costo{margin:-4px 0 0;text-align:left;font-size:13px;font-weight:800;color:var(--navy);}
 .envio-costo b{color:#2b8a3e;}
 .envio-gratis-aviso{background:#e6f7ec;color:#2b8a3e;font-size:12.5px;font-weight:700;border-radius:12px;padding:9px 12px;margin:-4px 0 10px;text-align:left;}
-.codigo-box{margin:2px 0 12px;text-align:left;}
+.codigo-box{margin:2px 0 8px;text-align:left;}
+.codigo-toggle{background:none;border:0;padding:4px 0;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;color:var(--blue);text-decoration:underline;cursor:pointer;}
+.codigo-panel{margin-top:6px;}
+.codigo-resumen{background:#f4f8ff;border:2px solid var(--lblue);border-radius:14px;padding:10px 14px;margin:0 0 4px;text-align:left;}
+.codigo-resumen[hidden],.regalo-placa[hidden]{display:none;}
+.cr-fila{display:flex;justify-content:space-between;gap:10px;margin:3px 0;font-size:13px;font-weight:700;color:var(--navy);}
+.cr-fila s{opacity:.6;font-weight:700;margin-right:6px;}
+.cr-desc{color:#0b7a3e;}
+.cr-regalo{color:#a2430f;}
+.cr-total{font-size:15px;font-weight:900;border-top:1px dashed #c9d3ea;padding-top:6px;margin-top:6px;}
+.regalo-placa{border:2px dashed var(--coral);border-radius:14px;padding:10px 12px 12px;margin:0 0 4px;text-align:left;display:grid;gap:8px;min-width:0;}
+.regalo-placa legend{font-size:13px;font-weight:900;color:var(--navy);padding:0 6px;}
+.regalo-placa .shipping-input{margin:0;}
+.regalo-label{font-size:12px;font-weight:900;color:var(--navy);margin:2px 0 -2px;text-transform:uppercase;letter-spacing:.5px;}
+.regalo-ops{display:flex;flex-wrap:wrap;gap:6px;}
+.regalo-ops label{flex:1 1 auto;min-width:0;}
+.regalo-ops input{position:absolute;opacity:0;width:1px;height:1px;}
+.regalo-ops span{display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 10px;border:2px solid var(--lblue);border-radius:12px;background:#fff;font-size:13px;font-weight:800;color:var(--navy);cursor:pointer;white-space:nowrap;}
+.regalo-ops input:checked + span{border-color:var(--blue);background:#eef2fb;}
+.regalo-ops input:focus-visible + span{outline:2px solid var(--blue);outline-offset:2px;}
+.regalo-colores{display:grid;grid-template-columns:1fr 1fr;}
+.regalo-colores i{display:inline-block;width:14px;height:14px;border-radius:50%;box-shadow:0 0 0 1px rgba(45,67,117,.3);}
 .codigo-label{display:block;font-size:13px;font-weight:800;color:var(--navy);margin-bottom:6px;}
 .codigo-fila{display:flex;gap:8px;}
 .codigo-fila .codigo-input{flex:1;margin:0;text-transform:uppercase;letter-spacing:.5px;}
@@ -1481,17 +1502,17 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
       <p class="tool-sub">Elige las piezas que quieres y mira el total</p>
       <div class="combo-list">
         <label class="combo-item">
-          <input type="checkbox" class="combo-check" data-price="49900" checked>
+          <input type="checkbox" class="combo-check" data-price="49900" data-p="collar" checked>
           <span class="combo-item-name">Collar impermeable</span>
           <span class="combo-item-price">$49.900</span>
         </label>
         <label class="combo-item">
-          <input type="checkbox" class="combo-check" data-price="72900">
+          <input type="checkbox" class="combo-check" data-price="72900" data-p="arnes">
           <span class="combo-item-name">Arnés tipo H impermeable</span>
           <span class="combo-item-price">$72.900</span>
         </label>
         <label class="combo-item">
-          <input type="checkbox" class="combo-check" data-price="58900">
+          <input type="checkbox" class="combo-check" data-price="58900" data-p="correa">
           <span class="combo-item-name">Correa impermeable</span>
           <span class="combo-item-price">$58.900</span>
         </label>
@@ -1501,7 +1522,7 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
         <span class="combo-total" id="combo-total">$49.900 COP</span>
       </div>
       <p class="combo-savings" id="combo-savings" style="display:none;">🎉 ¡Llévate las 3 piezas en el Combo completo por $157.900 y ahorra $23.800!</p>
-      <button class="btn-buy" id="combo-buy-btn" onclick="iniciarCompra(window.wuuffComboTotalCents, 'Combo personalizado')">Quiero mi combo 🐾</button>
+      <button class="btn-buy" id="combo-buy-btn" onclick="iniciarCompra(window.wuuffComboTotalCents, 'Combo personalizado', '', window.wuuffComboCarrito)">Quiero mi combo 🐾</button>
     </div>
   </div>
 </section>
@@ -1774,12 +1795,13 @@ document.addEventListener('click', function(e){
     return '$' + n.toLocaleString('es-CO') + ' COP';
   }
   function update(){
-    var total = 0, count = 0;
+    var total = 0, count = 0, items = [];
     checks.forEach(function(c){
       var label = c.closest('.combo-item');
       if(c.checked){
         total += parseInt(c.dataset.price, 10);
         count++;
+        items.push({ p: c.dataset.p });
         if(label) label.classList.add('is-checked');
       } else {
         if(label) label.classList.remove('is-checked');
@@ -1792,6 +1814,7 @@ document.addEventListener('click', function(e){
     window.wuuffComboTotalCents = total * 100;
     savingsEl.style.display = (count === 3) ? 'block' : 'none';
     window.wuuffComboEsCompleto = (count === 3);
+    window.wuuffComboCarrito = { items: count === 3 ? [{ p: 'combo' }] : items };
   }
   checks.forEach(function(c){ c.addEventListener('change', update); });
   update();
@@ -2195,6 +2218,7 @@ function actualizarMetodoPago(){
   var metodo = metodoPagoElegido();
   if(btn && !btn.disabled) btn.textContent = metodo === 'contraentrega' ? 'Confirmar pedido 🐾' : 'Continuar al pago 💳';
   if(typeof actualizarCostoYEntrega === 'function') actualizarCostoYEntrega();
+  pintarResumenCodigo();
 }
 // Actualiza el texto de la opción de Bogotá y el aviso según la compra en curso
 function actualizarEnvioGratis(){
@@ -2360,28 +2384,96 @@ function comprarProducto(btn, amountInCents, nombreBase){
   var tallaTexto = chip.textContent.trim();
   var nombreCompleto = nombreBase + ' (' + tallaTexto + ')';
   if(qty > 1) nombreCompleto += ' x' + qty;
-  iniciarCompra(amountInCents * qty, nombreCompleto, tallaTexto);
+  var clave = /^Combo/.test(nombreBase) ? 'combo' : /^Arn/.test(nombreBase) ? 'arnes' : /^Collar/.test(nombreBase) ? 'collar' : /^Correa/.test(nombreBase) ? 'correa' : '';
+  iniciarCompra(amountInCents * qty, nombreCompleto, tallaTexto, clave ? { items: [{ p: clave, talla: tallaTexto.replace(/^Talla\s+/i, ''), qty: qty }] } : null);
 }
 
-// Códigos de descuento (por ahora solo el del concurso de Halloween)
-var CODIGOS = {
-  WUUFFHALLOWEEN: {
-    desde: new Date('2026-10-26T00:00:00-05:00'),
-    hasta: new Date('2026-11-03T00:00:00-05:00'),   // válido hasta el 2 de noviembre a medianoche (hora Colombia)
-    descuentoCents: 1579000,                         // 10 % del combo completo ($157.900)
-    texto: '10 % en el combo completo'
+// Códigos de descuento: se validan en el servidor (netlify/functions/validar-codigo).
+// El total final también lo calcula el servidor al crear el pedido (contraentrega o Wompi).
+function codigoNormal(t){ return String(t || '').trim().toUpperCase(); }
+function guardarCodigoSesion(c){ try { if(c) sessionStorage.setItem('wuuff_codigo', c); else sessionStorage.removeItem('wuuff_codigo'); } catch(e){} }
+function leerCodigoSesion(){ try { return sessionStorage.getItem('wuuff_codigo') || ''; } catch(e){ return ''; } }
+// Link directo: wuuffpuppy.co/?codigo=<código> → se aplica solo al llegar al checkout
+(function(){ try { var c = new URLSearchParams(location.search).get('codigo'); if(c) guardarCodigoSesion(codigoNormal(c)); } catch(e){} })();
+function abrirCodigo(){
+  var p = document.getElementById('codigo-panel'), t = document.getElementById('codigo-toggle');
+  if(p) p.hidden = false;
+  if(t) t.setAttribute('aria-expanded', 'true');
+}
+function llevaPlaca(){
+  return !!pendingPurchase && !!((pendingPurchase.carrito && pendingPurchase.carrito.placa) || (pendingPurchase.codigo && pendingPurchase.codigo.regalo));
+}
+function actualizarPerfilPlaca(){
+  var perfilBox = document.getElementById('perfil-placa');
+  if(!perfilBox) return;
+  var con = llevaPlaca();
+  perfilBox.hidden = !con;
+  ['perfil-especie', 'perfil-sexo', 'perfil-raza'].forEach(function(id){ document.getElementById(id).required = con; });
+}
+function mostrarRegalo(ver){
+  var f = document.getElementById('regalo-placa');
+  if(!f) return;
+  f.hidden = !ver; f.disabled = !ver;
+  var n = document.getElementById('regalo-nombre');
+  if(ver && n && !n.value){
+    var m = (document.getElementById('envio-mascota') || {}).value || '';
+    n.value = m.trim().split(/\s+/)[0].slice(0, 10);
   }
-};
-function revisarCodigo(texto){
-  var codigo = String(texto || '').trim().toUpperCase().replace(/\s+/g, '');
-  if(!codigo) return { ok: false, vacio: true };
-  var c = CODIGOS[codigo];
-  if(!c) return { ok: false, msg: 'Ese código no existe. Revísalo e intenta de nuevo.' };
-  var ahora = new Date();
-  if(ahora < c.desde) return { ok: false, msg: 'Este código se puede usar del 26 de octubre al 2 de noviembre de 2026.' };
-  if(ahora >= c.hasta) return { ok: false, msg: 'Este código ya venció: era válido hasta el 2 de noviembre de 2026.' };
-  if(!pendingPurchase || !esComboCompleto(pendingPurchase.nombreProducto)) return { ok: false, msg: 'Este código aplica solo al combo completo (collar + arnés tipo H + correa).' };
-  return { ok: true, codigo: codigo, descuentoCents: c.descuentoCents, msg: '✅ Código aplicado: ' + c.texto + ' (−' + formatoPesos(c.descuentoCents) + ').' };
+  actualizarPerfilPlaca();
+}
+function quitarCodigo(){
+  if(pendingPurchase) pendingPurchase.codigo = null;
+  mostrarRegalo(false);
+  pintarResumenCodigo();
+}
+function pintarResumenCodigo(){
+  var box = document.getElementById('codigo-resumen');
+  if(!box) return;
+  var c = pendingPurchase && pendingPurchase.codigo;
+  if(!c){ box.hidden = true; box.innerHTML = ''; return; }
+  var sel = document.getElementById('envio-ciudad');
+  var op = sel ? sel.options[sel.selectedIndex] : null;
+  var envio = op && op.value ? costoEnvio(op) * 100 : null;
+  var sub = c.subtotal || pendingPurchase.baseAmountInCents;
+  var total = sub - c.descuento - (c.regaloValor || 0) + (envio || 0);
+  box.innerHTML =
+    '<p class="cr-fila"><span>Productos</span><span>' + formatoPesos(sub) + '</span></p>' +
+    '<p class="cr-fila cr-desc"><span>' + (c.tipo === 'concurso' ? 'Descuento concurso' : 'Descuento') + ' (' + c.porcentaje + ' %)</span><span>−' + formatoPesos(c.descuento) + '</span></p>' +
+    (c.regalo ? '<p class="cr-fila cr-regalo"><span>🎁 Placa Inteligente Wuuff</span><span>GRATIS</span></p>' : '') +
+    '<p class="cr-fila"><span>Envío</span><span>' + (envio === null ? 'Elige tu ciudad' : envio === 0 ? 'GRATIS' : formatoPesos(envio)) + '</span></p>' +
+    '<p class="cr-fila cr-total"><span>Total</span><span><s>' + formatoPesos(sub + (envio || 0)) + '</s>' + formatoPesos(total) + '</span></p>';
+  box.hidden = false;
+}
+function aplicarCodigo(){
+  var input = document.getElementById('envio-codigo');
+  var btn = document.getElementById('codigo-aplicar');
+  var codigo = codigoNormal(input && input.value);
+  if(!codigo){ mostrarCodigo({ ok: false, msg: 'Escribe tu código' }); return Promise.resolve(false); }
+  if(!pendingPurchase || !pendingPurchase.carrito) return Promise.resolve(false);
+  if(btn){ btn.disabled = true; btn.textContent = '…'; }
+  return fetch('/.netlify/functions/validar-codigo', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ codigo: codigo, carrito: pendingPurchase.carrito })
+  })
+    .then(function(r){ return r.json(); })
+    .then(function(j){
+      if(btn){ btn.disabled = false; btn.textContent = 'Aplicar'; }
+      if(!pendingPurchase) return false;
+      if(!j || !j.valido){ quitarCodigo(); mostrarCodigo({ ok: false, msg: (j && j.mensaje) || 'Este código no existe' }); return false; }
+      input.value = j.codigo;
+      pendingPurchase.codigo = j;
+      guardarCodigoSesion(j.codigo);
+      mostrarCodigo({ ok: true, msg: j.mensaje });
+      mostrarRegalo(j.regalo && !j.regaloIncluido);
+      pintarResumenCodigo();
+      try { if(window.gtag) gtag('event', 'codigo_aplicado', { codigo: j.codigo, tipo: j.tipo }); } catch(e){}
+      return true;
+    })
+    .catch(function(){
+      if(btn){ btn.disabled = false; btn.textContent = 'Aplicar'; }
+      mostrarCodigo({ ok: false, msg: 'No pudimos revisar el código. Intenta de nuevo.' });
+      return false;
+    });
 }
 function mostrarCodigo(res){
   var msg = document.getElementById('codigo-msg');
@@ -2390,20 +2482,34 @@ function mostrarCodigo(res){
   msg.className = 'codigo-msg' + (res && !res.vacio ? (res.ok ? ' ok' : ' error') : '');
 }
 document.addEventListener('click', function(e){
-  if(e.target && e.target.id === 'codigo-aplicar') mostrarCodigo(revisarCodigo(document.getElementById('envio-codigo').value));
+  if(!e.target) return;
+  if(e.target.id === 'codigo-aplicar') aplicarCodigo();
+  if(e.target.id === 'codigo-toggle'){ abrirCodigo(); var i = document.getElementById('envio-codigo'); if(i) i.focus(); }
 });
 document.addEventListener('keydown', function(e){
-  if(e.target && e.target.id === 'envio-codigo' && e.key === 'Enter'){ e.preventDefault(); mostrarCodigo(revisarCodigo(e.target.value)); }
+  if(e.target && e.target.id === 'envio-codigo' && e.key === 'Enter'){ e.preventDefault(); aplicarCodigo(); }
+});
+document.addEventListener('input', function(e){
+  // Si cambian el código ya aplicado, se quita hasta que lo vuelvan a aplicar
+  if(e.target && e.target.id === 'envio-codigo' && pendingPurchase && pendingPurchase.codigo && codigoNormal(e.target.value) !== pendingPurchase.codigo.codigo){
+    quitarCodigo(); mostrarCodigo(null);
+  }
 });
 
-function iniciarCompra(baseAmountInCents, nombreProducto, talla){
+function iniciarCompra(baseAmountInCents, nombreProducto, talla, carrito){
   if(window.cargarWompi) window.cargarWompi().catch(function(){});
   if(!baseAmountInCents || baseAmountInCents <= 0){
     alert('Selecciona al menos un producto antes de continuar.');
     return;
   }
-  pendingPurchase = { baseAmountInCents: baseAmountInCents, nombreProducto: nombreProducto, talla: talla, esCombo: esComboCompleto(nombreProducto) };
+  pendingPurchase = { baseAmountInCents: baseAmountInCents, nombreProducto: nombreProducto, talla: talla, esCombo: esComboCompleto(nombreProducto), carrito: carrito || null, codigo: null };
   mostrarCodigo(null);
+  var campoCod = document.getElementById('envio-codigo');
+  var panelCod = document.getElementById('codigo-panel');
+  if(campoCod) campoCod.value = '';
+  if(panelCod) panelCod.hidden = true;
+  mostrarRegalo(false);
+  pintarResumenCodigo();
   actualizarEnvioGratis();
   var tallaField = document.getElementById('envio-talla');
   var tallaDisplay = document.getElementById('shipping-talla-display');
@@ -2416,13 +2522,11 @@ function iniciarCompra(baseAmountInCents, nombreProducto, talla){
       tallaDisplay.style.display = 'none';
     }
   }
-  var conPlaca = /Placa Inteligente Wuuff|Placa NFC/.test(nombreProducto);
-  var perfilBox = document.getElementById('perfil-placa');
-  if(perfilBox){
-    perfilBox.hidden = !conPlaca;
-    ['perfil-especie', 'perfil-sexo', 'perfil-raza'].forEach(function(id){ document.getElementById(id).required = conPlaca; });
-  }
+  actualizarPerfilPlaca();
   document.getElementById('shipping-modal-overlay').classList.add('open');
+  // Código guardado (link ?codigo=… o aplicado antes): se aplica solo
+  var guardado = leerCodigoSesion();
+  if(guardado && campoCod){ abrirCodigo(); campoCod.value = guardado; aplicarCodigo(); }
 }
 
 // Delegación de eventos: funciona sin importar el orden del HTML
@@ -2470,20 +2574,32 @@ document.addEventListener('submit', function(e){
   var shippingCents = costoEnvio(selectedOption) * 100;
   var metodoPago = metodoPagoElegido();
 
-  var totalCents = pendingPurchase.baseAmountInCents + shippingCents;
+  if(!pendingPurchase.carrito){ alert('Actualiza la página e intenta de nuevo, por favor.'); return; }
   var nombreProducto = pendingPurchase.nombreProducto;
-  // Código de descuento: si escribieron uno que no aplica, se avisa y no se sigue al pago
+  // Código de descuento: si lo escribieron y no lo aplicaron (o lo cambiaron), primero se valida en el servidor
   var campoCodigo = document.getElementById('envio-codigo');
-  var cod = revisarCodigo(campoCodigo ? campoCodigo.value : '');
-  if(!cod.ok && !cod.vacio){ mostrarCodigo(cod); campoCodigo.focus(); return; }
-  if(cod.ok){
-    mostrarCodigo(cod);
-    totalCents -= cod.descuentoCents;
-    nombreProducto += ' [Código ' + cod.codigo + ': -' + formatoPesos(cod.descuentoCents) + ']';
+  var codigoTxt = codigoNormal(campoCodigo ? campoCodigo.value : '');
+  var aplicado = pendingPurchase.codigo;
+  if(codigoTxt && (!aplicado || aplicado.codigo !== codigoTxt)){
+    abrirCodigo();
+    aplicarCodigo().then(function(ok){
+      if(!ok){ if(campoCodigo) campoCodigo.focus(); return; }
+      if(form.requestSubmit) form.requestSubmit(); else form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    });
+    return;
+  }
+  if(!codigoTxt && aplicado){ quitarCodigo(); aplicado = null; }
+  // Valor estimado (para la medición); el total real lo calcula el servidor
+  var totalCents = pendingPurchase.baseAmountInCents + shippingCents - (aplicado ? aplicado.descuento + (aplicado.regaloValor || 0) : 0);
+  var regalo = null;
+  var fRegalo = document.getElementById('regalo-placa');
+  if(fRegalo && !fRegalo.disabled){
+    var forma = form.querySelector('input[name="regalo_forma"]:checked'), color = form.querySelector('input[name="regalo_color"]:checked');
+    regalo = { nombre: document.getElementById('regalo-nombre').value.trim(), forma: forma ? forma.value : '', color: color ? color.value : '' };
   }
 
-  // Placa NFC: se crea el perfil de la mascota (su dirección es la que se graba en el chip)
-  if(/Placa Inteligente Wuuff|Placa NFC/.test(nombreProducto)){
+  // Placa NFC (comprada o de regalo): se crea el perfil de la mascota (su dirección es la que se graba en el chip)
+  if(llevaPlaca()){
     if(!pendingPurchase.perfil){
       crearPerfilPlaca(form, { mascota: mascota, especie: document.getElementById('perfil-especie').value,
         sexo: document.getElementById('perfil-sexo').value, raza: document.getElementById('perfil-raza').value.trim(),
@@ -2515,24 +2631,40 @@ document.addEventListener('submit', function(e){
     name: nombre
   };
 
+  // Lo que el servidor necesita para calcular el total: carrito, ciudad, código y placa de regalo
+  var pedidoServidor = {
+    carrito: pendingPurchase.carrito, ciudad: ciudadNombre, codigo: aplicado ? aplicado.codigo : '', regalo: regalo,
+    perfil: pendingPurchase.perfil ? (pendingPurchase.perfil.pendiente || pendingPurchase.perfil.id || '') : ''
+  };
+
   if(metodoPago === 'contraentrega'){
     enviarPedidoContraentrega(form, {
       nombre: nombre, mascota: mascota, telefono: telefono, correo: correo,
       direccion: direccion, ciudad: ciudadNombre, talla: pendingPurchase.talla || '',
       producto: nombreProducto, totalCents: totalCents,
+      carrito: pedidoServidor.carrito, codigo: pedidoServidor.codigo, regalo: regalo,
       perfilId: perfilPlaca ? perfilPlaca.id : '',
       honeypot: (form.querySelector('[name="bot-field-envio"]') || {}).value || ''
     });
     return;
   }
 
-  var overlay = document.getElementById('shipping-modal-overlay');
-  if(overlay) overlay.classList.remove('open');
-  pendingPurchase = null;
-  form.reset();
-
-  pagarConWompi(totalCents, nombreProducto, customerData, shippingAddress);
+  pagarConWompi(totalCents, nombreProducto, customerData, shippingAddress, pedidoServidor, function(){
+    var overlay = document.getElementById('shipping-modal-overlay');
+    if(overlay) overlay.classList.remove('open');
+    pendingPurchase = null;
+    form.reset();
+  });
 });
+// Errores del servidor al crear el pedido (código usado, faltan datos de la placa de regalo…)
+function errorPedido(j){
+  var msg = (j && j.error) || 'Hubo un problema con tu pedido. Intenta de nuevo o escríbenos por WhatsApp.';
+  if(j && j.codigoInvalido){ abrirCodigo(); quitarCodigo(); mostrarCodigo({ ok: false, msg: msg }); }
+  alert(msg);
+}
+function productoCliente(p){
+  return String(p || '').replace(/\s*\|\s*Perfil NFC:.*$/, '').replace(/\s*\[Código[^\]]*\]/g, '').replace(/\s*\[REGALO\]/g, ' (de regalo 🎁)');
+}
 
 // Pago contraentrega (Bogotá): registra el pedido sin pasar por Wompi y pide confirmarlo por WhatsApp
 function enviarPedidoContraentrega(form, pedido){
@@ -2541,9 +2673,12 @@ function enviarPedidoContraentrega(form, pedido){
   fetch('/.netlify/functions/pedido-contraentrega', {
     method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(pedido)
   })
-    .then(function(r){ return r.json().then(function(j){ if(!r.ok || !j.ok) throw new Error((j && j.error) || ('HTTP ' + r.status)); return j; }); })
+    .then(function(r){ return r.json().then(function(j){ if(!r.ok || !j.ok){ var e = new Error((j && j.error) || ('HTTP ' + r.status)); e.servidor = j; throw e; } return j; }); })
     .then(function(j){
       if(btn) btn.disabled = false;
+      if(j.totalCents) pedido.totalCents = j.totalCents;
+      if(j.producto) pedido.producto = j.producto;
+      guardarCodigoSesion('');
       var overlay = document.getElementById('shipping-modal-overlay');
       if(overlay) overlay.classList.remove('open');
       pendingPurchase = null;
@@ -2556,6 +2691,7 @@ function enviarPedidoContraentrega(form, pedido){
       console.error('No se pudo registrar el pedido contraentrega', err);
       if(btn) btn.disabled = false;
       actualizarMetodoPago();
+      if(err && err.servidor && err.servidor.error){ errorPedido(err.servidor); return; }
       alert('No pudimos registrar tu pedido. Intenta de nuevo o escríbenos por WhatsApp y te lo tomamos por ahí 🐾');
     });
 }
@@ -2564,7 +2700,8 @@ function enviarPedidoContraentrega(form, pedido){
 function mostrarPedidoRecibido(pedido, referencia){
   var total = formatoPesos(pedido.totalCents);
   var texto = '¡Hola Wuuff Puppy! 🐾 Quiero confirmar mi pedido contraentrega ' + referencia + '\n' +
-    '• ' + pedido.producto.replace(/\s*\|\s*Perfil NFC:.*$/, '') + '\n' +
+    '• ' + productoCliente(pedido.producto) + '\n' +
+    (pedido.codigo ? '• Código: ' + pedido.codigo + '\n' : '') +
     '• Total a pagar al recibir: ' + total + '\n' +
     '• Dirección: ' + pedido.direccion + ', ' + pedido.ciudad + '\n' +
     '• A nombre de: ' + pedido.nombre;
@@ -2661,23 +2798,34 @@ function generarReferenciaWompi(){
   return 'WP-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8).toUpperCase();
 }
 
-function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddress){
-  if(!amountInCents || amountInCents <= 0){
+// estimadoCents y nombreProducto solo sirven para la medición; el monto real lo calcula el servidor
+function pagarConWompi(estimadoCents, nombreProducto, customerData, shippingAddress, pedidoServidor, alListo){
+  if(!pedidoServidor || !pedidoServidor.carrito){
     alert('Selecciona al menos un producto antes de continuar.');
     return;
   }
   var reference = generarReferenciaWompi();
+  var amountInCents = 0;
+  var btn = document.getElementById('envio-submit');
+  if(btn){ btn.disabled = true; btn.textContent = 'Preparando el pago…'; }
 
   fetch('/.netlify/functions/wompi-signature', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ reference: reference, amountInCents: amountInCents })
+    body: JSON.stringify(Object.assign({ reference: reference }, pedidoServidor))
   })
   .then(function(resp){
-    if(!resp.ok){ throw new Error('No se pudo generar la firma de pago'); }
-    return resp.json();
+    return resp.json().catch(function(){ return {}; }).then(function(j){
+      if(!resp.ok || !j.signature){ var e = new Error(j.error || 'No se pudo generar la firma de pago'); e.servidor = j; throw e; }
+      return j;
+    });
   })
   .then(function(data){
+    if(btn){ btn.disabled = false; actualizarMetodoPago(); }
+    amountInCents = data.amountInCents;
+    nombreProducto = productoCliente(data.nombreProducto);
+    if(shippingAddress) shippingAddress.addressLine2 = shippingAddress.addressLine2.replace(/Producto: [\s\S]*$/, 'Producto: ' + data.nombreProducto);
+    if(alListo) alListo();
     guardarDatosResena(reference, customerData && customerData.email);
     // espera el widget de Wompi si todavía no terminó de descargarse
     return window.cargarWompi().then(function(){ return data; }, function(){ return data; });
@@ -2704,6 +2852,7 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
       // cliente vuelva a esta página). Aquí solo damos aviso inmediato.
       var transaction = result.transaction;
       if(transaction && transaction.status === 'APPROVED'){
+        guardarCodigoSesion('');
         if(typeof window.wuuffCompraAprobada === 'function'){
           window.wuuffCompraAprobada(transaction.id, transaction.amountInCents || amountInCents);
         }
@@ -2717,6 +2866,8 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
   })
   .catch(function(err){
     console.error(err);
+    if(btn){ btn.disabled = false; actualizarMetodoPago(); }
+    if(err && err.servidor && err.servidor.error){ errorPedido(err.servidor); return; }
     alert('Hubo un problema iniciando el pago. Intenta de nuevo o escríbenos por WhatsApp.');
   });
 }
@@ -2797,14 +2948,34 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
           <span><strong>💳 Pagar ahora en línea</strong><small>Tarjeta, PSE, Nequi, Daviplata o Bancolombia con Wompi.</small></span></label>
       </fieldset>
       <p class="envio-despacho" id="envio-entrega">🚀 Despachamos tu pedido en <strong>1–2 días hábiles</strong>. Entrega de 2 a 5 días según tu ciudad.</p>
-      <div class="codigo-box">
-        <label for="envio-codigo" class="codigo-label">¿Tienes un código de descuento?</label>
-        <div class="codigo-fila">
-          <input type="text" id="envio-codigo" class="shipping-input codigo-input" placeholder="Escribe tu código" autocomplete="off" autocapitalize="characters" spellcheck="false">
-          <button type="button" class="codigo-aplicar" id="codigo-aplicar">Aplicar</button>
+      <div class="codigo-box" id="codigo-box">
+        <button type="button" class="codigo-toggle" id="codigo-toggle" aria-expanded="false" aria-controls="codigo-panel">¿Tienes un código de descuento?</button>
+        <div class="codigo-panel" id="codigo-panel" hidden>
+          <div class="codigo-fila">
+            <input type="text" id="envio-codigo" name="codigo" class="shipping-input codigo-input" placeholder="Escribe tu código" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Código de descuento">
+            <button type="button" class="codigo-aplicar" id="codigo-aplicar">Aplicar</button>
+          </div>
+          <p class="codigo-msg" id="codigo-msg" role="status" aria-live="polite"></p>
         </div>
-        <p class="codigo-msg" id="codigo-msg" role="status" aria-live="polite"></p>
       </div>
+      <div class="codigo-resumen" id="codigo-resumen" hidden></div>
+      <fieldset class="regalo-placa" id="regalo-placa" hidden disabled>
+        <legend>🎁 Datos de tu placa de regalo</legend>
+        <input type="text" id="regalo-nombre" name="regalo_nombre" class="shipping-input" maxlength="10" placeholder="Nombre en la placa (máx. 10)" aria-label="Nombre en la placa (máximo 10 caracteres)" required>
+        <p class="regalo-label">Forma</p>
+        <div class="regalo-ops">
+          <label><input type="radio" name="regalo_forma" value="Huella" required><span>🐾 Huella</span></label>
+          <label><input type="radio" name="regalo_forma" value="Gato"><span>🐱 Gato</span></label>
+          <label><input type="radio" name="regalo_forma" value="Nombre"><span>🔤 Nombre</span></label>
+        </div>
+        <p class="regalo-label">Color</p>
+        <div class="regalo-ops regalo-colores">
+          <label><input type="radio" name="regalo_color" value="Morado" required><span><i style="background:#7b5cc4"></i>Morado</span></label>
+          <label><input type="radio" name="regalo_color" value="Azul"><span><i style="background:#4964af"></i>Azul</span></label>
+          <label><input type="radio" name="regalo_color" value="Blanco"><span><i style="background:#fff"></i>Blanco</span></label>
+          <label><input type="radio" name="regalo_color" value="Rojo"><span><i style="background:#d64545"></i>Rojo</span></label>
+        </div>
+      </fieldset>
       <input type="hidden" name="producto" id="envio-producto" value="">
       <input type="hidden" name="total" id="envio-total" value="">
       <button type="submit" class="btn-buy" id="envio-submit">Continuar al pago 💳</button>
@@ -3197,7 +3368,7 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
   function iniciar(){
     if(history.replaceState) history.replaceState(null, '', location.pathname + '#productos');
     window.wuuffVolverA = prod.url;
-    iniciarCompra(prod.cents, prod.nombre + ' (' + tallaTexto + ')', tallaTexto);
+    iniciarCompra(prod.cents, prod.nombre + ' (' + tallaTexto + ')', tallaTexto, { items: [{ p: clave, talla: talla === 'ÚNICA' ? 'Única' : talla }] });
   }
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iniciar); else iniciar();
 })();
@@ -3242,7 +3413,10 @@ function pagarConWompi(amountInCents, nombreProducto, customerData, shippingAddr
     if(history.replaceState) history.replaceState(null, '', location.pathname);
     window.wuuffVolverA = '/placa-para-perro/';
     try { if(window.gtag) gtag('event', 'placa_iniciar_compra', { forma: q.get('forma'), con: con, value: total / 100, currency: 'COP' }); } catch(err){}
-    iniciarCompra(total, producto, talla);
+    iniciarCompra(total, producto, talla, {
+      items: con === 'sola' ? [] : [{ p: con, talla: talla }],
+      placa: { nombre: nombre, forma: forma, base: base, letras: letras }
+    });
   }
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', abrir); else abrir();
 })();

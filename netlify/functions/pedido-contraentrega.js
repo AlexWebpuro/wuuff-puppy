@@ -3,9 +3,9 @@
 // avisa a la tienda por correo (y por WhatsApp si CallMeBot está configurado)
 // y le manda al cliente el correo de "Recibimos tu pedido".
 const { getStore, connectLambda } = require('@netlify/blobs');
+const tienda = require('../lib/tienda');
 
 const SITE_URL = 'https://wuuffpuppy.co/';
-const MINIMO_CENTS = 4990000;       // $49.900
 const MAXIMO_CENTS = 300000000;     // $3.000.000: tope de recaudo en efectivo de Coordinadora
 
 function limpio(v, max) {
@@ -33,23 +33,45 @@ exports.handler = async function (event) {
     direccion: limpio(b.direccion, 250),
     ciudad: limpio(b.ciudad, 80),
     talla: limpio(b.talla, 40),
-    producto: limpio(b.producto, 600),
+    producto: '',
     perfilId: /^[A-Z0-9]{6,16}$/.test(b.perfilId || '') ? b.perfilId : ''
   };
-  const totalCents = parseInt(b.totalCents, 10) || 0;
 
-  if (!pedido.nombre || !pedido.telefono || !pedido.direccion || !pedido.producto) {
+  if (!pedido.nombre || !pedido.telefono || !pedido.direccion) {
     return { statusCode: 400, body: JSON.stringify({ error: 'Faltan datos del pedido' }) };
   }
   if (!/bogot/i.test(pedido.ciudad) || /soacha/i.test(pedido.ciudad)) {
     return { statusCode: 400, body: JSON.stringify({ error: 'La contraentrega solo está disponible en Bogotá' }) };
   }
-  if (totalCents < MINIMO_CENTS || totalCents > MAXIMO_CENTS) {
+
+  // El total se calcula aquí (precios, envío y código); nunca se usa el que manda el navegador
+  let usados = null;
+  try { connectLambda(event); usados = getStore('codigos-usados'); } catch (err) { console.error('Blobs no disponible', err.message); }
+  const calc = await tienda.calcular({ carrito: b.carrito, ciudad: pedido.ciudad, codigo: b.codigo, regalo: b.regalo }, {
+    usado: async (c) => !!(usados && await usados.get(c))
+  });
+  if (!calc.ok) {
+    return { statusCode: 400, body: JSON.stringify({ error: calc.error, codigoInvalido: !!calc.codigoInvalido, faltaRegalo: !!calc.faltaRegalo }) };
+  }
+  const totalCents = calc.totalCents;
+  pedido.producto = limpio(calc.nombreProducto + (pedido.perfilId ? ' | Perfil NFC: ' + pedido.perfilId : ''), 700);
+  // Mínimo de $49.900 con el subtotal ANTES del descuento (ej.: collar $49.900 − 15 % sigue aplicando)
+  if (!calc.contraentrega || totalCents > MAXIMO_CENTS) {
     return { statusCode: 400, body: JSON.stringify({ error: 'El valor del pedido no aplica para contraentrega' }) };
   }
+  const avisos = tienda.lineasAviso(calc);
 
   const referencia = 'CE-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).slice(2, 5).toUpperCase();
   const total = pesos(totalCents);
+
+  // Código del concurso: 1 solo uso. En contraentrega se marca al guardar el pedido.
+  if (calc.codigo && calc.codigo.tipo === 'concurso' && usados) {
+    try {
+      await usados.setJSON(calc.codigo.codigo, { fecha: new Date().toISOString(), pedido: referencia, cliente: pedido.nombre, metodo: 'contraentrega', participante: calc.codigo.participante });
+    } catch (err) {
+      console.error('No se pudo marcar el código como usado', err.message);
+    }
+  }
 
   // 1. Guarda el pedido en Netlify Forms (mismo formulario "datos-envio" que usan los pagos con Wompi)
   try {
@@ -60,7 +82,7 @@ exports.handler = async function (event) {
         'form-name': 'datos-envio',
         nombre: pedido.nombre, mascota: pedido.mascota, telefono: pedido.telefono, correo: pedido.correo,
         direccion: pedido.direccion, ciudad: pedido.ciudad, tipo_envio: 'Bogotá / Soacha', talla: pedido.talla,
-        producto: pedido.producto + ' | Ref: ' + referencia + ' | PENDIENTE DE CONFIRMAR',
+        producto: pedido.producto + ' | Ref: ' + referencia + ' | PENDIENTE DE CONFIRMAR' + (avisos.length ? ' | ' + avisos.join(' | ') : ''),
         total: total + ' (contraentrega)',
         metodo_pago: 'contraentrega'
       }).toString()
@@ -72,10 +94,11 @@ exports.handler = async function (event) {
   // 1b. Guarda el pedido para poder crear la guía de Envia.com con un clic (función envia-guia)
   let urlGuia = '';
   try {
-    connectLambda(event);
     const token = require('crypto').randomBytes(18).toString('hex');
+    // totalCents ya trae el descuento: es el valor del recaudo contraentrega en la guía de Envia
     await getStore('pedidos-contraentrega').setJSON(referencia, Object.assign({}, pedido, {
-      referencia: referencia, totalCents: totalCents, token: token, estado: 'pendiente-confirmar', creado: new Date().toISOString()
+      referencia: referencia, totalCents: totalCents, token: token, estado: 'pendiente-confirmar', creado: new Date().toISOString(),
+      codigo: calc.codigo, descuentoCents: calc.descuentoCents, regalo: calc.regalo
     }));
     urlGuia = SITE_URL + '.netlify/functions/envia-guia?ref=' + encodeURIComponent(referencia) + '&t=' + token;
   } catch (err) {
@@ -116,6 +139,7 @@ exports.handler = async function (event) {
             <h2>💵 Nuevo pedido contraentrega (pendiente de confirmar)</h2>
             <p><strong>Referencia:</strong> ${referencia}<br><strong>Cobrar al entregar:</strong> ${total}</p>
             <p><strong>Producto:</strong> ${pedido.producto}</p>
+            ${avisos.length ? `<p style="background:#fff4e5;padding:10px 12px;border-radius:10px">${avisos.map(a => a.replace(/[<>]/g, '')).join('<br>')}</p>` : ''}
             <p><strong>Cliente:</strong> ${pedido.nombre} · ${pedido.telefono}${pedido.correo ? ' · ' + pedido.correo : ''}<br>
             <strong>Dirección:</strong> ${pedido.direccion}, ${pedido.ciudad}<br>
             <strong>Mascota:</strong> ${pedido.mascota}</p>
@@ -133,7 +157,7 @@ exports.handler = async function (event) {
 
   // 4. Aviso a la tienda por WhatsApp (opcional, con CallMeBot)
   if (process.env.CALLMEBOT_PHONE && process.env.CALLMEBOT_APIKEY) {
-    const texto = `💵 Pedido contraentrega ${referencia}\n${pedido.producto.replace(/\s*\|\s*Perfil NFC:.*$/, '')}\nCobrar: ${total}\n${pedido.nombre} · ${pedido.telefono}\n${pedido.direccion}, ${pedido.ciudad}${urlGuia ? '\n\nCrear guía (después de confirmar): ' + urlGuia : ''}`;
+    const texto = `💵 Pedido contraentrega ${referencia}\n${pedido.producto.replace(/\s*\|\s*Perfil NFC:.*$/, '')}\nCobrar: ${total}${avisos.length ? '\n' + avisos.join('\n') : ''}\n${pedido.nombre} · ${pedido.telefono}\n${pedido.direccion}, ${pedido.ciudad}${urlGuia ? '\n\nCrear guía (después de confirmar): ' + urlGuia : ''}`;
     try {
       await fetch('https://api.callmebot.com/whatsapp.php?phone=' + encodeURIComponent(process.env.CALLMEBOT_PHONE) +
         '&text=' + encodeURIComponent(texto) + '&apikey=' + encodeURIComponent(process.env.CALLMEBOT_APIKEY));
@@ -151,7 +175,9 @@ exports.handler = async function (event) {
         body: JSON.stringify({
           toEmail: pedido.correo, toName: pedido.nombre, nombreProducto: pedido.producto.replace(/\s*\|\s*Perfil NFC:.*$/, ''),
           mascota: pedido.mascota, direccion: pedido.direccion, ciudad: pedido.ciudad,
-          metodoPago: 'contraentrega', total: total, perfilEditar: urlEditar
+          metodoPago: 'contraentrega', total: total, perfilEditar: urlEditar,
+          descuento: calc.descuentoCents ? tienda.pesos(calc.descuentoCents) : '', codigo: calc.codigo ? calc.codigo.codigo : '',
+          regalo: calc.regalo ? calc.regalo.texto : ''
         })
       });
     } catch (err) {
@@ -159,5 +185,5 @@ exports.handler = async function (event) {
     }
   }
 
-  return { statusCode: 200, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ok: true, referencia: referencia }) };
+  return { statusCode: 200, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ok: true, referencia: referencia, totalCents: totalCents, producto: pedido.producto }) };
 };

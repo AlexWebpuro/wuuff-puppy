@@ -89,6 +89,36 @@ exports.handler = async function (event) {
     nombreProducto = match[3];
   }
 
+  // Pedido guardado por wompi-signature (total calculado en el servidor, código y placa de regalo)
+  const referencia = String(transaction.reference || '');
+  let guardado = null;
+  try {
+    connectLambda(event);
+    if (referencia) guardado = await getStore('pedidos-wompi').get(referencia, { type: 'json' });
+  } catch (err) {
+    console.error('No se pudo leer el pedido guardado', err.message);
+  }
+  const monto = transaction.amount_in_cents || transaction.amountInCents || 0;
+  let avisos = [];
+  if (guardado) {
+    if (guardado.nombreProducto) nombreProducto = guardado.nombreProducto;
+    avisos = Array.isArray(guardado.avisos) ? guardado.avisos.slice() : [];
+    if (guardado.amountInCents && monto && guardado.amountInCents !== monto) {
+      avisos.push('⚠️ El monto pagado (' + monto / 100 + ') no coincide con el calculado (' + guardado.amountInCents / 100 + '). Revísalo.');
+    }
+    // Código del concurso: se marca como usado solo ahora que el pago quedó APROBADO
+    if (guardado.codigo && guardado.codigo.tipo === 'concurso') {
+      try {
+        const usados = getStore('codigos-usados');
+        if (!(await usados.get(guardado.codigo.codigo))) {
+          await usados.setJSON(guardado.codigo.codigo, { fecha: new Date().toISOString(), pedido: referencia, cliente: nombre, metodo: 'wompi', participante: guardado.codigo.participante });
+        }
+      } catch (err) {
+        console.error('No se pudo marcar el código como usado', err.message);
+      }
+    }
+  }
+
   // La talla queda dentro del nombre del producto, ej: "Collar de goma (Talla S) x2".
   // Solo se toma el paréntesis que dice "Talla …" (la placa NFC lleva otro con sus colores).
   let talla = '';
@@ -126,7 +156,7 @@ exports.handler = async function (event) {
     ciudad: ciudad,
     tipo_envio: tipoEnvio,
     talla: talla,
-    producto: nombreProducto + ' | Ref: ' + (transaction.reference || transaction.id || ''),
+    producto: nombreProducto + ' | Ref: ' + (transaction.reference || transaction.id || '') + (avisos.length ? ' | ' + avisos.join(' | ') : ''),
     total: '$' + Math.round((transaction.amount_in_cents || transaction.amountInCents || 0) / 100).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'),
     metodo_pago: 'wompi'
   }).toString();
@@ -149,7 +179,6 @@ exports.handler = async function (event) {
   const perfilMatch = /Perfil NFC:\s*([A-Z0-9]{6,16})/.exec(nombreProducto);
   if (perfilMatch) {
     try {
-      connectLambda(event);
       const store = getStore('perfiles-nfc');
       const perfil = await store.get(perfilMatch[1], { type: 'json' });
       if (perfil) {
@@ -161,7 +190,9 @@ exports.handler = async function (event) {
     } catch (err) {
       console.error('No se pudo actualizar el perfil NFC', err.message);
     }
-    // Aviso a la tienda con lo necesario para imprimir y grabar la placa
+  }
+  // Aviso a la tienda: pedidos con placa (para imprimirla y grabar el chip) o con código del concurso
+  if (perfilMatch || avisos.length) {
     if (process.env.RESEND_API_KEY) {
       const from = process.env.RESEND_FROM ? `Wuuff Puppy <${process.env.RESEND_FROM}>` : 'Wuuff Puppy <onboarding@resend.dev>';
       try {
@@ -171,18 +202,30 @@ exports.handler = async function (event) {
           body: JSON.stringify({
             from: from,
             to: [process.env.RESEND_REPLY_TO || 'wuuffpuppy@gmail.com'],
-            subject: `🏷️ Pedido con Placa Inteligente pagado · ${nombre || 'cliente'}`,
+            subject: `${avisos.length ? '🎃 Pedido con código del concurso' : '🏷️ Pedido con Placa Inteligente'} pagado · ${nombre || 'cliente'}`,
             html: `<div style="font-family:Arial,sans-serif;color:#2d4375;max-width:520px">
-              <h2>🏷️ Pedido con Placa Inteligente Wuuff (pagado con Wompi)</h2>
+              <h2>${avisos.length ? '🎃 Pedido con código del concurso' : '🏷️ Pedido con Placa Inteligente Wuuff'} (pagado con Wompi)</h2>
+              <p><strong>Pagado:</strong> $${Math.round(monto / 100).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}</p>
               <p><strong>Producto:</strong> ${String(nombreProducto).replace(/[<>]/g, '')}</p>
+              ${avisos.length ? `<p style="background:#fff4e5;padding:10px 12px;border-radius:10px">${avisos.map(a => String(a).replace(/[<>]/g, '')).join('<br>')}</p>` : ''}
               <p><strong>Cliente:</strong> ${String(nombre).replace(/[<>]/g, '')} · ${String(telefono).replace(/[<>]/g, '')}<br>
               <strong>Dirección:</strong> ${String(direccion).replace(/[<>]/g, '')}, ${String(ciudad).replace(/[<>]/g, '')}</p>
-              ${urlChip ? `<p style="background:#fffbe6;padding:10px 12px;border-radius:10px"><strong>Grabar en el chip NFC:</strong><br><a href="${urlChip}">${urlChip}</a></p>` : '<p>⚠️ No se encontró el perfil NFC de este pedido.</p>'}
+              ${urlChip ? `<p style="background:#fffbe6;padding:10px 12px;border-radius:10px"><strong>Grabar en el chip NFC:</strong><br><a href="${urlChip}">${urlChip}</a></p>` : (perfilMatch || /Placa Inteligente/.test(nombreProducto) ? '<p>⚠️ No se encontró el perfil NFC de este pedido.</p>' : '')}
             </div>`
           })
         });
       } catch (err) {
         console.error('No se pudo avisar a la tienda del pedido con placa', err.message);
+      }
+    }
+    // WhatsApp a la tienda (CallMeBot) cuando el pedido trae código del concurso
+    if (avisos.length && process.env.CALLMEBOT_PHONE && process.env.CALLMEBOT_APIKEY) {
+      const texto = `💳 Pedido pagado con Wompi ${referencia}\n${nombreProducto.replace(/\s*\|\s*Perfil NFC:.*$/, '')}\n${avisos.join('\n')}\n${nombre} · ${telefono}\n${direccion}, ${ciudad}`;
+      try {
+        await fetch('https://api.callmebot.com/whatsapp.php?phone=' + encodeURIComponent(process.env.CALLMEBOT_PHONE) +
+          '&text=' + encodeURIComponent(texto) + '&apikey=' + encodeURIComponent(process.env.CALLMEBOT_APIKEY));
+      } catch (err) {
+        console.error('No se pudo enviar el aviso por WhatsApp', err.message);
       }
     }
   }
@@ -200,7 +243,10 @@ exports.handler = async function (event) {
           mascota: mascota,
           direccion: direccion,
           ciudad: ciudad,
-          perfilEditar: urlEditar
+          perfilEditar: urlEditar,
+          descuento: guardado && guardado.descuentoCents ? '$' + Math.round(guardado.descuentoCents / 100).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') : '',
+          codigo: guardado && guardado.codigo ? guardado.codigo.codigo : '',
+          regalo: guardado && guardado.regalo ? guardado.regalo.texto : ''
         })
       });
     } catch (err) {
