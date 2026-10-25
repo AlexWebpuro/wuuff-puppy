@@ -12,7 +12,11 @@ exports.handler = async function (event) {
     return { statusCode: 400, body: JSON.stringify({ error: 'JSON inválido' }) };
   }
 
-  const { toEmail, toName, nombreProducto, mascota, direccion, ciudad, metodoPago, total, perfilEditar } = body;
+  const { toEmail, toName, mascota, direccion, ciudad, metodoPago, total, perfilEditar } = body;
+  const esc = v => String(v == null ? '' : v).replace(/[<>&"]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]));
+  // Código del concurso y placa de regalo: el cliente los ve en palabras, sin las marcas internas del pedido
+  const nombreProducto = String(body.nombreProducto || '').replace(/\s*\[Código[^\]]*\]/g, '').replace(/\s*\[REGALO\]/g, ' (de regalo 🎁)');
+  const codigo = esc(body.codigo).slice(0, 40), descuento = esc(body.descuento).slice(0, 20), regalo = esc(body.regalo).slice(0, 120);
   const enlacePerfil = /^https:\/\/[a-z0-9.-]+\/placa-nfc\/perfil\/#id=[A-Z0-9]+&clave=[a-f0-9]+$/.test(perfilEditar || '') ? perfilEditar : '';
   const contraentrega = metodoPago === 'contraentrega';
 
@@ -46,6 +50,8 @@ exports.handler = async function (event) {
         ${nombreProducto ? `<p style="margin:4px 0;"><strong>Producto:</strong> ${nombreProducto}</p>` : ''}
         ${mascota ? `<p style="margin:4px 0;"><strong>Perrihijo:</strong> ${mascota}</p>` : ''}
         ${direccion ? `<p style="margin:4px 0;"><strong>Dirección:</strong> ${direccion}${ciudad ? ', ' + ciudad : ''}</p>` : ''}
+        ${codigo && descuento ? `<p style="margin:4px 0;"><strong>🎃 Código ${codigo}:</strong> −${descuento}</p>` : ''}
+        ${regalo ? `<p style="margin:4px 0;"><strong>🎁 Placa Inteligente Wuuff de regalo:</strong> ${regalo}</p>` : ''}
         ${total ? `<p style="margin:4px 0;"><strong>Total:</strong> ${total}${contraentrega ? ' · se paga al recibir' : ''}</p>` : ''}
       </div>
       ${enlacePerfil ? `<div style="background:#fff4ef;border:2px solid #f17d57;border-radius:12px;padding:16px 20px;margin:20px 0;">
