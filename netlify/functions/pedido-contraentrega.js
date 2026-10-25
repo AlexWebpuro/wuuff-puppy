@@ -55,7 +55,7 @@ exports.handler = async function (event) {
   }
   const totalCents = calc.totalCents;
   pedido.producto = limpio(calc.nombreProducto + (pedido.perfilId ? ' | Perfil NFC: ' + pedido.perfilId : ''), 700);
-  // Mínimo de $49.900 con el subtotal ANTES del descuento (ej.: collar $49.900 − 15 % sigue aplicando)
+  // Mínimo de $49.900 con el subtotal ANTES del descuento (ej.: collar + placa $64.900 − 10 % sigue aplicando)
   if (!calc.contraentrega || totalCents > MAXIMO_CENTS) {
     return { statusCode: 400, body: JSON.stringify({ error: 'El valor del pedido no aplica para contraentrega' }) };
   }

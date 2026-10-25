@@ -77,21 +77,24 @@
 
   // Caja "¿Cuándo te llega?" en las fichas de producto: <div data-entrega></div>
   function pintar(caja) {
-    var pago = caja.getAttribute('data-pago') || 'contraentrega';
+    // data-solo-linea: el producto solo no llega a $49.900, así que no tiene pago al recibir
+    var soloLinea = caja.hasAttribute('data-solo-linea');
+    var pago = soloLinea ? 'linea' : (caja.getAttribute('data-pago') || 'contraentrega');
     var prod = +(caja.getAttribute('data-produccion') || 0);
     var notaProd = prod ? '<p class="cl-nota">🛠️ Incluye ' + prod + ' días hábiles para hacerla con su nombre.</p>' : '';
     var res = pago === 'contraentrega'
       ? '<p class="cl-linea"><span>Bogotá</span><strong>Te llega ' + textoRango(rango('contraentrega', prod)) + '</strong></p>' +
-        '<p class="cl-nota">💵 Pagas en efectivo cuando lo recibes' + (prod ? ' (con collar, arnés o set)' : '') + '. Te confirmamos por WhatsApp antes de enviarlo.</p>' + notaProd
+        '<p class="cl-nota">💵 Pagas en efectivo cuando lo recibes' + (prod ? ' (pedidos desde $49.900: con collar, arnés o combo)' : '') + '. Te confirmamos por WhatsApp antes de enviarlo.</p>' + notaProd
       : '<p class="cl-linea"><span>Bogotá y Soacha</span><strong>Te llega ' + textoRango(rango('bogota', prod)) + '</strong></p>' +
         '<p class="cl-linea"><span>Otras ciudades</span><strong>Te llega ' + textoRango(rango('otras', prod)) + '</strong></p>' +
-        '<p class="cl-nota">💳 Tarjeta, PSE, Nequi, Daviplata o Bancolombia con Wompi.</p>' + notaProd;
+        '<p class="cl-nota">💳 Tarjeta, PSE, Nequi, Daviplata o Bancolombia con Wompi.</p>' + notaProd +
+        (soloLinea ? '<p class="cl-nota">💵 El pago al recibir es para pedidos desde $49.900 en Bogotá: llévalo con la Placa Inteligente por $64.900.</p>' : '');
     caja.innerHTML =
       '<p class="cl-titulo">📅 ¿Cuándo te llega?</p>' +
-      '<div class="cl-tabs" role="group" aria-label="Forma de pago">' +
+      (soloLinea ? '' : '<div class="cl-tabs" role="group" aria-label="Forma de pago">' +
         '<button type="button" data-p="contraentrega" aria-pressed="' + (pago === 'contraentrega') + '">💵 Pago al recibir</button>' +
         '<button type="button" data-p="linea" aria-pressed="' + (pago !== 'contraentrega') + '">💳 Pago en línea</button>' +
-      '</div>' +
+      '</div>') +
       '<div class="cl-res" aria-live="polite">' + res + '</div>' +
       '<p class="cl-reloj">' + textoReloj() + '</p>';
   }
