@@ -1,17 +1,22 @@
-// Reglas de la tienda en el servidor: precios, envío y códigos de descuento.
+// Reglas de la tienda en el servidor: precios, combos, envío y códigos de descuento.
 // Las usan wompi-signature, pedido-contraentrega, validar-codigo y wompi-webhook,
 // para que el total SIEMPRE se calcule aquí y nunca se tome el que manda el navegador.
 // Si cambian los precios de la web, cámbialos también aquí (en centavos).
 const PRODUCTOS = {
-  collar: { nombre: 'Collar impermeable', cents: 4990000, tallas: ['S', 'M'] },
-  arnes:  { nombre: 'Arnés tipo H impermeable', cents: 7290000, tallas: ['S', 'M'] },
-  correa: { nombre: 'Correa impermeable', cents: 5890000, tallas: ['Única'] },
-  combo:  { nombre: 'Combo completo', cents: 15790000, tallas: ['S', 'M'] }
+  // Combos
+  combo:          { nombre: 'Combo completo (collar + arnés + correa)', cents: 14990000, tallas: ['S', 'M'] },
+  'arnes-correa': { nombre: 'Combo arnés + correa', cents: 10990000, tallas: ['S', 'M'] },
+  // Piezas sueltas
+  arnes:  { nombre: 'Arnés tipo H impermeable', cents: 6990000, tallas: ['S', 'M'] },
+  collar: { nombre: 'Collar impermeable', cents: 4490000, tallas: ['S', 'M'] },
+  correa: { nombre: 'Correa impermeable', cents: 5990000, tallas: ['Única'] }
 };
-const PLACA_SOLA = 3490000;          // $34.900
-const PLACA_CON_PRODUCTO = 2490000;  // $24.900 con collar, arnés o combo
+const PLACA_SOLA = 2990000;          // $29.900
+const PLACA_AGREGADA = 1990000;      // $19.900 al llevarla con arnés, arnés + correa o combo completo
+const COMBO_COLLAR_PLACA = 6490000;  // $64.900 collar + placa (la placa queda en $20.000)
+const CON_PLACA_AGREGADA = ['arnes', 'arnes-correa', 'combo'];
 const ENVIO_MINIMO_GRATIS = 4990000; // Bogotá/Soacha gratis desde $49.900 (subtotal ANTES del descuento)
-const ENVIO_BOGOTA_PEQUENO = 800000; // $8.000 para pedidos menores (la placa sola)
+const ENVIO_BOGOTA_PEQUENO = 850000; // $8.500 para pedidos menores (collar solo o placa sola), solo con Wompi
 const ENVIO_OTRAS = 1850000;         // $18.500 otras ciudades
 
 const FORMAS = ['Huella', 'Gato', 'Nombre'];
@@ -19,18 +24,16 @@ const COLORES = ['Morado', 'Azul', 'Blanco', 'Rojo'];
 
 // Concurso #WuuffHalloween: códigos personales en la variable de entorno CODIGOS_CONCURSO
 // (JSON código → participante, o código → { "participante": "...", "vence": "2026-11-01T00:00:00-05:00" }).
-const CONCURSO_PORCENTAJE = 15;
-const CONCURSO_VENCE = '2026-11-16T00:00:00-05:00'; // válido hasta el 15 de noviembre, 11:59 p. m. (Colombia)
-
-// Código general de Halloween (ya anunciado en la web): 10 % en el combo completo, 26 oct – 2 nov.
-const HALLOWEEN = { codigo: 'WUUFFHALLOWEEN', desde: '2026-10-26T00:00:00-05:00', hasta: '2026-11-03T00:00:00-05:00', descuentoCents: 1579000 };
+// 10 % en toda la tienda (sin el envío) y placa de regalo si el carrito tiene arnés + correa o combo completo.
+const CONCURSO_PORCENTAJE = 10;
+const CONCURSO_VENCE = '2026-11-03T00:00:00-05:00'; // válido hasta el 2 de noviembre, 11:59 p. m. (Colombia)
 
 const MENSAJES = {
-  aplicado: 'Código aplicado: 15 % + placa de regalo 🎁',
+  aplicadoRegalo: 'Código aplicado: 10 % + placa de regalo 🎁',
+  aplicado: 'Código aplicado: 10 % de descuento',
   noExiste: 'Este código no existe',
   usado: 'Este código ya se usó',
-  vencido: 'Este código venció el 15 de noviembre',
-  noAplica: 'El código aplica al comprar collar, correa, arnés o combo'
+  vencido: 'Este código venció el 2 de noviembre'
 };
 
 function pesos(cents) { return '$' + Math.round(cents / 100).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
@@ -56,7 +59,6 @@ function armar(carrito) {
   const c = carrito && typeof carrito === 'object' ? carrito : {};
   const items = Array.isArray(c.items) ? c.items.slice(0, 6) : [];
   const lineas = [];
-  let productosCents = 0;
   for (const it of items) {
     const prod = PRODUCTOS[it && it.p];
     if (!prod) return { error: 'Producto no válido' };
@@ -64,18 +66,28 @@ function armar(carrito) {
     const talla = elegir(it.talla, prod.tallas);
     const nombre = prod.nombre + (talla ? ' (Talla ' + (talla === 'Única' ? 'única' : talla) + ')' : '') + (qty > 1 ? ' x' + qty : '');
     lineas.push({ tipo: 'producto', clave: it.p, nombre, cents: prod.cents * qty });
-    productosCents += prod.cents * qty;
   }
+  const claves = lineas.map(l => l.clave);
   let placa = null;
   if (c.placa) {
     placa = placaValida(c.placa);
     if (!placa) return { error: 'Faltan datos de la placa' };
-    const cents = lineas.length ? PLACA_CON_PRODUCTO : PLACA_SOLA;
-    lineas.push({ tipo: 'placa', nombre: nombrePlaca(placa), cents });
+    let cents = PLACA_SOLA, nombre = nombrePlaca(placa);
+    if (claves.some(k => CON_PLACA_AGREGADA.indexOf(k) > -1)) {
+      cents = PLACA_AGREGADA;
+    } else if (claves.indexOf('collar') > -1) {
+      // Combo collar + placa: $64.900 en total
+      cents = COMBO_COLLAR_PLACA - PRODUCTOS.collar.cents;
+      nombre += ' — combo Collar + Placa';
+    }
+    lineas.push({ tipo: 'placa', nombre, cents });
   }
   if (!lineas.length) return { error: 'El carrito está vacío' };
   const subtotalCents = lineas.reduce((s, l) => s + l.cents, 0);
-  return { lineas, placa, productosCents, subtotalCents, tieneProducto: productosCents > 0 };
+  // Placa de regalo del concurso: con arnés + correa (combo o por separado) o combo completo
+  const conRegalo = claves.indexOf('combo') > -1 || claves.indexOf('arnes-correa') > -1 ||
+    (claves.indexOf('arnes') > -1 && claves.indexOf('correa') > -1);
+  return { lineas, placa, subtotalCents, conRegalo };
 }
 
 function esBogota(ciudad) { return /bogot|soacha/i.test(String(ciudad || '')); }
@@ -101,32 +113,32 @@ function codigosConcurso() {
   }
 }
 
+// Valor de la placa que queda de regalo (la del carrito, si ya trae una; si no, se agrega una de $0)
+function regaloDe(armado) {
+  if (!armado.conRegalo) return 0;
+  const placa = armado.lineas.find(l => l.tipo === 'placa');
+  return placa ? placa.cents : 0;
+}
+function descuentoDe(armado) {
+  return Math.round((armado.subtotalCents - regaloDe(armado)) * CONCURSO_PORCENTAJE / 100 / 100) * 100; // al peso
+}
+
 // Revisa un código contra el carrito. `usado(codigo)` es una función async que dice si ya se usó.
 async function revisarCodigo(texto, armado, opciones) {
   const o = opciones || {};
   const ahora = o.ahora ? new Date(o.ahora) : new Date();
   const codigo = normalizarCodigo(texto);
   if (!codigo) return { valido: false, vacio: true };
-
-  if (codigo === HALLOWEEN.codigo) {
-    if (ahora < new Date(HALLOWEEN.desde)) return { valido: false, mensaje: 'Este código se puede usar del 26 de octubre al 2 de noviembre de 2026.' };
-    if (ahora >= new Date(HALLOWEEN.hasta)) return { valido: false, mensaje: 'Este código ya venció: era válido hasta el 2 de noviembre de 2026.' };
-    const combo = armado.lineas.find(l => l.clave === 'combo');
-    if (!combo) return { valido: false, mensaje: 'Este código aplica solo al combo completo (collar + arnés tipo H + correa).' };
-    return { valido: true, codigo, tipo: 'halloween', participante: '', regalo: false, descuentoCents: HALLOWEEN.descuentoCents,
-      mensaje: '✅ Código aplicado: 10 % en el combo completo (−' + pesos(HALLOWEEN.descuentoCents) + ').' };
-  }
-
   const lista = codigosConcurso();
   const dato = lista[codigo];
   if (!dato) return { valido: false, mensaje: MENSAJES.noExiste };
   const participante = typeof dato === 'string' ? dato : String(dato.participante || '');
   const vence = (dato && typeof dato === 'object' && dato.vence) || CONCURSO_VENCE;
   if (ahora >= new Date(vence)) return { valido: false, mensaje: MENSAJES.vencido };
-  if (!armado.tieneProducto) return { valido: false, mensaje: MENSAJES.noAplica };
   if (o.usado && await o.usado(codigo)) return { valido: false, mensaje: MENSAJES.usado };
-  const descuentoCents = Math.round(armado.productosCents * CONCURSO_PORCENTAJE / 100 / 100) * 100; // al peso
-  return { valido: true, codigo, tipo: 'concurso', participante, regalo: true, descuentoCents, mensaje: MENSAJES.aplicado };
+  const regalo = armado.conRegalo;
+  return { valido: true, codigo, tipo: 'concurso', participante, regalo, descuentoCents: descuentoDe(armado),
+    regaloCents: regaloDe(armado), mensaje: regalo ? MENSAJES.aplicadoRegalo : MENSAJES.aplicado };
 }
 
 // Total del pedido calculado en el servidor.
@@ -163,13 +175,12 @@ async function calcular(datos, opciones) {
     ok: true,
     lineas: armado.lineas,
     subtotalCents: armado.subtotalCents,
-    productosCents: armado.productosCents,
     envioCents: envio,
     descuentoCents: descuento,
     regaloCents,
     totalCents,
     nombreProducto,
-    codigo: cod ? { codigo: cod.codigo, tipo: cod.tipo, participante: cod.participante, porcentaje: cod.tipo === 'concurso' ? CONCURSO_PORCENTAJE : 10 } : null,
+    codigo: cod ? { codigo: cod.codigo, tipo: cod.tipo, participante: cod.participante, porcentaje: CONCURSO_PORCENTAJE } : null,
     regalo: regaloPlaca ? { texto: regaloTexto, placa: regaloPlaca } : null,
     contraentrega: contraentregaPermitida(armado.subtotalCents, datos.ciudad)
   };

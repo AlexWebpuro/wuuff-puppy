@@ -4,18 +4,25 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 
 // ---------------- Configuración editable ----------------
+// Si cambian, cámbialos también en netlify/lib/tienda.js (el servidor recalcula el total)
 const PRECIOS = {
-  placaSola: 34900, placaSolaAntes: 44900,   // precio de lanzamiento / precio normal (tachado)
-  placaConProducto: 24900,                   // precio de la placa al llevarla con collar, arnés o set
+  placaSola: 29900,          // la placa sola
+  placaAgregada: 19900,      // la placa al llevarla con arnés, arnés + correa o combo completo
+  comboCollarPlaca: 64900,   // collar + placa (total)
 };
+// ahorro: lo que se ahorra frente a comprar todo por separado (placa incluida)
 const PRODUCTOS = [
-  { id: 'collar', nombre: 'Collar impermeable', corto: 'Collar', precio: 49900, antes: 58000, badge: ['Nuevo', 'lima'], url: '/collar-impermeable-perro/',
-    texto: 'De goma suave, antiolor y fácil de limpiar. Con anillo para colgar la placa.' },
-  { id: 'arnes', nombre: 'Arnés tipo H', corto: 'Arnés', precio: 72900, antes: 84900, badge: ['Más vendido', 'lima'], url: '/arnes-tipo-h-impermeable-perro/',
-    texto: 'Diseño en H que no presiona el cuello. La placa va en el anillo del pecho.' },
-  { id: 'set', nombre: 'Combo completo', corto: 'Combo completo', precio: 157900, antes: 184900, badge: ['Mejor valor', 'coral'], url: '/combo-collar-arnes-correa/', destacado: true,
+  { id: 'combo', nombre: 'Combo completo', corto: 'Combo completo', con: 'el combo completo', precio: 149900, ahorro: 34800, badge: ['Mejor precio', 'coral'], url: '/combo-collar-arnes-correa/', destacado: true,
     texto: 'Collar, arnés y correa impermeables a juego. Envío gratis en Bogotá.' },
+  { id: 'arnes-correa', nombre: 'Arnés + correa', corto: 'Arnés + correa', con: 'arnés + correa', precio: 109900, ahorro: 29900, badge: ['Combo', 'lima'], url: '/arnes-y-correa-impermeable-perro/',
+    texto: 'El arnés tipo H con su correa a juego. La placa va en el anillo del pecho.' },
+  { id: 'collar', nombre: 'Collar + Placa Inteligente', corto: 'Collar', con: 'un collar', precio: 44900, ahorro: 9900, badge: ['Combo', 'lima'], url: '/collar-impermeable-perro/',
+    texto: 'De goma suave, antiolor y fácil de limpiar. Con anillo para colgar la placa.' },
+  { id: 'arnes', nombre: 'Arnés tipo H', corto: 'Arnés', con: 'un arnés', precio: 69900, ahorro: 10000, badge: ['Más vendido', 'lima'], url: '/arnes-tipo-h-impermeable-perro/',
+    texto: 'Diseño en H que no presiona el cuello. La placa va en el anillo del pecho.' },
 ];
+// Precio de la placa según con qué se lleve: con collar el combo queda en $64.900
+function precioPlaca(id) { return id === 'collar' ? PRECIOS.comboCollarPlaca - PRODUCTOS.find(p => p.id === 'collar').precio : PRECIOS.placaAgregada; }
 const TIENDA = 'https://wuuffpuppy.co';
 const ASSETS = JSON.parse(document.getElementById('assets-data').textContent);
 const MAX_LETRAS = 10;
@@ -276,26 +283,27 @@ function textoProduccion() {
 }
 
 function totales() {
-  if (estado.compra === 'sola') return { total: PRECIOS.placaSola, antes: PRECIOS.placaSolaAntes, lineas: [['Placa Inteligente Wuuff', PRECIOS.placaSola]] };
+  if (estado.compra === 'sola') return { total: PRECIOS.placaSola, ahorro: 0, lineas: [['Placa Inteligente Wuuff', PRECIOS.placaSola]] };
   const p = PRODUCTOS.find(x => x.id === estado.compra);
-  return { total: p.precio + PRECIOS.placaConProducto, antes: p.antes + PRECIOS.placaSolaAntes, producto: p,
-    lineas: [[`${p.corto} talla ${estado.talla}`, p.precio], ['Placa Inteligente Wuuff', PRECIOS.placaConProducto]] };
+  return { total: p.precio + precioPlaca(p.id), ahorro: p.ahorro, producto: p,
+    lineas: [[`${p.corto} talla ${estado.talla}`, p.precio], ['Placa Inteligente Wuuff', precioPlaca(p.id)]] };
 }
 function actualizarPrecio() {
   const t = totales();
   $('#total').textContent = cop(t.total);
-  $('#antes').textContent = cop(t.antes);
+  $('#antes').textContent = t.ahorro ? 'Ahorras ' + cop(t.ahorro) : '';
   $('#desglose').innerHTML = t.lineas.map(([n, v]) => `<li><span>${n}</span><span>${cop(v)}</span></li>`).join('');
   $('#talla-wrap').hidden = estado.compra === 'sola';
   const TALLAS = { collar: ['cuello 20–34 cm', 'cuello 24–38 cm'], arnes: ['pecho 23–38 cm', 'pecho 32–53 cm'],
-    set: ['cuello 20–34, pecho 23–38 cm', 'cuello 24–38, pecho 32–53 cm'] }[estado.compra];
+    'arnes-correa': ['pecho 23–38 cm', 'pecho 32–53 cm'], combo: ['cuello 20–34, pecho 23–38 cm', 'cuello 24–38, pecho 32–53 cm'] }[estado.compra];
   if (TALLAS) { $('#talla-s').textContent = '· ' + TALLAS[0]; $('#talla-m').textContent = '· ' + TALLAS[1]; }
   $('#resumen').hidden = true;
 }
 function pintarCompras() {
-  const ops = [{ id: 'sola', nombre: 'Solo la placa', sub: `Precio normal <s>${cop(PRECIOS.placaSolaAntes)}</s>`, precio: PRECIOS.placaSola }]
-    .concat(PRODUCTOS.map(p => ({ id: p.id, nombre: `Con ${p.id === 'set' ? 'el combo completo' : (p.id === 'arnes' ? 'un arnés' : 'un collar')}`,
-      sub: `${p.corto} ${cop(p.precio)} + placa ${cop(PRECIOS.placaConProducto)}`, precio: p.precio + PRECIOS.placaConProducto })));
+  const ops = [{ id: 'sola', nombre: 'Solo la placa', sub: 'En Bogotá: envío $8.500 y pago en línea', precio: PRECIOS.placaSola }]
+    .concat(PRODUCTOS.map(p => ({ id: p.id, nombre: `Con ${p.con}`,
+      sub: p.id === 'collar' ? `Collar + Placa Inteligente · ahorras ${cop(p.ahorro)} · envío gratis en Bogotá`
+        : `${p.corto} ${cop(p.precio)} + placa ${cop(precioPlaca(p.id))}`, precio: p.precio + precioPlaca(p.id) })));
   $('#compras').innerHTML = ops.map(o => `<label class="compra"><input type="radio" name="compra" value="${o.id}"${o.id === estado.compra ? ' checked' : ''}>
     <span>${o.nombre}<small>${o.sub}</small></span><b>${cop(o.precio)}</b></label>`).join('');
   document.querySelectorAll('input[name="compra"]').forEach(r => r.addEventListener('change', () => { estado.compra = r.value; actualizarPrecio(); }));
@@ -307,8 +315,10 @@ function pintarProductos() {
       <span class="badge ${p.badge[1]}">${p.badge[0]}</span>
       <h3 class="prod-name">${p.nombre}</h3>
       <p class="prod-desc">${p.texto}</p>
-      <div class="prod-precios"><span class="price-old"><s>${cop(p.antes)}</s></span><span class="prod-price">${cop(p.precio)} COP</span></div>
-      <span class="mas-placa">+ Placa Inteligente Wuuff por ${cop(PRECIOS.placaConProducto)}</span>
+      <div class="prod-precios">${p.id === 'collar'
+        ? `<span class="prod-price">${cop(PRECIOS.comboCollarPlaca)} COP</span><span class="price-old">Ahorras ${cop(p.ahorro)}</span>`
+        : `<span class="prod-price">${cop(p.precio)} COP</span>`}</div>
+      <span class="mas-placa">${p.id === 'collar' ? 'Collar + placa con envío gratis en Bogotá' : `Agrega la Placa Inteligente por ${cop(PRECIOS.placaAgregada)}`}</span>
       <button type="button" class="btn-buy" data-prod="${p.id}">Llévalo con placa 🐾</button>
       <a class="ver-detalles" href="${TIENDA}${p.url}">Ver detalles y guía de tallas →</a>
     </div>
@@ -386,7 +396,7 @@ $('#btn-agregar').addEventListener('click', () => {
   // En wuuffpuppy.co: lleva al mismo pago de la tienda (/?comprar=placa → modal de envío + Wompi)
   if (/wuuffpuppy\.co$/.test(location.hostname) || location.hostname.endsWith('.netlify.app')) {
     const q = new URLSearchParams({ comprar: 'placa', forma: estado.diseno, nombre: estado.nombre.trim(), base: estado.base, letras: estado.letras,
-      con: estado.compra === 'set' ? 'combo' : estado.compra, talla: estado.compra === 'sola' ? '' : estado.talla });
+      con: estado.compra, talla: estado.compra === 'sola' ? '' : estado.talla });
     try { if (window.gtag) gtag('event', 'placa_comprar', { forma: estado.diseno, con: estado.compra }); } catch (e) {}
     location.href = '/?' + q.toString();
     return;
@@ -414,9 +424,15 @@ $('#btn-copiar').addEventListener('click', async () => {
 // ---------------- Inicio ----------------
 pintarSwatches('#sw-base', 'base'); pintarSwatches('#sw-letras', 'letras'); refrescarSwatches();
 input.value = estado.nombre; $('#contador').textContent = `${estado.nombre.length}/${MAX_LETRAS}`;
-['#hero-precio', '#combo-precio', '#faq-con'].forEach(s => $(s).textContent = cop(PRECIOS.placaConProducto));
+['#hero-precio', '#faq-con'].forEach(s => $(s).textContent = cop(PRECIOS.placaAgregada));
+['#combo-precio', '#faq-collar'].forEach(s => $(s).textContent = cop(PRECIOS.comboCollarPlaca));
 ['#faq-sola', '#hero-sola'].forEach(s => $(s).textContent = cop(PRECIOS.placaSola));
-$('#hero-antes').textContent = cop(PRECIOS.placaSolaAntes);
+// ?con=collar|arnes|arnes-correa|combo (desde la tienda): deja elegida esa compra
+{
+  const q = new URLSearchParams(location.search), con = q.get('con'), talla = q.get('talla');
+  if (PRODUCTOS.some(p => p.id === con)) estado.compra = con;
+  if (talla === 'S' || talla === 'M') { estado.talla = talla; const r = document.querySelector(`input[name="talla"][value="${talla}"]`); if (r) r.checked = true; }
+}
 document.querySelectorAll('[data-ilus]').forEach(el => el.innerHTML = ILUS[el.dataset.ilus]);
 $('#img-boceto').src = ASSETS.boceto; $('#img-pastor').src = ASSETS.pastor;
 pintarCompras(); pintarProductos();

@@ -37,6 +37,6 @@ exports.handler = async function (event) {
     regaloIncluido: !!(r.regalo && placaEnCarrito),   // la placa del carrito queda de regalo
     regaloValor: r.regalo && placaEnCarrito ? placaEnCarrito.cents : 0,
     subtotal: armado.subtotalCents,
-    porcentaje: r.tipo === 'concurso' ? 15 : 10
+    porcentaje: 10
   });
 };
