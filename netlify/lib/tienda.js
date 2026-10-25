@@ -62,7 +62,7 @@ function armar(carrito) {
     if (!prod) return { error: 'Producto no válido' };
     const qty = Math.min(Math.max(parseInt(it.qty, 10) || 1, 1), 10);
     const talla = elegir(it.talla, prod.tallas);
-    const nombre = prod.nombre + (talla ? ' (Talla ' + talla + ')' : '') + (qty > 1 ? ' x' + qty : '');
+    const nombre = prod.nombre + (talla ? ' (Talla ' + (talla === 'Única' ? 'única' : talla) + ')' : '') + (qty > 1 ? ' x' + qty : '');
     lineas.push({ tipo: 'producto', clave: it.p, nombre, cents: prod.cents * qty });
     productosCents += prod.cents * qty;
   }

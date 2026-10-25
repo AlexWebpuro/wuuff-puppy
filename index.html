@@ -2393,7 +2393,7 @@ function comprarProducto(btn, amountInCents, nombreBase){
 function codigoNormal(t){ return String(t || '').trim().toUpperCase(); }
 function guardarCodigoSesion(c){ try { if(c) sessionStorage.setItem('wuuff_codigo', c); else sessionStorage.removeItem('wuuff_codigo'); } catch(e){} }
 function leerCodigoSesion(){ try { return sessionStorage.getItem('wuuff_codigo') || ''; } catch(e){ return ''; } }
-// Link directo: wuuffpuppy.co/?codigo=WUUFF-REY → se aplica solo al llegar al checkout
+// Link directo: wuuffpuppy.co/?codigo=<código> → se aplica solo al llegar al checkout
 (function(){ try { var c = new URLSearchParams(location.search).get('codigo'); if(c) guardarCodigoSesion(codigoNormal(c)); } catch(e){} })();
 function abrirCodigo(){
   var p = document.getElementById('codigo-panel'), t = document.getElementById('codigo-toggle');
