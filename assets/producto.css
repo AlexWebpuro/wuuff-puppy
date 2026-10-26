@@ -112,6 +112,10 @@ footer small{display:block;margin-top:10px;color:rgba(255,255,255,.4)}
 .indice ol{margin:0}
 .indice a{font-weight:800;text-decoration:none}
 .tabla-scroll{overflow-x:auto}
+.tabla-razas{width:100%;font-size:14px}.tabla-razas th,.tabla-razas td{padding:8px 10px;vertical-align:top}
+@media(max-width:480px){.tabla-razas{font-size:13px;min-width:0}.tabla-razas th,.tabla-razas td{padding:7px 6px}}
+.btns-fila{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0 4px}.btns-fila .btn{flex:1 1 220px;width:auto}
+.btn.wa{background:#1fa855}.btn.wa:hover{background:#178a45}
 .cta-art{background:var(--cream);border-radius:20px;padding:22px;margin:28px 0;display:flex;gap:16px;align-items:center;flex-wrap:wrap;justify-content:space-between}
 .cta-art p{font-weight:800;font-size:16.5px;max-width:480px;margin:0}
 .cta-art .btn{width:auto;padding:13px 24px;font-size:16px}
