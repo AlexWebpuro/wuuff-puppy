@@ -7,6 +7,7 @@
 const crypto = require('crypto');
 const { getStore, connectLambda } = require('@netlify/blobs');
 const tienda = require('../lib/tienda');
+const resenas = require('../lib/resenas');
 
 function json(status, body) {
   return { statusCode: status, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }, body: JSON.stringify(body) };
@@ -43,7 +44,8 @@ exports.handler = async function (event) {
     try {
       await pedidos.setJSON(reference, {
         reference, amountInCents, nombreProducto, creado: new Date().toISOString(),
-        codigo: calc.codigo, descuentoCents: calc.descuentoCents, regalo: calc.regalo, avisos: tienda.lineasAviso(calc)
+        codigo: calc.codigo, descuentoCents: calc.descuentoCents, regalo: calc.regalo, avisos: tienda.lineasAviso(calc),
+        productos: resenas.productosDeCarrito(body.carrito, calc.regalo), ciudad: String(body.ciudad || '').slice(0, 80)
       });
     } catch (err) { console.error('No se pudo guardar el pedido de Wompi', err.message); }
   }

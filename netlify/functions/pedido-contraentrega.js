@@ -4,6 +4,7 @@
 // y le manda al cliente el correo de "Recibimos tu pedido".
 const { getStore, connectLambda } = require('@netlify/blobs');
 const tienda = require('../lib/tienda');
+const resenas = require('../lib/resenas');
 
 const SITE_URL = 'https://wuuffpuppy.co/';
 const MAXIMO_CENTS = 300000000;     // $3.000.000: tope de recaudo en efectivo de Coordinadora
@@ -103,6 +104,13 @@ exports.handler = async function (event) {
     urlGuia = SITE_URL + '.netlify/functions/envia-guia?ref=' + encodeURIComponent(referencia) + '&t=' + token;
   } catch (err) {
     console.error('No se pudo guardar el pedido para Envia', err.message);
+  }
+  // 1c. Unos días después se le pide la reseña (función programada resenas-invitar)
+  try {
+    await resenas.guardarPorInvitar(getStore('resenas-invitaciones'), referencia, { correo: pedido.correo, nombre: pedido.nombre,
+      mascota: pedido.mascota, ciudad: pedido.ciudad, productos: resenas.productosDeCarrito(b.carrito, calc.regalo) });
+  } catch (err) {
+    console.error('No se pudo guardar la invitación a reseñar', err.message);
   }
 
   // 2. Placa NFC: se marca el perfil y se arman los enlaces (chip y edición)

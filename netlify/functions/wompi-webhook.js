@@ -3,6 +3,7 @@
 // no depende de que el cliente vuelva a la página después de pagar.
 const crypto = require('crypto');
 const { getStore, connectLambda } = require('@netlify/blobs');
+const resenas = require('../lib/resenas');
 
 function getValueByPath(obj, path) {
   return path.split('.').reduce(function (acc, key) {
@@ -116,6 +117,13 @@ exports.handler = async function (event) {
       } catch (err) {
         console.error('No se pudo marcar el código como usado', err.message);
       }
+    }
+    // Pago aprobado: unos días después se le pide la reseña (función programada resenas-invitar)
+    try {
+      await resenas.guardarPorInvitar(getStore('resenas-invitaciones'), referencia, { correo, nombre, mascota,
+        ciudad: guardado.ciudad || ciudad, productos: guardado.productos || [] });
+    } catch (err) {
+      console.error('No se pudo guardar la invitación a reseñar', err.message);
     }
   }
 
