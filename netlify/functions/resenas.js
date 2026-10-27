@@ -55,13 +55,16 @@ exports.handler = async function (event) {
   if (inv) { inv.hechas.push(r.producto); await invitaciones.setJSON('inv-' + b.invitacion, inv); }
 
   // Aviso a la tienda para aprobarla
-  const urlModerar = `${R.SITIO}/.netlify/functions/resena-moderar?id=${id}&clave=${r.clave}`;
+  // En la vista previa de Netlify los enlaces apuntan a la misma vista previa
+  const host = String((event.headers || {}).host || '');
+  const base = /^[a-z0-9-]+--[a-z0-9-]+\.netlify\.app$/.test(host) ? 'https://' + host : R.SITIO;
+  const urlModerar = `${base}/.netlify/functions/resena-moderar?id=${id}&clave=${r.clave}`;
   await R.enviarCorreo(R.TIENDA_CORREO(), `⭐ Reseña nueva (${r.estrellas}/5) – ${R.PRODUCTOS[r.producto].nombre}`,
     `<div style="font-family:Arial,sans-serif;color:#2d4375;max-width:560px;">
       <h2 style="margin:0 0 6px;">${'★'.repeat(r.estrellas)}${'☆'.repeat(5 - r.estrellas)} ${R.esc(R.PRODUCTOS[r.producto].nombre)}</h2>
       <p><strong>${R.esc(r.nombre)}</strong>${r.mascota ? ' (de ' + R.esc(r.mascota) + ')' : ''} · ${r.verificada ? '✅ Compra verificada, pedido ' + R.esc(r.pedido) : 'Sin compra verificada'}${r.correo ? ' · ' + R.esc(r.correo) : ''}</p>
       ${r.titulo ? `<p><strong>${R.esc(r.titulo)}</strong></p>` : ''}<p style="white-space:pre-line;">${R.esc(r.texto)}</p>
-      ${r.foto ? `<p><a href="${R.SITIO}/.netlify/functions/resena-foto?id=${id}&clave=${r.clave}"><img src="${R.SITIO}/.netlify/functions/resena-foto?id=${id}&clave=${r.clave}" alt="Foto de la reseña" style="max-width:240px;border-radius:12px;"></a></p>` : ''}
+      ${r.foto ? `<p><a href="${base}/.netlify/functions/resena-foto?id=${id}&clave=${r.clave}"><img src="${base}/.netlify/functions/resena-foto?id=${id}&clave=${r.clave}" alt="Foto de la reseña" style="max-width:240px;border-radius:12px;"></a></p>` : ''}
       <p><a href="${urlModerar}" style="display:inline-block;background:#4964af;color:#fff;font-weight:bold;text-decoration:none;padding:12px 20px;border-radius:12px;">Revisar y publicar</a></p>
       <p style="font-size:13px;color:#6b7a99;">No aparece en la web hasta que la apruebes.</p>
     </div>`);
