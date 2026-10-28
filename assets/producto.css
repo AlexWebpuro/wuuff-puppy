@@ -158,3 +158,14 @@ button.cuotas{border:none;font-family:'Nunito',sans-serif;cursor:pointer;text-al
 .cl-nota{margin:4px 0 0;font-size:12.5px;font-weight:700;color:#5d6f96}
 .cl-reloj{margin:10px 0 0;padding-top:10px;border-top:1px dashed #d6dff2;font-size:13px;font-weight:700;color:#a2430f}
 .cl-reloj b{font-weight:900}
+/* "Ver toda la información del producto": descripción, cuidados, preguntas y blog plegados para que la ficha no sea tan larga */
+.mas-info{max-width:none;border:0;padding:0;margin:8px 0 0;border-radius:0}
+.mas-info>summary{list-style:none;display:grid;gap:2px;justify-items:center;text-align:center;cursor:pointer;margin:6px auto 0;max-width:520px;padding:16px 20px;border:2px solid var(--navy);border-radius:16px;color:var(--navy);font-weight:900;font-size:17px;background:#fff}
+.mas-info>summary::-webkit-details-marker{display:none}
+.mas-info>summary::after{content:"⌄";font-size:22px;line-height:.6}
+.mas-info>summary small{font-weight:700;font-size:13px;color:#6b7a99}
+.mas-info>summary:hover{background:var(--lblue)}
+.mas-info[open]>summary span{font-size:0}
+.mas-info[open]>summary span::after{content:"Ocultar información";font-size:17px}
+.mas-info[open]>summary small{display:none}
+.mas-info[open]>summary::after{content:"⌃"}
