@@ -12,6 +12,7 @@ const SITIO = 'https://wuuffpuppy.co';
 const PRODUCTOS = {
   combo: { nombre: 'Combo completo', url: '/combo-collar-arnes-correa/' },
   'arnes-correa': { nombre: 'Arnés + correa', url: '/arnes-y-correa-impermeable-perro/' },
+  'collar-correa': { nombre: 'Collar + correa', url: '/collar-y-correa-impermeable-perro/' },
   arnes: { nombre: 'Arnés tipo H', url: '/arnes-tipo-h-impermeable-perro/' },
   collar: { nombre: 'Collar', url: '/collar-impermeable-perro/' },
   correa: { nombre: 'Correa', url: '/correa-impermeable-perro/' },

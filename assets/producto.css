@@ -169,3 +169,15 @@ button.cuotas{border:none;font-family:'Nunito',sans-serif;cursor:pointer;text-al
 .mas-info[open]>summary span::after{content:"Ocultar información";font-size:17px}
 .mas-info[open]>summary small{display:none}
 .mas-info[open]>summary::after{content:"⌃"}
+/* Pie de foto de la galería (ej.: caso real de talla) */
+.gal-pie{margin:8px 4px 0;font-size:14px;font-weight:800;color:var(--navy);line-height:1.4}
+.gal-pie::before{content:"📏 "}
+/* Guía de tallas del collar bajo el selector, con medidor del cuello */
+.guia-collar{display:grid;gap:10px;margin:12px 0 4px;background:var(--lblue);border-radius:16px;padding:14px}
+.guia-collar .tabla{margin:0;width:100%;background:#fff;font-size:14px}
+.guia-collar .tabla th,.guia-collar .tabla td{padding:8px 10px}
+.medir-cuello{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-weight:800;color:var(--navy)}
+.medir-cuello input{width:90px;font:inherit;font-size:16px;padding:8px 10px;border:2px solid #fff;border-radius:10px;color:var(--navy)}
+.medir-res{margin:0;font-weight:800;color:var(--navy);background:#fff;border-radius:10px;padding:8px 12px}
+.nota-talla{margin:0;font-size:14px;color:var(--navy);line-height:1.45}
+.guia-collar .btn.wa{width:100%;text-align:center}

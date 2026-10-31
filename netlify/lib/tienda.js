@@ -4,17 +4,19 @@
 // Si cambian los precios de la web, cámbialos también aquí (en centavos).
 const PRODUCTOS = {
   // Combos
-  combo:          { nombre: 'Combo completo (collar + arnés + correa)', cents: 14990000, tallas: ['S', 'M'] },
+  // Combo: talla del collar y del arnés por separado ("SM" = collar S, arnés M); "S" o "M" = las dos iguales
+  combo:          { nombre: 'Combo completo (collar + arnés + correa)', cents: 14990000, tallas: ['S', 'M', 'SS', 'SM', 'MS', 'MM'] },
   'arnes-correa': { nombre: 'Combo arnés + correa', cents: 10990000, tallas: ['S', 'M'] },
+  'collar-correa': { nombre: 'Combo collar + correa', cents: 8990000, tallas: ['S', 'M'] },
   // Piezas sueltas
   arnes:  { nombre: 'Arnés tipo H impermeable', cents: 6990000, tallas: ['S', 'M'] },
   collar: { nombre: 'Collar impermeable', cents: 4490000, tallas: ['S', 'M'] },
   correa: { nombre: 'Correa impermeable', cents: 5990000, tallas: ['Única'] }
 };
 const PLACA_SOLA = 2990000;          // $29.900
-const PLACA_AGREGADA = 1990000;      // $19.900 al llevarla con arnés, arnés + correa o combo completo
+const PLACA_AGREGADA = 1990000;      // $19.900 al llevarla con arnés, arnés + correa, collar + correa o combo completo
 const COMBO_COLLAR_PLACA = 6490000;  // $64.900 collar + placa (la placa queda en $20.000)
-const CON_PLACA_AGREGADA = ['arnes', 'arnes-correa', 'combo'];
+const CON_PLACA_AGREGADA = ['arnes', 'arnes-correa', 'collar-correa', 'combo'];
 const ENVIO_MINIMO_GRATIS = 4990000; // Bogotá/Soacha gratis desde $49.900 (subtotal ANTES del descuento)
 const ENVIO_BOGOTA_PEQUENO = 850000; // $8.500 para pedidos menores (collar solo o placa sola), solo con Wompi
 const ENVIO_OTRAS = 1850000;         // $18.500 otras ciudades
@@ -64,7 +66,8 @@ function armar(carrito) {
     if (!prod) return { error: 'Producto no válido' };
     const qty = Math.min(Math.max(parseInt(it.qty, 10) || 1, 1), 10);
     const talla = elegir(it.talla, prod.tallas);
-    const nombre = prod.nombre + (talla ? ' (Talla ' + (talla === 'Única' ? 'única' : talla) + ')' : '') + (qty > 1 ? ' x' + qty : '');
+    const textoTalla = talla.length === 2 ? 'collar ' + talla[0] + ', arnés ' + talla[1] : (talla === 'Única' ? 'única' : talla);
+    const nombre = prod.nombre + (talla ? ' (Talla ' + textoTalla + ')' : '') + (qty > 1 ? ' x' + qty : '');
     lineas.push({ tipo: 'producto', clave: it.p, nombre, cents: prod.cents * qty });
   }
   const claves = lineas.map(l => l.clave);
