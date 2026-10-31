@@ -4,7 +4,8 @@
 // Si cambian los precios de la web, cámbialos también aquí (en centavos).
 const PRODUCTOS = {
   // Combos
-  combo:          { nombre: 'Combo completo (collar + arnés + correa)', cents: 14990000, tallas: ['S', 'M'] },
+  // Combo: talla del collar y del arnés por separado ("SM" = collar S, arnés M); "S" o "M" = las dos iguales
+  combo:          { nombre: 'Combo completo (collar + arnés + correa)', cents: 14990000, tallas: ['S', 'M', 'SS', 'SM', 'MS', 'MM'] },
   'arnes-correa': { nombre: 'Combo arnés + correa', cents: 10990000, tallas: ['S', 'M'] },
   'collar-correa': { nombre: 'Combo collar + correa', cents: 8990000, tallas: ['S', 'M'] },
   // Piezas sueltas
@@ -65,7 +66,8 @@ function armar(carrito) {
     if (!prod) return { error: 'Producto no válido' };
     const qty = Math.min(Math.max(parseInt(it.qty, 10) || 1, 1), 10);
     const talla = elegir(it.talla, prod.tallas);
-    const nombre = prod.nombre + (talla ? ' (Talla ' + (talla === 'Única' ? 'única' : talla) + ')' : '') + (qty > 1 ? ' x' + qty : '');
+    const textoTalla = talla.length === 2 ? 'collar ' + talla[0] + ', arnés ' + talla[1] : (talla === 'Única' ? 'única' : talla);
+    const nombre = prod.nombre + (talla ? ' (Talla ' + textoTalla + ')' : '') + (qty > 1 ? ' x' + qty : '');
     lineas.push({ tipo: 'producto', clave: it.p, nombre, cents: prod.cents * qty });
   }
   const claves = lineas.map(l => l.clave);

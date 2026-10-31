@@ -296,8 +296,8 @@ function actualizarPrecio() {
   $('#antes').textContent = t.ahorro ? 'Ahorras ' + cop(t.ahorro) : '';
   $('#desglose').innerHTML = t.lineas.map(([n, v]) => `<li><span>${n}</span><span>${cop(v)}</span></li>`).join('');
   $('#talla-wrap').hidden = estado.compra === 'sola';
-  const TALLAS = { collar: ['cuello 20–34 cm', 'cuello 24–38 cm'], arnes: ['pecho 23–38 cm', 'pecho 32–53 cm'],
-    'arnes-correa': ['pecho 23–38 cm', 'pecho 32–53 cm'], 'collar-correa': ['cuello 20–34 cm', 'cuello 24–38 cm'], combo: ['cuello 20–34, pecho 23–38 cm', 'cuello 24–38, pecho 32–53 cm'] }[estado.compra];
+  const TALLAS = { collar: ['cuello 25–33 cm', 'cuello 33–42 cm'], arnes: ['pecho 23–38 cm', 'pecho 32–53 cm'],
+    'arnes-correa': ['pecho 23–38 cm', 'pecho 32–53 cm'], 'collar-correa': ['cuello 25–33 cm', 'cuello 33–42 cm'], combo: ['collar 25–33 cm de cuello · arnés pecho 23–38 cm', 'collar 33–42 cm de cuello · arnés pecho 32–53 cm'] }[estado.compra];
   if (TALLAS) { $('#talla-s').textContent = '· ' + TALLAS[0]; $('#talla-m').textContent = '· ' + TALLAS[1]; }
   $('#resumen').hidden = true;
 }
