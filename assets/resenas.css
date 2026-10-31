@@ -45,7 +45,10 @@
 .rs-elegir label{font-size:34px;color:#d9dfeb;cursor:pointer;padding:0 3px;line-height:1}
 .rs-elegir label.on{color:var(--rs-oro)}
 .rs-elegir input:focus-visible+label{outline:2px solid var(--rs-blue);border-radius:6px}
-.rs-previa{max-width:160px;border-radius:12px}
+.rs-previas{display:flex;flex-wrap:wrap;gap:8px}
+.rs-previa{position:relative}.rs-previa img{width:84px;height:84px;object-fit:cover;border-radius:12px;display:block}
+.rs-previa button{position:absolute;top:-6px;right:-6px;width:26px;height:26px;border-radius:50%;border:0;background:var(--rs-navy);color:#fff;font-size:13px;cursor:pointer;line-height:1}
+.rs-fotos{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.rs-fotos .rs-foto{margin-top:0}
 .rs-trampa{position:absolute!important;left:-9999px!important}
 .rs-nota{font-size:13px;color:var(--rs-tenue);margin:0}
 .rs-error{color:#c0392b;font-weight:800;margin:0}

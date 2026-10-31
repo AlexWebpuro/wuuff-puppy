@@ -19,6 +19,7 @@ const PRODUCTOS = {
 };
 const DIAS_INVITAR = { bogota: 7, otras: 10 };  // días después del pedido para pedir la reseña
 const FOTO_MAX_BYTES = 1500000;
+const MAX_FOTOS = 4;
 const INDICE_MAX = 300;
 
 function limpio(v, max) { return String(v == null ? '' : v).replace(/[<>]/g, '').replace(/\s+/g, ' ').trim().slice(0, max); }
@@ -53,6 +54,17 @@ function fotoValida(v) {
   return { bytes };
 }
 
+// Hasta MAX_FOTOS fotos (acepta también "foto" sola, del formulario anterior). Devuelve la lista de bytes o null si alguna no sirve
+function fotosValidas(b) {
+  const lista = (Array.isArray(b.fotos) ? b.fotos : (b.foto ? [b.foto] : [])).filter(Boolean);
+  if (lista.length > MAX_FOTOS) return null;
+  const out = [];
+  for (const f of lista) { const v = fotoValida(f); if (!v || v.vacia) return null; out.push(v.bytes); }
+  return out;
+}
+// Clave de la foto n de una reseña (la primera conserva el nombre de antes)
+function claveFoto(id, n) { return n ? 'foto-' + id + '-' + n : 'foto-' + id; }
+
 // Valida lo que manda el formulario. Devuelve { error } o { datos }
 function validar(b) {
   const producto = String(b.producto || '');
@@ -71,7 +83,7 @@ function validar(b) {
 // Lo que se muestra en la página (nunca el correo ni la clave de moderación)
 function publica(r) {
   return { id: r.id, estrellas: r.estrellas, nombre: nombrePublico(r.nombre), mascota: r.mascota || '', titulo: r.titulo || '', texto: r.texto,
-    fecha: r.creado, verificada: !!r.verificada, foto: !!r.foto };
+    fecha: r.creado, verificada: !!r.verificada, foto: !!r.foto, fotos: r.fotos || (r.foto ? 1 : 0) };
 }
 function resumen(lista) {
   const dist = [0, 0, 0, 0, 0];
@@ -140,5 +152,5 @@ async function invitarPendientes(store, ahora) {
   return enviadas;
 }
 
-module.exports = { TIENDA_CORREO, enviarCorreo, invitarPendientes, SITIO, PRODUCTOS, INDICE_MAX, limpio, esc, token, nombrePublico, productosDeCarrito, fotoValida, validar, publica, resumen,
+module.exports = { MAX_FOTOS, fotosValidas, claveFoto, TIENDA_CORREO, enviarCorreo, invitarPendientes, SITIO, PRODUCTOS, INDICE_MAX, limpio, esc, token, nombrePublico, productosDeCarrito, fotoValida, validar, publica, resumen,
   listoParaInvitar, guardarPorInvitar, correoInvitacion };
