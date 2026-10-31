@@ -8,7 +8,8 @@
   var API = '/.netlify/functions/resenas';
   var POR_PAGINA = 5;
   var datos = { total: 0, promedio: 0, distribucion: {}, resenas: [] };
-  var orden = 'recientes', mostrar = POR_PAGINA, invitacion = '', fotoData = '';
+  var orden = 'recientes', mostrar = POR_PAGINA, invitacion = '', fotos = [];
+  var MAX_FOTOS = 4;
   try { invitacion = new URLSearchParams(location.search).get('resena') || ''; } catch (e) {}
   if (!/^[a-f0-9]{32}$/.test(invitacion)) invitacion = '';
 
@@ -23,7 +24,8 @@
     function dos(x) { return (x < 10 ? '0' : '') + x; }
     return dos(d.getUTCDate()) + '/' + dos(d.getUTCMonth() + 1) + '/' + d.getUTCFullYear();
   }
-  function foto(r) { return '/.netlify/functions/resena-foto?id=' + encodeURIComponent(r.id); }
+  function foto(r, n) { return '/.netlify/functions/resena-foto?id=' + encodeURIComponent(r.id) + (n ? '&n=' + n : ''); }
+  function nFotos(r) { return r.fotos || (r.foto ? 1 : 0); }
   function evento(n, p) { try { if (window.gtag) gtag('event', n, p || {}); } catch (e) {} }
 
   function ordenadas() {
@@ -59,7 +61,9 @@
         (r.mascota ? '<span class="rs-mascota">🐾 ' + esc(r.mascota) + '</span>' : '') + '</div>' +
         (r.titulo ? '<p class="rs-titulo">' + esc(r.titulo) + '</p>' : '') +
         '<p class="rs-texto">' + esc(r.texto) + '</p>' +
-        (r.foto ? '<button type="button" class="rs-foto" data-rs-foto="' + esc(foto(r)) + '" aria-label="Ver la foto de ' + esc(r.nombre) + '"><img src="' + esc(foto(r)) + '" alt="Foto de ' + esc(r.mascota || 'su perro') + ' con el producto" loading="lazy"></button>' : '') +
+        (nFotos(r) ? '<div class="rs-fotos">' + Array.apply(null, Array(nFotos(r))).map(function (_, n) {
+          return '<button type="button" class="rs-foto" data-rs-foto="' + esc(foto(r, n)) + '" aria-label="Ver la foto ' + (n + 1) + ' de ' + esc(r.nombre) + '"><img src="' + esc(foto(r, n)) + '" alt="Foto de ' + esc(r.mascota || 'su perro') + ' con el producto" loading="lazy"></button>';
+        }).join('') + '</div>' : '') +
         '</article>';
     }).join('');
     return '<div class="rs-barra-orden"><label>Ordenar: <select data-rs-orden>' +
@@ -82,8 +86,8 @@
       '<div class="rs-dos"><label>Tu nombre *<input name="nombre" maxlength="60" required autocomplete="name"></label>' +
       '<label>Nombre de tu perrito <small>(opcional)</small><input name="mascota" maxlength="30"></label></div>' +
       '<label>Tu correo <small>(opcional, no se publica)</small><input name="correo" type="email" maxlength="160" autocomplete="email"></label>' +
-      '<label class="rs-subir">📸 Agrega una foto de tu perrito <small>(opcional)</small><input name="foto" type="file" accept="image/*"></label>' +
-      '<img class="rs-previa" data-rs-previa alt="Foto que vas a subir" hidden>' +
+      '<label class="rs-subir">📸 Agrega fotos de tu perrito <small>(opcional, hasta ' + MAX_FOTOS + ')</small><input name="foto" type="file" accept="image/*" multiple></label>' +
+      '<div class="rs-previas" data-rs-previas hidden></div>' +
       '<input name="sitio" class="rs-trampa" tabindex="-1" autocomplete="off" aria-hidden="true">' +
       '<p class="rs-nota">Se publica con tu nombre y la inicial de tu apellido, después de que la revisemos.</p>' +
       '<p class="rs-error" data-rs-error role="alert" hidden></p>' +
@@ -100,20 +104,41 @@
     }
   }
 
-  // Foto: se reduce en el navegador a JPEG de máximo 1200 px antes de subirla
+  // Fotos: cada una se reduce en el navegador a JPEG de máximo 1200 px antes de subirla
   function leerFoto(file, listo) {
-    if (!file) { fotoData = ''; return listo(); }
     var url = URL.createObjectURL(file), img = new Image();
     img.onload = function () {
       var max = 1200, w = img.naturalWidth, h = img.naturalHeight, k = Math.min(1, max / Math.max(w, h));
       var c = document.createElement('canvas'); c.width = Math.round(w * k); c.height = Math.round(h * k);
       c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
-      var q = 0.85; fotoData = c.toDataURL('image/jpeg', q);
-      while (fotoData.length > 1.9e6 && q > 0.4) { q -= 0.15; fotoData = c.toDataURL('image/jpeg', q); }
-      URL.revokeObjectURL(url); listo();
+      var q = 0.85, d = c.toDataURL('image/jpeg', q);
+      while (d.length > 1e6 && q > 0.4) { q -= 0.15; d = c.toDataURL('image/jpeg', q); }
+      URL.revokeObjectURL(url); listo(d);
     };
-    img.onerror = function () { URL.revokeObjectURL(url); fotoData = ''; listo('No pudimos leer esa foto. Prueba con otra (JPG o PNG).'); };
+    img.onerror = function () { URL.revokeObjectURL(url); listo(''); };
     img.src = url;
+  }
+  function agregarFotos(lista) {
+    var err = caja.querySelector('[data-rs-error]'), malas = 0, sobran = Math.max(0, fotos.length + lista.length - MAX_FOTOS);
+    lista = lista.slice(0, Math.max(0, MAX_FOTOS - fotos.length));
+    var pend = lista.length;
+    function fin() {
+      pintarPrevias();
+      var msg = malas ? 'No pudimos leer ' + (malas === 1 ? 'una foto' : malas + ' fotos') + '. Prueba con JPG o PNG.' : (sobran ? 'Puedes subir hasta ' + MAX_FOTOS + ' fotos.' : '');
+      err.hidden = !msg; err.textContent = msg;
+    }
+    if (!pend) return fin();
+    lista.forEach(function (file) {
+      leerFoto(file, function (d) { if (d && fotos.length < MAX_FOTOS) fotos.push(d); else if (!d) malas++; if (--pend === 0) fin(); });
+    });
+  }
+  function pintarPrevias() {
+    var box = caja.querySelector('[data-rs-previas]');
+    box.hidden = !fotos.length;
+    box.innerHTML = fotos.map(function (d, i) {
+      return '<span class="rs-previa"><img src="' + d + '" alt="Foto ' + (i + 1) + ' que vas a subir"><button type="button" data-rs-quitar="' + i + '" aria-label="Quitar la foto ' + (i + 1) + '">✕</button></span>';
+    }).join('');
+    var inp = caja.querySelector('input[name=foto]'); if (inp) inp.disabled = fotos.length >= MAX_FOTOS;
   }
 
   // Pinta en dorado las estrellas hasta la elegida (o la que está bajo el dedo/ratón)
@@ -137,19 +162,15 @@
     var t = e.target;
     if (t.closest('[data-rs-escribir]')) return abrirFormulario(true);
     if (t.closest('[data-rs-mas]')) { mostrar += POR_PAGINA; pintarListaSola(); return; }
+    var q = t.closest('[data-rs-quitar]');
+    if (q) { fotos.splice(+q.getAttribute('data-rs-quitar'), 1); pintarPrevias(); return; }
     var f = t.closest('[data-rs-foto]');
     if (f) verFoto(f.getAttribute('data-rs-foto'));
   });
   caja.addEventListener('change', function (e) {
     if (e.target.matches('[data-rs-orden]')) { orden = e.target.value; mostrar = POR_PAGINA; pintarListaSola(); }
     if (e.target.name === 'estrellas') marcar(+e.target.value);
-    if (e.target.name === 'foto') {
-      var prev = caja.querySelector('[data-rs-previa]'), err = caja.querySelector('[data-rs-error]');
-      leerFoto(e.target.files && e.target.files[0], function (msg) {
-        err.hidden = !msg; err.textContent = msg || '';
-        prev.hidden = !fotoData; if (fotoData) prev.src = fotoData;
-      });
-    }
+    if (e.target.name === 'foto') { agregarFotos(Array.prototype.slice.call(e.target.files || [])); e.target.value = ''; }
   });
   caja.addEventListener('submit', function (e) {
     e.preventDefault();
@@ -163,7 +184,7 @@
     err.hidden = true; btn.disabled = true; btn.textContent = 'Enviando…';
     fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
       producto: PRODUCTO, estrellas: +est.value, titulo: f.titulo.value, texto: f.texto.value, nombre: f.nombre.value,
-      mascota: f.mascota.value, correo: f.correo.value, foto: fotoData, invitacion: invitacion, sitio: f.sitio.value
+      mascota: f.mascota.value, correo: f.correo.value, fotos: fotos, invitacion: invitacion, sitio: f.sitio.value
     }) }).then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); }).then(function (x) {
       if (!x.ok) throw new Error(x.j.error || 'No se pudo enviar');
       f.hidden = true; caja.querySelector('[data-rs-gracias]').hidden = false;
