@@ -6,15 +6,16 @@ const PRODUCTOS = {
   // Combos
   combo:          { nombre: 'Combo completo (collar + arnés + correa)', cents: 14990000, tallas: ['S', 'M'] },
   'arnes-correa': { nombre: 'Combo arnés + correa', cents: 10990000, tallas: ['S', 'M'] },
+  'collar-correa': { nombre: 'Combo collar + correa', cents: 8990000, tallas: ['S', 'M'] },
   // Piezas sueltas
   arnes:  { nombre: 'Arnés tipo H impermeable', cents: 6990000, tallas: ['S', 'M'] },
   collar: { nombre: 'Collar impermeable', cents: 4490000, tallas: ['S', 'M'] },
   correa: { nombre: 'Correa impermeable', cents: 5990000, tallas: ['Única'] }
 };
 const PLACA_SOLA = 2990000;          // $29.900
-const PLACA_AGREGADA = 1990000;      // $19.900 al llevarla con arnés, arnés + correa o combo completo
+const PLACA_AGREGADA = 1990000;      // $19.900 al llevarla con arnés, arnés + correa, collar + correa o combo completo
 const COMBO_COLLAR_PLACA = 6490000;  // $64.900 collar + placa (la placa queda en $20.000)
-const CON_PLACA_AGREGADA = ['arnes', 'arnes-correa', 'combo'];
+const CON_PLACA_AGREGADA = ['arnes', 'arnes-correa', 'collar-correa', 'combo'];
 const ENVIO_MINIMO_GRATIS = 4990000; // Bogotá/Soacha gratis desde $49.900 (subtotal ANTES del descuento)
 const ENVIO_BOGOTA_PEQUENO = 850000; // $8.500 para pedidos menores (collar solo o placa sola), solo con Wompi
 const ENVIO_OTRAS = 1850000;         // $18.500 otras ciudades

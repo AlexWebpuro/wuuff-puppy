@@ -16,6 +16,8 @@ const PRODUCTOS = [
     texto: 'Collar, arnés y correa impermeables a juego. Envío gratis en Bogotá.' },
   { id: 'arnes-correa', nombre: 'Arnés + correa', corto: 'Arnés + correa', con: 'arnés + correa', precio: 109900, ahorro: 29900, badge: ['Combo', 'lima'], url: '/arnes-y-correa-impermeable-perro/',
     texto: 'El arnés tipo H con su correa a juego. La placa va en el anillo del pecho.' },
+  { id: 'collar-correa', nombre: 'Collar + correa', corto: 'Collar + correa', con: 'collar + correa', precio: 89900, ahorro: 24800, badge: ['Combo', 'lima'], url: '/collar-y-correa-impermeable-perro/',
+    texto: 'El collar con su correa a juego. La placa se cuelga de la argolla del collar.' },
   { id: 'collar', nombre: 'Collar + Placa Inteligente', corto: 'Collar', con: 'un collar', precio: 44900, ahorro: 9900, badge: ['Combo', 'lima'], url: '/collar-impermeable-perro/',
     texto: 'De goma suave, antiolor y fácil de limpiar. Con anillo para colgar la placa.' },
   { id: 'arnes', nombre: 'Arnés tipo H', corto: 'Arnés', con: 'un arnés', precio: 69900, ahorro: 10000, badge: ['Más vendido', 'lima'], url: '/arnes-tipo-h-impermeable-perro/',
@@ -295,7 +297,7 @@ function actualizarPrecio() {
   $('#desglose').innerHTML = t.lineas.map(([n, v]) => `<li><span>${n}</span><span>${cop(v)}</span></li>`).join('');
   $('#talla-wrap').hidden = estado.compra === 'sola';
   const TALLAS = { collar: ['cuello 20–34 cm', 'cuello 24–38 cm'], arnes: ['pecho 23–38 cm', 'pecho 32–53 cm'],
-    'arnes-correa': ['pecho 23–38 cm', 'pecho 32–53 cm'], combo: ['cuello 20–34, pecho 23–38 cm', 'cuello 24–38, pecho 32–53 cm'] }[estado.compra];
+    'arnes-correa': ['pecho 23–38 cm', 'pecho 32–53 cm'], 'collar-correa': ['cuello 20–34 cm', 'cuello 24–38 cm'], combo: ['cuello 20–34, pecho 23–38 cm', 'cuello 24–38, pecho 32–53 cm'] }[estado.compra];
   if (TALLAS) { $('#talla-s').textContent = '· ' + TALLAS[0]; $('#talla-m').textContent = '· ' + TALLAS[1]; }
   $('#resumen').hidden = true;
 }
