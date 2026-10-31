@@ -9,7 +9,7 @@ function pagina(cuerpo, status) {
     body: `<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Reseña · Wuuff Puppy</title>
 <style>body{font-family:Arial,sans-serif;color:#2d4375;max-width:560px;margin:0 auto;padding:24px 16px;background:#f9f0ee}.caja{background:#fff;border-radius:18px;padding:20px}
 .est{color:#f5a623;font-size:22px;letter-spacing:2px}button{font:inherit;font-weight:bold;border:0;border-radius:12px;padding:13px 20px;cursor:pointer;margin:6px 6px 0 0}
-.si{background:#1fa855;color:#fff}.no{background:#e8f0fb;color:#2d4375}img{max-width:100%;border-radius:12px;margin-top:8px}.etq{display:inline-block;font-size:13px;font-weight:bold;padding:4px 10px;border-radius:8px;background:#e8f0fb}</style></head>
+.si{background:#1fa855;color:#fff}.no{background:#e8f0fb;color:#2d4375}img{width:46%;max-width:240px;aspect-ratio:1;object-fit:cover;border-radius:12px;margin:8px 8px 0 0}.etq{display:inline-block;font-size:13px;font-weight:bold;padding:4px 10px;border-radius:8px;background:#e8f0fb}</style></head>
 <body><div class="caja">${cuerpo}</div></body></html>` };
 }
 
@@ -40,7 +40,7 @@ exports.handler = async function (event) {
   }
 
   const estado = { pendiente: '⏳ Pendiente', aprobada: '✅ Publicada', rechazada: '🚫 No publicada' }[r.estado];
-  const foto = r.foto ? `<img src="/.netlify/functions/resena-foto?id=${id}&clave=${r.clave}" alt="Foto de la reseña">` : '';
+  const foto = Array.from({ length: r.fotos || (r.foto ? 1 : 0) }, (_, n) => `<img src="/.netlify/functions/resena-foto?id=${id}&n=${n}&clave=${r.clave}" alt="Foto ${n + 1} de la reseña">`).join('');
   const boton = (accion, txt, cls) => `<form method="post" style="display:inline"><input type="hidden" name="id" value="${id}"><input type="hidden" name="clave" value="${r.clave}"><input type="hidden" name="accion" value="${accion}"><button class="${cls}">${txt}</button></form>`;
   return pagina(`<p class="etq">${estado}</p>
     <h2 style="margin:10px 0 4px">${R.esc(prod.nombre)}</h2>
