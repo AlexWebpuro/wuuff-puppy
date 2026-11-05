@@ -21,6 +21,9 @@ const ENVIO_MINIMO_GRATIS = 4990000; // Bogotá/Soacha gratis desde $49.900 (sub
 const ENVIO_BOGOTA_PEQUENO = 850000; // $8.500 para pedidos menores (collar solo o placa sola), solo con Wompi
 const ENVIO_OTRAS = 1850000;         // $18.500 otras ciudades
 
+// Collar con nombre: precios y colores en assets/collar-nombre.json (el mismo archivo que usa la página)
+const CN = require('../../assets/collar-nombre.json');
+
 const FORMAS = ['Huella', 'Gato', 'Nombre'];
 const COLORES = ['Morado', 'Azul', 'Blanco', 'Rojo'];
 
@@ -56,7 +59,26 @@ function nombrePlaca(p) {
   return 'Placa Inteligente Wuuff ' + p.forma + ' "' + p.nombre + '" (placa ' + p.base + (p.letras ? ', letras ' + p.letras : '') + ')';
 }
 
-// carrito = { items: [{ p: 'collar', talla: 'S', qty: 1 }], placa: { nombre, forma, base, letras } }
+// Nombre del collar: solo A–Z, corazón y estrella; las tildes se quitan (José → JOSE) y la Ñ no existe
+function nombreCollar(n) {
+  if (!n || typeof n !== 'object') return null;
+  const crudo = Array.from(String(n.texto || '').toUpperCase());
+  if (crudo.indexOf('Ñ') > -1) return { error: 'La Ñ todavía no la tenemos para el collar con nombre' };
+  const piezas = [];
+  for (const ch of crudo) {
+    const b = ch.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    if (/^[A-Z]$/.test(b)) piezas.push(b); else if (ch === '♥' || ch === '★') piezas.push(ch);
+  }
+  if (!piezas.length) return { error: 'Escribe el nombre para el collar' };
+  if (piezas.length > CN.maximo) return { error: 'El collar lleva máximo ' + CN.maximo + ' letras' };
+  const color = CN.colores.find(c => c.id === n.color);
+  if (!color) return { error: 'Elige el color de las letras' };
+  const peso = CN.pesos.find(p => p.id === n.peso) || null;
+  const extras = Math.max(0, piezas.length - CN.incluidas);
+  return { texto: piezas.join(''), color: color.nombre, peso: peso ? peso.txt : '', extras, cents: (CN.precio + extras * CN.precioExtra) * 100 };
+}
+
+// carrito = { items: [{ p: 'collar', talla: 'S', qty: 1, nombre: { texto, color, peso } }], placa: { nombre, forma, base, letras } }
 function armar(carrito) {
   const c = carrito && typeof carrito === 'object' ? carrito : {};
   const items = Array.isArray(c.items) ? c.items.slice(0, 6) : [];
@@ -67,6 +89,14 @@ function armar(carrito) {
     const qty = Math.min(Math.max(parseInt(it.qty, 10) || 1, 1), 10);
     const talla = elegir(it.talla, prod.tallas);
     const textoTalla = talla.length === 2 ? 'collar ' + talla[0] + ', arnés ' + talla[1] : (talla === 'Única' ? 'única' : talla);
+    if (it.p === 'collar' && it.nombre) {
+      const cn = nombreCollar(it.nombre);
+      if (!cn || cn.error) return { error: (cn && cn.error) || 'Revisa el nombre del collar' };
+      if (!talla) return { error: 'Elige la talla del collar' };
+      lineas.push({ tipo: 'producto', clave: 'collar', personal: Object.assign({ talla }, cn), cents: cn.cents,
+        nombre: 'Collar con nombre "' + cn.texto + '" (Talla ' + talla + ') · letras ' + cn.color + (cn.extras ? ' · ' + cn.extras + (cn.extras === 1 ? ' letra extra' : ' letras extra') : '') });
+      continue;
+    }
     const nombre = prod.nombre + (talla ? ' (Talla ' + textoTalla + ')' : '') + (qty > 1 ? ' x' + qty : '');
     lineas.push({ tipo: 'producto', clave: it.p, nombre, cents: prod.cents * qty });
   }
@@ -191,9 +221,12 @@ async function calcular(datos, opciones) {
 
 // Líneas para los avisos a la tienda (correo y WhatsApp)
 function lineasAviso(calc) {
-  if (!calc || !calc.codigo) return [];
-  const l = ['🎃 Código concurso: ' + calc.codigo.codigo + (calc.codigo.participante ? ' (' + calc.codigo.participante + ')' : ''),
-    'Descuento: −' + pesos(calc.descuentoCents) + ' (' + calc.codigo.porcentaje + ' %)'];
+  if (!calc) return [];
+  const nombres = (calc.lineas || []).filter(x => x.personal).map(x => '✏️ Nombre: ' + x.personal.texto + ' · Letras: ' + x.personal.color +
+    ' · Talla ' + x.personal.talla + (x.personal.peso ? ' (' + x.personal.peso.toLowerCase() + ')' : '') + ' · Extras: ' + x.personal.extras);
+  if (!calc.codigo) return nombres;
+  const l = nombres.concat(['🎃 Código concurso: ' + calc.codigo.codigo + (calc.codigo.participante ? ' (' + calc.codigo.participante + ')' : ''),
+    'Descuento: −' + pesos(calc.descuentoCents) + ' (' + calc.codigo.porcentaje + ' %)']);
   if (calc.regalo) l.push('🎁 Placa de regalo: ' + calc.regalo.texto);
   return l;
 }

@@ -3220,7 +3220,7 @@ function pagarConWompi(estimadoCents, nombreProducto, customerData, shippingAddr
       if (list.length === 2 && list.every(function(c){ return c.id === 'WP-ARNES' || c.id === 'WP-CORREA'; })) return [{ id: 'WP-ARNES-CORREA', quantity: 1, item_price: cents / 100 }];
       return list;
     }
-    var id = META_IDS[baseName(nombre)];
+    var id = META_IDS[baseName(nombre)] || (/^Collar con nombre/.test(nombre) ? 'WP-COLLAR' : '');
     if (!id) return [];
     var qty = qtyFrom(nombre);
     return [{ id: id, quantity: qty, item_price: cents / 100 / qty }];
@@ -3378,9 +3378,32 @@ function pagarConWompi(estimadoCents, nombreProducto, customerData, shippingAddr
   // Sin una talla válida vuelve a la página del producto para elegirla
   if(prod.tallas.indexOf(talla) === -1){ location.replace(prod.url); return; }
   var tallaTexto = talla === 'ÚNICA' ? 'Talla única' : (talla.length === 2 ? 'Talla collar ' + talla[0] + ', arnés ' + talla[1] : 'Talla ' + talla);
+  // Collar con nombre (/?comprar=collar&talla=S&nombre=LUNA&color=rosado&peso=p1): precio según /assets/collar-nombre.json;
+  // el servidor vuelve a calcular el total con el mismo archivo
+  var nombreCollar = clave === 'collar' ? (q.get('nombre') || '') : '';
+  function piezasNombre(txt, max){
+    var out = [];
+    Array.from(String(txt).toUpperCase()).forEach(function(ch){
+      var b = ch.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      if(/^[A-Z]$/.test(b)) out.push(b); else if(ch === '♥' || ch === '★') out.push(ch);
+    });
+    return out.length && out.length <= max && String(txt).toUpperCase().indexOf('Ñ') < 0 ? out.join('') : '';
+  }
   function iniciar(){
     if(history.replaceState) history.replaceState(null, '', location.pathname + '#productos');
     window.wuuffVolverA = prod.url;
+    if(nombreCollar){
+      fetch('/assets/collar-nombre.json').then(function(r){ return r.json(); }).then(function(cfg){
+        var texto = piezasNombre(nombreCollar, cfg.maximo);
+        var col = cfg.colores.filter(function(c){ return c.id === q.get('color'); })[0];
+        if(!texto || !col){ location.replace(prod.url); return; }
+        var extras = Math.max(0, Array.from(texto).length - cfg.incluidas);
+        window.wuuffVolverA = prod.url + '?nombre=' + encodeURIComponent(texto);
+        iniciarCompra((cfg.precio + extras * cfg.precioExtra) * 100, 'Collar con nombre "' + texto + '" (' + tallaTexto + ') · letras ' + col.nombre, tallaTexto,
+          { items: [{ p: 'collar', talla: talla, nombre: { texto: texto, color: col.id, peso: q.get('peso') || '' } }] });
+      }).catch(function(){ location.replace(prod.url); });
+      return;
+    }
     iniciarCompra(prod.cents, prod.nombre + ' (' + tallaTexto + ')', tallaTexto, { items: [{ p: clave, talla: talla === 'ÚNICA' ? 'Única' : talla }] });
   }
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iniciar); else iniciar();

@@ -31,6 +31,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/producto.css?v=20261031">
 <link rel="stylesheet" href="/assets/resenas.css?v=1">
+<link rel="stylesheet" href="/assets/collar-nombre.css?v=1">
 <script type="application/ld+json">
 {
  "@context": "https://schema.org",
@@ -199,6 +200,9 @@
       <p class="cuotas-info" id="cuotas-info" hidden>💳 Al pagar con Wompi elige <strong>Bancolombia</strong> y paga en 4 cuotas sin interés.</p>
       <p class="envio">🚚 Bogotá: envío $8.500 (gratis desde $49.900, como el collar + placa por $64.900) · $18.500 al resto de Colombia</p>
       <ul class="beneficios"><li>Impermeable y antiolor</li><li>Hipoalergénico, suave con la piel</li><li>Hebilla segura, fácil de abrir y cerrar</li><li>Argolla metálica para la correa y la placa</li></ul>
+      <div class="modo-collar" role="radiogroup" aria-label="¿Cómo quieres el collar?"><button type="button" role="radio" aria-checked="true" data-modo="nombre"><b>✏️ Con su nombre</b><span>$59.900 · hasta 5 letras incluidas</span></button><button type="button" role="radio" aria-checked="false" data-modo="sin"><b>Sin nombre</b><span>$44.900</span></button></div>
+      <div class="cn" id="collar-nombre" hidden></div>
+      <div class="compra-sin-nombre" id="compra-sin-nombre">
       <div class="label">Elige la talla</div><div class="tallas"><button type="button" data-talla="S" aria-pressed="false"><strong>Talla S</strong><span>Cuello 25–33 cm</span></button><button type="button" data-talla="M" aria-pressed="false"><strong>Talla M</strong><span>Cuello 33–42 cm</span></button></div><div class="aviso-talla" id="aviso-talla" role="alert">👆 Elige una talla para continuar</div>
       <div class="guia-collar">
         <table class="tabla tabla-collar"><thead><tr><th>Talla</th><th>Cuello de tu perro</th><th>Para perros de aprox.</th></tr></thead><tbody><tr><td><strong>S</strong></td><td>25 a 33 cm</td><td>hasta 8 kg</td></tr><tr><td><strong>M</strong></td><td>33 a 42 cm</td><td>de 8 a 30 kg</td></tr></tbody></table>
@@ -208,6 +212,7 @@
         <a class="btn wa" href="https://wa.me/573176431286?text=Hola%2C%20quiero%20saber%20qu%C3%A9%20talla%20le%20queda%20a%20mi%20perrito" target="_blank" rel="noopener">Preguntar mi talla por WhatsApp</a>
       </div>
       <a class="btn" id="btn-comprar" href="/?comprar=collar">Comprar 🐾</a>
+      </div>
       <div class="cuando-llega" data-entrega data-solo-linea><p class="cl-titulo">📅 ¿Cuándo te llega?</p><p class="cl-nota">🚀 Despachamos en 1–2 días hábiles. En Bogotá puedes pagar al recibir.</p></div>
       <a class="mas-placa" href="/placa-para-perro/?con=collar">🏷️ Collar + Placa Inteligente: $64.900 (ahorras $9.900) y envío gratis</a>
       <p class="etiquetas">Búsquedas relacionadas: collar para perro pequeño · collar de goma · collar impermeable · collar que no huele · collar antiolor · collar hipoalergénico</p>
@@ -326,5 +331,6 @@ gtag('event','view_item',{currency:'COP',value:44900,items:[{item_id:'WP-COLLAR'
 </script>
 <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"></noscript>
 <script src="/assets/resenas.js?v=1" defer></script>
+<script src="/assets/collar-nombre.js?v=1" defer></script>
 </body>
 </html>

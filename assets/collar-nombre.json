@@ -1,0 +1,23 @@
+{
+  "_nota": "Collar con nombre: precios, colores y tallas. Lo leen la ficha del collar, el pago (index.html) y el servidor (netlify/lib/tienda.js). Si cambias un precio aquí, cambia en todos lados.",
+  "precio": 59900,
+  "incluidas": 5,
+  "precioExtra": 5000,
+  "maximo": 8,
+  "entrega": "3 días hábiles",
+  "colores": [
+    { "id": "rosado",  "nombre": "Rosado",   "main": "#f6a7c9", "edge": "#d97fa6" },
+    { "id": "naranja", "nombre": "Naranja",  "main": "#ff7d57", "edge": "#d9552f" },
+    { "id": "fucsia",  "nombre": "Fucsia",   "main": "#d9338f", "edge": "#a81b69" },
+    { "id": "beige",   "nombre": "Beige",    "main": "#e8d9bc", "edge": "#c7b48f" },
+    { "id": "azulrey", "nombre": "Azul rey", "main": "#2f55c8", "edge": "#1d3a96" },
+    { "id": "cafe",    "nombre": "Café",     "main": "#7a4a33", "edge": "#52301f" }
+  ],
+  "pesos": [
+    { "id": "p1", "txt": "Hasta 6 kg",   "sub": "Talla S", "talla": "S" },
+    { "id": "p2", "txt": "6 a 9 kg",     "sub": "S o M",   "talla": null },
+    { "id": "p3", "txt": "9 a 30 kg",    "sub": "Talla M", "talla": "M" },
+    { "id": "p4", "txt": "Más de 30 kg", "sub": "Talla M", "talla": "M", "aviso": "Para perros grandes mide su cuello: la M llega hasta 42 cm." }
+  ],
+  "tallas": { "S": "cuello 25–33 cm", "M": "cuello 33–42 cm" }
+}

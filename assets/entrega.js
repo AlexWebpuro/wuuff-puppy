@@ -101,6 +101,7 @@
   function iniciar() {
     var cajas = document.querySelectorAll('[data-entrega]');
     if (!cajas.length) return;
+    window.wuuffEntrega.repintar = function () { cajas.forEach(pintar); };
     cajas.forEach(function (c) {
       pintar(c);
       c.addEventListener('click', function (e) {
