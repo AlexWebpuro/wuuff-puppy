@@ -30,6 +30,18 @@ const COLORES = ['Morado', 'Azul', 'Blanco', 'Rojo'];
 const CONCURSO_PORCENTAJE = 10;
 const CONCURSO_VENCE = '2026-11-03T00:00:00-05:00'; // válido hasta el 2 de noviembre, 11:59 p. m. (Colombia)
 
+// Colaboraciones con creadores: código propio para sus seguidores (activos desde el 3 de nov de 2026).
+// A diferencia del concurso: sirve para muchas compras (sin límite de usos), no regala placa y no vence
+// (si algún día hay que cerrarlo, agrega "vence": "2026-12-01T00:00:00-05:00" a ese código).
+// El creador recibe una comisión sobre cada venta; el aviso del pedido la calcula para pagarla.
+const COLABORACION_PORCENTAJE = 10; // descuento para el seguidor
+const COMISION_PORCENTAJE = 10;     // comisión para el creador (sobre el valor del pedido sin envío, ya con el descuento)
+const CODIGOS_COLABORACION = {
+  MICKY10:   { participante: '@micky2022_guffy2018 (Micky)' },
+  MILO10:    { participante: '@milolo.27 (Milo)' },
+  SHIHTZU10: { participante: '@familia_shihtzu_official (Familia Shihtzu)' }
+};
+
 const MENSAJES = {
   aplicadoRegalo: 'Código aplicado: 10 % + placa de regalo 🎁',
   aplicado: 'Código aplicado: 10 % de descuento',
@@ -132,6 +144,15 @@ async function revisarCodigo(texto, armado, opciones) {
   const ahora = o.ahora ? new Date(o.ahora) : new Date();
   const codigo = normalizarCodigo(texto);
   if (!codigo) return { valido: false, vacio: true };
+  // Código de colaboración: reutilizable, sin placa de regalo
+  const colab = CODIGOS_COLABORACION[codigo];
+  if (colab) {
+    if (colab.vence && ahora >= new Date(colab.vence)) return { valido: false, mensaje: 'Este código ya venció' };
+    return { valido: true, codigo, tipo: 'colaboracion', participante: colab.participante, regalo: false,
+      porcentaje: COLABORACION_PORCENTAJE,
+      descuentoCents: Math.round(armado.subtotalCents * COLABORACION_PORCENTAJE / 100 / 100) * 100, // al peso
+      regaloCents: 0, mensaje: MENSAJES.aplicado };
+  }
   const lista = codigosConcurso();
   const dato = lista[codigo];
   if (!dato) return { valido: false, mensaje: MENSAJES.noExiste };
@@ -183,7 +204,7 @@ async function calcular(datos, opciones) {
     regaloCents,
     totalCents,
     nombreProducto,
-    codigo: cod ? { codigo: cod.codigo, tipo: cod.tipo, participante: cod.participante, porcentaje: CONCURSO_PORCENTAJE } : null,
+    codigo: cod ? { codigo: cod.codigo, tipo: cod.tipo, participante: cod.participante, porcentaje: cod.porcentaje || CONCURSO_PORCENTAJE } : null,
     regalo: regaloPlaca ? { texto: regaloTexto, placa: regaloPlaca } : null,
     contraentrega: contraentregaPermitida(armado.subtotalCents, datos.ciudad)
   };
@@ -192,6 +213,13 @@ async function calcular(datos, opciones) {
 // Líneas para los avisos a la tienda (correo y WhatsApp)
 function lineasAviso(calc) {
   if (!calc || !calc.codigo) return [];
+  if (calc.codigo.tipo === 'colaboracion') {
+    const base = calc.subtotalCents - calc.descuentoCents;
+    const comision = Math.round(base * COMISION_PORCENTAJE / 100 / 100) * 100;
+    return ['🤝 Código colaboración: ' + calc.codigo.codigo + (calc.codigo.participante ? ' (' + calc.codigo.participante + ')' : ''),
+      'Descuento: −' + pesos(calc.descuentoCents) + ' (' + calc.codigo.porcentaje + ' %)',
+      '💸 Comisión para el creador (' + COMISION_PORCENTAJE + ' %): ' + pesos(comision) + ' — pagar solo si el pedido se entrega'];
+  }
   const l = ['🎃 Código concurso: ' + calc.codigo.codigo + (calc.codigo.participante ? ' (' + calc.codigo.participante + ')' : ''),
     'Descuento: −' + pesos(calc.descuentoCents) + ' (' + calc.codigo.porcentaje + ' %)'];
   if (calc.regalo) l.push('🎁 Placa de regalo: ' + calc.regalo.texto);
