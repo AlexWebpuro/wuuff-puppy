@@ -1,5 +1,6 @@
 {
   "_nota": "Collar con nombre: precios, colores y tallas. Lo leen la ficha del collar, el pago (index.html) y el servidor (netlify/lib/tienda.js). Si cambias un precio aquí, cambia en todos lados.",
+  "precioSinNombre": 44900,
   "precio": 59900,
   "incluidas": 5,
   "precioExtra": 5000,

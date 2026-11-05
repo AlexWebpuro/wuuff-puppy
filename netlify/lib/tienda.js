@@ -18,7 +18,7 @@ const PLACA_AGREGADA = 1990000;      // $19.900 al llevarla con arnés, arnés +
 const COMBO_COLLAR_PLACA = 6490000;  // $64.900 collar + placa (la placa queda en $20.000)
 const CON_PLACA_AGREGADA = ['arnes', 'arnes-correa', 'collar-correa', 'combo'];
 const ENVIO_MINIMO_GRATIS = 4990000; // Bogotá/Soacha gratis desde $49.900 (subtotal ANTES del descuento)
-const ENVIO_BOGOTA_PEQUENO = 850000; // $8.500 para pedidos menores (collar solo o placa sola), solo con Wompi
+const ENVIO_BOGOTA_PEQUENO = 850000; // $8.500 para collares, la placa y pedidos menores, solo con Wompi
 const ENVIO_OTRAS = 1850000;         // $18.500 otras ciudades
 
 // Collar con nombre: precios y colores en assets/collar-nombre.json (el mismo archivo que usa la página)
@@ -124,14 +124,18 @@ function armar(carrito) {
 }
 
 function esBogota(ciudad) { return /bogot|soacha/i.test(String(ciudad || '')); }
-function envioCents(subtotalCents, ciudad) {
+// Collares (con o sin nombre) y la placa, solos o juntos, no tienen envío gratis ni contraentrega (nov 2026)
+function soloCollarOPlaca(armado) {
+  return !!armado && armado.lineas.every(l => l.tipo === 'placa' || l.clave === 'collar');
+}
+function envioCents(subtotalCents, ciudad, soloLinea) {
   if (!ciudad) return 0;
-  if (esBogota(ciudad)) return subtotalCents >= ENVIO_MINIMO_GRATIS ? 0 : ENVIO_BOGOTA_PEQUENO;
+  if (esBogota(ciudad)) return subtotalCents >= ENVIO_MINIMO_GRATIS && !soloLinea ? 0 : ENVIO_BOGOTA_PEQUENO;
   return ENVIO_OTRAS;
 }
-// Contraentrega: solo Bogotá (no Soacha) y desde $49.900 ANTES del descuento
-function contraentregaPermitida(subtotalCents, ciudad) {
-  return /bogot/i.test(String(ciudad || '')) && !/soacha/i.test(String(ciudad || '')) && subtotalCents >= ENVIO_MINIMO_GRATIS;
+// Contraentrega: solo Bogotá (no Soacha), desde $49.900 ANTES del descuento y sin ser solo collar o placa
+function contraentregaPermitida(subtotalCents, ciudad, soloLinea) {
+  return /bogot/i.test(String(ciudad || '')) && !/soacha/i.test(String(ciudad || '')) && subtotalCents >= ENVIO_MINIMO_GRATIS && !soloLinea;
 }
 
 function codigosConcurso() {
@@ -179,7 +183,8 @@ async function revisarCodigo(texto, armado, opciones) {
 async function calcular(datos, opciones) {
   const armado = armar(datos && datos.carrito);
   if (armado.error) return { ok: false, error: armado.error };
-  const envio = envioCents(armado.subtotalCents, datos.ciudad);
+  const soloLinea = soloCollarOPlaca(armado);
+  const envio = envioCents(armado.subtotalCents, datos.ciudad, soloLinea);
   let cod = null;
   if (normalizarCodigo(datos.codigo)) {
     cod = await revisarCodigo(datos.codigo, armado, opciones);
@@ -215,7 +220,7 @@ async function calcular(datos, opciones) {
     nombreProducto,
     codigo: cod ? { codigo: cod.codigo, tipo: cod.tipo, participante: cod.participante, porcentaje: CONCURSO_PORCENTAJE } : null,
     regalo: regaloPlaca ? { texto: regaloTexto, placa: regaloPlaca } : null,
-    contraentrega: contraentregaPermitida(armado.subtotalCents, datos.ciudad)
+    contraentrega: contraentregaPermitida(armado.subtotalCents, datos.ciudad, soloLinea)
   };
 }
 

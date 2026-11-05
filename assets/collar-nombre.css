@@ -10,6 +10,7 @@
   --cn-display:'Malaka Cournt','Arial Rounded MT Bold','Trebuchet MS',system-ui,sans-serif;
   background:var(--cn-bg);color:var(--cn-ink);border-radius:22px;padding:14px;margin:12px 0;display:flex;flex-direction:column;gap:12px}
 .cn[hidden]{display:none}
+.cn.cn-sin .cn-solo-nombre{display:none!important}
 .cn [hidden]{display:none!important}
 .cn-cab p{margin:0;color:var(--cn-muted);font-size:14px}
 .cn-titulo{font-family:var(--cn-display);font-weight:400;text-transform:uppercase;color:var(--cn-title);font-size:34px;line-height:1;margin:0 0 6px}

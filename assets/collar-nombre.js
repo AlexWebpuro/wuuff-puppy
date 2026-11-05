@@ -22,7 +22,7 @@
   function peso() { return CFG.pesos.filter(function (p) { return p.id === state.peso; })[0]; }
   function talla() { return peso().talla || state.tallaManual; }
   function extras() { return Math.max(0, tokens().length - CFG.incluidas); }
-  function total() { return CFG.precio + extras() * CFG.precioExtra; }
+  function total() { return modo === 'sin' ? CFG.precioSinNombre : CFG.precio + extras() * CFG.precioExtra; }
   function disponibles(l) {
     if (!STOCK || STOCK.sinLimite) return Infinity;
     var s = (STOCK.stock || {})[state.color] || {};
@@ -53,13 +53,13 @@
 
   function construir() {
     caja.innerHTML =
-      '<div class="cn-cab"><h2 class="cn-titulo">Collar con nombre</h2><p>Escribe el nombre de tu perrito, escoge el color de las letras y míralo en el collar antes de comprarlo.</p></div>' +
-      '<section class="cn-preview" aria-label="Vista previa del collar"><div class="cn-stage">' +
+      '<div class="cn-cab cn-solo-nombre"><h2 class="cn-titulo">Collar con nombre</h2><p>Escribe el nombre de tu perrito, escoge el color de las letras y míralo en el collar antes de comprarlo.</p></div>' +
+      '<section class="cn-preview cn-solo-nombre" aria-label="Vista previa del collar"><div class="cn-stage">' +
         '<div class="cn-stage-top"><span data-cn="stage-talla">Collar azul cielo</span><span data-cn="stage-color"></span></div>' +
         '<div class="cn-box"><div class="cn-strap"><div class="cn-name" data-cn="name" aria-live="polite"></div></div></div>' +
         '<p class="cn-stage-note">Collar azul cielo, impermeable y fácil de lavar con agua. Las letras se deslizan por el collar.</p>' +
       '</div></section>' +
-      '<section class="cn-card"><h3 class="cn-paso"><span>1</span> Escribe su nombre</h3>' +
+      '<section class="cn-card cn-solo-nombre"><h3 class="cn-paso"><span>1</span> Escribe su nombre</h3>' +
         '<p class="cn-hint">Hasta <b>' + CFG.maximo + '</b> letras o figuras. Las primeras <b>' + CFG.incluidas + '</b> van incluidas y cada letra extra suma <b>' + cop(CFG.precioExtra) + '</b>.</p>' +
         '<label class="cn-lbl" for="cn-nombre">Nombre de tu perrito</label>' +
         '<input class="cn-field" id="cn-nombre" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="LUNA" maxlength="20">' +
@@ -67,17 +67,17 @@
         '<p class="cn-keys-title">O toca las letras</p><div class="cn-keys" data-cn="keys"></div>' +
         '<div class="cn-tools"><button type="button" class="cn-link" data-cn="borrar">Borrar la última</button><button type="button" class="cn-link" data-cn="limpiar">Empezar de nuevo</button></div>' +
         '<p class="cn-aviso" data-cn="aviso" role="status" hidden></p></section>' +
-      '<section class="cn-card"><h3 class="cn-paso"><span>2</span> Color de las letras</h3><p class="cn-hint">Cambia el color y mira cómo queda en el collar.</p>' +
+      '<section class="cn-card cn-solo-nombre"><h3 class="cn-paso"><span>2</span> Color de las letras</h3><p class="cn-hint">Cambia el color y mira cómo queda en el collar.</p>' +
         '<div class="cn-opts" data-cn="colores" role="radiogroup" aria-label="Color de las letras"></div></section>' +
-      '<section class="cn-card"><h3 class="cn-paso"><span>3</span> Talla por peso</h3><p class="cn-hint">Escoge cuánto pesa tu perrito y te decimos qué talla le queda.</p>' +
+      '<section class="cn-card"><h3 class="cn-paso"><span data-cn="num-talla">3</span> Talla por peso</h3><p class="cn-hint">Escoge cuánto pesa tu perrito y te decimos qué talla le queda.</p>' +
         '<div class="cn-opts" data-cn="pesos" role="radiogroup" aria-label="Peso de tu perrito"></div><div class="cn-size" data-cn="size"></div></section>' +
       '<section class="cn-card cn-precio" aria-label="Resumen del precio"><h3>Tu collar</h3><dl>' +
-        '<dt>Collar</dt><dd>' + cop(CFG.precio) + '</dd><dt>Nombre, hasta ' + CFG.incluidas + ' letras</dt><dd>Incluido</dd>' +
-        '<dt data-cn="extra-lbl">Letras extra</dt><dd data-cn="extra"></dd><dt>Entrega</dt><dd>' + CFG.entrega + '</dd></dl>' +
+        '<dt>Collar</dt><dd data-cn="precio-collar"></dd><dt class="cn-solo-nombre">Nombre, hasta ' + CFG.incluidas + ' letras</dt><dd class="cn-solo-nombre">Incluido</dd>' +
+        '<dt class="cn-solo-nombre" data-cn="extra-lbl">Letras extra</dt><dd class="cn-solo-nombre" data-cn="extra"></dd><dt data-cn="entrega-lbl">Entrega</dt><dd data-cn="entrega"></dd></dl>' +
         '<div class="cn-total"><span>Total</span><span class="cn-amount" data-cn="total"></span></div>' +
         '<button type="button" class="cn-cta" data-cn="cta">Comprar ahora</button>' +
         '<a class="cn-wa" data-cn="wa" href="#" target="_blank" rel="noopener">¿Dudas? Escríbenos por WhatsApp</a>' +
-        '<p class="cn-fine">Envío gratis en Bogotá y pagas cuando te llegue. Otras ciudades: envío de $18.500 con pago en línea.</p></section>';
+        '<p class="cn-fine">Envío: $8.500 en Bogotá y Soacha y $18.500 al resto de Colombia, con pago en línea.</p></section>';
 
     var keys = $('[data-cn=keys]');
     ABC.concat(ICONOS).forEach(function (k) {
@@ -160,48 +160,56 @@
     $('[data-cn=extra-lbl]').textContent = ex ? 'Letras extra × ' + ex : 'Letras extra';
     $('[data-cn=extra]').textContent = ex ? cop(ex * CFG.precioExtra) : '$0';
     $('[data-cn=total]').textContent = cop(tot);
+    $('[data-cn=precio-collar]').textContent = cop(modo === 'sin' ? CFG.precioSinNombre : CFG.precio);
+    $('[data-cn=entrega-lbl]').textContent = modo === 'sin' ? 'Despacho' : 'Entrega';
+    $('[data-cn=entrega]').textContent = modo === 'sin' ? '1–2 días hábiles' : CFG.entrega;
+    $('[data-cn=num-talla]').textContent = modo === 'sin' ? '1' : '3';
     var cta = $('[data-cn=cta]');
-    if (!n) { cta.textContent = 'Escribe un nombre para comprar'; cta.setAttribute('aria-disabled', 'true'); }
+    if (modo === 'sin') { cta.removeAttribute('aria-disabled'); cta.textContent = 'Comprar ahora · ' + cop(tot); }
+    else if (!n) { cta.textContent = 'Escribe un nombre para comprar'; cta.setAttribute('aria-disabled', 'true'); }
     else if (falta.length) { cta.textContent = 'Faltan letras en este color'; cta.setAttribute('aria-disabled', 'true'); }
     else { cta.removeAttribute('aria-disabled'); cta.textContent = 'Comprar ahora · ' + cop(tot); }
-    var lineas = ['Hola Wuuff Puppy, tengo una duda sobre el collar con nombre:', '• Nombre: ' + (n ? t.join('') : '(sin definir)'),
+    var lineas = modo === 'sin' ? ['Hola Wuuff Puppy, tengo una duda sobre el collar:', '• Talla: ' + tl + ' (' + p.txt + ')', '• Total: ' + cop(tot)]
+      : ['Hola Wuuff Puppy, tengo una duda sobre el collar con nombre:', '• Nombre: ' + (n ? t.join('') : '(sin definir)'),
       '• Letras: ' + col.nombre, '• Talla: ' + tl + ' (' + p.txt + ')', '• Total: ' + cop(tot)];
     if (falta.length) lineas.push('• ¿Tienen las letras ' + falta.join(', ') + ' en ' + col.nombre.toLowerCase() + '?');
     var wa = $('[data-cn=wa]');
     wa.href = 'https://wa.me/' + WA + '?text=' + encodeURIComponent(lineas.join('\n'));
     wa.textContent = falta.length ? 'Consultar disponibilidad por WhatsApp' : '¿Dudas? Escríbenos por WhatsApp';
     var ahora = document.querySelector('.info .precio .ahora');
-    if (ahora && modo === 'nombre') ahora.textContent = cop(tot) + ' COP';
+    if (ahora) ahora.textContent = cop(tot) + ' COP';
   }
 
   // Va directo al pago con el collar ya armado; el servidor vuelve a calcular el total
   function comprar() {
     var cta = $('[data-cn=cta]');
     if (cta.getAttribute('aria-disabled') === 'true') { $('#cn-nombre').focus(); return; }
+    if (modo === 'sin') { evento('collar_comprar', { talla: talla(), value: total() }); location.href = '/?comprar=collar&talla=' + talla(); return; }
     evento('collar_nombre_comprar', { letras: tokens().length, color: state.color, talla: talla(), value: total() });
     location.href = '/?comprar=collar&talla=' + talla() + '&nombre=' + encodeURIComponent(state.texto) + '&color=' + state.color + '&peso=' + state.peso;
   }
 
-  // ¿Con nombre o sin nombre? (sin nombre = la compra de siempre a $44.900)
-  var ahoraEl = document.querySelector('.info .precio .ahora');
-  var modo = 'nombre', precioBase = ahoraEl ? ahoraEl.textContent : '';
+  // ¿Con nombre o sin nombre? Las dos usan la misma talla por peso; sin nombre oculta el nombre y el color.
+  // La galería muestra las fotos de la opción elegida (miniaturas con data-modo) primero.
+  var modo = 'nombre';
+  var miniaturas = [].slice.call(document.querySelectorAll('.thumbs button'));
   function cambiarModo(m) {
     modo = m;
     document.querySelectorAll('.modo-collar [data-modo]').forEach(function (b) { b.setAttribute('aria-checked', String(b.getAttribute('data-modo') === m)); });
-    caja.hidden = m !== 'nombre';
-    var sin = document.getElementById('compra-sin-nombre'); if (sin) sin.hidden = m === 'nombre';
-    var ahora = document.querySelector('.info .precio .ahora');
-    if (ahora) { if (!precioBase) precioBase = ahora.textContent; if (m === 'nombre' && CFG) pintar(); else ahora.textContent = precioBase; }
-    // Con nombre el pedido pasa de $49.900: envío gratis y pago al recibir en Bogotá
-    var envio = document.querySelector('.info .envio');
-    if (envio) { if (!envioBase) envioBase = envio.textContent; envio.textContent = m === 'nombre' ? '🚚 Envío gratis y pago al recibir en Bogotá · $18.500 al resto de Colombia' : envioBase; }
-    var cajaEntrega = document.querySelector('.info [data-entrega]');
-    if (cajaEntrega) {
-      if (m === 'nombre') cajaEntrega.removeAttribute('data-solo-linea'); else cajaEntrega.setAttribute('data-solo-linea', '');
-      if (window.wuuffEntrega && window.wuuffEntrega.repintar) window.wuuffEntrega.repintar();
+    caja.hidden = false;
+    caja.classList.toggle('cn-sin', m === 'sin');
+    var cont = document.querySelector('.thumbs');
+    if (cont && miniaturas.some(function (b) { return b.hasAttribute('data-modo'); })) {
+      miniaturas.forEach(function (b) { var dm = b.getAttribute('data-modo'); b.hidden = !!dm && dm !== m; });
+      // La primera foto de la opción elegida va de primera; las demás siguen en su orden (Guardian queda de 2.ª)
+      var primera = miniaturas.filter(function (b) { return b.getAttribute('data-modo') === m; })[0];
+      [primera].concat(miniaturas.filter(function (b) { return b !== primera; })).forEach(function (b) { if (b) cont.appendChild(b); });
+      miniaturas.filter(function (b) { return !b.hidden; }).sort(function (x, y) { return x.compareDocumentPosition(y) & 4 ? -1 : 1; })
+        .forEach(function (b, i) { b.setAttribute('aria-label', 'Ver foto ' + (i + 1)); });
+      if (window.wuuffGaleria) window.wuuffGaleria.actualizar();
     }
+    if (CFG) pintar();
   }
-  var envioBase = '';
   document.querySelectorAll('.modo-collar [data-modo]').forEach(function (b) {
     b.addEventListener('click', function () { cambiarModo(b.getAttribute('data-modo')); evento('collar_modo', { modo: b.getAttribute('data-modo') }); });
   });
@@ -215,5 +223,9 @@
     var q = new URLSearchParams(location.search);
     setTexto(q.get('nombre') || '');
     if (q.get('modo') === 'sin') cambiarModo('sin'); else cambiarModo('nombre');
-  }).catch(function () { cambiarModo('sin'); document.querySelectorAll('.modo-collar').forEach(function (m) { m.hidden = true; }); });
+  }).catch(function () {
+    caja.hidden = false;
+    caja.innerHTML = '<p class="cn-aviso">No pudimos cargar el collar. <a href="https://wa.me/' + WA + '?text=' + encodeURIComponent('Hola Wuuff Puppy, quiero comprar el collar') + '" target="_blank" rel="noopener">Escríbenos por WhatsApp</a> y te ayudamos.</p>';
+    document.querySelectorAll('.modo-collar').forEach(function (m) { m.hidden = true; });
+  });
 })();

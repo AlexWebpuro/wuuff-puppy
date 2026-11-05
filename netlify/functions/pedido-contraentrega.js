@@ -1,4 +1,4 @@
-// Registra un pedido con pago contraentrega (solo Bogotá, pedidos desde $49.900).
+// Registra un pedido con pago contraentrega (solo Bogotá, pedidos desde $49.900 que no sean solo collares y placa).
 // No pasa por Wompi: guarda el pedido en Netlify Forms como "pendiente de confirmar",
 // avisa a la tienda por correo (y por WhatsApp si CallMeBot está configurado)
 // y le manda al cliente el correo de "Recibimos tu pedido".

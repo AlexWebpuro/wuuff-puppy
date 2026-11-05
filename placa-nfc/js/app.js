@@ -304,7 +304,7 @@ function actualizarPrecio() {
 function pintarCompras() {
   const ops = [{ id: 'sola', nombre: 'Solo la placa', sub: 'En Bogotá: envío $8.500 y pago en línea', precio: PRECIOS.placaSola }]
     .concat(PRODUCTOS.map(p => ({ id: p.id, nombre: `Con ${p.con}`,
-      sub: p.id === 'collar' ? `Collar + Placa Inteligente · ahorras ${cop(p.ahorro)} · envío gratis en Bogotá`
+      sub: p.id === 'collar' ? `Collar + Placa Inteligente · ahorras ${cop(p.ahorro)} · envío $8.500 en Bogotá`
         : `${p.corto} ${cop(p.precio)} + placa ${cop(precioPlaca(p.id))}`, precio: p.precio + precioPlaca(p.id) })));
   $('#compras').innerHTML = ops.map(o => `<label class="compra"><input type="radio" name="compra" value="${o.id}"${o.id === estado.compra ? ' checked' : ''}>
     <span>${o.nombre}<small>${o.sub}</small></span><b>${cop(o.precio)}</b></label>`).join('');
@@ -320,7 +320,7 @@ function pintarProductos() {
       <div class="prod-precios">${p.id === 'collar'
         ? `<span class="prod-price">${cop(PRECIOS.comboCollarPlaca)} COP</span><span class="price-old">Ahorras ${cop(p.ahorro)}</span>`
         : `<span class="prod-price">${cop(p.precio)} COP</span>`}</div>
-      <span class="mas-placa">${p.id === 'collar' ? 'Collar + placa con envío gratis en Bogotá' : `Agrega la Placa Inteligente por ${cop(PRECIOS.placaAgregada)}`}</span>
+      <span class="mas-placa">${p.id === 'collar' ? 'Collar + placa · ahorras $9.900' : `Agrega la Placa Inteligente por ${cop(PRECIOS.placaAgregada)}`}</span>
       <button type="button" class="btn-buy" data-prod="${p.id}">Llévalo con placa 🐾</button>
       <a class="ver-detalles" href="${TIENDA}${p.url}">Ver detalles y guía de tallas →</a>
     </div>
