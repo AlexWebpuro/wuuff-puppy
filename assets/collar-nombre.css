@@ -1,6 +1,7 @@
 /* Personalizador "Collar con nombre" (assets/collar-nombre.js). Tema claro con la paleta de Wuuff:
    fondo beige muy claro, tarjetas blancas, vista previa gris muy claro (neutra), títulos y botón naranja, chips lima; el azul solo en el collar. */
 @font-face{font-family:'Malaka Cournt';src:url('/assets/fonts/malaka-cournt.ttf') format('truetype');font-display:swap}
+.precio-desde{margin:-4px 0 8px;font-size:14px;font-weight:800;color:var(--navy,#2d4375)}
 .modo-collar{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0 4px}
 .modo-collar button{font:inherit;text-align:left;display:grid;gap:2px;background:#fff;border:2px solid #ecd3c9;border-radius:14px;padding:10px 12px;cursor:pointer;color:#2b2320}
 .modo-collar button b{font-size:15px}
