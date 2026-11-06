@@ -1,12 +1,12 @@
 /* Personalizador "Collar con nombre" (assets/collar-nombre.js). Tema claro con la paleta de Wuuff:
-   fondo beige muy claro, tarjetas blancas, vista previa rosa, títulos y botón naranja, chips lima; el azul solo en el collar. */
+   fondo beige muy claro, tarjetas blancas, vista previa gris muy claro (neutra), títulos y botón naranja, chips lima; el azul solo en el collar. */
 @font-face{font-family:'Malaka Cournt';src:url('/assets/fonts/malaka-cournt.ttf') format('truetype');font-display:swap}
 .modo-collar{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0 4px}
 .modo-collar button{font:inherit;text-align:left;display:grid;gap:2px;background:#fff;border:2px solid #ecd3c9;border-radius:14px;padding:10px 12px;cursor:pointer;color:#2b2320}
 .modo-collar button b{font-size:15px}
 .modo-collar button span{font-size:13px;color:#6d5c55}
-.modo-collar button[aria-checked="true"]{border-color:#ff7d57;background:#f7d0e8}
-.cn{--cn-bg:#fcf8f2;--cn-stage:#f7d0e8;--cn-ink:#2b2320;--cn-muted:#6d5c55;--cn-title:#e0562e;--cn-accent:#ff7d57;--cn-accent-ink:#2b1410;--cn-line:#ecd3c9;--cn-strap:#a9bbe0;--cn-chip:#d5d50c;--cn-chip-ink:#2d3200;
+.modo-collar button[aria-checked="true"]{border-color:#ff7d57;background:#fff1eb}
+.cn{--cn-bg:#fcf8f2;--cn-stage:#f1f2f4;--cn-sel:#fff1eb;--cn-ink:#2b2320;--cn-muted:#6d5c55;--cn-title:#e0562e;--cn-accent:#ff7d57;--cn-accent-ink:#2b1410;--cn-line:#ecd3c9;--cn-strap:#a9bbe0;--cn-chip:#d5d50c;--cn-chip-ink:#2d3200;
   --cn-display:'Malaka Cournt','Arial Rounded MT Bold','Trebuchet MS',system-ui,sans-serif;
   background:var(--cn-bg);color:var(--cn-ink);border-radius:22px;padding:14px;margin:12px 0;display:flex;flex-direction:column;gap:12px}
 .cn[hidden]{display:none}
@@ -15,7 +15,7 @@
 .cn-cab p{margin:0;color:var(--cn-muted);font-size:14px}
 .cn-titulo{font-family:var(--cn-display);font-weight:400;text-transform:uppercase;color:var(--cn-title);font-size:34px;line-height:1;margin:0 0 6px}
 .cn-preview{position:sticky;top:var(--cn-top,8px);z-index:5}
-.cn-stage{background:var(--cn-stage);border-radius:20px;padding:12px 12px 10px;box-shadow:0 6px 14px -10px rgba(60,40,70,.45)}
+.cn-stage{background:var(--cn-stage);border-radius:20px;padding:12px 12px 10px;box-shadow:0 6px 14px -10px rgba(40,45,60,.35);border:1px solid #e4e6ea}
 .cn-stage-top{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:12px;font-weight:800;opacity:.75}
 .cn-stage-note{margin:8px 0 0;font-size:13px;opacity:.8}
 .cn-box{display:flex;align-items:center;height:110px}
@@ -38,7 +38,7 @@
 .cn-keys-title{font-size:13px;font-weight:800;margin:0 0 8px}
 .cn-keys{display:grid;grid-template-columns:repeat(auto-fill,minmax(44px,1fr));gap:6px}
 .cn-key{height:44px;border-radius:12px;border:1.5px solid var(--cn-line);background:#fff;color:var(--cn-ink);font-family:var(--cn-display);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
-.cn-key:hover:not(:disabled){border-color:var(--cn-accent);background:var(--cn-stage)}
+.cn-key:hover:not(:disabled){border-color:var(--cn-accent);background:var(--cn-sel)}
 .cn-key:disabled{opacity:.3;cursor:not-allowed;text-decoration:line-through}
 .cn-key svg{width:20px;height:20px;fill:var(--cn-title);stroke:var(--cn-title);stroke-width:2.4;stroke-linejoin:round}
 .cn-tools{display:flex;gap:14px;margin-top:10px}
@@ -47,7 +47,7 @@
 .cn-opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px}
 .cn-opt{display:flex;flex-direction:column;align-items:flex-start;gap:6px;text-align:left;font:inherit;color:var(--cn-ink);background:#fff;border:2px solid var(--cn-line);border-radius:14px;padding:10px 12px;cursor:pointer}
 .cn-opt:hover{border-color:var(--cn-accent)}
-.cn-opt[aria-checked="true"]{border-color:var(--cn-accent);background:var(--cn-stage)}
+.cn-opt[aria-checked="true"]{border-color:var(--cn-accent);background:var(--cn-sel)}
 .cn-opt b{font-size:14px}.cn-opt small{font-size:12px;color:var(--cn-muted)}
 .cn-dot{width:30px;height:30px;border-radius:50%;box-shadow:inset 0 -3px 0 rgba(0,0,0,.18),0 0 0 1px rgba(0,0,0,.14)}
 .cn-size{margin:12px 0 0;font-size:14px}

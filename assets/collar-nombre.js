@@ -201,9 +201,12 @@
     var cont = document.querySelector('.thumbs');
     if (cont && miniaturas.some(function (b) { return b.hasAttribute('data-modo'); })) {
       miniaturas.forEach(function (b) { var dm = b.getAttribute('data-modo'); b.hidden = !!dm && dm !== m; });
-      // La primera foto de la opción elegida va de primera; las demás siguen en su orden (Guardian queda de 2.ª)
-      var primera = miniaturas.filter(function (b) { return b.getAttribute('data-modo') === m; })[0];
-      [primera].concat(miniaturas.filter(function (b) { return b !== primera; })).forEach(function (b) { if (b) cont.appendChild(b); });
+      // Primero las fotos de la opción elegida (en su orden) y luego las demás; data-pos-<modo> fija una foto en ese puesto
+      var orden = miniaturas.filter(function (b) { return b.getAttribute('data-modo') === m; })
+        .concat(miniaturas.filter(function (b) { return !b.hasAttribute('data-modo') && !b.hasAttribute('data-pos-' + m); }));
+      miniaturas.filter(function (b) { return b.hasAttribute('data-pos-' + m); })
+        .forEach(function (b) { orden.splice(+b.getAttribute('data-pos-' + m) - 1, 0, b); });
+      orden.concat(miniaturas.filter(function (b) { return orden.indexOf(b) < 0; })).forEach(function (b) { cont.appendChild(b); });
       miniaturas.filter(function (b) { return !b.hidden; }).sort(function (x, y) { return x.compareDocumentPosition(y) & 4 ? -1 : 1; })
         .forEach(function (b, i) { b.setAttribute('aria-label', 'Ver foto ' + (i + 1)); });
       if (window.wuuffGaleria) window.wuuffGaleria.actualizar();
