@@ -23,6 +23,8 @@ nav .logo img{height:38px;width:auto}
 .thumbs button{border:2px solid transparent;border-radius:12px;overflow:hidden;padding:0;cursor:pointer;aspect-ratio:1/1;background:var(--cream)}
 .thumbs button[aria-pressed=true]{border-color:var(--blue)}
 .thumbs img{width:100%;height:100%;object-fit:cover}
+.thumbs button[data-video]{position:relative}.thumbs button[data-video]::after{content:"▶";position:absolute;inset:0;margin:auto;width:30px;height:30px;border-radius:50%;background:rgba(45,67,117,.82);color:#fff;font-size:13px;display:grid;place-items:center;padding-left:2px;box-sizing:border-box}
+.galeria-main .gal-video{display:block;width:100%;height:100%;object-fit:contain;background:#eef0f3}.galeria-main .gal-video[hidden],.galeria-main img[hidden]{display:none}
 .tag{display:inline-block;font-size:11px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;padding:4px 12px;border-radius:14px;background:var(--lime);color:var(--navy);margin-bottom:10px}
 .tag.coral{background:var(--coral);color:#fff}
 h1{font-family:'Fredoka One',cursive;font-weight:400;font-size:clamp(28px,4.2vw,40px);line-height:1.12;margin-bottom:10px}
