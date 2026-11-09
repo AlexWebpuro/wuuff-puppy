@@ -2,6 +2,6 @@
   "_nota": "Piezas por letra y color para el collar con nombre. Con \"sinLimite\": true no se bloquea ninguna letra (Angie confirma por WhatsApp antes de despachar). Cuando llegue el conteo del impresor, pon \"sinLimite\": false y las cantidades, ej.: \"rosado\": { \"A\": 3, \"L\": 2, \"♥\": 1 }. Una letra que no aparezca cuenta como 0.",
   "sinLimite": true,
   "stock": {
-    "rosado": {}, "naranja": {}, "fucsia": {}, "beige": {}, "azulrey": {}, "cafe": {}
+    "rosado": {}, "naranja": {}, "fucsia": {}, "beige": {}, "azulrey": {}, "cafe": {}, "lila": {}, "miel": {}, "negro": {}, "verde": {}
   }
 }
