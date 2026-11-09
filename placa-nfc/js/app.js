@@ -313,9 +313,11 @@ function actualizarPrecio() {
   $('#resumen').hidden = true;
 }
 function pintarCompras() {
-  const ops = [{ id: 'sola', nombre: 'Solo la placa', sub: 'En Bogotá: envío $8.500 y pago en línea', precio: PRECIOS.placaSola }]
-    .concat(PRODUCTOS.map(p => ({ id: p.id, nombre: `Con ${p.con}`,
-      sub: p.id === 'collar' ? `Collar + Placa Inteligente · ahorras ${cop(p.ahorro)} · envío $8.500 en Bogotá`
+  // Solo dos opciones para no saturar: la placa sola y con collar. Si llega desde otro producto (?con=arnes…), se suma esa.
+  const visibles = PRODUCTOS.filter(p => p.id === 'collar' || p.id === estado.compra);
+  const ops = [{ id: 'sola', nombre: 'Solo la placa', sub: 'Envío $8.500 en Bogotá · pago en línea', precio: PRECIOS.placaSola }]
+    .concat(visibles.map(p => ({ id: p.id, nombre: `Con ${p.con}`,
+      sub: p.id === 'collar' ? `Collar + placa · ahorras ${cop(p.ahorro)}`
         : `${p.corto} ${cop(p.precio)} + placa ${cop(precioPlaca(p.id))}`, precio: p.precio + precioPlaca(p.id) })));
   $('#compras').innerHTML = ops.map(o => `<label class="compra"><input type="radio" name="compra" value="${o.id}"${o.id === estado.compra ? ' checked' : ''}>
     <span>${o.nombre}<small>${o.sub}</small></span><b>${cop(o.precio)}</b></label>`).join('');
@@ -338,7 +340,7 @@ function pintarProductos() {
   </article>`).join('');
   document.querySelectorAll('[data-prod]').forEach(b => b.addEventListener('click', () => {
     estado.compra = b.dataset.prod;
-    document.querySelector(`input[name="compra"][value="${estado.compra}"]`).checked = true;
+    pintarCompras();
     actualizarPrecio();
     $('#disena').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
   }));
@@ -350,7 +352,7 @@ function pintarSwatches(contenedor, clave) {
   COLORES.forEach(c => {
     const b = document.createElement('button');
     b.type = 'button'; b.className = 'swatch'; b.style.setProperty('--c', c.hex);
-    b.innerHTML = `<i></i>${c.nombre}`; b.dataset.id = c.id;
+    b.innerHTML = '<i></i>'; b.dataset.id = c.id; b.title = c.nombre; b.setAttribute('aria-label', c.nombre);
     b.setAttribute('aria-pressed', String(estado[clave] === c.id));
     b.addEventListener('click', () => { estado[clave] = c.id; refrescarSwatches(); avisoContraste(); actualizar(false); });
     el.appendChild(b);
