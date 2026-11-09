@@ -34,6 +34,17 @@ const COLORES = [
   { id: 'azul', nombre: 'Azul', hex: '#3160A6' },
   { id: 'blanco', nombre: 'Blanco', hex: '#F5F5F2' },
   { id: 'rojo', nombre: 'Rojo', hex: '#D3262E' },
+  // Los mismos colores de las letras del collar con nombre (assets/collar-nombre.json)
+  { id: 'rosado', nombre: 'Rosado', hex: '#f6a7c9' },
+  { id: 'naranja', nombre: 'Naranja', hex: '#ff7d57' },
+  { id: 'fucsia', nombre: 'Fucsia', hex: '#d9338f' },
+  { id: 'beige', nombre: 'Beige', hex: '#e8d9bc' },
+  { id: 'azulrey', nombre: 'Azul rey', hex: '#2f55c8' },
+  { id: 'cafe', nombre: 'Café', hex: '#7a4a33' },
+  { id: 'lila', nombre: 'Lila', hex: '#a77bf0' },
+  { id: 'miel', nombre: 'Miel oscuro', hex: '#b8895c' },
+  { id: 'negro', nombre: 'Negro', hex: '#2a2a2a' },
+  { id: 'verde', nombre: 'Verde oscuro', hex: '#1f6142' },
 ];
 const DISENOS = {
   huella: { nombre: 'Huella', base: 'azul', letras: 'blanco' },
