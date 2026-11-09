@@ -198,6 +198,8 @@
     document.querySelectorAll('.modo-collar [data-modo]').forEach(function (b) { b.setAttribute('aria-checked', String(b.getAttribute('data-modo') === m)); });
     caja.hidden = false;
     caja.classList.toggle('cn-sin', m === 'sin');
+    // Con nombre no mostramos la oferta de la placa (satura); sin nombre sí
+    document.querySelectorAll('.info .mas-placa').forEach(function (x) { x.hidden = m !== 'sin'; });
     var cont = document.querySelector('.thumbs');
     if (cont && miniaturas.some(function (b) { return b.hasAttribute('data-modo'); })) {
       miniaturas.forEach(function (b) { var dm = b.getAttribute('data-modo'); b.hidden = !!dm && dm !== m; });
