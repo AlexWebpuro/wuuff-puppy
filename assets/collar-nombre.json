@@ -12,7 +12,11 @@
     { "id": "fucsia",  "nombre": "Fucsia",   "main": "#d9338f", "edge": "#a81b69" },
     { "id": "beige",   "nombre": "Beige",    "main": "#e8d9bc", "edge": "#c7b48f" },
     { "id": "azulrey", "nombre": "Azul rey", "main": "#2f55c8", "edge": "#1d3a96" },
-    { "id": "cafe",    "nombre": "Café",     "main": "#7a4a33", "edge": "#52301f" }
+    { "id": "cafe",    "nombre": "Café",     "main": "#7a4a33", "edge": "#52301f" },
+    { "id": "lila",    "nombre": "Lila",     "main": "#a77bf0", "edge": "#7c52c9" },
+    { "id": "miel",    "nombre": "Miel oscuro", "main": "#b8895c", "edge": "#8a613b" },
+    { "id": "negro",   "nombre": "Negro",    "main": "#2a2a2a", "edge": "#000000" },
+    { "id": "verde",   "nombre": "Verde oscuro", "main": "#1f6142", "edge": "#113d29" }
   ],
   "pesos": [
     { "id": "p1", "txt": "Hasta 6 kg",   "sub": "Talla S", "talla": "S" },

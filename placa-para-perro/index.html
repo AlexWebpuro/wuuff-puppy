@@ -341,6 +341,9 @@ footer a:hover { opacity: 1; text-decoration: underline; }
 .cl-reloj { margin: 10px 0 0; padding-top: 10px; border-top: 1px dashed #d6dff2; font-size: 13px; font-weight: 700; color: var(--aviso); }
 .cl-reloj b { font-weight: 900; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .ticker-pista { animation: none; } .btn-primary { transition: none; } }
+.ig-video{display:flex;justify-content:center}
+.ig-video .instagram-media{margin:0 auto!important;max-width:540px;width:100%!important;min-width:0!important;background:#fff;border-radius:16px;border:2px solid #e8f0fb;padding:18px;box-sizing:border-box;text-align:center}
+.ig-video .instagram-media a{font-weight:800;color:#2d4375}
 </style>
 
 </head>
@@ -502,6 +505,23 @@ footer a:hover { opacity: 1; text-decoration: underline; }
       </div>
     </div>
   </section>
+
+  <section class="seccion" id="video" aria-labelledby="t-video">
+    <div class="envoltura">
+      <div class="cabeza"><h2 id="t-video">Míralo en video 🎥</h2><p>Así funciona la Placa Inteligente en la vida real.</p></div>
+      <div class="ig-video">
+        <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/DfVs0Pdge2p/" data-instgrm-version="14"><a href="https://www.instagram.com/p/DfVs0Pdge2p/" target="_blank" rel="noopener">▶ Ver el video de la Placa Inteligente en Instagram</a></blockquote>
+      </div>
+    </div>
+  </section>
+  <script>
+  // Carga el video de Instagram solo cuando la persona baja hasta él, para no hacer lenta la página
+  (function(){
+    var caja=document.getElementById('video');if(!caja)return;var listo=false;
+    function cargar(){if(listo)return;listo=true;var s=document.createElement('script');s.async=true;s.src='https://www.instagram.com/embed.js';document.body.appendChild(s);}
+    if('IntersectionObserver' in window){var io=new IntersectionObserver(function(e){if(e[0].isIntersecting){io.disconnect();cargar();}},{rootMargin:'400px'});io.observe(caja);}else cargar();
+  })();
+  </script>
 
   <section class="seccion" id="como-funciona" aria-labelledby="t-como">
     <div class="envoltura">
