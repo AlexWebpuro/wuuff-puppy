@@ -247,10 +247,11 @@ form { display: grid; grid-template-columns: minmax(0, 1fr); gap: 22px; min-widt
 .fila-color { display: grid; gap: 6px; }
 .fila-color p { font-size: 14px; font-weight: 700; color: var(--tenue); }
 .fila-color p b { color: var(--navy); }
-.swatches { display: flex; flex-wrap: wrap; gap: 8px; }
-.swatch { display: inline-flex; align-items: center; gap: 8px; font: 800 14px/1 var(--f-cuerpo); color: var(--navy); background: var(--white); border: 2px solid var(--lblue); border-radius: 30px; padding: 5px 14px 5px 5px; cursor: pointer; }
-.swatch i { width: 24px; height: 24px; border-radius: 50%; background: var(--c); border: 1.5px solid rgba(45, 67, 117, .2); }
-.swatch[aria-pressed="true"] { border-color: var(--blue); background: var(--lblue); }
+.swatches { display: flex; flex-wrap: wrap; gap: 10px; }
+.swatch { width: 38px; height: 38px; padding: 0; border: 0; border-radius: 50%; background: transparent; cursor: pointer; display: grid; place-items: center; }
+.swatch i { width: 32px; height: 32px; border-radius: 50%; background: var(--c); border: 1.5px solid rgba(45, 67, 117, .2); }
+.swatch[aria-pressed="true"] { box-shadow: 0 0 0 3px var(--blue); }
+.swatch:focus-visible { outline: 3px solid var(--navy); outline-offset: 2px; }
 .compras { display: grid; gap: 8px; }
 .compra { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px; background: var(--white); border: 2px solid var(--lblue); border-radius: 18px; padding: 12px 16px; cursor: pointer; font-weight: 800; }
 .compra:has(input:checked) { border-color: var(--blue); background: #f6f9fe; }
@@ -646,7 +647,7 @@ footer a:hover { opacity: 1; text-decoration: underline; }
 <script type="application/json" id="glyphs"></script>
 <script src="/placa-nfc/js/geom.js"></script>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
-<script type="module" src="/placa-nfc/js/app.js"></script>
+<script type="module" src="/placa-nfc/js/app.js?v=20261109b"></script>
 <script src="/assets/entrega.js" defer></script>
 <!-- Link directo con código del concurso: se guarda para el checkout -->
 <script>try{var wc=new URLSearchParams(location.search).get("codigo");if(wc)sessionStorage.setItem("wuuff_codigo",wc.trim().toUpperCase());}catch(e){}</script>

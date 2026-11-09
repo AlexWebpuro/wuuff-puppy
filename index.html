@@ -3025,6 +3025,16 @@ function pagarConWompi(estimadoCents, nombreProducto, customerData, shippingAddr
           <label><input type="radio" name="regalo_color" value="Azul"><span><i style="background:#4964af"></i>Azul</span></label>
           <label><input type="radio" name="regalo_color" value="Blanco"><span><i style="background:#fff"></i>Blanco</span></label>
           <label><input type="radio" name="regalo_color" value="Rojo"><span><i style="background:#d64545"></i>Rojo</span></label>
+          <label><input type="radio" name="regalo_color" value="Rosado"><span><i style="background:#f6a7c9"></i>Rosado</span></label>
+          <label><input type="radio" name="regalo_color" value="Naranja"><span><i style="background:#ff7d57"></i>Naranja</span></label>
+          <label><input type="radio" name="regalo_color" value="Fucsia"><span><i style="background:#d9338f"></i>Fucsia</span></label>
+          <label><input type="radio" name="regalo_color" value="Beige"><span><i style="background:#e8d9bc"></i>Beige</span></label>
+          <label><input type="radio" name="regalo_color" value="Azul rey"><span><i style="background:#2f55c8"></i>Azul rey</span></label>
+          <label><input type="radio" name="regalo_color" value="Café"><span><i style="background:#7a4a33"></i>Café</span></label>
+          <label><input type="radio" name="regalo_color" value="Lila"><span><i style="background:#a77bf0"></i>Lila</span></label>
+          <label><input type="radio" name="regalo_color" value="Miel oscuro"><span><i style="background:#b8895c"></i>Miel oscuro</span></label>
+          <label><input type="radio" name="regalo_color" value="Negro"><span><i style="background:#2a2a2a"></i>Negro</span></label>
+          <label><input type="radio" name="regalo_color" value="Verde oscuro"><span><i style="background:#1f6142"></i>Verde oscuro</span></label>
         </div>
       </fieldset>
       <input type="hidden" name="producto" id="envio-producto" value="">
@@ -3471,7 +3481,7 @@ function pagarConWompi(estimadoCents, nombreProducto, customerData, shippingAddr
     combo:  { nombre: 'Combo completo', cents: 14990000 }
   };
   var FORMAS  = { huella: 'Huella', gato: 'Gato', nombre: 'Nombre' };
-  var COLORES = { morado: 'Morado', azul: 'Azul', blanco: 'Blanco', rojo: 'Rojo' };
+  var COLORES = { morado: 'Morado', azul: 'Azul', blanco: 'Blanco', rojo: 'Rojo', rosado: 'Rosado', naranja: 'Naranja', fucsia: 'Fucsia', beige: 'Beige', azulrey: 'Azul rey', cafe: 'Café', lila: 'Lila', miel: 'Miel oscuro', negro: 'Negro', verde: 'Verde oscuro' };
 
   var nombre = (q.get('nombre') || '').replace(/[^A-Za-z0-9ÁÉÍÓÚÑÜáéíóúñü '\-.&]/g, '').slice(0, 10).trim();
   var forma = FORMAS[q.get('forma')], base = COLORES[q.get('base')], letras = COLORES[q.get('letras')];

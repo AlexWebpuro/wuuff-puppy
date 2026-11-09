@@ -25,7 +25,7 @@ const ENVIO_OTRAS = 1850000;         // $18.500 otras ciudades
 const CN = require('../../assets/collar-nombre.json');
 
 const FORMAS = ['Huella', 'Gato', 'Nombre'];
-const COLORES = ['Morado', 'Azul', 'Blanco', 'Rojo'];
+const COLORES = ['Morado', 'Azul', 'Blanco', 'Rojo'].concat(CN.colores.map(c => c.nombre)); // placa: los 4 de siempre + los de las letras del collar
 
 // Concurso #WuuffHalloween: códigos personales en la variable de entorno CODIGOS_CONCURSO
 // (JSON código → participante, o código → { "participante": "...", "vence": "2026-11-01T00:00:00-05:00" }).
