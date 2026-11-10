@@ -6,6 +6,7 @@
   var MAX = 1400;                 // lado máximo de la foto (px) para que sea rápido en celular
   var FUENTE = '"Malaka Cournt", "Arial Rounded MT Bold", sans-serif';
   var datos = null, foto = null, cv = null, ctx = null, caja = null, capa = null;
+  var logo = new Image(); logo.onload = function () { if (foto) dibujar(); }; logo.src = '/images/wuuff-puppy.png';
   var col = { x: 0.5, y: 0.6, w: 0.6, rot: 0, curva: 25 };   // posición y tamaño relativos a la foto
   function evento(n, p) { try { if (window.gtag) gtag('event', n, p || {}); } catch (e) {} }
 
@@ -181,12 +182,17 @@
     ctx.restore();
     ctx = principal;
     ctx.drawImage(capa, 0, 0);
-    // marca
-    var m = Math.max(14, W * 0.028);
-    ctx.font = '700 ' + m + 'px Nunito, Arial, sans-serif'; ctx.textAlign = 'right'; ctx.textBaseline = 'bottom';
-    ctx.fillStyle = 'rgba(255,255,255,.9)'; ctx.shadowColor = 'rgba(0,0,0,.5)'; ctx.shadowBlur = m * 0.3;
-    ctx.fillText('wuuffpuppy.co', W - m * 0.6, H - m * 0.5);
+    // marca: logo Wuuff Puppy + wuuffpuppy.co sobre una franja blanca, abajo a la derecha
+    var m = Math.max(14, W * 0.03), lh = m * 2.1, lw = logo && logo.naturalWidth ? lh * logo.naturalWidth / logo.naturalHeight : 0;
+    ctx.font = '800 ' + m + 'px Nunito, Arial, sans-serif'; ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
+    var tw = ctx.measureText('wuuffpuppy.co').width, pad = m * 0.55, gap = lw ? m * 0.5 : 0;
+    var bw = pad * 2 + lw + gap + tw, bh = lh + pad * 0.9, bx = W - bw - m * 0.6, by = H - bh - m * 0.6;
+    ctx.fillStyle = 'rgba(255,255,255,.88)'; ctx.shadowColor = 'rgba(0,0,0,.25)'; ctx.shadowBlur = m * 0.5;
+    ctx.beginPath(); ctx.moveTo(bx + bh / 2, by); ctx.arcTo(bx + bw, by, bx + bw, by + bh, bh / 2); ctx.arcTo(bx + bw, by + bh, bx, by + bh, bh / 2);
+    ctx.arcTo(bx, by + bh, bx, by, bh / 2); ctx.arcTo(bx, by, bx + bw, by, bh / 2); ctx.closePath(); ctx.fill();
     ctx.shadowColor = 'transparent';
+    if (lw) ctx.drawImage(logo, bx + pad, by + (bh - lh) / 2, lw, lh);
+    ctx.fillStyle = '#2d4375'; ctx.fillText('wuuffpuppy.co', bx + pad + lw + gap, by + bh / 2);
   }
 
   // Arrastrar con un dedo; con dos, agrandar y girar
