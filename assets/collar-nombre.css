@@ -55,6 +55,8 @@
 .cn-circulos{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:6px}
 .cn-circ{width:36px;height:36px;border-radius:50%;padding:0;cursor:pointer;background:var(--c,#fff);border:1.5px solid rgba(0,0,0,.14);box-shadow:inset 0 -3px 0 rgba(0,0,0,.16);font:800 16px/1 system-ui,sans-serif;color:var(--cn-muted)}
 .cn-nom{font-weight:700;color:var(--cn-muted)}
+.cn-proponer{display:block;width:100%;font:inherit;font-weight:800;font-size:15px;background:var(--cn-chip);color:var(--cn-chip-ink);border:0;border-radius:12px;padding:11px 14px;margin:4px 0 12px;cursor:pointer}
+.cn-proponer:active{transform:scale(.98)}
 .cn-modo-color{display:flex;margin:4px 0 14px}.cn-modo-color{width:100%;box-sizing:border-box}.cn-modo-color button{flex:1 1 0;min-width:0;padding:10px 6px;font-size:15px}
 .cn-paso-color b{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--cn-accent);color:var(--cn-accent-ink);font-size:12px;margin-right:4px}
 .cn-mezcla{margin-top:14px}
@@ -83,3 +85,21 @@
 .cn-fine{margin:12px 0 0;font-size:13px;color:var(--cn-muted)}
 .cn button:focus-visible,.cn a:focus-visible,.modo-collar button:focus-visible{outline:3px solid #2b2320;outline-offset:2px}
 @media(prefers-reduced-motion:reduce){.cn *{transition:none!important}}
+.cn-probar{display:grid;gap:10px;background:#fff8e6}.cn-probar p{margin:0;font-size:14px;color:var(--cn-muted)}.cn-probar b{color:var(--cn-ink)}
+.cn-btn-probar{font:inherit;font-weight:800;font-size:16px;background:#fff;color:var(--cn-ink);border:2px solid var(--cn-ink);border-radius:14px;padding:12px;cursor:pointer}
+/* Probador con foto (assets/collar-probador.js) */
+.pr-fondo{position:fixed;inset:0;z-index:1200;background:rgba(20,16,14,.72);display:grid;place-items:center;padding:12px;overflow:auto}
+.pr-fondo[hidden],.pr-vacio[hidden],.pr-editor[hidden],.pr-btn[hidden]{display:none}
+.pr-panel{background:#fcf8f2;color:#2b2320;border-radius:20px;width:100%;max-width:560px;padding:16px;box-sizing:border-box;display:grid;gap:12px;max-height:calc(100vh - 24px);overflow:auto}
+.pr-cab{display:flex;justify-content:space-between;align-items:center;gap:8px}.pr-cab h2{margin:0;font-size:20px}
+.pr-x{width:40px;height:40px;border-radius:50%;border:0;background:#fff;font-size:22px;cursor:pointer;flex:none}
+.pr-vacio{display:grid;gap:12px;text-align:center;padding:12px 0}.pr-vacio p{margin:0}
+.pr-ayuda{margin:0;font-size:14px;color:#6d5c55}
+.pr-lienzo{border-radius:14px;overflow:hidden;background:#eee;touch-action:none}
+.pr-lienzo canvas{display:block;width:100%;height:auto;max-height:58vh;object-fit:contain;cursor:grab;touch-action:none}
+.pr-ajustes{display:grid;gap:8px}.pr-ajustes label{display:grid;grid-template-columns:70px 1fr;align-items:center;font-size:14px;font-weight:800}
+.pr-ajustes input{width:100%;accent-color:#ff7d57}
+.pr-acciones{display:flex;flex-wrap:wrap;gap:8px}
+.pr-btn{flex:1 1 auto;display:inline-flex;justify-content:center;align-items:center;font:inherit;font-weight:800;font-size:15px;border:2px solid #2b2320;background:#fff;color:#2b2320;border-radius:12px;padding:11px 14px;cursor:pointer;text-align:center}
+.pr-principal{background:#ff7d57;border-color:#ff7d57;color:#2b1410}
+.pr-nota{margin:0;font-size:12px;color:#6d5c55}

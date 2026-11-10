@@ -24,6 +24,38 @@
   function colorEn(i) { return (state.mezcla[i] && colorPorId(state.mezcla[i])) || color(); }
   function combinado() { return state.mezcla.some(function (m, i) { return m && m !== state.color && i < tokens().length; }); }
   function nombrePieza(t) { return t === '♥' ? 'corazón' : (t === '★' ? 'estrella' : t); }
+  // Combinaciones que se ven bien juntas (letras + acento) y formas de repartir el acento
+  var PAREJAS = [['azulrey', 'naranja'], ['rosado', 'lila'], ['negro', 'fucsia'], ['verde', 'beige'], ['cafe', 'miel'], ['lila', 'fucsia'],
+    ['negro', 'beige'], ['azulrey', 'rosado'], ['verde', 'naranja'], ['miel', 'negro'], ['fucsia', 'rosado'], ['beige', 'cafe']];
+  var ultimaPropuesta = -1;
+  function proponer() {
+    var t = tokens(), n = t.length, ops = [];
+    if (!n) return false;
+    var ico = t.map(function (x, i) { return ICONOS.indexOf(x) > -1 ? i : -1; }).filter(function (i) { return i > -1; });
+    var formas = ['alternar', 'primera'].concat(ico.length && ico.length < n ? ['iconos'] : []).concat(n > 3 ? ['mitad'] : []);
+    PAREJAS.forEach(function (p, a) { formas.forEach(function (f) { ops.push([a, f]); }); });
+    var k; do { k = Math.floor(Math.random() * ops.length); } while (ops.length > 1 && k === ultimaPropuesta);
+    ultimaPropuesta = k;
+    var par = PAREJAS[ops[k][0]], forma = ops[k][1], base = par[0], acento = par[1];
+    state.color = base; state.pincel = acento; state.combinar = true;
+    state.mezcla = t.map(function (x, i) {
+      var en = forma === 'alternar' ? i % 2 === 1 : forma === 'primera' ? i === 0 : forma === 'iconos' ? ico.indexOf(i) > -1 : i >= Math.ceil(n / 2);
+      return en ? acento : '';
+    });
+    evento('collar_nombre_proponer', { base: base, acento: acento, forma: forma });
+    return true;
+  }
+  // Probador con foto (assets/collar-probador.js): le pasa las piezas con sus colores
+  function abrirProbador() {
+    var t = tokens();
+    if (!t.length) { $('#cn-nombre').focus(); var av = $('[data-cn=aviso]'); av.hidden = false; av.textContent = 'Primero escribe su nombre para verlo en la foto.'; return; }
+    if (!window.wuuffProbador) return;
+    window.wuuffProbador.abrir({
+      piezas: t.map(function (x, i) { var c = colorEn(i); return { t: x, main: c.main, edge: c.edge }; }),
+      adv: ADV, strap: '#a9bbe0',
+      iconos: { '♥': SVG_HEART.match(/d="([^"]+)"/)[1], '★': SVG_STAR.match(/d="([^"]+)"/)[1] }
+    });
+  }
   // "L Azul rey · U Azul rey · N Rosado" (para el pedido y WhatsApp)
   function detalleMezcla() { return tokens().map(function (t, i) { return t + ' ' + colorEn(i).nombre; }).join(' · '); }
   function peso() { return CFG.pesos.filter(function (p) { return p.id === state.peso; })[0]; }
@@ -87,12 +119,15 @@
         '<div class="cn-tools"><button type="button" class="cn-link" data-cn="borrar">Borrar la última</button><button type="button" class="cn-link" data-cn="limpiar">Empezar de nuevo</button></div>' +
         '<p class="cn-aviso" data-cn="aviso" role="status" hidden></p></section>' +
       '<section class="cn-card cn-solo-nombre"><h3 class="cn-paso"><span>2</span> Colores</h3>' +
+        '<button type="button" class="cn-proponer" data-cn="proponer">✨ Proponme una combinación</button>' +
         '<div class="cn-seg cn-modo-color" role="group" aria-label="Cómo quieres los colores"><button type="button" data-cm="uno" aria-pressed="true">Un color</button><button type="button" data-cm="mix" aria-pressed="false">🎨 Combinar</button></div>' +
         '<p class="cn-lbl cn-paso-color" data-cn="col-lbl"></p>' +
         '<div class="cn-circulos" data-cn="colores" role="radiogroup" aria-label="Colores"></div>' +
         '<div class="cn-mezcla" data-cn="mezcla" hidden><p class="cn-lbl cn-paso-color" data-cn="mezcla-lbl"></p>' +
         '<div class="cn-piezas" data-cn="piezas"></div><p class="cn-hint" data-cn="mezcla-hint"></p>' +
         '<div class="cn-tools"><button type="button" class="cn-link" data-cn="todas">Todas de este color</button><button type="button" class="cn-link" data-cn="alternar">Alternar colores</button></div></div></section>' +
+      '<section class="cn-card cn-solo-nombre cn-probar"><p><b>📸 ¿Cómo se le vería?</b> Sube una foto de tu perrito y míralo con su collar.</p>' +
+        '<button type="button" class="cn-btn-probar" data-cn="probar">Pruébalo en tu perro</button></section>' +
       '<section class="cn-card"><h3 class="cn-paso"><span data-cn="num-talla">3</span> Talla por peso</h3><p class="cn-hint">Escoge cuánto pesa tu perrito y te decimos qué talla le queda.</p>' +
         '<div class="cn-opts" data-cn="pesos" role="radiogroup" aria-label="Peso de tu perrito"></div><div class="cn-size" data-cn="size"></div></section>' +
       '<section class="cn-card cn-precio" aria-label="Resumen del precio"><h3>Tu collar</h3><dl>' +
@@ -138,6 +173,8 @@
         return pintar();
       }
       if (t.closest('[data-cn=todas]')) { state.mezcla = tokens().map(function () { return state.pincel === state.color ? '' : state.pincel; }); return pintar(); }
+      if (t.closest('[data-cn=probar]')) { abrirProbador(); return; }
+      if (t.closest('[data-cn=proponer]')) { if (!proponer()) { $('#cn-nombre').focus(); } return pintar(); }
       if (t.closest('[data-cn=alternar]')) { state.mezcla = tokens().map(function (x, i) { return i % 2 && state.pincel !== state.color ? state.pincel : ''; }); return pintar(); }
       if ((b = t.closest('[data-cn=pesos] .cn-opt'))) { state.peso = b.getAttribute('data-id'); return pintar(); }
       if ((b = t.closest('[data-cn=size] button[data-t]'))) { state.tallaManual = b.getAttribute('data-t'); return pintar(); }

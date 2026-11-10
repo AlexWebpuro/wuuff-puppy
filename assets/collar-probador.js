@@ -1,0 +1,195 @@
+// "Pruébalo en tu perro": la persona sube una foto de su mascota y encima ve su collar con nombre
+// (las letras y colores que eligió). Lo mueve con el dedo, ajusta tamaño, giro y curva, y puede descargar
+// o compartir la foto. Todo pasa en el navegador: la foto no se sube a ningún servidor.
+// Lo abre assets/collar-nombre.js con window.wuuffProbador.abrir({ piezas, adv, iconos, strap }).
+(function () {
+  var MAX = 1400;                 // lado máximo de la foto (px) para que sea rápido en celular
+  var FUENTE = '"Malaka Cournt", "Arial Rounded MT Bold", sans-serif';
+  var datos = null, foto = null, cv = null, ctx = null, caja = null;
+  var col = { x: 0.5, y: 0.6, w: 0.5, rot: 0, curva: 20 };   // posición y tamaño relativos a la foto
+  function evento(n, p) { try { if (window.gtag) gtag('event', n, p || {}); } catch (e) {} }
+
+  function construir() {
+    caja = document.createElement('div');
+    caja.className = 'pr-fondo'; caja.hidden = true;
+    caja.setAttribute('role', 'dialog'); caja.setAttribute('aria-modal', 'true'); caja.setAttribute('aria-label', 'Prueba el collar en tu perro');
+    caja.innerHTML =
+      '<div class="pr-panel">' +
+        '<div class="pr-cab"><h2>📸 Pruébalo en tu perro</h2><button type="button" class="pr-x" data-pr="cerrar" aria-label="Cerrar">×</button></div>' +
+        '<div class="pr-vacio" data-pr="vacio"><p>Sube una foto donde se vea bien su cuello y te mostramos cómo le queda su collar.</p>' +
+          '<label class="pr-btn pr-principal">Elegir una foto<input type="file" accept="image/*" data-pr="archivo" hidden></label>' +
+          '<p class="pr-nota">🔒 Tu foto no se sube a internet: todo pasa en tu celular.</p></div>' +
+        '<div class="pr-editor" data-pr="editor" hidden>' +
+          '<p class="pr-ayuda">Arrastra el collar hasta su cuello. Con dos dedos lo agrandas o lo giras.</p>' +
+          '<div class="pr-lienzo"><canvas data-pr="cv"></canvas></div>' +
+          '<div class="pr-ajustes">' +
+            '<label>Tamaño<input type="range" min="10" max="100" data-pr="w"></label>' +
+            '<label>Giro<input type="range" min="-60" max="60" data-pr="rot"></label>' +
+            '<label>Curva<input type="range" min="0" max="100" data-pr="curva"></label>' +
+          '</div>' +
+          '<div class="pr-acciones"><button type="button" class="pr-btn pr-principal" data-pr="guardar">Descargar foto</button>' +
+            '<button type="button" class="pr-btn" data-pr="compartir" hidden>Compartir</button>' +
+            '<label class="pr-btn">Otra foto<input type="file" accept="image/*" data-pr="archivo" hidden></label></div>' +
+          '<p class="pr-nota">Es una simulación para que te hagas una idea: el collar real puede verse un poco distinto.</p>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(caja);
+    cv = caja.querySelector('[data-pr=cv]'); ctx = cv.getContext('2d');
+    caja.addEventListener('click', function (e) {
+      if (e.target === caja || e.target.closest('[data-pr=cerrar]')) cerrar();
+      if (e.target.closest('[data-pr=guardar]')) guardar();
+      if (e.target.closest('[data-pr=compartir]')) compartir();
+    });
+    caja.querySelectorAll('[data-pr=archivo]').forEach(function (inp) {
+      inp.addEventListener('change', function () { if (inp.files && inp.files[0]) cargar(inp.files[0]); inp.value = ''; });
+    });
+    ['w', 'rot', 'curva'].forEach(function (k) {
+      caja.querySelector('[data-pr=' + k + ']').addEventListener('input', function (e) {
+        col[k] = k === 'w' ? e.target.value / 100 : +e.target.value; dibujar();
+      });
+    });
+    document.addEventListener('keydown', function (e) { if (!caja.hidden && e.key === 'Escape') cerrar(); });
+    gestos();
+  }
+
+  function sincronizarControles() {
+    caja.querySelector('[data-pr=w]').value = Math.round(col.w * 100);
+    caja.querySelector('[data-pr=rot]').value = Math.round(col.rot);
+    caja.querySelector('[data-pr=curva]').value = Math.round(col.curva);
+  }
+
+  function cargar(archivo) {
+    var url = URL.createObjectURL(archivo), img = new Image();
+    img.onload = function () {
+      var k = Math.min(1, MAX / Math.max(img.naturalWidth, img.naturalHeight));
+      cv.width = Math.round(img.naturalWidth * k); cv.height = Math.round(img.naturalHeight * k);
+      foto = img;
+      col = { x: 0.5, y: 0.6, w: 0.5, rot: 0, curva: 20 };
+      sincronizarControles();
+      caja.querySelector('[data-pr=vacio]').hidden = true; caja.querySelector('[data-pr=editor]').hidden = false;
+      caja.querySelector('[data-pr=compartir]').hidden = !(navigator.canShare && window.File);
+      dibujar();
+      evento('collar_probador_foto');
+    };
+    img.onerror = function () { URL.revokeObjectURL(url); alert('No pudimos abrir esa foto. Prueba con otra (JPG o PNG).'); };
+    img.src = url;
+  }
+
+  // Dibuja la foto y encima el collar: banda azul cielo en arco y las letras siguiendo la curva
+  function dibujar() {
+    if (!foto) return;
+    var W = cv.width, H = cv.height;
+    ctx.clearRect(0, 0, W, H);
+    ctx.drawImage(foto, 0, 0, W, H);
+    var L = col.w * W, h = L * 0.1, theta = col.curva / 100 * 2.4;   // largo, alto de la banda y ángulo del arco
+    ctx.save();
+    ctx.translate(col.x * W, col.y * H); ctx.rotate(col.rot * Math.PI / 180);
+    var recto = theta < 0.02, R = recto ? 0 : L / (2 * Math.sin(theta / 2)), cy = recto ? 0 : -R * Math.cos(theta / 2);
+    // posición y giro de un punto a una distancia "s" del centro, a lo largo del collar
+    function punto(s, dy) {
+      if (recto) return { x: s, y: dy || 0, a: 0 };
+      var phi = s / R, r = R + (dy || 0);
+      return { x: r * Math.sin(phi), y: cy + r * Math.cos(phi), a: -phi };
+    }
+    // banda
+    ctx.lineCap = 'round';
+    ctx.shadowColor = 'rgba(0,0,0,.35)'; ctx.shadowBlur = h * 0.5; ctx.shadowOffsetY = h * 0.25;
+    ctx.strokeStyle = datos.strap; ctx.lineWidth = h;
+    ctx.beginPath();
+    if (recto) { ctx.moveTo(-L / 2, 0); ctx.lineTo(L / 2, 0); } else ctx.arc(0, cy, R, Math.PI / 2 - theta / 2, Math.PI / 2 + theta / 2);
+    ctx.stroke();
+    ctx.shadowColor = 'transparent';
+    ctx.strokeStyle = 'rgba(255,255,255,.35)'; ctx.lineWidth = h * 0.12;
+    ctx.beginPath();
+    if (recto) { ctx.moveTo(-L / 2, -h * 0.3); ctx.lineTo(L / 2, -h * 0.3); } else ctx.arc(0, cy, R - h * 0.3, Math.PI / 2 - theta / 2, Math.PI / 2 + theta / 2);
+    ctx.stroke();
+    // letras: centradas en el collar y del tamaño que quepan
+    var pz = datos.piezas, fs = h * 1.85, avance = function (t) { return datos.iconos[t] ? 0.75 : (datos.adv[t] || 0.7); };
+    var total = pz.reduce(function (a, p) { return a + avance(p.t) * fs; }, 0);
+    if (total > L * 0.82) { fs *= L * 0.82 / total; total = L * 0.82; }
+    ctx.font = fs + 'px ' + FUENTE; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    var s = -total / 2;
+    pz.forEach(function (p) {
+      var adv = avance(p.t) * fs, c = punto(s + adv / 2, 0);
+      ctx.save(); ctx.translate(c.x, c.y); ctx.rotate(c.a);
+      ctx.shadowColor = 'rgba(0,0,0,.3)'; ctx.shadowBlur = fs * 0.12; ctx.shadowOffsetY = fs * 0.08;
+      for (var k = 3; k >= 0; k--) {
+        var dy = k * fs * 0.025;
+        ctx.fillStyle = k ? p.edge : p.main;
+        if (datos.iconos[p.t]) {
+          var esc = fs * 0.72 / 24;
+          ctx.save(); ctx.translate(-12 * esc, -12 * esc + dy); ctx.scale(esc, esc);
+          var path = new Path2D(datos.iconos[p.t]);
+          ctx.fill(path); ctx.lineWidth = 3; ctx.lineJoin = 'round'; ctx.strokeStyle = ctx.fillStyle; ctx.stroke(path);
+          ctx.restore();
+        } else ctx.fillText(p.t, 0, fs * 0.04 + dy);
+        if (k === 3) ctx.shadowColor = 'transparent';
+      }
+      ctx.restore();
+      s += adv;
+    });
+    ctx.restore();
+    // marca
+    var m = Math.max(14, W * 0.028);
+    ctx.font = '700 ' + m + 'px Nunito, Arial, sans-serif'; ctx.textAlign = 'right'; ctx.textBaseline = 'bottom';
+    ctx.fillStyle = 'rgba(255,255,255,.9)'; ctx.shadowColor = 'rgba(0,0,0,.5)'; ctx.shadowBlur = m * 0.3;
+    ctx.fillText('wuuffpuppy.co', W - m * 0.6, H - m * 0.5);
+    ctx.shadowColor = 'transparent';
+  }
+
+  // Arrastrar con un dedo; con dos, agrandar y girar
+  function gestos() {
+    var dedos = {}, inicio = null;
+    function rel(e) { var r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) / r.width, y: (e.clientY - r.top) / r.height }; }
+    cv.addEventListener('pointerdown', function (e) { cv.setPointerCapture(e.pointerId); dedos[e.pointerId] = rel(e); inicio = null; });
+    cv.addEventListener('pointermove', function (e) {
+      if (!dedos[e.pointerId]) return;
+      var antes = dedos[e.pointerId], ahora = rel(e), ids = Object.keys(dedos);
+      dedos[e.pointerId] = ahora;
+      if (ids.length === 1) { col.x += ahora.x - antes.x; col.y += ahora.y - antes.y; }
+      else if (ids.length === 2) {
+        var a = dedos[ids[0]], b = dedos[ids[1]], asp = cv.height / cv.width;
+        var d = Math.hypot(b.x - a.x, (b.y - a.y) * asp), ang = Math.atan2((b.y - a.y) * asp, b.x - a.x) * 180 / Math.PI;
+        if (!inicio) inicio = { d: d, ang: ang, w: col.w, rot: col.rot };
+        col.w = Math.min(1, Math.max(0.1, inicio.w * d / inicio.d));
+        col.rot = Math.min(60, Math.max(-60, inicio.rot + ang - inicio.ang));
+        sincronizarControles();
+      }
+      col.x = Math.min(1, Math.max(0, col.x)); col.y = Math.min(1, Math.max(0, col.y));
+      dibujar();
+    });
+    function soltar(e) { delete dedos[e.pointerId]; inicio = null; }
+    cv.addEventListener('pointerup', soltar); cv.addEventListener('pointercancel', soltar);
+  }
+
+  function blob(cb) { cv.toBlob(cb, 'image/jpeg', 0.9); }
+  function guardar() {
+    blob(function (b) {
+      var a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'mi-collar-wuuff.jpg';
+      document.body.appendChild(a); a.click(); a.remove(); setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000);
+      evento('collar_probador_descargar');
+    });
+  }
+  function compartir() {
+    blob(function (b) {
+      var f = new File([b], 'mi-collar-wuuff.jpg', { type: 'image/jpeg' });
+      if (navigator.canShare && navigator.canShare({ files: [f] })) {
+        navigator.share({ files: [f], title: 'Su collar con nombre', text: 'Así le queda su collar Wuuff Puppy 🐾 wuuffpuppy.co' }).catch(function () {});
+        evento('collar_probador_compartir');
+      } else guardar();
+    });
+  }
+
+  function cerrar() { caja.hidden = true; document.documentElement.style.overflow = ''; }
+
+  window.wuuffProbador = {
+    abrir: function (d) {
+      if (!caja) construir();
+      datos = d;
+      caja.hidden = false; document.documentElement.style.overflow = 'hidden';
+      var listo = document.fonts && document.fonts.load ? document.fonts.load('40px "Malaka Cournt"') : Promise.resolve();
+      listo.then(dibujar, dibujar);
+      evento('collar_probador_abrir');
+    }
+  };
+})();
