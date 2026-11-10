@@ -99,7 +99,9 @@
     var pz = datos.piezas, fs = h * 2.5, avance = function (t) { return datos.iconos[t] ? 0.75 : (datos.adv[t] || 0.7); };
     var total = pz.reduce(function (a, p) { return a + avance(p.t) * fs; }, 0);
     var Lh = recto ? L / 2 : R * theta / 2;   // medio largo de la banda medido sobre la curva
-    if (total > Lh * 1.05) { fs *= Lh * 1.05 / total; total = Lh * 1.05; }
+    // Las letras van encajadas en la banda: siempre un poco más altas que ella (fs = 2,5 × alto de la banda).
+    // Si el nombre no cabe, se angosta la banda junto con las letras para mantener esa proporción.
+    if (total > Lh * 1.05) { var k = Lh * 1.05 / total; fs *= k; h *= k; total = Lh * 1.05; }
     var C = { base: datos.strap, osc: '#8396c4', claro: '#cfdbf3', borde: 'rgba(60,75,130,.35)' };
     // un trazo a lo largo de la banda, desplazado "dy" del centro (para el volumen)
     function trazo(dy, ancho, color) {

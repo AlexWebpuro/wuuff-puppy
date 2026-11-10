@@ -200,7 +200,11 @@
     if (!em) em = 3;
     var fs = Math.max(26, Math.min(120, strap.clientWidth * 0.76 / (em + t.length * 0.02)));
     name.style.setProperty('--fs', fs + 'px');
-    strap.style.height = Math.max(30, fs * 0.54) + 'px';
+    // Si las letras anchas (M, W) no caben, se achica hasta que quepan
+    var max = strap.clientWidth * 0.84;
+    if (name.scrollWidth > max) { fs = Math.max(20, fs * max / name.scrollWidth); name.style.setProperty('--fs', fs + 'px'); }
+    // Las letras y figuras van encajadas: la banda siempre un poco más baja que ellas
+    strap.style.height = Math.max(16, fs * 0.5) + 'px';
   }
 
   function pintar() {

@@ -25,7 +25,7 @@
 .cn-strap::before{left:0;border-radius:16px 0 0 16px}.cn-strap::after{right:0;border-radius:0 16px 16px 0}
 .cn-name{--c:#f6a7c9;--e:#d97fa6;--fs:60px;position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:calc(var(--fs)*.02);max-width:78%}
 .cn-ch{font-family:var(--cn-display);font-size:var(--fs);line-height:1;color:var(--c);text-shadow:0 1px 0 var(--e),0 2px 0 var(--e),0 3px 0 var(--e),0 7px 9px rgba(0,0,0,.22);display:inline-block;transform:translateY(.05em)}
-.cn-ico{width:calc(var(--fs)*.7);height:calc(var(--fs)*.7);display:block;fill:var(--c);stroke:var(--c);stroke-width:3;stroke-linejoin:round;filter:drop-shadow(0 3px 0 var(--e)) drop-shadow(0 7px 5px rgba(0,0,0,.22))}
+.cn-ico{width:calc(var(--fs)*.76);height:calc(var(--fs)*.76);display:block;fill:var(--c);stroke:var(--c);stroke-width:3;stroke-linejoin:round;filter:drop-shadow(0 3px 0 var(--e)) drop-shadow(0 7px 5px rgba(0,0,0,.22))}
 .cn-ghost{font-family:var(--cn-display);font-size:26px;color:rgba(255,255,255,.85);letter-spacing:.04em}
 .cn-card{background:#fff;border:1px solid var(--cn-line);border-radius:20px;padding:16px}
 .cn-paso{display:flex;align-items:baseline;gap:10px;margin:0 0 4px;font-size:17px;font-weight:800;color:var(--cn-ink)}
