@@ -5,8 +5,8 @@
 (function () {
   var MAX = 1400;                 // lado máximo de la foto (px) para que sea rápido en celular
   var FUENTE = '"Malaka Cournt", "Arial Rounded MT Bold", sans-serif';
-  var datos = null, foto = null, cv = null, ctx = null, caja = null;
-  var col = { x: 0.5, y: 0.6, w: 0.5, rot: 0, curva: 20 };   // posición y tamaño relativos a la foto
+  var datos = null, foto = null, cv = null, ctx = null, caja = null, capa = null;
+  var col = { x: 0.5, y: 0.6, w: 0.6, rot: 0, curva: 25 };   // posición y tamaño relativos a la foto
   function evento(n, p) { try { if (window.gtag) gtag('event', n, p || {}); } catch (e) {} }
 
   function construir() {
@@ -64,7 +64,7 @@
       var k = Math.min(1, MAX / Math.max(img.naturalWidth, img.naturalHeight));
       cv.width = Math.round(img.naturalWidth * k); cv.height = Math.round(img.naturalHeight * k);
       foto = img;
-      col = { x: 0.5, y: 0.6, w: 0.5, rot: 0, curva: 20 };
+      col = { x: 0.5, y: 0.6, w: 0.6, rot: 0, curva: 25 };
       sincronizarControles();
       caja.querySelector('[data-pr=vacio]').hidden = true; caja.querySelector('[data-pr=editor]').hidden = false;
       caja.querySelector('[data-pr=compartir]').hidden = !(navigator.canShare && window.File);
@@ -79,9 +79,13 @@
   function dibujar() {
     if (!foto) return;
     var W = cv.width, H = cv.height;
-    ctx.clearRect(0, 0, W, H);
-    ctx.drawImage(foto, 0, 0, W, H);
-    var L = col.w * W, h = L * 0.1, theta = col.curva / 100 * 2.4;   // largo, alto de la banda y ángulo del arco
+    var principal = ctx;
+    principal.clearRect(0, 0, W, H);
+    principal.drawImage(foto, 0, 0, W, H);
+    // el collar se dibuja en una capa aparte (las puntas se desvanecen sin borrar la foto)
+    if (!capa) capa = document.createElement('canvas');
+    capa.width = W; capa.height = H; ctx = capa.getContext('2d');
+    var L = col.w * W, h = L * 0.075, theta = col.curva / 100 * 2.4;   // largo, alto de la banda y ángulo del arco
     ctx.save();
     ctx.translate(col.x * W, col.y * H); ctx.rotate(col.rot * Math.PI / 180);
     var recto = theta < 0.02, R = recto ? 0 : L / (2 * Math.sin(theta / 2)), cy = recto ? 0 : -R * Math.cos(theta / 2);
@@ -91,22 +95,74 @@
       var phi = s / R, r = R + (dy || 0);
       return { x: r * Math.sin(phi), y: cy + r * Math.cos(phi), a: -phi };
     }
-    // banda
-    ctx.lineCap = 'round';
-    ctx.shadowColor = 'rgba(0,0,0,.35)'; ctx.shadowBlur = h * 0.5; ctx.shadowOffsetY = h * 0.25;
-    ctx.strokeStyle = datos.strap; ctx.lineWidth = h;
-    ctx.beginPath();
-    if (recto) { ctx.moveTo(-L / 2, 0); ctx.lineTo(L / 2, 0); } else ctx.arc(0, cy, R, Math.PI / 2 - theta / 2, Math.PI / 2 + theta / 2);
-    ctx.stroke();
-    ctx.shadowColor = 'transparent';
-    ctx.strokeStyle = 'rgba(255,255,255,.35)'; ctx.lineWidth = h * 0.12;
-    ctx.beginPath();
-    if (recto) { ctx.moveTo(-L / 2, -h * 0.3); ctx.lineTo(L / 2, -h * 0.3); } else ctx.arc(0, cy, R - h * 0.3, Math.PI / 2 - theta / 2, Math.PI / 2 + theta / 2);
-    ctx.stroke();
-    // letras: centradas en el collar y del tamaño que quepan
+    // letras: centradas en el collar y del tamaño que quepan (dejan espacio para hebilla y argolla)
     var pz = datos.piezas, fs = h * 1.85, avance = function (t) { return datos.iconos[t] ? 0.75 : (datos.adv[t] || 0.7); };
     var total = pz.reduce(function (a, p) { return a + avance(p.t) * fs; }, 0);
-    if (total > L * 0.82) { fs *= L * 0.82 / total; total = L * 0.82; }
+    var Lh = recto ? L / 2 : R * theta / 2;   // medio largo de la banda medido sobre la curva
+    if (total > Lh * 0.8) { fs *= Lh * 0.8 / total; total = Lh * 0.8; }
+    var C = { base: datos.strap, osc: '#8396c4', claro: '#cfdbf3', borde: 'rgba(60,75,130,.35)' };
+    // un trazo a lo largo de la banda, desplazado "dy" del centro (para el volumen)
+    function trazo(dy, ancho, color) {
+      ctx.strokeStyle = color; ctx.lineWidth = ancho; ctx.beginPath();
+      if (recto) { ctx.moveTo(-L / 2, dy); ctx.lineTo(L / 2, dy); } else ctx.arc(0, cy, R + dy, Math.PI / 2 - theta / 2, Math.PI / 2 + theta / 2);
+      ctx.stroke();
+    }
+    // pieza montada sobre la banda en la posición "s" (hebilla, presilla, botones)
+    function pieza(s0, dibujo) { var c = punto(s0, 0); ctx.save(); ctx.translate(c.x, c.y); ctx.rotate(c.a); dibujo(); ctx.restore(); }
+    function rect(x, y, w, hh, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + hh, r); ctx.arcTo(x + w, y + hh, x, y + hh, r); ctx.arcTo(x, y + hh, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+    var izq = -total / 2, der = total / 2, lim = Lh * 0.88;
+    // argolla en D (cuelga por debajo de la banda, detrás de ella)
+    var sD = izq - h * 0.95;
+    if (sD > -lim) pieza(sD, function () {
+      ctx.lineWidth = h * 0.16; ctx.strokeStyle = C.osc;
+      ctx.beginPath(); ctx.moveTo(-h * 0.42, h * 0.2); ctx.lineTo(-h * 0.42, h * 0.55); ctx.arc(0, h * 0.55, h * 0.42, Math.PI, 0, true); ctx.lineTo(h * 0.42, h * 0.2); ctx.stroke();
+      ctx.lineWidth = h * 0.1; ctx.strokeStyle = C.base; ctx.stroke();
+    });
+    // banda con volumen; las puntas se desvanecen como si siguiera detrás del cuello
+    ctx.save();
+    ctx.shadowColor = 'rgba(0,0,0,.35)'; ctx.shadowBlur = h * 0.6; ctx.shadowOffsetY = h * 0.3;
+    ctx.lineCap = 'butt';
+    trazo(0, h, C.base);
+    ctx.restore();
+    // volumen: más claro arriba y más oscuro abajo, como la goma real
+    var vol;
+    if (recto) { vol = ctx.createLinearGradient(0, -h / 2, 0, h / 2); }
+    else { vol = ctx.createRadialGradient(0, cy, R - h / 2, 0, cy, R + h / 2); }
+    vol.addColorStop(0, '#93a7d2'); vol.addColorStop(0.18, '#c3d1ee'); vol.addColorStop(0.45, C.base); vol.addColorStop(0.85, '#8ea2cf'); vol.addColorStop(1, '#7a8fbf');
+    ctx.lineCap = 'butt'; trazo(0, h, vol);
+    // puntas: borra suavemente los extremos (degradado de transparencia)
+    ctx.save(); ctx.globalCompositeOperation = 'destination-out';
+    [-1, 1].forEach(function (lado) {
+      var a = punto(lado * Lh, 0), b = punto(lado * Lh * 0.72, 0);
+      var g = ctx.createLinearGradient(a.x, a.y, b.x, b.y); g.addColorStop(0, 'rgba(0,0,0,1)'); g.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.strokeStyle = g; ctx.lineWidth = h * 3; ctx.beginPath();
+      if (recto) { ctx.moveTo(lado * Lh * 1.05, 0); ctx.lineTo(lado * Lh * 0.72, 0); }
+      else { var ang = function (sx) { return Math.PI / 2 - sx / R; }; ctx.arc(0, cy, R, Math.min(ang(lado * Lh * 1.05), ang(lado * Lh * 0.72)), Math.max(ang(lado * Lh * 1.05), ang(lado * Lh * 0.72))); }
+      ctx.stroke();
+    });
+    ctx.restore();
+    // botones (remaches) junto a la argolla
+    [sD - h * 0.85, izq - h * 0.35].forEach(function (sB, k) {
+      if (sB < -lim || (k === 1 && sD <= -lim)) return;
+      pieza(sB, function () {
+        ctx.fillStyle = C.osc; ctx.beginPath(); ctx.arc(0, h * 0.04, h * 0.2, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = C.claro; ctx.beginPath(); ctx.arc(-h * 0.04, -h * 0.02, h * 0.15, 0, Math.PI * 2); ctx.fill();
+      });
+    });
+    // hebilla de clic y presilla, al otro lado de las letras
+    var sH = der + h * 1.05, sP = der + h * 2.15;
+    if (sH + h * 0.75 < lim) pieza(sH, function () {
+      var w = h * 1.5, hh = h * 1.3;
+      ctx.fillStyle = C.osc; rect(-w / 2, -hh / 2 + h * 0.06, w, hh, h * 0.22); ctx.fill();
+      ctx.fillStyle = '#b4c4e6'; rect(-w / 2, -hh / 2, w, hh, h * 0.22); ctx.fill();
+      ctx.strokeStyle = C.osc; ctx.lineWidth = h * 0.07; ctx.beginPath(); ctx.moveTo(-w * 0.08, -hh * 0.42); ctx.lineTo(-w * 0.08, hh * 0.42); ctx.stroke();
+      ctx.fillStyle = C.osc; rect(w * 0.08, -hh * 0.18, w * 0.26, hh * 0.36, h * 0.06); ctx.fill();
+    });
+    if (sP + h * 0.3 < lim) pieza(sP, function () {
+      var w = h * 0.42, hh = h * 1.18;
+      ctx.fillStyle = C.osc; rect(-w / 2, -hh / 2 + h * 0.05, w, hh, h * 0.12); ctx.fill();
+      ctx.fillStyle = '#b4c4e6'; rect(-w / 2, -hh / 2, w, hh, h * 0.12); ctx.fill();
+    });
     ctx.font = fs + 'px ' + FUENTE; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     var s = -total / 2;
     pz.forEach(function (p) {
@@ -129,6 +185,8 @@
       s += adv;
     });
     ctx.restore();
+    ctx = principal;
+    ctx.drawImage(capa, 0, 0);
     // marca
     var m = Math.max(14, W * 0.028);
     ctx.font = '700 ' + m + 'px Nunito, Arial, sans-serif'; ctx.textAlign = 'right'; ctx.textBaseline = 'bottom';
