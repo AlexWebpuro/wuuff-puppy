@@ -11,7 +11,7 @@
   var SVG_HEART = '<path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 2.7 4.5 6.4 4.5c2.1 0 3.8 1.2 5.6 3.3 1.8-2.1 3.5-3.3 5.6-3.3 3.7 0 5.5 3.9 4 7.3C19.5 16.4 12 21 12 21z"/>';
   var SVG_STAR = '<path d="M12 2.6l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.2 1.2-6.5L2.5 9.5l6.6-.9z"/>';
   var CFG = null, STOCK = null;
-  var state = { texto: '', color: 'rosado', peso: 'p1', tallaManual: 'S' }, flags = { ene: false, corto: false };
+  var state = { texto: '', color: 'rosado', mezcla: [], combinar: false, pincel: '', peso: 'p1', tallaManual: 'S' }, flags = { ene: false, corto: false };
 
   function $(s) { return caja.querySelector(s); }
   function cop(n) { return '$' + String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
@@ -19,20 +19,66 @@
   function tokens() { return Array.from(state.texto); }
   function cuenta(t) { return tokens().filter(function (x) { return x === t; }).length; }
   function color() { return CFG.colores.filter(function (c) { return c.id === state.color; })[0]; }
+  // Combinar colores: cada letra o figura puede tener su propio color (mezcla[i], '' = el color de las letras)
+  function colorPorId(id) { return CFG.colores.filter(function (c) { return c.id === id; })[0]; }
+  function colorEn(i) { return (state.mezcla[i] && colorPorId(state.mezcla[i])) || color(); }
+  function combinado() { return state.mezcla.some(function (m, i) { return m && m !== state.color && i < tokens().length; }); }
+  function nombrePieza(t) { return t === '♥' ? 'corazón' : (t === '★' ? 'estrella' : t); }
+  // Combinaciones que se ven bien juntas (letras + acento) y formas de repartir el acento
+  var PAREJAS = [['azulrey', 'naranja'], ['rosado', 'lila'], ['negro', 'fucsia'], ['verde', 'beige'], ['cafe', 'miel'], ['lila', 'fucsia'],
+    ['negro', 'beige'], ['azulrey', 'rosado'], ['verde', 'naranja'], ['miel', 'negro'], ['fucsia', 'rosado'], ['beige', 'cafe']];
+  var ultimaPropuesta = -1;
+  function proponer() {
+    var t = tokens(), n = t.length, ops = [];
+    if (!n) return false;
+    var ico = t.map(function (x, i) { return ICONOS.indexOf(x) > -1 ? i : -1; }).filter(function (i) { return i > -1; });
+    var formas = ['alternar', 'primera'].concat(ico.length && ico.length < n ? ['iconos'] : []).concat(n > 3 ? ['mitad'] : []);
+    PAREJAS.forEach(function (p, a) { formas.forEach(function (f) { ops.push([a, f]); }); });
+    var k; do { k = Math.floor(Math.random() * ops.length); } while (ops.length > 1 && k === ultimaPropuesta);
+    ultimaPropuesta = k;
+    var par = PAREJAS[ops[k][0]], forma = ops[k][1], base = par[0], acento = par[1];
+    state.color = base; state.pincel = acento; state.combinar = true;
+    state.mezcla = t.map(function (x, i) {
+      var en = forma === 'alternar' ? i % 2 === 1 : forma === 'primera' ? i === 0 : forma === 'iconos' ? ico.indexOf(i) > -1 : i >= Math.ceil(n / 2);
+      return en ? acento : '';
+    });
+    evento('collar_nombre_proponer', { base: base, acento: acento, forma: forma });
+    return true;
+  }
+  // Probador con foto (assets/collar-probador.js): le pasa las piezas con sus colores
+  function abrirProbador() {
+    var t = tokens();
+    if (!t.length) { $('#cn-nombre').focus(); var av = $('[data-cn=aviso]'); av.hidden = false; av.textContent = 'Primero escribe su nombre para verlo en la foto.'; return; }
+    if (!window.wuuffProbador) return;
+    window.wuuffProbador.abrir({
+      piezas: t.map(function (x, i) { var c = colorEn(i); return { t: x, main: c.main, edge: c.edge }; }),
+      adv: ADV, strap: '#a9bbe0',
+      iconos: { '♥': SVG_HEART.match(/d="([^"]+)"/)[1], '★': SVG_STAR.match(/d="([^"]+)"/)[1] }
+    });
+  }
+  // "L Azul rey · U Azul rey · N Rosado" (para el pedido y WhatsApp)
+  function detalleMezcla() { return tokens().map(function (t, i) { return t + ' ' + colorEn(i).nombre; }).join(' · '); }
   function peso() { return CFG.pesos.filter(function (p) { return p.id === state.peso; })[0]; }
   function talla() { return peso().talla || state.tallaManual; }
   function extras() { return Math.max(0, tokens().length - CFG.incluidas); }
   function total() { return modo === 'sin' ? CFG.precioSinNombre : CFG.precio + extras() * CFG.precioExtra; }
-  function disponibles(l) {
+  function disponibles(l, colorId) {
     if (!STOCK || STOCK.sinLimite) return Infinity;
-    var s = (STOCK.stock || {})[state.color] || {};
+    var s = (STOCK.stock || {})[colorId || state.color] || {};
     return s[l] || 0;
   }
+  // Piezas que faltan, cada una en su color: [{ t: 'L', color: 'rosado' }]
   function faltan() {
     var need = {}, out = [];
-    tokens().forEach(function (t) { need[t] = (need[t] || 0) + 1; });
-    Object.keys(need).forEach(function (t) { if (need[t] > disponibles(t)) out.push(t); });
+    tokens().forEach(function (t, i) { var k = t + '|' + colorEn(i).id; need[k] = (need[k] || 0) + 1; });
+    Object.keys(need).forEach(function (k) { var p = k.split('|'); if (need[k] > disponibles(p[0], p[1])) out.push({ t: p[0], color: p[1] }); });
     return out;
+  }
+  // Agrupa las piezas que faltan por color: [{ color: 'rosado', piezas: ['L', 'U'] }]
+  function porColor(lista) {
+    var g = [];
+    lista.forEach(function (x) { var c = colorPorId(x.color).nombre.toLowerCase(), e = g.filter(function (y) { return y.color === c; })[0]; if (e) e.piezas.push(x.t); else g.push({ color: c, piezas: [x.t] }); });
+    return g;
   }
   function evento(n, p) { try { if (window.gtag) gtag('event', n, p || {}); } catch (e) {} }
 
@@ -47,7 +93,12 @@
       if (out.length >= CFG.maximo) { corto = true; return; }
       out.push(/^[A-Z]$/.test(b) ? b : ch);
     });
+    var antes = tokens();
     state.texto = out.join(''); flags.ene = ene; flags.corto = corto;
+    // Conserva el color de cada pieza mientras el nombre no cambie en esa posición
+    var mez = [];
+    out.forEach(function (t, i) { mez.push(antes[i] === t ? (state.mezcla[i] || '') : ''); });
+    state.mezcla = mez;
     pintar();
   }
 
@@ -67,8 +118,16 @@
         '<p class="cn-keys-title">O toca las letras</p><div class="cn-keys" data-cn="keys"></div>' +
         '<div class="cn-tools"><button type="button" class="cn-link" data-cn="borrar">Borrar la última</button><button type="button" class="cn-link" data-cn="limpiar">Empezar de nuevo</button></div>' +
         '<p class="cn-aviso" data-cn="aviso" role="status" hidden></p></section>' +
-      '<section class="cn-card cn-solo-nombre"><h3 class="cn-paso"><span>2</span> Color de las letras</h3><p class="cn-hint">Cambia el color y mira cómo queda en el collar.</p>' +
-        '<div class="cn-opts" data-cn="colores" role="radiogroup" aria-label="Color de las letras"></div></section>' +
+      '<section class="cn-card cn-solo-nombre"><h3 class="cn-paso"><span>2</span> Colores</h3>' +
+        '<button type="button" class="cn-proponer" data-cn="proponer">✨ Proponme una combinación</button>' +
+        '<div class="cn-seg cn-modo-color" role="group" aria-label="Cómo quieres los colores"><button type="button" data-cm="uno" aria-pressed="true">Un color</button><button type="button" data-cm="mix" aria-pressed="false">🎨 Combinar</button></div>' +
+        '<p class="cn-lbl cn-paso-color" data-cn="col-lbl"></p>' +
+        '<div class="cn-circulos" data-cn="colores" role="radiogroup" aria-label="Colores"></div>' +
+        '<div class="cn-mezcla" data-cn="mezcla" hidden><p class="cn-lbl cn-paso-color" data-cn="mezcla-lbl"></p>' +
+        '<div class="cn-piezas" data-cn="piezas"></div><p class="cn-hint" data-cn="mezcla-hint"></p>' +
+        '<div class="cn-tools"><button type="button" class="cn-link" data-cn="todas">Todas de este color</button><button type="button" class="cn-link" data-cn="alternar">Alternar colores</button></div></div></section>' +
+      '<section class="cn-card cn-solo-nombre cn-probar"><p><b>📸 ¿Cómo se le vería?</b> Sube una foto de tu perrito y míralo con su collar.</p>' +
+        '<button type="button" class="cn-btn-probar" data-cn="probar">Pruébalo en tu perro</button></section>' +
       '<section class="cn-card"><h3 class="cn-paso"><span data-cn="num-talla">3</span> Talla por peso</h3><p class="cn-hint">Escoge cuánto pesa tu perrito y te decimos qué talla le queda.</p>' +
         '<div class="cn-opts" data-cn="pesos" role="radiogroup" aria-label="Peso de tu perrito"></div><div class="cn-size" data-cn="size"></div></section>' +
       '<section class="cn-card cn-precio" aria-label="Resumen del precio"><h3>Tu collar</h3><dl>' +
@@ -87,9 +146,8 @@
       if (ICONOS.indexOf(k) > -1) b.innerHTML = svgDe(k, ''); else b.textContent = k;
       keys.appendChild(b);
     });
-    CFG.colores.forEach(function (c) {
-      $('[data-cn=colores]').insertAdjacentHTML('beforeend', '<button type="button" class="cn-opt" role="radio" data-id="' + c.id + '"><span class="cn-dot" style="background:' + c.main + '"></span><b>' + c.nombre + '</b></button>');
-    });
+    function circulo(c) { return '<button type="button" class="cn-circ" role="radio" data-id="' + c.id + '" aria-label="' + c.nombre + '" title="' + c.nombre + '" style="--c:' + c.main + '"></button>'; }
+    CFG.colores.forEach(function (c) { $('[data-cn=colores]').insertAdjacentHTML('beforeend', circulo(c)); });
     CFG.pesos.forEach(function (p) {
       $('[data-cn=pesos]').insertAdjacentHTML('beforeend', '<button type="button" class="cn-opt" role="radio" data-id="' + p.id + '"><b>' + p.txt + '</b><small>' + p.sub + '</small></button>');
     });
@@ -97,7 +155,27 @@
     caja.addEventListener('click', function (e) {
       var t = e.target, b;
       if ((b = t.closest('.cn-key')) && !b.disabled) return setTexto(state.texto + b.getAttribute('data-k'));
-      if ((b = t.closest('[data-cn=colores] .cn-opt'))) { state.color = b.getAttribute('data-id'); evento('collar_nombre_color', { color: state.color }); return pintar(); }
+      if ((b = t.closest('[data-cm]'))) {
+        state.combinar = b.getAttribute('data-cm') === 'mix';
+        if (state.combinar) { var idx = CFG.colores.map(function (c) { return c.id; }).indexOf(state.color); state.pincel = CFG.colores[(idx + 1) % CFG.colores.length].id; }
+        else state.mezcla = state.mezcla.map(function () { return ''; });
+        evento('collar_nombre_combinar', { activo: state.combinar }); return pintar();
+      }
+      if ((b = t.closest('[data-cn=colores] .cn-circ'))) {
+        var id = b.getAttribute('data-id');
+        if (state.combinar) state.pincel = id; else { state.color = id; evento('collar_nombre_color', { color: id }); }
+        return pintar();
+      }
+      // Combinar: toca una letra (abajo o en la vista previa) y queda del color elegido; otra vez, vuelve a su color
+      if (state.combinar && (b = t.closest('[data-cn=piezas] .cn-pieza, [data-cn=name] .cn-ch'))) {
+        var k = +b.getAttribute('data-i');
+        state.mezcla[k] = colorEn(k).id === state.pincel ? '' : (state.pincel === state.color ? '' : state.pincel);
+        return pintar();
+      }
+      if (t.closest('[data-cn=todas]')) { state.mezcla = tokens().map(function () { return state.pincel === state.color ? '' : state.pincel; }); return pintar(); }
+      if (t.closest('[data-cn=probar]')) { abrirProbador(); return; }
+      if (t.closest('[data-cn=proponer]')) { if (!proponer()) { $('#cn-nombre').focus(); } return pintar(); }
+      if (t.closest('[data-cn=alternar]')) { state.mezcla = tokens().map(function (x, i) { return i % 2 && state.pincel !== state.color ? state.pincel : ''; }); return pintar(); }
       if ((b = t.closest('[data-cn=pesos] .cn-opt'))) { state.peso = b.getAttribute('data-id'); return pintar(); }
       if ((b = t.closest('[data-cn=size] button[data-t]'))) { state.tallaManual = b.getAttribute('data-t'); return pintar(); }
       if (t.closest('[data-cn=borrar]')) { var x = tokens(); x.pop(); return setTexto(x.join('')); }
@@ -122,27 +200,44 @@
     if (!em) em = 3;
     var fs = Math.max(26, Math.min(120, strap.clientWidth * 0.76 / (em + t.length * 0.02)));
     name.style.setProperty('--fs', fs + 'px');
-    strap.style.height = Math.max(30, fs * 0.54) + 'px';
+    // Si las letras anchas (M, W) no caben, se achica hasta que quepan
+    var max = strap.clientWidth * 0.84;
+    if (name.scrollWidth > max) { fs = Math.max(20, fs * max / name.scrollWidth); name.style.setProperty('--fs', fs + 'px'); }
+    // Las letras y figuras van encajadas: la banda siempre un poco más baja que ellas
+    strap.style.height = Math.max(16, fs * 0.5) + 'px';
   }
 
   function pintar() {
     var col = color(), t = tokens(), n = t.length, ex = extras(), tot = total(), falta = faltan();
     var name = $('[data-cn=name]');
     name.style.setProperty('--c', col.main); name.style.setProperty('--e', col.edge);
-    name.innerHTML = n ? t.map(function (x) {
-      return '<span class="cn-ch">' + (ICONOS.indexOf(x) > -1 ? svgDe(x, 'cn-ico') : x) + '</span>';
+    var mix = combinado();
+    name.innerHTML = n ? t.map(function (x, i) {
+      var ci = state.mezcla[i] && colorPorId(state.mezcla[i]);
+      return '<span class="cn-ch" data-i="' + i + '"' + (ci ? ' style="--c:' + ci.main + ';--e:' + ci.edge + '"' : '') + '>' + (ICONOS.indexOf(x) > -1 ? svgDe(x, 'cn-ico') : x) + '</span>';
     }).join('') : '<span class="cn-ghost">Su nombre</span>';
     ajustar();
-    $('[data-cn=stage-color]').textContent = 'Letras ' + col.nombre.toLowerCase();
+    $('[data-cn=stage-color]').textContent = mix ? 'Letras combinadas' : 'Letras ' + col.nombre.toLowerCase();
+    var pin = colorPorId(state.pincel) || col;
+    caja.classList.toggle('cn-combinando', state.combinar);
+    caja.querySelectorAll('[data-cm]').forEach(function (b) { b.setAttribute('aria-pressed', String((b.getAttribute('data-cm') === 'mix') === state.combinar)); });
+    $('[data-cn=col-lbl]').innerHTML = state.combinar ? '<b>1</b> Elige un color · <span class="cn-nom">' + pin.nombre + '</span>' : 'Color de las letras · <span class="cn-nom">' + col.nombre + '</span>';
+    caja.querySelectorAll('[data-cn=colores] .cn-circ').forEach(function (b) { b.setAttribute('aria-checked', String(b.getAttribute('data-id') === (state.combinar ? pin.id : state.color))); });
+    $('[data-cn=mezcla]').hidden = !state.combinar;
+    $('[data-cn=mezcla-lbl]').innerHTML = '<b>2</b> Toca las letras que quieres en <span class="cn-nom">' + pin.nombre.toLowerCase() + '</span>';
+    $('[data-cn=mezcla-hint]').textContent = n ? 'Tócala de nuevo para volver a ' + col.nombre.toLowerCase() + '. También sirve tocar el collar de arriba.' : 'Primero escribe el nombre en el paso 1.';
+    $('[data-cn=piezas]').innerHTML = t.map(function (x, i) {
+      var c = colorEn(i);
+      return '<button type="button" class="cn-pieza" data-i="' + i + '" aria-label="' + nombrePieza(x) + ' en ' + c.nombre + '" style="--c:' + c.main + ';--e:' + c.edge + '">' + (ICONOS.indexOf(x) > -1 ? svgDe(x, '') : x) + '</button>';
+    }).join('');
     $('[data-cn=stage-talla]').textContent = 'Collar azul cielo · Talla ' + talla();
     var inp = $('#cn-nombre'); if (inp.value !== state.texto) inp.value = state.texto;
     $('[data-cn=cuenta]').innerHTML = '<b>' + n + '</b> de ' + CFG.maximo + (ex ? ' · ' + ex + (ex === 1 ? ' letra extra' : ' letras extra') : '');
     $('[data-cn=badge]').textContent = ex ? '+' + cop(ex * CFG.precioExtra) : CFG.incluidas + ' incluidas sin costo';
     caja.querySelectorAll('.cn-key').forEach(function (b) {
       var k = b.getAttribute('data-k');
-      b.disabled = n >= CFG.maximo || cuenta(k) >= disponibles(k);
+      b.disabled = n >= CFG.maximo || cuenta(k) >= disponibles(k, state.color);
     });
-    caja.querySelectorAll('[data-cn=colores] .cn-opt').forEach(function (b) { b.setAttribute('aria-checked', String(b.getAttribute('data-id') === state.color)); });
     caja.querySelectorAll('[data-cn=pesos] .cn-opt').forEach(function (b) { b.setAttribute('aria-checked', String(b.getAttribute('data-id') === state.peso)); });
     var p = peso(), sz = $('[data-cn=size]'), tl = talla();
     if (!p.talla) {
@@ -155,7 +250,7 @@
     var msgs = [];
     if (flags.ene) msgs.push('La Ñ todavía no la tenemos. Escríbenos si el nombre la necesita.');
     if (flags.corto) msgs.push('El máximo es ' + CFG.maximo + ' letras por collar.');
-    if (falta.length) msgs.push('En ' + col.nombre.toLowerCase() + ' nos faltan piezas de ' + falta.join(', ') + '. Prueba con otro color o consúltanos.');
+    if (falta.length) msgs.push(porColor(falta).map(function (g) { return 'En ' + g.color + ' nos faltan piezas de ' + g.piezas.join(', ') + '.'; }).join(' ') + ' Prueba con otro color o consúltanos.');
     var av = $('[data-cn=aviso]'); av.hidden = !msgs.length; av.textContent = msgs.join(' ');
     $('[data-cn=extra-lbl]').textContent = ex ? 'Letras extra × ' + ex : 'Letras extra';
     $('[data-cn=extra]').textContent = ex ? cop(ex * CFG.precioExtra) : '$0';
@@ -171,8 +266,8 @@
     else { cta.removeAttribute('aria-disabled'); cta.textContent = 'Comprar ahora · ' + cop(tot); }
     var lineas = modo === 'sin' ? ['Hola Wuuff Puppy, tengo una duda sobre el collar:', '• Talla: ' + tl + ' (' + p.txt + ')', '• Total: ' + cop(tot)]
       : ['Hola Wuuff Puppy, tengo una duda sobre el collar con nombre:', '• Nombre: ' + (n ? t.join('') : '(sin definir)'),
-      '• Letras: ' + col.nombre, '• Talla: ' + tl + ' (' + p.txt + ')', '• Total: ' + cop(tot)];
-    if (falta.length) lineas.push('• ¿Tienen las letras ' + falta.join(', ') + ' en ' + col.nombre.toLowerCase() + '?');
+      '• Letras: ' + (mix ? 'combinadas (' + detalleMezcla() + ')' : col.nombre), '• Talla: ' + tl + ' (' + p.txt + ')', '• Total: ' + cop(tot)];
+    if (falta.length) lineas.push('• ¿Tienen ' + porColor(falta).map(function (g) { return g.piezas.join(', ') + ' en ' + g.color; }).join(' y ') + '?');
     var wa = $('[data-cn=wa]');
     wa.href = 'https://wa.me/' + WA + '?text=' + encodeURIComponent(lineas.join('\n'));
     wa.textContent = falta.length ? 'Consultar disponibilidad por WhatsApp' : '¿Dudas? Escríbenos por WhatsApp';
@@ -185,8 +280,10 @@
     var cta = $('[data-cn=cta]');
     if (cta.getAttribute('aria-disabled') === 'true') { $('#cn-nombre').focus(); return; }
     if (modo === 'sin') { evento('collar_comprar', { talla: talla(), value: total() }); location.href = '/?comprar=collar&talla=' + talla(); return; }
-    evento('collar_nombre_comprar', { letras: tokens().length, color: state.color, talla: talla(), value: total() });
-    location.href = '/?comprar=collar&talla=' + talla() + '&nombre=' + encodeURIComponent(state.texto) + '&color=' + state.color + '&peso=' + state.peso;
+    var mix = combinado();
+    evento('collar_nombre_comprar', { letras: tokens().length, color: state.color, combinado: mix, talla: talla(), value: total() });
+    location.href = '/?comprar=collar&talla=' + talla() + '&nombre=' + encodeURIComponent(state.texto) + '&color=' + state.color +
+      (mix ? '&mezcla=' + state.mezcla.slice(0, tokens().length).join(',') : '') + '&peso=' + state.peso;
   }
 
   // ¿Con nombre o sin nombre? Las dos usan la misma talla por peso; sin nombre oculta el nombre y el color.

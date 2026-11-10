@@ -87,7 +87,19 @@ function nombreCollar(n) {
   if (!color) return { error: 'Elige el color de las letras' };
   const peso = CN.pesos.find(p => p.id === n.peso) || null;
   const extras = Math.max(0, piezas.length - CN.incluidas);
-  return { texto: piezas.join(''), color: color.nombre, peso: peso ? peso.txt : '', extras, cents: (CN.precio + extras * CN.precioExtra) * 100 };
+  // Combinar colores (opcional): mezcla[i] = color de la pieza i ('' o el mismo = color de las letras)
+  const mezcla = Array.isArray(n.mezcla) ? n.mezcla : String(n.mezcla || '').split(',');
+  let combinado = false;
+  const colores = piezas.map((p, i) => {
+    const c = CN.colores.find(x => x.id === mezcla[i]) || color;
+    if (c.id !== color.id) combinado = true;
+    return c.nombre;
+  });
+  const usados = combinado ? colores.filter((c, i) => colores.indexOf(c) === i) : [];
+  // Si todas quedaron del mismo color, no es combinación: es ese color
+  const unico = usados.length === 1 ? usados[0] : '';
+  const detalle = combinado && !unico ? piezas.map((p, i) => p + ' ' + colores[i]).join(' · ') : '';
+  return { texto: piezas.join(''), color: unico || color.nombre, detalle, usados, peso: peso ? peso.txt : '', extras, cents: (CN.precio + extras * CN.precioExtra) * 100 };
 }
 
 // carrito = { items: [{ p: 'collar', talla: 'S', qty: 1, nombre: { texto, color, peso } }], placa: { nombre, forma, base, letras } }
@@ -106,7 +118,7 @@ function armar(carrito) {
       if (!cn || cn.error) return { error: (cn && cn.error) || 'Revisa el nombre del collar' };
       if (!talla) return { error: 'Elige la talla del collar' };
       lineas.push({ tipo: 'producto', clave: 'collar', personal: Object.assign({ talla }, cn), cents: cn.cents,
-        nombre: 'Collar con nombre "' + cn.texto + '" (Talla ' + talla + ') · letras ' + cn.color + (cn.extras ? ' · ' + cn.extras + (cn.extras === 1 ? ' letra extra' : ' letras extra') : '') });
+        nombre: 'Collar con nombre "' + cn.texto + '" (Talla ' + talla + ') · letras ' + (cn.detalle ? 'combinadas (' + cn.usados.join(', ') + ')' : cn.color) + (cn.extras ? ' · ' + cn.extras + (cn.extras === 1 ? ' letra extra' : ' letras extra') : '') });
       continue;
     }
     const nombre = prod.nombre + (talla ? ' (Talla ' + textoTalla + ')' : '') + (qty > 1 ? ' x' + qty : '');
@@ -248,7 +260,7 @@ async function calcular(datos, opciones) {
 // Líneas para los avisos a la tienda (correo y WhatsApp)
 function lineasAviso(calc) {
   if (!calc) return [];
-  const nombres = (calc.lineas || []).filter(x => x.personal).map(x => '✏️ Nombre: ' + x.personal.texto + ' · Letras: ' + x.personal.color +
+  const nombres = (calc.lineas || []).filter(x => x.personal).map(x => '✏️ Nombre: ' + x.personal.texto + ' · Letras: ' + (x.personal.detalle ? 'combinadas → ' + x.personal.detalle : x.personal.color) +
     ' · Talla ' + x.personal.talla + (x.personal.peso ? ' (' + x.personal.peso.toLowerCase() + ')' : '') + ' · Extras: ' + x.personal.extras);
   if (!calc.codigo) return nombres;
   if (calc.codigo.tipo === 'colaboracion') {
