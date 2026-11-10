@@ -96,10 +96,10 @@
       return { x: r * Math.sin(phi), y: cy + r * Math.cos(phi), a: -phi };
     }
     // letras: centradas en el collar y del tamaño que quepan (dejan espacio para hebilla y argolla)
-    var pz = datos.piezas, fs = h * 1.85, avance = function (t) { return datos.iconos[t] ? 0.75 : (datos.adv[t] || 0.7); };
+    var pz = datos.piezas, fs = h * 2.5, avance = function (t) { return datos.iconos[t] ? 0.75 : (datos.adv[t] || 0.7); };
     var total = pz.reduce(function (a, p) { return a + avance(p.t) * fs; }, 0);
     var Lh = recto ? L / 2 : R * theta / 2;   // medio largo de la banda medido sobre la curva
-    if (total > Lh * 0.8) { fs *= Lh * 0.8 / total; total = Lh * 0.8; }
+    if (total > Lh * 1.05) { fs *= Lh * 1.05 / total; total = Lh * 1.05; }
     var C = { base: datos.strap, osc: '#8396c4', claro: '#cfdbf3', borde: 'rgba(60,75,130,.35)' };
     // un trazo a lo largo de la banda, desplazado "dy" del centro (para el volumen)
     function trazo(dy, ancho, color) {
@@ -141,14 +141,6 @@
       ctx.stroke();
     });
     ctx.restore();
-    // botones (remaches) junto a la argolla
-    [sD - h * 0.85, izq - h * 0.35].forEach(function (sB, k) {
-      if (sB < -lim || (k === 1 && sD <= -lim)) return;
-      pieza(sB, function () {
-        ctx.fillStyle = C.osc; ctx.beginPath(); ctx.arc(0, h * 0.04, h * 0.2, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = C.claro; ctx.beginPath(); ctx.arc(-h * 0.04, -h * 0.02, h * 0.15, 0, Math.PI * 2); ctx.fill();
-      });
-    });
     // hebilla de clic y presilla, al otro lado de las letras
     var sH = der + h * 1.05, sP = der + h * 2.15;
     if (sH + h * 0.75 < lim) pieza(sH, function () {
