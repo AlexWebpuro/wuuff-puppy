@@ -87,7 +87,10 @@ function nombreCollar(n) {
   if (!color) return { error: 'Elige el color de las letras' };
   const peso = CN.pesos.find(p => p.id === n.peso) || null;
   const extras = Math.max(0, piezas.length - CN.incluidas);
-  return { texto: piezas.join(''), color: color.nombre, peso: peso ? peso.txt : '', extras, cents: (CN.precio + extras * CN.precioExtra) * 100 };
+  // Corazones y estrellas en otro color (opcional, solo si el nombre los lleva y el color es distinto)
+  const c2 = CN.colores.find(c => c.id === n.colorIconos);
+  const colorIconos = c2 && c2.id !== color.id && piezas.some(p => p === '♥' || p === '★') ? c2.nombre : '';
+  return { texto: piezas.join(''), color: color.nombre, colorIconos, peso: peso ? peso.txt : '', extras, cents: (CN.precio + extras * CN.precioExtra) * 100 };
 }
 
 // carrito = { items: [{ p: 'collar', talla: 'S', qty: 1, nombre: { texto, color, peso } }], placa: { nombre, forma, base, letras } }
@@ -106,7 +109,7 @@ function armar(carrito) {
       if (!cn || cn.error) return { error: (cn && cn.error) || 'Revisa el nombre del collar' };
       if (!talla) return { error: 'Elige la talla del collar' };
       lineas.push({ tipo: 'producto', clave: 'collar', personal: Object.assign({ talla }, cn), cents: cn.cents,
-        nombre: 'Collar con nombre "' + cn.texto + '" (Talla ' + talla + ') · letras ' + cn.color + (cn.extras ? ' · ' + cn.extras + (cn.extras === 1 ? ' letra extra' : ' letras extra') : '') });
+        nombre: 'Collar con nombre "' + cn.texto + '" (Talla ' + talla + ') · letras ' + cn.color + (cn.colorIconos ? ' · ♥★ ' + cn.colorIconos : '') + (cn.extras ? ' · ' + cn.extras + (cn.extras === 1 ? ' letra extra' : ' letras extra') : '') });
       continue;
     }
     const nombre = prod.nombre + (talla ? ' (Talla ' + textoTalla + ')' : '') + (qty > 1 ? ' x' + qty : '');
@@ -248,7 +251,7 @@ async function calcular(datos, opciones) {
 // Líneas para los avisos a la tienda (correo y WhatsApp)
 function lineasAviso(calc) {
   if (!calc) return [];
-  const nombres = (calc.lineas || []).filter(x => x.personal).map(x => '✏️ Nombre: ' + x.personal.texto + ' · Letras: ' + x.personal.color +
+  const nombres = (calc.lineas || []).filter(x => x.personal).map(x => '✏️ Nombre: ' + x.personal.texto + ' · Letras: ' + x.personal.color + (x.personal.colorIconos ? ' · Corazones/estrellas: ' + x.personal.colorIconos : '') +
     ' · Talla ' + x.personal.talla + (x.personal.peso ? ' (' + x.personal.peso.toLowerCase() + ')' : '') + ' · Extras: ' + x.personal.extras);
   if (!calc.codigo) return nombres;
   if (calc.codigo.tipo === 'colaboracion') {

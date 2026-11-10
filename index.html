@@ -3451,10 +3451,12 @@ function pagarConWompi(estimadoCents, nombreProducto, customerData, shippingAddr
         var texto = piezasNombre(nombreCollar, cfg.maximo);
         var col = cfg.colores.filter(function(c){ return c.id === q.get('color'); })[0];
         if(!texto || !col){ location.replace(prod.url); return; }
+        var col2 = cfg.colores.filter(function(c){ return c.id === q.get('color2') && c.id !== col.id; })[0];
+        if(col2 && !/[♥★]/.test(texto)) col2 = null;
         var extras = Math.max(0, Array.from(texto).length - cfg.incluidas);
         window.wuuffVolverA = prod.url + '?nombre=' + encodeURIComponent(texto);
-        iniciarCompra((cfg.precio + extras * cfg.precioExtra) * 100, 'Collar con nombre "' + texto + '" (' + tallaTexto + ') · letras ' + col.nombre, tallaTexto,
-          { items: [{ p: 'collar', talla: talla, nombre: { texto: texto, color: col.id, peso: q.get('peso') || '' } }] });
+        iniciarCompra((cfg.precio + extras * cfg.precioExtra) * 100, 'Collar con nombre "' + texto + '" (' + tallaTexto + ') · letras ' + col.nombre + (col2 ? ' · ♥★ ' + col2.nombre : ''), tallaTexto,
+          { items: [{ p: 'collar', talla: talla, nombre: { texto: texto, color: col.id, colorIconos: col2 ? col2.id : '', peso: q.get('peso') || '' } }] });
       }).catch(function(){ location.replace(prod.url); });
       return;
     }
