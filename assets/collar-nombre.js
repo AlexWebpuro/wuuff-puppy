@@ -11,7 +11,7 @@
   var SVG_HEART = '<path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 2.7 4.5 6.4 4.5c2.1 0 3.8 1.2 5.6 3.3 1.8-2.1 3.5-3.3 5.6-3.3 3.7 0 5.5 3.9 4 7.3C19.5 16.4 12 21 12 21z"/>';
   var SVG_STAR = '<path d="M12 2.6l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.2 1.2-6.5L2.5 9.5l6.6-.9z"/>';
   var CFG = null, STOCK = null;
-  var state = { texto: '', color: 'rosado', colorIconos: '', peso: 'p1', tallaManual: 'S' }, flags = { ene: false, corto: false };
+  var state = { texto: '', color: 'rosado', mezcla: [], sel: -1, peso: 'p1', tallaManual: 'S' }, flags = { ene: false, corto: false };
 
   function $(s) { return caja.querySelector(s); }
   function cop(n) { return '$' + String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
@@ -19,29 +19,33 @@
   function tokens() { return Array.from(state.texto); }
   function cuenta(t) { return tokens().filter(function (x) { return x === t; }).length; }
   function color() { return CFG.colores.filter(function (c) { return c.id === state.color; })[0]; }
-  // Corazones y estrellas pueden ir en otro color ('' = el mismo de las letras)
-  function hayIconos() { return tokens().some(function (t) { return ICONOS.indexOf(t) > -1; }); }
-  function colorIconos() { return (state.colorIconos && hayIconos() && CFG.colores.filter(function (c) { return c.id === state.colorIconos; })[0]) || null; }
-  function colorDe(t) { var ci = ICONOS.indexOf(t) > -1 && colorIconos(); return ci || color(); }
+  // Combinar colores: cada letra o figura puede tener su propio color (mezcla[i], '' = el color de las letras)
+  function colorPorId(id) { return CFG.colores.filter(function (c) { return c.id === id; })[0]; }
+  function colorEn(i) { return (state.mezcla[i] && colorPorId(state.mezcla[i])) || color(); }
+  function combinado() { return state.mezcla.some(function (m, i) { return m && m !== state.color && i < tokens().length; }); }
+  function nombrePieza(t) { return t === '♥' ? 'corazón' : (t === '★' ? 'estrella' : t); }
+  // "L Azul rey · U Azul rey · N Rosado" (para el pedido y WhatsApp)
+  function detalleMezcla() { return tokens().map(function (t, i) { return t + ' ' + colorEn(i).nombre; }).join(' · '); }
   function peso() { return CFG.pesos.filter(function (p) { return p.id === state.peso; })[0]; }
   function talla() { return peso().talla || state.tallaManual; }
   function extras() { return Math.max(0, tokens().length - CFG.incluidas); }
   function total() { return modo === 'sin' ? CFG.precioSinNombre : CFG.precio + extras() * CFG.precioExtra; }
-  function disponibles(l) {
+  function disponibles(l, colorId) {
     if (!STOCK || STOCK.sinLimite) return Infinity;
-    var s = (STOCK.stock || {})[colorDe(l).id] || {};
+    var s = (STOCK.stock || {})[colorId || state.color] || {};
     return s[l] || 0;
   }
+  // Piezas que faltan, cada una en su color: [{ t: 'L', color: 'rosado' }]
   function faltan() {
     var need = {}, out = [];
-    tokens().forEach(function (t) { need[t] = (need[t] || 0) + 1; });
-    Object.keys(need).forEach(function (t) { if (need[t] > disponibles(t)) out.push(t); });
+    tokens().forEach(function (t, i) { var k = t + '|' + colorEn(i).id; need[k] = (need[k] || 0) + 1; });
+    Object.keys(need).forEach(function (k) { var p = k.split('|'); if (need[k] > disponibles(p[0], p[1])) out.push({ t: p[0], color: p[1] }); });
     return out;
   }
   // Agrupa las piezas que faltan por color: [{ color: 'rosado', piezas: ['L', 'U'] }]
   function porColor(lista) {
     var g = [];
-    lista.forEach(function (x) { var c = colorDe(x).nombre.toLowerCase(), e = g.filter(function (y) { return y.color === c; })[0]; if (e) e.piezas.push(x); else g.push({ color: c, piezas: [x] }); });
+    lista.forEach(function (x) { var c = colorPorId(x.color).nombre.toLowerCase(), e = g.filter(function (y) { return y.color === c; })[0]; if (e) e.piezas.push(x.t); else g.push({ color: c, piezas: [x.t] }); });
     return g;
   }
   function evento(n, p) { try { if (window.gtag) gtag('event', n, p || {}); } catch (e) {} }
@@ -57,7 +61,13 @@
       if (out.length >= CFG.maximo) { corto = true; return; }
       out.push(/^[A-Z]$/.test(b) ? b : ch);
     });
+    var antes = tokens();
     state.texto = out.join(''); flags.ene = ene; flags.corto = corto;
+    // Conserva el color de cada pieza mientras el nombre no cambie en esa posición
+    var mez = [];
+    out.forEach(function (t, i) { mez.push(antes[i] === t ? (state.mezcla[i] || '') : ''); });
+    state.mezcla = mez;
+    if (state.sel >= out.length) state.sel = -1;
     pintar();
   }
 
@@ -77,10 +87,14 @@
         '<p class="cn-keys-title">O toca las letras</p><div class="cn-keys" data-cn="keys"></div>' +
         '<div class="cn-tools"><button type="button" class="cn-link" data-cn="borrar">Borrar la última</button><button type="button" class="cn-link" data-cn="limpiar">Empezar de nuevo</button></div>' +
         '<p class="cn-aviso" data-cn="aviso" role="status" hidden></p></section>' +
-      '<section class="cn-card cn-solo-nombre"><h3 class="cn-paso"><span>2</span> Color de las letras</h3><p class="cn-hint">Cambia el color y mira cómo queda en el collar.</p>' +
-        '<div class="cn-opts" data-cn="colores" role="radiogroup" aria-label="Color de las letras"></div>' +
-        '<div class="cn-iconos"><p class="cn-lbl">Color de los ♥ y ★ <span data-cn="iconos-nom"></span></p>' +
-        '<p class="cn-hint" data-cn="iconos-hint"></p><div class="cn-circulos" data-cn="iconos" role="radiogroup" aria-label="Color de los corazones y estrellas"></div></div></section>' +
+      '<section class="cn-card cn-solo-nombre"><h3 class="cn-paso"><span>2</span> Colores</h3>' +
+        '<p class="cn-lbl">Color de las letras · <span class="cn-nom" data-cn="col-nom"></span></p>' +
+        '<div class="cn-circulos" data-cn="colores" role="radiogroup" aria-label="Color de las letras"></div>' +
+        '<div class="cn-mezcla"><p class="cn-lbl">Combinar colores <span class="cn-nom">(opcional)</span></p>' +
+        '<p class="cn-hint" data-cn="mezcla-hint"></p><div class="cn-piezas" data-cn="piezas"></div>' +
+        '<div class="cn-mezcla-elige" data-cn="mezcla-elige" hidden><p class="cn-lbl" data-cn="mezcla-lbl"></p>' +
+        '<div class="cn-circulos" data-cn="mezcla" role="radiogroup"></div></div>' +
+        '<button type="button" class="cn-link" data-cn="un-color" hidden>Volver a un solo color</button></div></section>' +
       '<section class="cn-card"><h3 class="cn-paso"><span data-cn="num-talla">3</span> Talla por peso</h3><p class="cn-hint">Escoge cuánto pesa tu perrito y te decimos qué talla le queda.</p>' +
         '<div class="cn-opts" data-cn="pesos" role="radiogroup" aria-label="Peso de tu perrito"></div><div class="cn-size" data-cn="size"></div></section>' +
       '<section class="cn-card cn-precio" aria-label="Resumen del precio"><h3>Tu collar</h3><dl>' +
@@ -99,13 +113,10 @@
       if (ICONOS.indexOf(k) > -1) b.innerHTML = svgDe(k, ''); else b.textContent = k;
       keys.appendChild(b);
     });
-    CFG.colores.forEach(function (c) {
-      $('[data-cn=colores]').insertAdjacentHTML('beforeend', '<button type="button" class="cn-opt" role="radio" data-id="' + c.id + '"><span class="cn-dot" style="background:' + c.main + '"></span><b>' + c.nombre + '</b></button>');
-    });
-    $('[data-cn=iconos]').insertAdjacentHTML('beforeend', '<button type="button" class="cn-circ cn-igual" role="radio" data-id="" aria-label="Igual que las letras" title="Igual que las letras">=</button>');
-    CFG.colores.forEach(function (c) {
-      $('[data-cn=iconos]').insertAdjacentHTML('beforeend', '<button type="button" class="cn-circ" role="radio" data-id="' + c.id + '" aria-label="' + c.nombre + '" title="' + c.nombre + '" style="--c:' + c.main + '"></button>');
-    });
+    function circulo(c) { return '<button type="button" class="cn-circ" role="radio" data-id="' + c.id + '" aria-label="' + c.nombre + '" title="' + c.nombre + '" style="--c:' + c.main + '"></button>'; }
+    CFG.colores.forEach(function (c) { $('[data-cn=colores]').insertAdjacentHTML('beforeend', circulo(c)); });
+    $('[data-cn=mezcla]').insertAdjacentHTML('beforeend', '<button type="button" class="cn-circ cn-igual" role="radio" data-id="" aria-label="Igual que las demás letras" title="Igual que las demás letras">=</button>');
+    CFG.colores.forEach(function (c) { $('[data-cn=mezcla]').insertAdjacentHTML('beforeend', circulo(c)); });
     CFG.pesos.forEach(function (p) {
       $('[data-cn=pesos]').insertAdjacentHTML('beforeend', '<button type="button" class="cn-opt" role="radio" data-id="' + p.id + '"><b>' + p.txt + '</b><small>' + p.sub + '</small></button>');
     });
@@ -113,8 +124,15 @@
     caja.addEventListener('click', function (e) {
       var t = e.target, b;
       if ((b = t.closest('.cn-key')) && !b.disabled) return setTexto(state.texto + b.getAttribute('data-k'));
-      if ((b = t.closest('[data-cn=colores] .cn-opt'))) { state.color = b.getAttribute('data-id'); evento('collar_nombre_color', { color: state.color }); return pintar(); }
-      if ((b = t.closest('[data-cn=iconos] .cn-circ'))) { state.colorIconos = b.getAttribute('data-id'); if (state.colorIconos === state.color) state.colorIconos = ''; evento('collar_nombre_color_iconos', { color: state.colorIconos || state.color }); return pintar(); }
+      if ((b = t.closest('[data-cn=colores] .cn-circ'))) { state.color = b.getAttribute('data-id'); evento('collar_nombre_color', { color: state.color }); return pintar(); }
+      if ((b = t.closest('[data-cn=piezas] .cn-pieza'))) { var k = +b.getAttribute('data-i'); state.sel = state.sel === k ? -1 : k; return pintar(); }
+      if ((b = t.closest('[data-cn=mezcla] .cn-circ')) && state.sel > -1) {
+        var id = b.getAttribute('data-id'); state.mezcla[state.sel] = id === state.color ? '' : id;
+        evento('collar_nombre_combinar', { color: id || state.color });
+        // pasa a la siguiente pieza para combinar rápido
+        state.sel = state.sel + 1 < tokens().length ? state.sel + 1 : -1; return pintar();
+      }
+      if (t.closest('[data-cn=un-color]')) { state.mezcla = state.mezcla.map(function () { return ''; }); state.sel = -1; return pintar(); }
       if ((b = t.closest('[data-cn=pesos] .cn-opt'))) { state.peso = b.getAttribute('data-id'); return pintar(); }
       if ((b = t.closest('[data-cn=size] button[data-t]'))) { state.tallaManual = b.getAttribute('data-t'); return pintar(); }
       if (t.closest('[data-cn=borrar]')) { var x = tokens(); x.pop(); return setTexto(x.join('')); }
@@ -146,26 +164,34 @@
     var col = color(), t = tokens(), n = t.length, ex = extras(), tot = total(), falta = faltan();
     var name = $('[data-cn=name]');
     name.style.setProperty('--c', col.main); name.style.setProperty('--e', col.edge);
-    var ci = colorIconos();
-    name.innerHTML = n ? t.map(function (x) {
-      var ico = ICONOS.indexOf(x) > -1;
-      return '<span class="cn-ch"' + (ico && ci ? ' style="--c:' + ci.main + ';--e:' + ci.edge + '"' : '') + '>' + (ico ? svgDe(x, 'cn-ico') : x) + '</span>';
+    var mix = combinado();
+    name.innerHTML = n ? t.map(function (x, i) {
+      var ci = state.mezcla[i] && colorPorId(state.mezcla[i]);
+      return '<span class="cn-ch' + (i === state.sel ? ' cn-sel' : '') + '"' + (ci ? ' style="--c:' + ci.main + ';--e:' + ci.edge + '"' : '') + '>' + (ICONOS.indexOf(x) > -1 ? svgDe(x, 'cn-ico') : x) + '</span>';
     }).join('') : '<span class="cn-ghost">Su nombre</span>';
     ajustar();
-    $('[data-cn=stage-color]').textContent = 'Letras ' + col.nombre.toLowerCase() + (ci ? ' · ♥★ ' + ci.nombre.toLowerCase() : '');
-    var iconos = hayIconos();
-    $('[data-cn=iconos-nom]').textContent = '· ' + (ci ? ci.nombre : 'igual que las letras');
-    $('[data-cn=iconos-hint]').textContent = iconos ? 'Combínalos: elige otro color para que resalten.' : 'Agrega un ♥ o una ★ al nombre y elige si van en otro color.';
-    caja.querySelectorAll('[data-cn=iconos] .cn-circ').forEach(function (b) { var id = b.getAttribute('data-id'); b.setAttribute('aria-checked', String(ci ? id === ci.id : id === '')); b.disabled = !iconos; });
+    $('[data-cn=stage-color]').textContent = mix ? 'Letras combinadas' : 'Letras ' + col.nombre.toLowerCase();
+    $('[data-cn=col-nom]').textContent = col.nombre;
+    caja.querySelectorAll('[data-cn=colores] .cn-circ').forEach(function (b) { b.setAttribute('aria-checked', String(b.getAttribute('data-id') === state.color)); });
+    $('[data-cn=mezcla-hint]').textContent = n ? 'Toca una letra y elige su color.' : 'Escribe el nombre y toca una letra para darle otro color.';
+    $('[data-cn=piezas]').innerHTML = t.map(function (x, i) {
+      var c = colorEn(i);
+      return '<button type="button" class="cn-pieza" data-i="' + i + '" aria-pressed="' + (i === state.sel) + '" aria-label="' + nombrePieza(x) + ' en ' + c.nombre + '" style="--c:' + c.main + ';--e:' + c.edge + '">' + (ICONOS.indexOf(x) > -1 ? svgDe(x, '') : x) + '</button>';
+    }).join('');
+    var elige = $('[data-cn=mezcla-elige]'); elige.hidden = state.sel < 0;
+    if (state.sel > -1) {
+      $('[data-cn=mezcla-lbl]').textContent = 'Color de la ' + (ICONOS.indexOf(t[state.sel]) > -1 ? '' : 'letra ') + nombrePieza(t[state.sel]) + ' · ' + colorEn(state.sel).nombre;
+      caja.querySelectorAll('[data-cn=mezcla] .cn-circ').forEach(function (b) { var id = b.getAttribute('data-id'); b.setAttribute('aria-checked', String((state.mezcla[state.sel] || '') === id)); });
+    }
+    $('[data-cn=un-color]').hidden = !mix;
     $('[data-cn=stage-talla]').textContent = 'Collar azul cielo · Talla ' + talla();
     var inp = $('#cn-nombre'); if (inp.value !== state.texto) inp.value = state.texto;
     $('[data-cn=cuenta]').innerHTML = '<b>' + n + '</b> de ' + CFG.maximo + (ex ? ' · ' + ex + (ex === 1 ? ' letra extra' : ' letras extra') : '');
     $('[data-cn=badge]').textContent = ex ? '+' + cop(ex * CFG.precioExtra) : CFG.incluidas + ' incluidas sin costo';
     caja.querySelectorAll('.cn-key').forEach(function (b) {
       var k = b.getAttribute('data-k');
-      b.disabled = n >= CFG.maximo || cuenta(k) >= disponibles(k);
+      b.disabled = n >= CFG.maximo || cuenta(k) >= disponibles(k, state.color);
     });
-    caja.querySelectorAll('[data-cn=colores] .cn-opt').forEach(function (b) { b.setAttribute('aria-checked', String(b.getAttribute('data-id') === state.color)); });
     caja.querySelectorAll('[data-cn=pesos] .cn-opt').forEach(function (b) { b.setAttribute('aria-checked', String(b.getAttribute('data-id') === state.peso)); });
     var p = peso(), sz = $('[data-cn=size]'), tl = talla();
     if (!p.talla) {
@@ -194,7 +220,7 @@
     else { cta.removeAttribute('aria-disabled'); cta.textContent = 'Comprar ahora · ' + cop(tot); }
     var lineas = modo === 'sin' ? ['Hola Wuuff Puppy, tengo una duda sobre el collar:', '• Talla: ' + tl + ' (' + p.txt + ')', '• Total: ' + cop(tot)]
       : ['Hola Wuuff Puppy, tengo una duda sobre el collar con nombre:', '• Nombre: ' + (n ? t.join('') : '(sin definir)'),
-      '• Letras: ' + col.nombre + (ci ? ' · corazones/estrellas: ' + ci.nombre : ''), '• Talla: ' + tl + ' (' + p.txt + ')', '• Total: ' + cop(tot)];
+      '• Letras: ' + (mix ? 'combinadas (' + detalleMezcla() + ')' : col.nombre), '• Talla: ' + tl + ' (' + p.txt + ')', '• Total: ' + cop(tot)];
     if (falta.length) lineas.push('• ¿Tienen ' + porColor(falta).map(function (g) { return g.piezas.join(', ') + ' en ' + g.color; }).join(' y ') + '?');
     var wa = $('[data-cn=wa]');
     wa.href = 'https://wa.me/' + WA + '?text=' + encodeURIComponent(lineas.join('\n'));
@@ -208,9 +234,10 @@
     var cta = $('[data-cn=cta]');
     if (cta.getAttribute('aria-disabled') === 'true') { $('#cn-nombre').focus(); return; }
     if (modo === 'sin') { evento('collar_comprar', { talla: talla(), value: total() }); location.href = '/?comprar=collar&talla=' + talla(); return; }
-    var ci = colorIconos();
-    evento('collar_nombre_comprar', { letras: tokens().length, color: state.color, color_iconos: ci ? ci.id : '', talla: talla(), value: total() });
-    location.href = '/?comprar=collar&talla=' + talla() + '&nombre=' + encodeURIComponent(state.texto) + '&color=' + state.color + (ci ? '&color2=' + ci.id : '') + '&peso=' + state.peso;
+    var mix = combinado();
+    evento('collar_nombre_comprar', { letras: tokens().length, color: state.color, combinado: mix, talla: talla(), value: total() });
+    location.href = '/?comprar=collar&talla=' + talla() + '&nombre=' + encodeURIComponent(state.texto) + '&color=' + state.color +
+      (mix ? '&mezcla=' + state.mezcla.slice(0, tokens().length).join(',') : '') + '&peso=' + state.peso;
   }
 
   // ¿Con nombre o sin nombre? Las dos usan la misma talla por peso; sin nombre oculta el nombre y el color.
