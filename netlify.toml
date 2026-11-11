@@ -138,6 +138,15 @@
     Referrer-Policy = "no-referrer"
     Cache-Control = "no-store"
 
+# Panel de pedidos (privado, con clave): no se indexa ni se guarda en caché
+[[headers]]
+  for = "/panel/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Referrer-Policy = "no-referrer"
+    Cache-Control = "no-store"
+    X-Frame-Options = "DENY"
+
 # Caché del navegador: imágenes y videos 30 días, fuentes 1 año, CSS/JS del sitio 1 día.
 # Si cambias una imagen, súbela con otro nombre para que todos vean la nueva enseguida.
 [[headers]]

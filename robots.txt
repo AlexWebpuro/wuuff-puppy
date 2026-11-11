@@ -3,5 +3,6 @@ Allow: /
 Disallow: /.netlify/
 Disallow: /m/
 Disallow: /placa-nfc/perfil/
+Disallow: /panel/
 
 Sitemap: https://wuuffpuppy.co/sitemap.xml

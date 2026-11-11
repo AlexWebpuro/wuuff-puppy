@@ -4,6 +4,7 @@
 const crypto = require('crypto');
 const { getStore, connectLambda } = require('@netlify/blobs');
 const resenas = require('../lib/resenas');
+const panel = require('../lib/panel');
 
 function getValueByPath(obj, path) {
   return path.split('.').reduce(function (acc, key) {
@@ -148,6 +149,17 @@ exports.handler = async function (event) {
     } catch (err) {
       console.error('No se pudo crear el perfil NFC pendiente', err.message);
     }
+  }
+
+  // Panel de pedidos (/panel/): el pedido pagado queda listo para despachar. Si Wompi avisa dos veces, no se duplica.
+  try {
+    await panel.registrarWompi(getStore(panel.STORE), {
+      referencia: referencia || String(transaction.id || ''), nombre, telefono, correo, direccion, ciudad, mascota,
+      producto: nombreProducto, totalCents: monto, avisos,
+      codigo: guardado && guardado.codigo, descuentoCents: guardado && guardado.descuentoCents
+    });
+  } catch (err) {
+    console.error('No se pudo guardar el pedido en el panel', err.message);
   }
 
   // El tipo de envío se infiere de la ciudad (mismo criterio usado al calcular el costo)
