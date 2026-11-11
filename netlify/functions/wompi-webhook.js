@@ -5,6 +5,8 @@ const crypto = require('crypto');
 const { getStore, connectLambda } = require('@netlify/blobs');
 const resenas = require('../lib/resenas');
 const panel = require('../lib/panel');
+const tienda = require('../lib/tienda');
+const P = require('../lib/perfiles');
 
 function getValueByPath(obj, path) {
   return path.split('.').reduce(function (acc, key) {
@@ -135,8 +137,9 @@ exports.handler = async function (event) {
   if (tallaMatch) talla = tallaMatch[1];
 
   // Placa NFC con perfil pendiente (el navegador no pudo crearlo): se crea aquí con los datos del pedido
-  const pendiente = /Perfil NFC: pendiente \(([^,]+), ([^,]+), ([^)]+)\)/.exec(nombreProducto);
-  if (pendiente) {
+  // (con varias placas puede haber más de uno)
+  const pendientes = Array.from(nombreProducto.matchAll(/pendiente \(([^,()]+), ([^,()]+), ([^)]+)\)/g)).filter(() => /Perfil NFC:/.test(nombreProducto));
+  for (const pendiente of pendientes) {
     try {
       const r = await fetch('https://wuuffpuppy.co/.netlify/functions/perfil-crear', {
         method: 'POST',
@@ -199,22 +202,13 @@ exports.handler = async function (event) {
 
   // Placa NFC: el producto lleva "Perfil NFC: <id>". Se marca el perfil como pagado y se arma
   // el enlace privado de edición (va al correo del cliente) y la dirección para grabar en el chip.
-  let urlEditar = '', urlChip = '';
-  const perfilMatch = /Perfil NFC:\s*([A-Z0-9]{6,16})/.exec(nombreProducto);
-  if (perfilMatch) {
-    try {
-      const store = getStore('perfiles-nfc');
-      const perfil = await store.get(perfilMatch[1], { type: 'json' });
-      if (perfil) {
-        perfil.pedido = Object.assign({}, perfil.pedido, { estado: 'pagado', referencia: transaction.reference || transaction.id || '' });
-        await store.setJSON(perfil.id, perfil);
-        urlChip = siteUrl + 'm/' + perfil.id;
-        urlEditar = siteUrl + 'placa-nfc/perfil/#id=' + perfil.id + '&clave=' + perfil.clave;
-      }
-    } catch (err) {
-      console.error('No se pudo actualizar el perfil NFC', err.message);
-    }
-  }
+  // (con varias placas, un perfil por placa)
+  const idsPerfil = tienda.perfilesDeTexto(nombreProducto).ids;
+  const perfilMatch = idsPerfil.length > 0;
+  let perfiles = [];
+  try { perfiles = await P.marcarPerfiles(getStore('perfiles-nfc'), idsPerfil, 'pagado', transaction.reference || transaction.id || '', siteUrl); }
+  catch (err) { console.error('No se pudo actualizar el perfil NFC', err.message); }
+  const urlEditar = perfiles.length ? perfiles[0].urlEditar : '';
   // Aviso a la tienda por correo de CADA pedido pagado (con placa: para imprimirla y grabar el chip; con código o nombre: sus datos)
   if (nuevo) {
     if (process.env.RESEND_API_KEY) {
@@ -234,7 +228,7 @@ exports.handler = async function (event) {
               ${avisos.length ? `<p style="background:#fff4e5;padding:10px 12px;border-radius:10px">${avisos.map(a => String(a).replace(/[<>]/g, '')).join('<br>')}</p>` : ''}
               <p><strong>Cliente:</strong> ${String(nombre).replace(/[<>]/g, '')} · ${String(telefono).replace(/[<>]/g, '')}<br>
               <strong>Dirección:</strong> ${String(direccion).replace(/[<>]/g, '')}, ${String(ciudad).replace(/[<>]/g, '')}</p>
-              ${urlChip ? `<p style="background:#fffbe6;padding:10px 12px;border-radius:10px"><strong>Grabar en el chip NFC:</strong><br><a href="${urlChip}">${urlChip}</a></p>` : (perfilMatch || /Placa Inteligente/.test(nombreProducto) ? '<p>⚠️ No se encontró el perfil NFC de este pedido.</p>' : '')}
+              ${perfiles.length ? P.htmlChips(perfiles) : (perfilMatch || /Placa Inteligente/.test(nombreProducto) ? '<p>⚠️ No se encontró el perfil NFC de este pedido.</p>' : '')}
               <p><a href="${siteUrl}panel/" style="display:inline-block;background:#4964af;color:#fff;font-weight:bold;text-decoration:none;padding:11px 18px;border-radius:12px">Abrir el panel de pedidos</a></p>
             </div>`
           })
@@ -269,6 +263,7 @@ exports.handler = async function (event) {
           direccion: direccion,
           ciudad: ciudad,
           perfilEditar: urlEditar,
+          perfiles: perfiles.map(p => ({ url: p.urlEditar, mascota: p.mascota })),
           descuento: guardado && guardado.descuentoCents ? '$' + Math.round(guardado.descuentoCents / 100).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') : '',
           codigo: guardado && guardado.codigo ? guardado.codigo.codigo : '',
           regalo: guardado && guardado.regalo ? guardado.regalo.texto : ''

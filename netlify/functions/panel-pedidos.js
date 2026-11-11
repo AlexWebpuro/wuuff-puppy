@@ -10,10 +10,16 @@
 //   POST { accion: 'borrar', id }                   → { ok }
 //   POST { accion: 'cotizar-guia', id, destino }    → { opciones, cobrarCents }   (Envia, solo Bogotá)
 //   POST { accion: 'crear-guia', id, opcion, destino } → { pedido }               (crea la guía y lo marca Enviado)
+//   POST { accion: 'inventario' }                   → { items, salidas, sinLeer, movimientos, extras }
+//   POST { accion: 'inv-guardar', movs: [{ tipo, item, cantidad, fecha, nota }] } → inventario
+//   POST { accion: 'inv-borrar', id }               → inventario
+//   POST { accion: 'inv-producto', nombre }         → inventario  (agrega un producto propio, ej. "Bolsas de regalo")
+//   POST { accion: 'inv-quitar-producto', id }      → inventario
 const crypto = require('crypto');
 const { getStore, connectLambda } = require('@netlify/blobs');
 const P = require('../lib/panel');
 const E = require('../lib/envia');
+const I = require('../lib/inventario');
 
 const MAX_INTENTOS = 8;                 // intentos de clave fallidos…
 const VENTANA_MS = 15 * 60 * 1000;      // …cada 15 minutos por conexión
@@ -131,6 +137,39 @@ exports.handler = async function (event) {
       console.error('Envia desde el panel', err.message);
       return json(502, { error: 'Envia: ' + err.message });
     }
+  }
+
+  // ── Inventario ──
+  if (['inventario', 'inv-guardar', 'inv-borrar', 'inv-producto', 'inv-quitar-producto'].includes(b.accion)) {
+    const inv = getStore(I.STORE);
+    let { movimientos, extras } = await I.leer(inv);
+    if (b.accion === 'inv-guardar') {
+      const validos = I.ITEMS.concat(extras).map(x => x.id);
+      const nuevos = (Array.isArray(b.movs) ? b.movs.slice(0, 40) : []).map(m => I.movimiento(m, validos)).filter(Boolean);
+      if (!nuevos.length) return json(400, { error: 'Escribe al menos una cantidad' });
+      for (const m of nuevos) await inv.setJSON(m.id, m);
+      movimientos = movimientos.concat(nuevos);
+    }
+    if (b.accion === 'inv-borrar') {
+      if (!/^mov-[a-z0-9-]{4,40}$/.test(String(b.id || ''))) return json(400, { error: 'Movimiento no válido' });
+      await inv.delete(b.id);
+      movimientos = movimientos.filter(m => m.id !== b.id);
+    }
+    if (b.accion === 'inv-producto') {
+      const nombre = I.limpio(b.nombre, 60), id = I.idExtra(nombre);
+      if (!id) return json(400, { error: 'Escribe el nombre del producto' });
+      if (I.ITEMS.concat(extras).some(x => x.id === id)) return json(400, { error: 'Ese producto ya está en el inventario' });
+      if (extras.length >= 40) return json(400, { error: 'Ya tienes muchos productos propios' });
+      extras = extras.concat([{ id, nombre }]);
+      await inv.setJSON('extras', extras);
+    }
+    if (b.accion === 'inv-quitar-producto') {
+      extras = extras.filter(x => x.id !== b.id);
+      await inv.setJSON('extras', extras);
+    }
+    const porId = await P.listaConContraentrega(store, getStore('pedidos-contraentrega'));
+    const r = I.calcular(Array.from(porId.values()), movimientos, extras);
+    return json(200, Object.assign(r, { extras, movimientos: movimientos.sort((a, b2) => (a.fecha < b2.fecha ? 1 : -1)).slice(0, 80) }));
   }
 
   return json(400, { error: 'Acción no válida' });

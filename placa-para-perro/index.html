@@ -139,6 +139,14 @@ a { color: var(--blue); }
 .btn-outline:hover { background: var(--navy); color: var(--white); }
 .btn-buy { width: 100%; background: var(--blue); color: var(--white); font: 900 17px/1 var(--f-cuerpo); letter-spacing: .2px; padding: 16px; border-radius: 16px; border: 0; cursor: pointer; transition: background .2s; }
 .btn-buy:hover { background: var(--navy); }
+.btn-otra { width: 100%; justify-content: center; border-radius: 16px; }
+.btn-otra[hidden], #placas-lista[hidden] { display: none; }
+#placas-lista { display: grid; gap: 6px; padding-top: 10px; border-top: 1px dashed #e4dccf; }
+.pl-t { margin: 0; font-weight: 900; color: var(--navy); font-size: 14px; }
+.pl-it { display: grid; grid-template-columns: 1fr auto auto; gap: 8px; align-items: center; font-size: 14px; font-weight: 700; background: #f6f1e9; border-radius: 12px; padding: 8px 10px; }
+.pl-it small { color: var(--tenue); }
+.pl-actual { background: #fff; border: 1.5px dashed #e4dccf; }
+.pl-it button { width: 30px; height: 30px; border-radius: 50%; border: 0; background: #fff; cursor: pointer; }
 .badge { display: inline-flex; align-items: center; gap: 6px; font: 900 11px/1 var(--f-cuerpo); letter-spacing: .12em; text-transform: uppercase; padding: 6px 12px; border-radius: 30px; }
 .prod-body .badge { justify-self: start; }
 .badge.lima { background: var(--lime); color: var(--navy); }
@@ -472,7 +480,9 @@ footer a:hover { opacity: 1; text-decoration: underline; }
           <div class="caja-precio">
             <div class="precio"><span id="total"></span><span id="antes"></span></div>
             <ul id="desglose"></ul>
+            <div id="placas-lista" hidden></div>
             <button type="button" class="btn-buy" id="btn-agregar">Comprar ahora 🐾</button>
+            <button type="button" class="btn-outline btn-otra" id="btn-otra">➕ Agregar otra placa (para otro perrito)</button>
             <div class="cuando-llega" data-entrega data-produccion="3"><p class="cl-titulo">📅 ¿Cuándo te llega?</p><p class="cl-nota">🛠️ La hacemos en 3 días hábiles con su nombre y te la enviamos.</p></div>
             <div class="seguros"><span>🔒 Pago seguro con Wompi</span><span>🚚 Con el arnés, la correa o un combo: envío gratis y pago al recibir en Bogotá</span><span>📦 Sola o con collar: Bogotá $8.500 (solo pago en línea) · otras ciudades $18.500</span></div>
           </div>
@@ -647,7 +657,7 @@ footer a:hover { opacity: 1; text-decoration: underline; }
 <script type="application/json" id="glyphs"></script>
 <script src="/placa-nfc/js/geom.js"></script>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
-<script type="module" src="/placa-nfc/js/app.js?v=20261109b"></script>
+<script type="module" src="/placa-nfc/js/app.js?v=20261112"></script>
 <script src="/assets/entrega.js" defer></script>
 <!-- Link directo con código del concurso: se guarda para el checkout -->
 <script>try{var wc=new URLSearchParams(location.search).get("codigo");if(wc)sessionStorage.setItem("wuuff_codigo",wc.trim().toUpperCase());}catch(e){}</script>

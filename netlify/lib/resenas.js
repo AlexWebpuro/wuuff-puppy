@@ -41,7 +41,7 @@ function productosDeCarrito(carrito, conRegalo) {
   const c = carrito && typeof carrito === 'object' ? carrito : {};
   const out = [];
   (Array.isArray(c.items) ? c.items : []).forEach(it => { if (it && PRODUCTOS[it.p] && out.indexOf(it.p) < 0) out.push(it.p); });
-  if ((c.placa || conRegalo) && out.indexOf('placa') < 0) out.push('placa');
+  if ((c.placa || (Array.isArray(c.placas) && c.placas.length) || conRegalo) && out.indexOf('placa') < 0) out.push('placa');
   return out;
 }
 

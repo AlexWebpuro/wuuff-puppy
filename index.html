@@ -682,6 +682,7 @@ body{font-family:'Nunito',sans-serif;background:var(--white);color:var(--navy);o
 .perfil-titulo{font-size:13px;font-weight:900;color:var(--navy);margin:0;}
 .perfil-sub{font-size:12px;font-weight:700;color:#55607e;margin:0;}
 .perfil-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.perfil-nombre{font-size:14px;font-weight:900;color:var(--navy);margin:4px 0 0;}.perfil-nombre[hidden]{display:none;}
 .hero-offer-hasta{display:block;font-size:12.5px;font-weight:800;color:var(--coral);margin-top:2px;}
 .promo-feedback.valido{color:#2b8a3e;}
 .promo-feedback.invalido{color:#c0392b;}
@@ -2456,14 +2457,36 @@ function abrirCodigo(){
   if(t) t.setAttribute('aria-expanded', 'true');
 }
 function llevaPlaca(){
-  return !!pendingPurchase && !!((pendingPurchase.carrito && pendingPurchase.carrito.placa) || (pendingPurchase.codigo && pendingPurchase.codigo.regalo));
+  var c = pendingPurchase && pendingPurchase.carrito;
+  return !!pendingPurchase && !!((c && (c.placa || (Array.isArray(c.placas) && c.placas.length))) || (pendingPurchase.codigo && pendingPurchase.codigo.regalo));
+}
+// Nombres de las placas del pedido (con varias placas se pide un perfil por cada una)
+function placasDelPedido(){
+  var c = pendingPurchase && pendingPurchase.carrito;
+  if(c && Array.isArray(c.placas) && c.placas.length) return c.placas.map(function(p){ return p.nombre; });
+  return llevaPlaca() ? [''] : [];
 }
 function actualizarPerfilPlaca(){
   var perfilBox = document.getElementById('perfil-placa');
   if(!perfilBox) return;
-  var con = llevaPlaca();
+  var con = llevaPlaca(), nombres = placasDelPedido(), varias = nombres.length > 1;
   perfilBox.hidden = !con;
   ['perfil-especie', 'perfil-sexo', 'perfil-raza'].forEach(function(id){ document.getElementById(id).required = con; });
+  var tit = perfilBox.querySelector('.perfil-titulo');
+  if(tit) tit.textContent = varias ? '🏷️ Perfil de cada Placa Inteligente' : '🏷️ Perfil de la Placa Inteligente';
+  var n0 = document.getElementById('perfil-nombre-0');
+  if(n0){ n0.hidden = !varias; n0.textContent = varias ? '🐾 ' + nombres[0] : ''; }
+  // Filas extra (placa 2, 3…): especie, sexo y raza de cada perrito
+  var extra = document.getElementById('perfil-extra');
+  if(extra){
+    extra.innerHTML = nombres.slice(1).map(function(n, j){
+      var i = j + 1, e = function(t){ return String(t).replace(/[&<>"]/g, function(c){ return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+      return '<p class="perfil-nombre">🐾 ' + e(n) + '</p><div class="perfil-grid">' +
+        '<select id="perfil-especie-' + i + '" class="shipping-input shipping-select" aria-label="Especie de ' + e(n) + '" required><option value="">Especie</option><option>Perro</option><option>Gato</option></select>' +
+        '<select id="perfil-sexo-' + i + '" class="shipping-input shipping-select" aria-label="Sexo de ' + e(n) + '" required><option value="">Sexo</option><option>Macho</option><option>Hembra</option></select></div>' +
+        '<input type="text" id="perfil-raza-' + i + '" class="shipping-input" maxlength="60" placeholder="Raza de ' + e(n) + '" aria-label="Raza de ' + e(n) + '" required>';
+    }).join('');
+  }
 }
 function mostrarRegalo(ver){
   var f = document.getElementById('regalo-placa');
@@ -2654,16 +2677,20 @@ document.addEventListener('submit', function(e){
   }
 
   // Placa NFC (comprada o de regalo): se crea el perfil de la mascota (su dirección es la que se graba en el chip)
+  // (con varias placas, un perfil por placa: se crean de a uno y el formulario se vuelve a enviar)
+  var perfiles = pendingPurchase.perfiles || [];
   if(llevaPlaca()){
-    if(!pendingPurchase.perfil){
-      crearPerfilPlaca(form, { mascota: mascota, especie: document.getElementById('perfil-especie').value,
-        sexo: document.getElementById('perfil-sexo').value, raza: document.getElementById('perfil-raza').value.trim(),
+    var nombresPlacas = placasDelPedido();
+    if(perfiles.length < nombresPlacas.length){
+      var ip = perfiles.length, suf = ip ? '-' + ip : '';
+      crearPerfilPlaca(form, { mascota: nombresPlacas.length > 1 ? nombresPlacas[ip] : mascota, especie: document.getElementById('perfil-especie' + suf).value,
+        sexo: document.getElementById('perfil-sexo' + suf).value, raza: document.getElementById('perfil-raza' + suf).value.trim(),
         contactoNombre: nombre, telefono: telefono, ciudad: ciudadNombre, correo: correo });
       return;
     }
-    nombreProducto += ' | Perfil NFC: ' + (pendingPurchase.perfil.pendiente || pendingPurchase.perfil.id);
+    nombreProducto += ' | Perfil NFC: ' + perfiles.map(function(p){ return p.pendiente || p.id; }).join(', ');
   }
-  var perfilPlaca = pendingPurchase.perfil && pendingPurchase.perfil.id ? pendingPurchase.perfil : null;
+  var perfilesIds = perfiles.filter(function(p){ return p.id; }).map(function(p){ return p.id; });
 
 
   var customerData = {
@@ -2689,7 +2716,7 @@ document.addEventListener('submit', function(e){
   // Lo que el servidor necesita para calcular el total: carrito, ciudad, código y placa de regalo
   var pedidoServidor = {
     carrito: pendingPurchase.carrito, ciudad: ciudadNombre, codigo: aplicado ? aplicado.codigo : '', regalo: regalo,
-    perfil: pendingPurchase.perfil ? (pendingPurchase.perfil.pendiente || pendingPurchase.perfil.id || '') : ''
+    perfil: perfiles.map(function(p){ return p.pendiente || p.id || ''; }).join(', ')
   };
 
   if(metodoPago === 'contraentrega'){
@@ -2698,7 +2725,7 @@ document.addEventListener('submit', function(e){
       direccion: direccion, ciudad: ciudadNombre, talla: pendingPurchase.talla || '',
       producto: nombreProducto, totalCents: totalCents,
       carrito: pedidoServidor.carrito, codigo: pedidoServidor.codigo, regalo: regalo,
-      perfilId: perfilPlaca ? perfilPlaca.id : '',
+      perfilId: perfilesIds[0] || '', perfilIds: perfilesIds,
       honeypot: (form.querySelector('[name="bot-field-envio"]') || {}).value || ''
     });
     return;
@@ -2779,7 +2806,7 @@ function formatoPesos(cents){ return '$' + Math.round(cents / 100).toString().re
 // Placa NFC: crea el perfil con los datos básicos y vuelve a enviar el formulario para seguir con la compra
 function crearPerfilPlaca(form, datos){
   if(!datos.especie || !datos.sexo || !datos.raza){
-    alert('Completa la especie, el sexo y la raza para el perfil de la placa.');
+    alert('Completa la especie, el sexo y la raza para el perfil ' + (placasDelPedido().length > 1 ? 'de cada placa' : 'de la placa') + '.');
     return;
   }
   var btn = document.getElementById('envio-submit');
@@ -2793,8 +2820,8 @@ function crearPerfilPlaca(form, datos){
       .then(function(r){ return r.json().then(function(j){ if(!r.ok || !j.id) throw new Error((j && j.error) || ('HTTP ' + r.status)); return j; }); })
       .then(function(j){
         if(!pendingPurchase) return;
-        pendingPurchase.perfil = { id: j.id, clave: j.clave };
-        try { sessionStorage.setItem('wuuff_perfil', JSON.stringify({ id: j.id, clave: j.clave, mascota: datos.mascota })); } catch(e){}
+        pendingPurchase.perfiles = (pendingPurchase.perfiles || []).concat([{ id: j.id, clave: j.clave, mascota: datos.mascota }]);
+        try { sessionStorage.setItem('wuuff_perfil', JSON.stringify(pendingPurchase.perfiles.filter(function(p){ return p.id; }))); } catch(e){}
         seguir();
       })
       .catch(function(err){
@@ -2802,7 +2829,7 @@ function crearPerfilPlaca(form, datos){
         if(n < 2){ setTimeout(function(){ intentar(n + 1); }, 1500); return; }
         // La venta no se bloquea: el pedido lleva los datos y el servidor crea el perfil al registrarlo
         if(!pendingPurchase) return;
-        pendingPurchase.perfil = { pendiente: 'pendiente (' + datos.especie + ', ' + datos.sexo + ', ' + datos.raza.replace(/[(),|]/g, ' ') + ')' };
+        pendingPurchase.perfiles = (pendingPurchase.perfiles || []).concat([{ pendiente: 'pendiente (' + datos.especie + ', ' + datos.sexo + ', ' + datos.raza.replace(/[(),|]/g, ' ') + ')' }]);
         seguir();
       });
   }
@@ -2840,8 +2867,12 @@ function ofrecerResenaGoogle(reference){
 function ofrecerCompletarPerfil(){
   var p = null;
   try { p = JSON.parse(sessionStorage.getItem('wuuff_perfil') || 'null'); sessionStorage.removeItem('wuuff_perfil'); } catch(e){}
+  // Con varias placas llega una lista: se ofrece el primero (todos los enlaces van al correo)
+  var varios = Array.isArray(p) && p.length > 1;
+  if(Array.isArray(p)) p = p[0];
   if(!p || !p.id) return;
-  if(confirm('🏷️ Tu Placa Inteligente ya tiene perfil. ¿Quieres completarlo ahora con la foto, vacunas y veterinaria de ' + (p.mascota || 'tu mascota') + '?\n\nTambién te enviamos el enlace al correo.')){
+  if(varios ? confirm('🏷️ Tus Placas Inteligentes ya tienen perfil. ¿Quieres completar ahora el de ' + (p.mascota || 'tu mascota') + ' con su foto, vacunas y veterinaria?\n\nTe enviamos al correo el enlace de cada una.')
+    : confirm('🏷️ Tu Placa Inteligente ya tiene perfil. ¿Quieres completarlo ahora con la foto, vacunas y veterinaria de ' + (p.mascota || 'tu mascota') + '?\n\nTambién te enviamos el enlace al correo.')){
     location.href = '/placa-nfc/perfil/#id=' + encodeURIComponent(p.id) + '&clave=' + encodeURIComponent(p.clave);
   }
 }
@@ -2968,11 +2999,13 @@ function pagarConWompi(estimadoCents, nombreProducto, customerData, shippingAddr
       <div class="perfil-placa" id="perfil-placa" hidden>
         <p class="perfil-titulo">🏷️ Perfil de la Placa Inteligente</p>
         <p class="perfil-sub">Esto es lo que verá quien escanee la placa: el nombre de tu perrihijo, estos datos y tu teléfono. Después de comprar podrás agregar su foto, vacunas y veterinaria.</p>
+        <p class="perfil-nombre" id="perfil-nombre-0" hidden></p>
         <div class="perfil-grid">
           <select id="perfil-especie" class="shipping-input shipping-select" aria-label="Especie"><option value="">Especie</option><option>Perro</option><option>Gato</option></select>
           <select id="perfil-sexo" class="shipping-input shipping-select" aria-label="Sexo"><option value="">Sexo</option><option>Macho</option><option>Hembra</option></select>
         </div>
         <input type="text" id="perfil-raza" class="shipping-input" maxlength="60" placeholder="Raza (ej: Beagle, criollo…)" aria-label="Raza">
+        <div id="perfil-extra" style="display:grid;gap:8px"></div>
       </div>
       <div class="tel-campo">
         <span class="tel-pais"><svg class="tel-bandera" viewBox="0 0 3 2" aria-hidden="true"><rect width="3" height="2" fill="#ce1126"/><rect width="3" height="1.5" fill="#003893"/><rect width="3" height="1" fill="#fcd116"/></svg>+57</span>
@@ -3524,7 +3557,46 @@ function pagarConWompi(estimadoCents, nombreProducto, customerData, shippingAddr
   var FORMAS  = { huella: 'Huella', gato: 'Gato', nombre: 'Nombre' };
   var COLORES = { morado: 'Morado', azul: 'Azul', blanco: 'Blanco', rojo: 'Rojo', rosado: 'Rosado', naranja: 'Naranja', fucsia: 'Fucsia', beige: 'Beige', azulrey: 'Azul rey', cafe: 'Café', lila: 'Lila', miel: 'Miel oscuro', negro: 'Negro', verde: 'Verde oscuro' };
 
-  var nombre = (q.get('nombre') || '').replace(/[^A-Za-z0-9ÁÉÍÓÚÑÜáéíóúñü '\-.&]/g, '').slice(0, 10).trim();
+  function limpiarNombre(t){ return String(t || '').replace(/[^A-Za-z0-9ÁÉÍÓÚÑÜáéíóúñü '\-.&]/g, '').slice(0, 10).trim(); }
+
+  // Varias placas (una por perrito): /?comprar=placa&lista=[{forma,nombre,base,letras,con,talla}, …]
+  // Cada una puede ir sola o con su collar, arnés o combo. Mismo precio que el servidor (netlify/lib/tienda.js):
+  // primero $19.900 por cada arnés/combo, luego $20.000 por cada collar (combo $64.900), las demás $29.900.
+  var listaTxt = q.get('lista');
+  if(listaTxt){
+    var items = [], placas = [], partes = [];
+    try {
+      var lst = JSON.parse(listaTxt);
+      if(!Array.isArray(lst) || !lst.length || lst.length > 6) return;
+      lst.forEach(function(it){
+        var pl = { nombre: limpiarNombre(it && it.nombre), forma: FORMAS[it && it.forma], base: COLORES[it && it.base], letras: COLORES[it && it.letras] };
+        if(!pl.nombre || !pl.forma || !pl.base || !pl.letras) throw new Error('placa');
+        var c = PRODUCTOS.hasOwnProperty(it.con) ? it.con : 'sola', t = String(it.talla || '').toUpperCase();
+        if(t !== 'S' && t !== 'M') t = 'M';
+        placas.push(pl);
+        if(c !== 'sola'){ items.push({ p: c, talla: t }); partes.push(PRODUCTOS[c].nombre + ' (Talla ' + t + ')'); }
+      });
+    } catch(err){ return; }
+    var agregada = items.filter(function(it){ return it.p !== 'collar'; }).length, collares = items.length - agregada;
+    var totalL = items.reduce(function(s, it){ return s + PRODUCTOS[it.p].cents; }, 0);
+    placas.forEach(function(pl, i){
+      var tx = 'Placa Inteligente Wuuff ' + pl.forma + ' "' + pl.nombre + '" (placa ' + pl.base + ', letras ' + pl.letras + ')';
+      if(i < agregada) totalL += PLACA_AGREGADA;
+      else if(i < agregada + collares){ totalL += COMBO_COLLAR_PLACA - PRODUCTOS.collar.cents; tx += ' — combo Collar + Placa'; }
+      else totalL += PLACA_SOLA;
+      partes.push(tx);
+    });
+    var abrirLista = function(){
+      if(history.replaceState) history.replaceState(null, '', location.pathname);
+      window.wuuffVolverA = '/placa-para-perro/';
+      try { if(window.gtag) gtag('event', 'placa_iniciar_compra', { placas: placas.length, value: totalL / 100, currency: 'COP' }); } catch(err){}
+      iniciarCompra(totalL, partes.join(' + '), items.length ? 'Talla ' + items[0].talla : '', { items: items, placas: placas });
+    };
+    if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', abrirLista); else abrirLista();
+    return;
+  }
+
+  var nombre = limpiarNombre(q.get('nombre'));
   var forma = FORMAS[q.get('forma')], base = COLORES[q.get('base')], letras = COLORES[q.get('letras')];
   if(!nombre || !forma || !base || !letras) return;
 
