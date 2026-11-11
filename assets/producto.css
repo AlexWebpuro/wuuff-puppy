@@ -187,3 +187,14 @@ button.cuotas{border:none;font-family:'Nunito',sans-serif;cursor:pointer;text-al
 .medir-res{margin:0;font-weight:800;color:var(--navy);background:#fff;border-radius:10px;padding:8px 12px}
 .nota-talla{margin:0;font-size:14px;color:var(--navy);line-height:1.45}
 .guia-collar .btn.wa{width:100%;text-align:center}
+/* "Agregar otro" en las fichas (assets/varios.js) */
+.varios{margin:12px 0 4px;background:#fff;border:2px solid var(--lblue);border-radius:16px;padding:12px 14px;display:grid;gap:6px}
+.varios[hidden]{display:none}
+.varios-t{margin:0 0 2px;font-weight:900;font-size:15px;color:var(--navy)}
+.varios-it{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;font-size:14px;font-weight:700;color:var(--navy);background:var(--cream);border-radius:10px;padding:8px 10px}
+.varios-it small{font-weight:600;color:#6b7a99}
+.varios-it button{width:28px;height:28px;border-radius:50%;border:0;background:#fff;cursor:pointer}
+.varios-actual{background:#fff;border:1.5px dashed var(--lblue)}
+.varios-total{display:flex;justify-content:space-between;font-size:16px;color:var(--navy);padding:4px 2px 0}
+.btn-otro{display:block;width:100%;margin-top:10px;font:inherit;font-weight:900;font-size:16px;background:#fff;color:var(--navy);border:2px solid var(--navy);border-radius:14px;padding:12px;cursor:pointer}
+.btn-otro[hidden]{display:none}

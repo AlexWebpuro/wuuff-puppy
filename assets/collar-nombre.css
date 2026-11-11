@@ -104,3 +104,11 @@
 .pr-btn{flex:1 1 auto;display:inline-flex;justify-content:center;align-items:center;font:inherit;font-weight:800;font-size:15px;border:2px solid #2b2320;background:#fff;color:#2b2320;border-radius:12px;padding:11px 14px;cursor:pointer;text-align:center}
 .pr-principal{background:#ff7d57;border-color:#ff7d57;color:#2b1410}
 .pr-nota{margin:0;font-size:12px;color:#6d5c55}
+.cn-lista{margin:12px 0 0;padding-top:12px;border-top:1px solid var(--cn-line);display:grid;gap:6px}
+.cn-lista-t{margin:0 0 2px;font-size:13px;font-weight:800;color:var(--cn-muted)}
+.cn-item{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;font-size:14px;background:var(--cn-bg);border-radius:10px;padding:8px 10px}
+.cn-item b{display:block;font-size:12px;color:var(--cn-muted)}.cn-item small{color:var(--cn-muted)}
+.cn-item-actual{background:#fff;border:1px dashed var(--cn-line)}
+.cn-quitar{width:30px;height:30px;border-radius:50%;border:0;background:#fff;cursor:pointer;font-size:13px;color:var(--cn-ink)}
+.cn-otro{display:block;width:100%;margin-top:10px;font:inherit;font-weight:800;font-size:16px;background:#fff;color:var(--cn-ink);border:2px solid var(--cn-ink);border-radius:14px;padding:12px;cursor:pointer}
+.cn-otro[hidden]{display:none}

@@ -88,7 +88,7 @@
       : '<p class="cl-linea"><span>Bogotá y Soacha</span><strong>Te llega ' + textoRango(rango('bogota', prod)) + '</strong></p>' +
         '<p class="cl-linea"><span>Otras ciudades</span><strong>Te llega ' + textoRango(rango('otras', prod)) + '</strong></p>' +
         '<p class="cl-nota">💳 Tarjeta, PSE, Nequi, Daviplata o Bancolombia con Wompi.</p>' + notaProd +
-        (soloLinea ? '<p class="cl-nota">💵 Los collares y la Placa Inteligente se pagan en línea. El pago al recibir en Bogotá es para los combos, el arnés y la correa.</p>' : '');
+        (soloLinea ? '<p class="cl-nota">💵 Un collar solo y la Placa Inteligente se pagan en línea. Desde 2 collares el envío es gratis en Bogotá y Soacha y puedes pagar al recibir.</p>' : '');
     caja.innerHTML =
       '<p class="cl-titulo">📅 ¿Cuándo te llega?</p>' +
       (soloLinea ? '' : '<div class="cl-tabs" role="group" aria-label="Forma de pago">' +
