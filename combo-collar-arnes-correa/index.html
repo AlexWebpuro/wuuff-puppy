@@ -31,6 +31,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/producto.css?v=20261109">
 <link rel="stylesheet" href="/assets/resenas.css?v=1">
+<link rel="stylesheet" href="/assets/collar-nombre.css?v=8">
 <script type="application/ld+json">
 {
  "@context": "https://schema.org",
@@ -193,6 +194,8 @@
       <p class="cuotas-info" id="cuotas-info" hidden>💳 Al pagar con Wompi elige <strong>Bancolombia</strong> y paga en 4 cuotas sin interés.</p>
       <p class="envio">🚚 Envío gratis en Bogotá y Soacha · $18.500 al resto de Colombia</p>
       <ul class="beneficios"><li>Collar + arnés tipo H + correa a juego</li><li>Impermeables, antiolor e hipoalergénicos</li><li>Arnés en H que no presiona el cuello</li><li>Correa de 1,8 m con gancho metálico</li></ul>
+      <div class="modo-collar" role="radiogroup" aria-label="¿Cómo quieres el collar?"><button type="button" role="radio" aria-checked="false" data-modo="nombre"><b>✏️ Collar con su nombre</b><span>$164.900 · hasta 5 letras incluidas</span></button><button type="button" role="radio" aria-checked="true" data-modo="sin"><b>Collar sin nombre</b><span>$149.900</span></button></div>
+      <div class="cn" id="collar-nombre" data-producto="combo" data-modo-inicial="sin" hidden></div>
       <div class="label">Talla del collar</div><div class="tallas" data-pieza="collar"><button type="button" data-talla="S" aria-pressed="false"><strong>Talla S</strong><span>Cuello 25–33 cm</span></button><button type="button" data-talla="M" aria-pressed="false"><strong>Talla M</strong><span>Cuello 33–42 cm</span></button></div><div class="label">Talla del arnés</div><div class="tallas" data-pieza="arnes"><button type="button" data-talla="S" aria-pressed="false"><strong>Talla S</strong><span>Cuello 20–34 cm
 Pecho 23–38 cm</span></button><button type="button" data-talla="M" aria-pressed="false"><strong>Talla M</strong><span>Cuello 24–38 cm
 Pecho 32–53 cm</span></button></div><p class="nota-talla">El collar y el arnés tienen tallas distintas: el collar se mide por el cuello y el arnés por el cuello y el pecho. La correa es talla única.</p><div class="aviso-talla" id="aviso-talla" role="alert">👆 Elige la talla del collar y la del arnés</div>
@@ -291,11 +294,16 @@ Pecho 32–53 cm</span></button></div><p class="nota-talla">El collar y el arné
     e.preventDefault();
     if(!talla){var a=document.getElementById('aviso-talla');a.classList.add('show');a.scrollIntoView({behavior:'smooth',block:'center'});return;}
     try{ if(window.gtag) gtag('event','comprar_desde_pagina_producto',{item_id:document.body.getAttribute('data-sku'),talla:talla}); }catch(err){}
-    location.href='/?comprar='+document.body.getAttribute('data-clave')+'&talla='+encodeURIComponent(talla);
+    // Con el collar con nombre: valida el nombre y lo manda al pago
+    var cn=window.wuuffCollarNombre&&window.wuuffCollarNombre.activo()?window.wuuffCollarNombre:null;
+    if(cn&&!cn.listo())return;
+    location.href='/?comprar='+document.body.getAttribute('data-clave')+'&talla='+encodeURIComponent(talla)+(cn?cn.parametros():'');
   });
 })();
 </script>
 <script src="/assets/entrega.js" defer></script>
+<script src="/assets/collar-probador.js?v=5" defer></script>
+<script src="/assets/collar-nombre.js?v=8" defer></script>
 <!-- Link directo con código del concurso: se guarda para el checkout -->
 <script>try{var wc=new URLSearchParams(location.search).get("codigo");if(wc)sessionStorage.setItem("wuuff_codigo",wc.trim().toUpperCase());}catch(e){}</script>
 <script>

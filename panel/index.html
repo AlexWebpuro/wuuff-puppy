@@ -41,7 +41,7 @@ main{max-width:860px;margin:0 auto;padding:12px 16px 100px}
 .dato.activo{border-color:var(--azul)}
 .dato.alerta b{color:#d9552f}
 /* Filtros */
-.filtros{display:flex;gap:8px;overflow-x:auto;padding:2px 0 10px;scrollbar-width:none}
+.filtros{display:flex;flex-wrap:wrap;gap:8px;padding:2px 0 10px}
 .filtros::-webkit-scrollbar{display:none}
 .chip{white-space:nowrap;border:1.5px solid var(--borde);background:#fff;border-radius:999px;padding:7px 13px;font-weight:800;font-size:13px;cursor:pointer}
 .chip.activo{background:var(--navy);border-color:var(--navy);color:#fff}
@@ -103,6 +103,8 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
 .nota-chica{font-size:12px;color:var(--gris);margin-top:4px}
 #toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--navy);color:#fff;padding:11px 18px;border-radius:14px;font-weight:800;z-index:40;box-shadow:0 6px 20px rgba(0,0,0,.2)}
 .cargando{opacity:.6;pointer-events:none}
+.btn-borrar{margin-left:8px;border:0;background:transparent;font-size:17px;cursor:pointer;opacity:.55;padding:2px 4px;vertical-align:middle}.btn-borrar:hover{opacity:1}
+.opciones-envio{display:grid;gap:6px;margin-top:10px}.opcion-envio{display:flex;gap:10px;align-items:flex-start;background:var(--fondo);border-radius:12px;padding:10px;font-weight:400}.opcion-envio small{display:block;color:var(--gris);font-size:12px}.opcion-envio input{margin-top:3px}
 </style>
 </head>
 <body>
@@ -156,6 +158,8 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
     { id: 'combo', n: 'Combo completo', p: 149900, talla: true },
     { id: 'arnes-correa', n: 'Arnés + correa', p: 109900, talla: true },
     { id: 'collar-correa', n: 'Collar + correa', p: 89900, talla: true },
+    { id: 'collar-correa-nombre', n: 'Collar con nombre + correa', p: 115000, talla: true },
+    { id: 'combo-nombre', n: 'Combo completo con collar con nombre', p: 164900, talla: true },
     { id: 'arnes', n: 'Arnés tipo H', p: 69900, talla: true },
     { id: 'collar-nombre', n: 'Collar con nombre', p: 59900, talla: true },
     { id: 'collar', n: 'Collar', p: 44900, talla: true },
@@ -183,7 +187,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
     { id: 'enviado', n: '🚚 En camino', f: p => p.estado === 'enviado' },
     { id: 'cobrar', n: '💵 Por cobrar', f: p => !p.pagado && !['cancelado', 'devuelto'].includes(p.estado) },
     { id: 'entregado', n: '🎉 Entregados', f: p => p.estado === 'entregado' },
-    { id: 'cerrados', n: 'Cancelados / devueltos', f: p => ['cancelado', 'devuelto'].includes(p.estado) },
+    { id: 'cerrados', n: '✖ Cancelados', f: p => ['cancelado', 'devuelto'].includes(p.estado) },
     { id: 'todos', n: 'Todos', f: () => true }
   ];
 
@@ -291,7 +295,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
         : '<div class="vacio"><div class="titulo">Aún no hay pedidos 🐾</div>Los de la web llegan solos. Los de WhatsApp, Instagram o el stand agrégalos con <b>＋ Nuevo</b>.</div>');
     $('lista').querySelectorAll('.pedido').forEach(el => el.onclick = e => {
       const acc = e.target.closest('[data-accion]');
-      if (acc) { e.stopPropagation(); if (acc.dataset.accion === 'avanzar') avanzar(el.dataset.id); return; }
+      if (acc) { e.stopPropagation(); if (acc.dataset.accion === 'avanzar') avanzar(el.dataset.id); if (acc.dataset.accion === 'borrar') borrarPedido(el.dataset.id); if (acc.dataset.accion === 'abrir') abrirDetalle(el.dataset.id); if (acc.dataset.accion === 'etiqueta') abrirEtiqueta(el.dataset.id); return; }
       abrirDetalle(el.dataset.id);
     });
   }
@@ -299,12 +303,147 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
   function siguienteEstado(p) {
     return { 'por-confirmar': 'confirmado', confirmado: 'preparando', preparando: 'enviado', enviado: 'entregado' }[p.estado];
   }
+
+  // ── Etiqueta para el paquete (imagen 15 × 10 cm para imprimir y pegar) ──
+  const DEPTOS = ['Amazonas', 'Antioquia', 'Arauca', 'Atlántico', 'Bolívar', 'Boyacá', 'Caldas', 'Caquetá', 'Casanare', 'Cauca', 'Cesar', 'Chocó', 'Córdoba',
+    'Cundinamarca', 'Guainía', 'Guaviare', 'Huila', 'La Guajira', 'Magdalena', 'Meta', 'Nariño', 'Norte de Santander', 'Putumayo', 'Quindío', 'Risaralda',
+    'San Andrés', 'Santander', 'Sucre', 'Tolima', 'Valle del Cauca', 'Vaupés', 'Vichada'];
+  const sinTilde = t => String(t || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+  // "SOACHA CUNDINAMARCA" / "Madrid, Cundinamarca" / "Bogotá" → { ciudad, depto }
+  function partirCiudad(txt) {
+    let t = String(txt || '').trim();
+    if (!t) return { ciudad: '', depto: '' };
+    if (/bogot/i.test(t)) return { ciudad: 'Bogotá', depto: 'D.C.' };
+    if (t.includes(',')) { const [a, ...b] = t.split(','); return { ciudad: a.trim(), depto: b.join(',').trim() }; }
+    const d = DEPTOS.slice().sort((a, b) => b.length - a.length).find(x => sinTilde(t).endsWith(' ' + sinTilde(x)));
+    if (d) return { ciudad: t.slice(0, t.length - d.length).trim(), depto: d };
+    return { ciudad: t, depto: '' };
+  }
+  function telBonito(t) { const d = String(t || '').replace(/\D/g, '').replace(/^57(?=\d{10}$)/, ''); return d.length === 10 ? d.replace(/(\d{3})(\d{3})(\d{4})/, '$1 $2 $3') : String(t || ''); }
+  function contenidoCorto(p) {
+    return String(p.productos || '').replace(/\s*\|\s*Perfil NFC:.*$/, '').replace(/\s*\[[^\]]*\]/g, '').replace(/\s+/g, ' ').trim().slice(0, 110);
+  }
+  const logoEtiqueta = new Image(); logoEtiqueta.src = '/images/wuuff-puppy.png';
+
+  function abrirEtiqueta(id) {
+    const p = pedidos.find(x => x.id === id); if (!p) return;
+    const c = p.cliente || {}, cd = partirCiudad(c.ciudad);
+    const sugerencias = ['PREMIO · FINALISTA', 'PREMIO · GANADOR', 'REGALO', 'PEDIDO WEB', 'FRÁGIL'];
+    abrirHoja(`
+      <div class="cab"><h2>🏷️ Etiqueta del paquete</h2><button class="btn claro icono" data-cerrar aria-label="Cerrar">✕</button></div>
+      <p class="nota-chica" style="margin:-4px 0 10px">Revisa los datos: la etiqueta se actualiza mientras escribes. Medida para imprimir: 15 × 10 cm.</p>
+      <canvas id="etqCanvas" width="1800" height="1200" style="width:100%;height:auto;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,.12);background:#fff"></canvas>
+      <div class="acciones" style="margin:12px 0">
+        <button class="btn naranja" type="button" id="etqImprimir">🖨 Imprimir</button>
+        <button class="btn azul" type="button" id="etqDescargar">⬇ Descargar imagen</button>
+      </div>
+      <div class="caja">
+        <label for="etqNombre">Para</label><input id="etqNombre" value="${esc(c.nombre)}">
+        <label for="etqTel">Celular</label><input id="etqTel" inputmode="tel" value="${esc(telBonito(c.telefono))}">
+        <label for="etqDir">Dirección (con barrio)</label><input id="etqDir" value="${esc(c.direccion)}">
+        <div class="dos">
+          <div><label for="etqCiudad">Ciudad</label><input id="etqCiudad" value="${esc(cd.ciudad)}"></div>
+          <div><label for="etqDepto">Departamento</label><input id="etqDepto" value="${esc(cd.depto)}"></div>
+        </div>
+        <label for="etqCont">Contenido</label><input id="etqCont" value="${esc(contenidoCorto(p))}">
+        <label for="etqCobro">Cobro al entregar</label>
+        <select id="etqCobro"><option value="no"${p.pagado ? ' selected' : ''}>Sin cobro · no recaudo</option><option value="si"${p.pagado ? '' : ' selected'}>Cobrar ${pesos(p.totalCents)} al entregar</option></select>
+        <label for="etqSello">Sello de arriba (opcional)</label><input id="etqSello" placeholder="Ej.: PREMIO · FINALISTA" value="${p.codigo && p.codigo.tipo === 'concurso' ? 'PREMIO · FINALISTA' : ''}">
+        <div class="catalogo" style="margin-top:6px">${sugerencias.map(s => `<button type="button" class="chip" data-sello="${esc(s)}">${esc(s)}</button>`).join('')}<button type="button" class="chip" data-sello="">Sin sello</button></div>
+      </div>`);
+    const h = $('hoja'), cv = $('etqCanvas');
+    const datos = () => ({ nombre: $('etqNombre').value.trim(), tel: $('etqTel').value.trim(), dir: $('etqDir').value.trim(), ciudad: $('etqCiudad').value.trim(),
+      depto: $('etqDepto').value.trim(), cont: $('etqCont').value.trim(), cobrar: $('etqCobro').value === 'si' ? p.totalCents : 0, sello: $('etqSello').value.trim() });
+    const pintarEtq = () => dibujarEtiqueta(cv.getContext('2d'), datos());
+    h.querySelector('[data-cerrar]').onclick = cerrarHoja;
+    h.querySelectorAll('input,select').forEach(el => el.addEventListener('input', pintarEtq));
+    h.querySelectorAll('[data-sello]').forEach(b => b.onclick = () => { $('etqSello').value = b.dataset.sello; pintarEtq(); });
+    const archivo = () => 'etiqueta-' + sinTilde(datos().nombre || p.id).replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') + '.png';
+    $('etqDescargar').onclick = () => cv.toBlob(b => { const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = archivo(); document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); });
+    $('etqImprimir').onclick = () => {
+      const w = window.open('', '_blank'); if (!w) { toast('Permite ventanas emergentes para imprimir'); return; }
+      w.document.write('<!doctype html><title>Etiqueta</title><style>@page{size:15cm 10cm;margin:0}html,body{margin:0}img{width:15cm;height:10cm;display:block}</style><img src="' + cv.toDataURL('image/png') + '" onload="setTimeout(function(){print()},200)">');
+      w.document.close();
+    };
+    const listo = document.fonts && document.fonts.load ? Promise.all([document.fonts.load('800 40px Nunito'), document.fonts.load('40px "Fredoka One"')]) : Promise.resolve();
+    listo.then(pintarEtq, pintarEtq); if (!logoEtiqueta.complete) logoEtiqueta.onload = pintarEtq;
+    pintarEtq();
+  }
+
+  function dibujarEtiqueta(ctx, d) {
+    const W = 1800, H = 1200, M = 68, AZUL = '#4964af', NAVY = '#2d4375', ROSA = '#d3889f', NARANJA = '#ff7d57', LIMA = '#d5d50c', FONDO = '#fdeee8';
+    const F = (peso, t) => peso + ' ' + t + "px Nunito, 'Arial Rounded MT Bold', Arial, sans-serif";
+    function redondo(x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+    // texto que se achica hasta caber en el ancho
+    function ajustar(t, peso, tam, ancho, min) { let s = tam; ctx.font = F(peso, s); while (s > (min || 20) && ctx.measureText(t).width > ancho) { s -= 2; ctx.font = F(peso, s); } return s; }
+    // texto en varias líneas (máximo "max")
+    function lineas(t, ancho, max) {
+      const pal = String(t).split(/\s+/), out = []; let l = '';
+      pal.forEach(w => { const p = l ? l + ' ' + w : w; if (ctx.measureText(p).width > ancho && l) { out.push(l); l = w; } else l = p; });
+      if (l) out.push(l);
+      if (out.length > max) { out.length = max; out[max - 1] = out[max - 1].replace(/\s*\S*$/, '') + '…'; }
+      return out;
+    }
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = '#fff'; redondo(0, 0, W, H, 40); ctx.fill();
+    // cabecera: logo y sello
+    if (logoEtiqueta.complete && logoEtiqueta.naturalWidth) { const lh = 150, lw = lh * logoEtiqueta.naturalWidth / logoEtiqueta.naturalHeight; ctx.drawImage(logoEtiqueta, M - 10, 14, lw, lh); }
+    if (d.sello) {
+      const s = ajustar(d.sello.toUpperCase(), 800, 40, 700, 24), tw = ctx.measureText(d.sello.toUpperCase()).width, pw = tw + 72, ph = 80;
+      ctx.fillStyle = ROSA; redondo(W - M + 16 - pw, 56, pw, ph, ph / 2); ctx.fill();
+      ctx.fillStyle = '#fff'; ctx.textBaseline = 'middle'; ctx.textAlign = 'center'; ctx.fillText(d.sello.toUpperCase(), W - M + 16 - pw / 2, 56 + ph / 2 + 2);
+    }
+    // cuerpo con borde azul
+    const top = 184;
+    ctx.fillStyle = FONDO; redondo(14, top, W - 28, H - top - 14, 36); ctx.fill();
+    ctx.strokeStyle = AZUL; ctx.lineWidth = 7; redondo(14, top, W - 28, H - top - 14, 36); ctx.stroke();
+    ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+    let y = top + 82;
+    ctx.fillStyle = ROSA; ctx.font = F(800, 34); ctx.fillText('PARA', M, y);
+    y += 92; ajustar(d.nombre || 'Nombre', 800, 74, W - 2 * M, 40); ctx.fillStyle = NAVY; ctx.fillText(d.nombre || 'Nombre', M, y);
+    y += 102; ajustar('Tel: ' + d.tel, 800, 66, W - 2 * M, 36); ctx.fillStyle = NARANJA; ctx.fillText('Tel: ' + d.tel, M, y);
+    ctx.font = F(600, 54); ctx.fillStyle = NAVY;
+    const dl = lineas(d.dir || '', W - 2 * M, 2); dl.forEach((l, i) => { y += i ? 64 : 92; ctx.fillText(l, M, y); });
+    // ciudad y departamento
+    const by = y + 48, bh = 170;
+    ctx.fillStyle = AZUL; redondo(M, by, W - 2 * M, bh, 32); ctx.fill();
+    ctx.textBaseline = 'middle';
+    let dw = 0;
+    if (d.depto) { ctx.font = F(800, 52); dw = ctx.measureText(d.depto.toUpperCase()).width; ctx.fillStyle = LIMA; ctx.textAlign = 'right'; ctx.fillText(d.depto.toUpperCase(), W - M - 44, by + bh / 2 + 4); }
+    ctx.textAlign = 'left'; ajustar((d.ciudad || '').toUpperCase(), 800, 108, W - 2 * M - 88 - (dw ? dw + 50 : 0), 40);
+    ctx.fillStyle = '#fff'; ctx.fillText((d.ciudad || '').toUpperCase(), M + 44, by + bh / 2 + 6);
+    // separador y pie
+    const py = Math.max(by + bh + 70, 930);
+    ctx.strokeStyle = '#9fb0e6'; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(M, py); ctx.lineTo(W - M, py); ctx.stroke();
+    ctx.textBaseline = 'alphabetic'; ctx.textAlign = 'left';
+    ctx.fillStyle = ROSA; ctx.font = F(800, 30); ctx.fillText('CONTENIDO', M, py + 60); ctx.fillText('DE', 1190, py + 60);
+    // contenido en una sola línea (se achica; si aún no cabe, se corta con …)
+    ctx.fillStyle = NAVY; ajustar(d.cont || '', 600, 42, 1060, 30);
+    ctx.fillText(lineas(d.cont || '', 1060, 1)[0] || '', M, py + 118);
+    // cobro
+    const cy = H - 114, txt = d.cobrar ? 'COBRAR ' + pesos(d.cobrar) + ' AL ENTREGAR' : 'SIN COBRO · NO RECAUDO';
+    ctx.font = F(800, 32); const cw = Math.max(640, ctx.measureText(txt).width + 80);
+    ctx.fillStyle = d.cobrar ? NARANJA : LIMA; redondo(M, cy, cw, 62, 31); ctx.fill();
+    ctx.fillStyle = d.cobrar ? '#fff' : NAVY; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(txt, M + cw / 2, cy + 33);
+    // remitente
+    ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+    ctx.fillStyle = NAVY; ctx.font = F(800, 38); ctx.fillText('Wuuff Puppy · Angie Monroy', 1190, py + 118);
+    ctx.font = F(600, 36); ctx.fillText('WhatsApp +57 317 643 1286', 1190, py + 166); ctx.fillText('@wuuffpuppy · wuuffpuppy.co', 1190, py + 212);
+  }
+
+  // Borrar un pedido (por ejemplo, los de prueba). Pide confirmación; si fue una venta que no se dio, mejor "Cancelado".
+  async function borrarPedido(id) {
+    const p = pedidos.find(x => x.id === id); if (!p) return;
+    const quien = (p.cliente && p.cliente.nombre) || 'sin nombre';
+    if (!confirm('¿Borrar el pedido de ' + quien + ' (' + pesos(p.totalCents) + ')?\n\nNo se puede deshacer. Si es una venta que no se dio, mejor márcalo como Cancelado.')) return;
+    try { await api('POST', { accion: 'borrar', id: id }); pedidos = pedidos.filter(x => x.id !== id); cerrarHoja(); pintar(); toast('Pedido borrado'); } catch (err) { toast(err.message); }
+  }
   function tarjeta(p) {
     const e = EST[p.estado] || EST.confirmado, sig = siguienteEstado(p), c = p.cliente || {};
     return `<article class="pedido" data-id="${esc(p.id)}">
       <div class="arriba">
         <div class="nombre">${esc(c.nombre || 'Sin nombre')}<small>${esc(ORIGENES[p.origen] || p.origen)} · ${esc(hace(p.creado))}${c.ciudad ? ' · ' + esc(c.ciudad) : ''}</small></div>
-        <div class="total">${pesos(p.totalCents)}</div>
+        <div class="total">${pesos(p.totalCents)}<button type="button" class="btn-borrar" data-accion="etiqueta" aria-label="Etiqueta para el paquete" title="Etiqueta para el paquete">🏷️</button><button type="button" class="btn-borrar" data-accion="borrar" aria-label="Borrar este pedido" title="Borrar pedido">🗑</button></div>
       </div>
       <div class="prod">${esc(p.productos || '—')}</div>
       <div class="etiquetas">
@@ -316,7 +455,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
       ${sig ? `<div class="siguiente">
         ${c.telefono ? `<a class="btn verde" data-accion="wa" href="${waUrl(p)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">WhatsApp</a>` : ''}
         <button class="btn claro" data-accion="avanzar" style="flex:1">${EST[sig].i} Marcar ${esc(EST[sig].n.toLowerCase())}</button>
-      </div>` : ''}
+      </div>` : `<div class="siguiente"><button class="btn claro" data-accion="abrir" style="flex:1">↩ Cambiar estado o editar</button></div>`}
     </article>`;
   }
 
@@ -327,6 +466,13 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
     if (p.estado === 'entregado') return `¡Hola ${n}! ¿Cómo le quedó a ${m}? 🐶 Nos encantaría ver una foto con su Wuuff. Si nos dejas una reseña nos ayudas muchísimo 💛`;
     if (p.estado === 'preparando') return `¡Hola ${n}! Ya estamos preparando el pedido de ${m} ✂️🐾 Te aviso apenas salga.`;
     return `¡Hola ${n}! Te escribo de Wuuff Puppy por tu pedido 🐾`;
+  }
+  // Mensaje al cliente con la guía (y lo que debe pagar si es contraentrega)
+  function waRastreo(p) {
+    const g = p.guia || {}, n = primerNombre(p.cliente && p.cliente.nombre);
+    const t = `¡Hola${n ? ' ' + n : ''}! 🐾 Tu pedido de Wuuff Puppy ya va en camino con ${g.transportadora || 'la transportadora'}.\nNúmero de guía: ${g.numero}` +
+      (g.url ? `\nRastréalo aquí: ${g.url}` : '') + (!p.pagado ? `\nRecuerda tener listos ${pesos(p.totalCents)} para pagar al recibir 💵` : '');
+    return 'https://wa.me/' + telWa(p.cliente && p.cliente.telefono) + '?text=' + encodeURIComponent(t);
   }
   function waUrl(p) { return 'https://wa.me/' + telWa(p.cliente && p.cliente.telefono) + '?text=' + encodeURIComponent(mensajeWa(p)); }
 
@@ -364,6 +510,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
 
       <div class="caja">
         <h3>Estado</h3>
+        <p class="nota-chica" style="margin:-4px 0 8px">Toca el estado al que quieres pasarlo (también puedes devolverlo a uno anterior).</p>
         <div class="pasos">${flujo.map((e, i) => `<button class="paso${e.id === p.estado ? ' actual' : (idx > -1 && i < idx ? ' hecho' : '')}" data-estado="${e.id}"><span class="n">${e.i}</span>${esc(e.n)}</button>`).join('')}</div>
         <div class="secundarios">
           <button class="btn ${p.estado === 'cancelado' ? 'azul' : 'claro'}" data-estado="cancelado">✖ Cancelado</button>
@@ -375,9 +522,27 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
 
       <div class="acciones" style="margin-bottom:12px">
         ${c.telefono ? `<a class="btn verde" href="${waUrl(p)}" target="_blank" rel="noopener">💬 Escribirle por WhatsApp</a>` : ''}
-        ${p.enviaUrl && !g.numero ? `<a class="btn azul" href="${esc(p.enviaUrl)}" target="_blank" rel="noopener">📦 Crear guía en Envia (después de confirmar)</a>` : ''}
+        <button class="btn claro" type="button" id="btnEtiqueta">🏷️ Etiqueta para el paquete</button>
+        ${!g.numero && /bogot|soacha/i.test(c.ciudad || '') ? `<button class="btn azul" type="button" id="btnEnvia">📦 Crear guía con Envia</button>` : ''}
+        ${g.numero && c.telefono ? `<a class="btn verde" href="${esc(waRastreo(p))}" target="_blank" rel="noopener">📲 Enviarle la guía por WhatsApp</a>` : ''}
         ${g.url ? `<a class="btn claro" href="${esc(g.url)}" target="_blank" rel="noopener">🔎 Rastrear envío</a>` : ''}
         ${g.pdf ? `<a class="btn claro" href="${esc(g.pdf)}" target="_blank" rel="noopener">🖨 PDF de la guía</a>` : ''}
+      </div>
+
+      <div class="caja oculto" id="cajaEnvia">
+        <h3>📦 Guía con Envia (Coordinadora)</h3>
+        <p class="aviso">${p.pagado ? '✅ Ya está pagado: la guía va <b>sin recaudo</b>.' : '💵 La transportadora le cobra <b>' + pesos(p.totalCents) + '</b> al entregar.'} Créala después de confirmar por WhatsApp la dirección y que haya alguien para recibir.</p>
+        <label for="eNombre">Quien recibe</label><input id="eNombre" value="${esc(c.nombre)}">
+        <label for="eTel">Celular</label><input id="eTel" inputmode="tel" value="${esc(c.telefono)}">
+        <label for="eDir">Dirección</label><input id="eDir" value="${esc(c.direccion)}">
+        <div class="dos">
+          <div><label for="eBarrio">Barrio</label><input id="eBarrio"></div>
+          <div><label for="eCp">Código postal</label><input id="eCp" inputmode="numeric" value="110111"></div>
+        </div>
+        <label for="eRef">Indicaciones (torre, apto, portería…)</label><input id="eRef">
+        <div id="eOpciones" class="opciones-envio"></div>
+        <button class="btn claro ancho" type="button" id="btnCotizar" style="margin-top:10px">Ver precios de envío</button>
+        <button class="btn azul ancho oculto" type="button" id="btnCrearGuia" style="margin-top:8px">Crear guía</button>
       </div>
 
       <form id="formDetalle">
@@ -446,9 +611,29 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
       const extra = h.dataset.pendiente && $('dGuia').value.trim() ? { estado: h.dataset.pendiente } : {};
       try { await guardarDetalle(p.id, extra); cerrarHoja(); } catch (err) { toast(err.message); }
     };
-    $('btnBorrar').onclick = async () => {
-      if (!confirm('¿Borrar este pedido? No se puede deshacer. Si solo no se vendió, mejor márcalo como Cancelado.')) return;
-      try { await api('POST', { accion: 'borrar', id: p.id }); pedidos = pedidos.filter(x => x.id !== p.id); cerrarHoja(); pintar(); toast('Pedido borrado'); } catch (err) { toast(err.message); }
+    $('btnBorrar').onclick = () => borrarPedido(p.id);
+    $('btnEtiqueta').onclick = () => abrirEtiqueta(p.id);
+    // Guía de Envia desde el panel: ver precios → elegir → crear (queda Enviado con su guía)
+    const datosEnvio = () => ({ nombre: $('eNombre').value, telefono: $('eTel').value, direccion: $('eDir').value, barrio: $('eBarrio').value, cp: $('eCp').value, referencia: $('eRef').value, ciudad: c.ciudad });
+    if ($('btnEnvia')) $('btnEnvia').onclick = () => { $('cajaEnvia').classList.remove('oculto'); $('cajaEnvia').scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+    if ($('btnCotizar')) $('btnCotizar').onclick = async () => {
+      const b = $('btnCotizar'); b.disabled = true; b.textContent = 'Consultando Envia…';
+      try {
+        const r = await api('POST', { accion: 'cotizar-guia', id: p.id, destino: datosEnvio() });
+        const ops = r.opciones && r.opciones.length ? r.opciones : [{ opcion: 'coordinadora|ground', nombre: 'Coordinadora', precio: 0 }];
+        $('eOpciones').innerHTML = ops.map((o, i) => `<label class="opcion-envio"><input type="radio" name="eOpcion" value="${esc(o.opcion)}"${i === 0 ? ' checked' : ''}><span><b>${esc(o.nombre)}</b>${o.precio ? ' · ' + pesos(o.precio * 100) : ''}${o.comision ? `<small>Incluye comisión contraentrega ${pesos(o.comision * 100)}</small>` : ''}${o.entrega ? `<small>Entrega: ${esc(o.entrega)}</small>` : ''}</span></label>`).join('');
+        $('btnCrearGuia').classList.remove('oculto'); b.textContent = 'Volver a cotizar';
+      } catch (err) { toast(err.message); b.textContent = 'Ver precios de envío'; }
+      b.disabled = false;
+    };
+    if ($('btnCrearGuia')) $('btnCrearGuia').onclick = async () => {
+      const op = h.querySelector('input[name=eOpcion]:checked'); if (!op) return;
+      if (!confirm('¿Crear la guía en Envia? Se descuenta de tu saldo de Envia.')) return;
+      const b = $('btnCrearGuia'); b.disabled = true; b.textContent = 'Creando guía…';
+      try {
+        const r = await api('POST', { accion: 'crear-guia', id: p.id, opcion: op.value, destino: datosEnvio() });
+        pedidos = pedidos.map(x => x.id === p.id ? r.pedido : x); pintar(); abrirDetalle(p.id); toast('✅ Guía ' + r.pedido.guia.numero + ' creada');
+      } catch (err) { toast(err.message); b.disabled = false; b.textContent = 'Crear guía'; }
     };
     if (enfocarGuia) { h.dataset.pendiente = enfocarGuia; setTimeout(() => { $('cajaGuia').scrollIntoView({ block: 'center' }); $('dTransp').focus(); toast('Escribe la guía y guarda para marcarlo enviado'); }, 100); }
   }

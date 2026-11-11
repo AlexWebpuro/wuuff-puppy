@@ -5,6 +5,9 @@
   var caja = document.getElementById('collar-nombre');
   if (!caja) return;
   var WA = '573176431286';
+  // data-producto="collar-correa" o "combo": el personalizador va dentro de la ficha del combo
+  // (sin el paso de talla ni el resumen; compra el botón de la ficha con window.wuuffCollarNombre)
+  var PRODUCTO = caja.getAttribute('data-producto') || 'collar', EN_COMBO = PRODUCTO !== 'collar';
   var ABC = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''), ICONOS = ['♥', '★'];
   // Ancho de cada letra en Malaka Cournt (en em), para que el nombre siempre quepa en el collar
   var ADV = {"A":0.682,"B":0.622,"C":0.661,"D":0.628,"E":0.637,"F":0.646,"G":0.708,"H":0.69,"I":0.428,"J":0.623,"K":0.681,"L":0.606,"M":0.866,"N":0.689,"O":0.619,"P":0.62,"Q":0.707,"R":0.647,"S":0.608,"T":0.779,"U":0.653,"V":0.767,"W":1.01,"X":0.74,"Y":0.743,"Z":0.774};
@@ -61,7 +64,8 @@
   function peso() { return CFG.pesos.filter(function (p) { return p.id === state.peso; })[0]; }
   function talla() { return peso().talla || state.tallaManual; }
   function extras() { return Math.max(0, tokens().length - CFG.incluidas); }
-  function total() { return modo === 'sin' ? CFG.precioSinNombre : CFG.precio + extras() * CFG.precioExtra; }
+  function precios() { return EN_COMBO ? CFG.combos[PRODUCTO] : { precio: CFG.precio, precioSinNombre: CFG.precioSinNombre, titulo: 'Collar con nombre' }; }
+  function total() { return modo === 'sin' ? precios().precioSinNombre : precios().precio + extras() * CFG.precioExtra; }
   function disponibles(l, colorId) {
     if (!STOCK || STOCK.sinLimite) return Infinity;
     var s = (STOCK.stock || {})[colorId || state.color] || {};
@@ -128,7 +132,7 @@
         '<div class="cn-tools"><button type="button" class="cn-link" data-cn="todas">Todas de este color</button><button type="button" class="cn-link" data-cn="alternar">Alternar colores</button></div></div></section>' +
       '<section class="cn-card cn-solo-nombre cn-probar"><p><b>📸 ¿Cómo se le vería?</b> Sube una foto de tu perrito y míralo con su collar.</p>' +
         '<button type="button" class="cn-btn-probar" data-cn="probar">Pruébalo en tu perro</button></section>' +
-      '<section class="cn-card"><h3 class="cn-paso"><span data-cn="num-talla">3</span> Talla por peso</h3><p class="cn-hint">Escoge cuánto pesa tu perrito y te decimos qué talla le queda.</p>' +
+      '<section class="cn-card cn-talla"><h3 class="cn-paso"><span data-cn="num-talla">3</span> Talla por peso</h3><p class="cn-hint">Escoge cuánto pesa tu perrito y te decimos qué talla le queda.</p>' +
         '<div class="cn-opts" data-cn="pesos" role="radiogroup" aria-label="Peso de tu perrito"></div><div class="cn-size" data-cn="size"></div></section>' +
       '<section class="cn-card cn-precio" aria-label="Resumen del precio"><h3>Tu collar</h3><dl>' +
         '<dt>Collar</dt><dd data-cn="precio-collar"></dd><dt class="cn-solo-nombre">Nombre, hasta ' + CFG.incluidas + ' letras</dt><dd class="cn-solo-nombre">Incluido</dd>' +
@@ -230,7 +234,7 @@
       var c = colorEn(i);
       return '<button type="button" class="cn-pieza" data-i="' + i + '" aria-label="' + nombrePieza(x) + ' en ' + c.nombre + '" style="--c:' + c.main + ';--e:' + c.edge + '">' + (ICONOS.indexOf(x) > -1 ? svgDe(x, '') : x) + '</button>';
     }).join('');
-    $('[data-cn=stage-talla]').textContent = 'Collar azul cielo · Talla ' + talla();
+    $('[data-cn=stage-talla]').textContent = EN_COMBO ? 'Collar azul cielo' : 'Collar azul cielo · Talla ' + talla();
     var inp = $('#cn-nombre'); if (inp.value !== state.texto) inp.value = state.texto;
     $('[data-cn=cuenta]').innerHTML = '<b>' + n + '</b> de ' + CFG.maximo + (ex ? ' · ' + ex + (ex === 1 ? ' letra extra' : ' letras extra') : '');
     $('[data-cn=badge]').textContent = ex ? '+' + cop(ex * CFG.precioExtra) : CFG.incluidas + ' incluidas sin costo';
@@ -255,7 +259,7 @@
     $('[data-cn=extra-lbl]').textContent = ex ? 'Letras extra × ' + ex : 'Letras extra';
     $('[data-cn=extra]').textContent = ex ? cop(ex * CFG.precioExtra) : '$0';
     $('[data-cn=total]').textContent = cop(tot);
-    $('[data-cn=precio-collar]').textContent = cop(modo === 'sin' ? CFG.precioSinNombre : CFG.precio);
+    $('[data-cn=precio-collar]').textContent = cop(modo === 'sin' ? precios().precioSinNombre : precios().precio);
     $('[data-cn=entrega-lbl]').textContent = modo === 'sin' ? 'Despacho' : 'Entrega';
     $('[data-cn=entrega]').textContent = modo === 'sin' ? '1–2 días hábiles' : CFG.entrega;
     $('[data-cn=num-talla]').textContent = modo === 'sin' ? '1' : '3';
@@ -265,14 +269,16 @@
     else if (falta.length) { cta.textContent = 'Faltan letras en este color'; cta.setAttribute('aria-disabled', 'true'); }
     else { cta.removeAttribute('aria-disabled'); cta.textContent = 'Comprar ahora · ' + cop(tot); }
     var lineas = modo === 'sin' ? ['Hola Wuuff Puppy, tengo una duda sobre el collar:', '• Talla: ' + tl + ' (' + p.txt + ')', '• Total: ' + cop(tot)]
-      : ['Hola Wuuff Puppy, tengo una duda sobre el collar con nombre:', '• Nombre: ' + (n ? t.join('') : '(sin definir)'),
-      '• Letras: ' + (mix ? 'combinadas (' + detalleMezcla() + ')' : col.nombre), '• Talla: ' + tl + ' (' + p.txt + ')', '• Total: ' + cop(tot)];
+      : ['Hola Wuuff Puppy, tengo una duda sobre el ' + precios().titulo.toLowerCase() + ':', '• Nombre: ' + (n ? t.join('') : '(sin definir)'),
+      '• Letras: ' + (mix ? 'combinadas (' + detalleMezcla() + ')' : col.nombre), (EN_COMBO ? '' : '• Talla: ' + tl + ' (' + p.txt + ')'), '• Total: ' + cop(tot)].filter(Boolean);
     if (falta.length) lineas.push('• ¿Tienen ' + porColor(falta).map(function (g) { return g.piezas.join(', ') + ' en ' + g.color; }).join(' y ') + '?');
     var wa = $('[data-cn=wa]');
     wa.href = 'https://wa.me/' + WA + '?text=' + encodeURIComponent(lineas.join('\n'));
     wa.textContent = falta.length ? 'Consultar disponibilidad por WhatsApp' : '¿Dudas? Escríbenos por WhatsApp';
     var ahora = document.querySelector('.info .precio .ahora');
     if (ahora) ahora.textContent = cop(tot) + ' COP';
+    var antes = document.querySelector('.info .precio .antes');
+    if (antes && EN_COMBO) antes.hidden = modo === 'nombre';
   }
 
   // Va directo al pago con el collar ya armado; el servidor vuelve a calcular el total
@@ -286,6 +292,21 @@
       (mix ? '&mezcla=' + state.mezcla.slice(0, tokens().length).join(',') : '') + '&peso=' + state.peso;
   }
 
+  // Para el botón "Comprar" de las fichas de combo: ¿lleva nombre?, ¿está listo? y los datos para el pago
+  window.wuuffCollarNombre = {
+    activo: function () { return !!CFG && modo === 'nombre'; },
+    listo: function () {
+      if (!tokens().length) { $('#cn-nombre').focus(); var av = $('[data-cn=aviso]'); av.hidden = false; av.textContent = 'Escribe el nombre para el collar.'; return false; }
+      if (faltan().length) { $('[data-cn=aviso]').scrollIntoView({ block: 'center' }); return false; }
+      return true;
+    },
+    parametros: function () {
+      var mix = combinado();
+      evento('collar_nombre_comprar', { producto: PRODUCTO, letras: tokens().length, color: state.color, combinado: mix, value: total() });
+      return '&nombre=' + encodeURIComponent(state.texto) + '&color=' + state.color + (mix ? '&mezcla=' + state.mezcla.slice(0, tokens().length).join(',') : '');
+    }
+  };
+
   // ¿Con nombre o sin nombre? Las dos usan la misma talla por peso; sin nombre oculta el nombre y el color.
   // La galería muestra las fotos de la opción elegida (miniaturas con data-modo) primero.
   var modo = 'nombre';
@@ -293,7 +314,7 @@
   function cambiarModo(m) {
     modo = m;
     document.querySelectorAll('.modo-collar [data-modo]').forEach(function (b) { b.setAttribute('aria-checked', String(b.getAttribute('data-modo') === m)); });
-    caja.hidden = false;
+    caja.hidden = EN_COMBO && m === 'sin';
     caja.classList.toggle('cn-sin', m === 'sin');
     // Con nombre no mostramos la oferta de la placa (satura); sin nombre sí
     document.querySelectorAll('.info .mas-placa').forEach(function (x) { x.hidden = m !== 'sin'; });
@@ -321,11 +342,15 @@
     fetch('/assets/letras-stock.json').then(function (r) { return r.ok ? r.json() : { sinLimite: true }; }).catch(function () { return { sinLimite: true }; })
   ]).then(function (r) {
     CFG = r[0]; STOCK = r[1];
+    if (EN_COMBO && !(CFG.combos && CFG.combos[PRODUCTO])) throw new Error('combo sin precio');
     construir();
+    caja.classList.toggle('cn-en-combo', EN_COMBO);
     var q = new URLSearchParams(location.search);
     setTexto(q.get('nombre') || '');
-    if (q.get('modo') === 'sin') cambiarModo('sin'); else cambiarModo('nombre');
+    var inicial = q.get('modo') || (q.get('nombre') ? 'nombre' : caja.getAttribute('data-modo-inicial')) || 'nombre';
+    cambiarModo(inicial === 'sin' ? 'sin' : 'nombre');
   }).catch(function () {
+    if (EN_COMBO) { document.querySelectorAll('.modo-collar').forEach(function (m) { m.hidden = true; }); return; }
     caja.hidden = false;
     caja.innerHTML = '<p class="cn-aviso">No pudimos cargar el collar. <a href="https://wa.me/' + WA + '?text=' + encodeURIComponent('Hola Wuuff Puppy, quiero comprar el collar') + '" target="_blank" rel="noopener">Escríbenos por WhatsApp</a> y te ayudamos.</p>';
     document.querySelectorAll('.modo-collar').forEach(function (m) { m.hidden = true; });

@@ -17,22 +17,15 @@
 //   ENVIA_PRUEBAS = 1        (opcional) usa el ambiente de pruebas de Envia (no crea guías reales)
 const { getStore, connectLambda } = require('@netlify/blobs');
 
-const BOGOTA = { city: '11001000', state: 'CN', country: 'CO' }; // código DANE de Bogotá
-const CAJA = { length: 10, width: 10, height: 10 };               // caja de 10×10×10 cm
-const PESO_KG = 0.5;
+const E = require('../lib/envia');
 
-function apiBase() {
-  return process.env.ENVIA_PRUEBAS === '1' ? 'https://api-test.envia.com' : 'https://api.envia.com';
-}
 function esc(v) {
   return String(v == null ? '' : v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 function pesos(n) {
   return '$' + Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 }
-function soloDigitos(v) {
-  return String(v || '').replace(/\D/g, '').replace(/^57(?=\d{10}$)/, '');
-}
+const soloDigitos = E.soloDigitos;
 
 function pagina(titulo, cuerpo, status) {
   return {
@@ -58,60 +51,10 @@ small{color:#5b6b93}
   };
 }
 
-async function envia(ruta, cuerpo) {
-  const r = await fetch(apiBase() + ruta, {
-    method: 'POST',
-    headers: { Authorization: 'Bearer ' + process.env.ENVIA_API_KEY, 'Content-Type': 'application/json' },
-    body: JSON.stringify(cuerpo)
-  });
-  let j = null;
-  try { j = await r.json(); } catch (e) { /* respuesta sin JSON */ }
-  if (!r.ok || !j || j.meta === 'error') {
-    const msg = (j && j.error && (j.error.description || j.error.message)) || (j && j.message) || ('HTTP ' + r.status);
-    throw new Error(typeof msg === 'string' ? msg : JSON.stringify(msg));
-  }
-  return j;
-}
-
-function origen() {
-  return Object.assign({
-    name: process.env.ENVIA_ORIGEN_NOMBRE || 'Wuuff Puppy',
-    company: 'Wuuff Puppy',
-    email: process.env.ENVIA_ORIGEN_CORREO || 'wuuffpuppy@gmail.com',
-    phone: soloDigitos(process.env.ENVIA_ORIGEN_TELEFONO),
-    phone_code: '57',
-    street: process.env.ENVIA_ORIGEN_DIRECCION,
-    district: process.env.ENVIA_ORIGEN_BARRIO || '',
-    postalCode: process.env.ENVIA_ORIGEN_CP || '110111'
-  }, BOGOTA);
-}
-
-function destino(p, f) {
-  return Object.assign({
-    name: f.nombre || p.nombre,
-    email: p.correo || undefined,
-    phone: soloDigitos(f.telefono || p.telefono),
-    phone_code: '57',
-    street: f.direccion || p.direccion,
-    district: f.barrio || '',
-    reference: f.referencia || '',
-    postalCode: f.cp || '110111'
-  }, BOGOTA);
-}
-
-function paquete(p) {
-  const total = Math.round(p.totalCents / 100);
-  return [{
-    type: 'box',
-    content: 'Accesorios para mascota',
-    amount: 1,
-    declaredValue: total,
-    lengthUnit: 'CM',
-    weightUnit: 'KG',
-    weight: PESO_KG,
-    dimensions: CAJA,
-    additionalServices: [{ service: 'cash_on_delivery', data: { amount: String(total) } }]
-  }];
+// Datos de quien recibe: lo del formulario o, si falta, lo del pedido
+function datosDestino(p, f) {
+  return { nombre: f.nombre || p.nombre, telefono: f.telefono || p.telefono, correo: p.correo, direccion: f.direccion || p.direccion,
+    barrio: f.barrio || '', referencia: f.referencia || '', cp: f.cp || '110111' };
 }
 
 function vistaGuia(p) {
@@ -145,7 +88,7 @@ exports.handler = async function (event) {
   const ref = f.ref || q.ref || '';
   const t = f.t || q.t || '';
 
-  if (!process.env.ENVIA_API_KEY || !process.env.ENVIA_ORIGEN_TELEFONO || !process.env.ENVIA_ORIGEN_DIRECCION) {
+  if (!E.configurado()) {
     return pagina('Falta configuración', '<h1>Falta configurar Envia</h1><p class="error">En Netlify faltan las variables ENVIA_API_KEY, ENVIA_ORIGEN_TELEFONO o ENVIA_ORIGEN_DIRECCION.</p>', 500);
   }
 
@@ -159,22 +102,8 @@ exports.handler = async function (event) {
 
   // POST: crear la guía
   if (event.httpMethod === 'POST') {
-    const [carrier, service] = String(f.opcion || 'coordinadora|ground').split('|');
     try {
-      const j = await envia('/ship/generate/', {
-        origin: origen(),
-        destination: destino(p, f),
-        packages: paquete(p),
-        shipment: { type: 1, carrier: carrier, service: service, orderReference: p.referencia },
-        settings: { printFormat: 'PDF', printSize: 'PAPER_4X6', currency: 'COP', comments: p.referencia }
-      });
-      const d = (j.data && j.data[0]) || j;
-      if (!d.trackingNumber) throw new Error('Envia no devolvió número de guía');
-      p.guia = {
-        carrier: d.carrier || carrier, service: d.service || service, trackingNumber: d.trackingNumber,
-        trackUrl: d.trackUrl || '', label: d.label || '', totalPrice: d.totalPrice || 0,
-        shipmentId: d.shipmentId || null, creada: new Date().toISOString()
-      };
+      p.guia = await E.generar(datosDestino(p, f), p.totalCents, p.totalCents, f.opcion, p.referencia);
       p.estado = 'guia-creada';
       await store.setJSON(p.referencia, p);
       return vistaGuia(p);
@@ -189,23 +118,18 @@ exports.handler = async function (event) {
   // GET: cotizar y mostrar el formulario
   let opciones = [], errorCotizar = '';
   try {
-    const j = await envia('/ship/rate/', {
-      origin: origen(), destination: destino(p, {}), packages: paquete(p),
-      shipment: { type: 1, carrier: 'coordinadora' }, settings: { currency: 'COP' }
-    });
-    opciones = (j.data || []).filter(o => o && o.service);
+    opciones = await E.cotizar(datosDestino(p, {}), p.totalCents, p.totalCents);
   } catch (err) {
     errorCotizar = err.message;
     console.error('Envia ship/rate', err.message);
   }
-  if (!opciones.length) opciones = [{ carrier: 'coordinadora', service: 'ground', serviceDescription: 'Coordinadora Ground' }];
-  opciones.sort((a, b) => (a.totalPrice || 0) - (b.totalPrice || 0));
+  if (!opciones.length) opciones = [{ opcion: 'coordinadora|ground', nombre: 'Coordinadora Ground' }];
 
   const radios = opciones.map((o, i) => `
-    <label class="op"><input type="radio" name="opcion" value="${esc(o.carrier + '|' + o.service)}"${i === 0 ? ' checked' : ''}>
-    <span><strong>${esc(o.serviceDescription || o.service)}</strong>${o.totalPrice ? ' · ' + pesos(o.totalPrice) : ''}
-    ${o.cashOnDeliveryCommission ? `<br><small>Incluye comisión contraentrega ${pesos(o.cashOnDeliveryCommission)}</small>` : ''}
-    ${o.deliveryEstimate ? `<br><small>Entrega: ${esc(o.deliveryEstimate)}</small>` : ''}</span></label>`).join('');
+    <label class="op"><input type="radio" name="opcion" value="${esc(o.opcion)}"${i === 0 ? ' checked' : ''}>
+    <span><strong>${esc(o.nombre)}</strong>${o.precio ? ' · ' + pesos(o.precio) : ''}
+    ${o.comision ? `<br><small>Incluye comisión contraentrega ${pesos(o.comision)}</small>` : ''}
+    ${o.entrega ? `<br><small>Entrega: ${esc(o.entrega)}</small>` : ''}</span></label>`).join('');
 
   return pagina('Crear guía', `
     <h1>📦 Crear guía en Envia</h1>

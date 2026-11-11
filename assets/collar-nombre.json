@@ -6,6 +6,10 @@
   "precioExtra": 5000,
   "maximo": 8,
   "entrega": "3 días hábiles",
+  "combos": {
+    "collar-correa": { "titulo": "Collar con nombre + correa", "precio": 115000, "precioSinNombre": 89900 },
+    "combo": { "titulo": "Combo completo con collar con nombre", "precio": 164900, "precioSinNombre": 149900 }
+  },
   "colores": [
     { "id": "rosado",  "nombre": "Rosado",   "main": "#f6a7c9", "edge": "#d97fa6" },
     { "id": "naranja", "nombre": "Naranja",  "main": "#ff7d57", "edge": "#d9552f" },

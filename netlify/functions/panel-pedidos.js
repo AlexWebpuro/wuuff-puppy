@@ -8,9 +8,12 @@
 //   POST { accion: 'crear', pedido }                → { pedido }
 //   POST { accion: 'actualizar', id, cambios }      → { pedido }
 //   POST { accion: 'borrar', id }                   → { ok }
+//   POST { accion: 'cotizar-guia', id, destino }    → { opciones, cobrarCents }   (Envia, solo Bogotá)
+//   POST { accion: 'crear-guia', id, opcion, destino } → { pedido }               (crea la guía y lo marca Enviado)
 const crypto = require('crypto');
 const { getStore, connectLambda } = require('@netlify/blobs');
 const P = require('../lib/panel');
+const E = require('../lib/envia');
 
 const MAX_INTENTOS = 8;                 // intentos de clave fallidos…
 const VENTANA_MS = 15 * 60 * 1000;      // …cada 15 minutos por conexión
@@ -21,12 +24,6 @@ function json(status, data) {
     headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex, nofollow' },
     body: JSON.stringify(data)
   };
-}
-
-async function todos(store) {
-  const { blobs } = await store.list();
-  const lista = await Promise.all(blobs.map(b => store.get(b.key, { type: 'json' }).catch(() => null)));
-  return lista.filter(Boolean);
 }
 
 exports.handler = async function (event) {
@@ -68,29 +65,7 @@ exports.handler = async function (event) {
 
   // ── Lista (y trae los pedidos contraentrega nuevos de la web) ──
   if (event.httpMethod === 'GET') {
-    const pedidos = await todos(store);
-    const porId = new Map(pedidos.map(p => [p.id, p]));
-    try {
-      const ce = getStore('pedidos-contraentrega');
-      const { blobs } = await ce.list();
-      for (const { key } of blobs) {
-        const actual = porId.get(key);
-        if (actual && actual.borrado) continue;
-        // Solo se vuelve a leer el de Envia si es nuevo o si aún puede tener guía nueva
-        if (actual && (actual.guia && actual.guia.numero || !['por-confirmar', 'confirmado', 'preparando'].includes(actual.estado))) continue;
-        const reg = await ce.get(key, { type: 'json' });
-        if (!reg || !reg.referencia) continue;
-        if (!actual) {
-          const nuevo = P.desdeContraentrega(reg);
-          await store.setJSON(nuevo.id, nuevo);
-          porId.set(nuevo.id, nuevo);
-        } else if (P.sincronizarGuia(actual, reg)) {
-          await store.setJSON(actual.id, actual);
-        }
-      }
-    } catch (err) {
-      console.error('No se pudieron importar los pedidos contraentrega', err.message);
-    }
+    const porId = await P.listaConContraentrega(store, getStore('pedidos-contraentrega'));
     const lista = Array.from(porId.values()).filter(p => !p.borrado).sort((a, b) => (a.creado < b.creado ? 1 : -1));
     return json(200, { pedidos: lista });
   }
@@ -117,6 +92,45 @@ exports.handler = async function (event) {
     P.aplicarCambios(p, b.cambios || {});
     await store.setJSON(p.id, p);
     return json(200, { pedido: p });
+  }
+
+  // ── Guía de Envia desde el panel (Bogotá; con recaudo si el pedido no está pagado) ──
+  if (b.accion === 'cotizar-guia' || b.accion === 'crear-guia') {
+    if (!E.configurado()) return json(500, { error: 'Falta configurar Envia en Netlify (ENVIA_API_KEY, ENVIA_ORIGEN_TELEFONO, ENVIA_ORIGEN_DIRECCION).' });
+    if (!P.idValido(b.id)) return json(400, { error: 'Pedido no válido' });
+    const p = await store.get(b.id, { type: 'json' });
+    if (!p || p.borrado) return json(404, { error: 'El pedido no existe' });
+    if (p.guia && p.guia.numero) return json(200, { pedido: p });
+    const c = p.cliente || {}, d = b.destino && typeof b.destino === 'object' ? b.destino : {};
+    const destino = {
+      nombre: P.limpio(d.nombre || c.nombre, 120), telefono: P.limpio(d.telefono || c.telefono, 30), correo: P.limpio(c.correo, 160),
+      direccion: P.limpio(d.direccion || c.direccion, 250), barrio: P.limpio(d.barrio, 80), referencia: P.limpio(d.referencia, 120),
+      cp: /^\d{6}$/.test(String(d.cp || '')) ? String(d.cp) : '110111'
+    };
+    if (!E.esBogota(d.ciudad || c.ciudad)) return json(400, { error: 'Por ahora la guía desde el panel es solo para Bogotá y Soacha. Para otra ciudad, créala en Envia.com.' });
+    if (destino.nombre.length < 2 || E.soloDigitos(destino.telefono).length !== 10 || destino.direccion.length < 5) return json(400, { error: 'Revisa el nombre, el celular (10 números) y la dirección.' });
+    const cobrarCents = p.pagado ? 0 : Math.round(p.totalCents || 0);
+    try {
+      if (b.accion === 'cotizar-guia') return json(200, { opciones: await E.cotizar(destino, p.totalCents, cobrarCents), cobrarCents });
+      const g = await E.generar(destino, p.totalCents, cobrarCents, b.opcion, p.id);
+      p.guia = { transportadora: g.carrier === 'coordinadora' ? 'Coordinadora' : g.carrier, numero: g.trackingNumber, url: g.trackUrl, pdf: g.label, costoCents: Math.round((g.totalPrice || 0) * 100) };
+      P.historial(p, '📦 Guía de Envia ' + g.trackingNumber + (cobrarCents ? ' · cobra ' + P.pesos(cobrarCents) + ' al entregar' : ' · sin recaudo'));
+      if (['por-confirmar', 'confirmado', 'preparando'].includes(p.estado)) {
+        P.historial(p, 'Estado: ' + P.ETIQUETAS[p.estado] + ' → Enviado');
+        p.estado = 'enviado'; p.enviado = g.creada;
+      }
+      p.actualizado = new Date().toISOString();
+      await store.setJSON(p.id, p);
+      // Si es un contraentrega de la web, la guía también queda en su registro (así el enlace del correo la muestra)
+      try {
+        const ce = getStore('pedidos-contraentrega'), reg = await ce.get(p.id, { type: 'json' });
+        if (reg && !reg.guia) { reg.guia = g; reg.estado = 'guia-creada'; await ce.setJSON(p.id, reg); }
+      } catch (err) { console.error('No se pudo copiar la guía al pedido contraentrega', err.message); }
+      return json(200, { pedido: p });
+    } catch (err) {
+      console.error('Envia desde el panel', err.message);
+      return json(502, { error: 'Envia: ' + err.message });
+    }
   }
 
   return json(400, { error: 'Acción no válida' });
