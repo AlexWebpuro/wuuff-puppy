@@ -72,7 +72,7 @@ function nombrePlaca(p) {
 }
 
 // Nombre del collar: solo A–Z, corazón y estrella; las tildes se quitan (José → JOSE) y la Ñ no existe
-function nombreCollar(n) {
+function nombreCollar(n, precioBase) {
   if (!n || typeof n !== 'object') return null;
   const crudo = Array.from(String(n.texto || '').toUpperCase());
   if (crudo.indexOf('Ñ') > -1) return { error: 'La Ñ todavía no la tenemos para el collar con nombre' };
@@ -99,7 +99,7 @@ function nombreCollar(n) {
   // Si todas quedaron del mismo color, no es combinación: es ese color
   const unico = usados.length === 1 ? usados[0] : '';
   const detalle = combinado && !unico ? piezas.map((p, i) => p + ' ' + colores[i]).join(' · ') : '';
-  return { texto: piezas.join(''), color: unico || color.nombre, detalle, usados, peso: peso ? peso.txt : '', extras, cents: (CN.precio + extras * CN.precioExtra) * 100 };
+  return { texto: piezas.join(''), color: unico || color.nombre, detalle, usados, peso: peso ? peso.txt : '', extras, cents: ((precioBase || CN.precio) + extras * CN.precioExtra) * 100 };
 }
 
 // carrito = { items: [{ p: 'collar', talla: 'S', qty: 1, nombre: { texto, color, peso } }], placa: { nombre, forma, base, letras } }
@@ -113,6 +113,15 @@ function armar(carrito) {
     const qty = Math.min(Math.max(parseInt(it.qty, 10) || 1, 1), 10);
     const talla = elegir(it.talla, prod.tallas);
     const textoTalla = talla.length === 2 ? 'collar ' + talla[0] + ', arnés ' + talla[1] : (talla === 'Única' ? 'única' : talla);
+    // Collar + correa y Combo completo con collar con nombre (precio en assets/collar-nombre.json; mismo envío y pago que los combos)
+    if (CN.combos[it.p] && it.nombre) {
+      const cb = CN.combos[it.p], cn = nombreCollar(it.nombre, cb.precio);
+      if (!cn || cn.error) return { error: (cn && cn.error) || 'Revisa el nombre del collar' };
+      if (!talla) return { error: 'Elige la talla' };
+      lineas.push({ tipo: 'producto', clave: it.p, personal: Object.assign({ talla: textoTalla }, cn), cents: cn.cents,
+        nombre: cb.titulo + ' "' + cn.texto + '" (Talla ' + textoTalla + ') · letras ' + (cn.detalle ? 'combinadas (' + cn.usados.join(', ') + ')' : cn.color) + (cn.extras ? ' · ' + cn.extras + (cn.extras === 1 ? ' letra extra' : ' letras extra') : '') });
+      continue;
+    }
     if (it.p === 'collar' && it.nombre) {
       const cn = nombreCollar(it.nombre);
       if (!cn || cn.error) return { error: (cn && cn.error) || 'Revisa el nombre del collar' };

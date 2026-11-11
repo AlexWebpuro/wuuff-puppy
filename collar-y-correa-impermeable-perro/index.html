@@ -31,6 +31,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/producto.css?v=20261109">
 <link rel="stylesheet" href="/assets/resenas.css?v=1">
+<link rel="stylesheet" href="/assets/collar-nombre.css?v=8">
 <script type="application/ld+json">
 {
  "@context": "https://schema.org",
@@ -202,6 +203,8 @@
       <p class="cuotas-info" id="cuotas-info" hidden>💳 Al pagar con Wompi elige <strong>Bancolombia</strong> y paga en 4 cuotas sin interés.</p>
       <p class="envio">🚚 Envío gratis en Bogotá y Soacha · $18.500 al resto de Colombia</p>
       <ul class="beneficios"><li>Collar + correa de 1,8 m a juego</li><li>Collar con argolla para la Placa Inteligente</li><li>Impermeables y antiolor: se lavan con agua</li><li>Correa con gancho metálico resistente</li></ul>
+      <div class="modo-collar" role="radiogroup" aria-label="¿Cómo quieres el collar?"><button type="button" role="radio" aria-checked="false" data-modo="nombre"><b>✏️ Collar con su nombre</b><span>$115.000 · hasta 5 letras incluidas</span></button><button type="button" role="radio" aria-checked="true" data-modo="sin"><b>Collar sin nombre</b><span>$89.900</span></button></div>
+      <div class="cn" id="collar-nombre" data-producto="collar-correa" data-modo-inicial="sin" hidden></div>
       <div class="label">Elige la talla</div><div class="tallas"><button type="button" data-talla="S" aria-pressed="false"><strong>Talla S</strong><span>Cuello 25–33 cm</span></button><button type="button" data-talla="M" aria-pressed="false"><strong>Talla M</strong><span>Cuello 33–42 cm</span></button></div><div class="aviso-talla" id="aviso-talla" role="alert">👆 Elige una talla para continuar</div>
       <div class="guia-collar">
         <table class="tabla tabla-collar"><thead><tr><th>Talla</th><th>Cuello de tu perro</th><th>Para perros de aprox.</th></tr></thead><tbody><tr><td><strong>S</strong></td><td>25 a 33 cm</td><td>hasta 8 kg</td></tr><tr><td><strong>M</strong></td><td>33 a 42 cm</td><td>de 8 a 30 kg</td></tr></tbody></table>
@@ -302,7 +305,10 @@
     e.preventDefault();
     if(!talla){var a=document.getElementById('aviso-talla');a.classList.add('show');a.scrollIntoView({behavior:'smooth',block:'center'});return;}
     try{ if(window.gtag) gtag('event','comprar_desde_pagina_producto',{item_id:document.body.getAttribute('data-sku'),talla:talla}); }catch(err){}
-    location.href='/?comprar='+document.body.getAttribute('data-clave')+'&talla='+encodeURIComponent(talla);
+    // Con el collar con nombre: valida el nombre y lo manda al pago
+    var cn=window.wuuffCollarNombre&&window.wuuffCollarNombre.activo()?window.wuuffCollarNombre:null;
+    if(cn&&!cn.listo())return;
+    location.href='/?comprar='+document.body.getAttribute('data-clave')+'&talla='+encodeURIComponent(talla)+(cn?cn.parametros():'');
   });
 })();
 // Medidor del cuello: hasta 33 cm → S; de 34 a 42 cm → M; más de 42 cm → WhatsApp
@@ -321,6 +327,8 @@
 })();
 </script>
 <script src="/assets/entrega.js" defer></script>
+<script src="/assets/collar-probador.js?v=5" defer></script>
+<script src="/assets/collar-nombre.js?v=8" defer></script>
 <!-- Link directo con código del concurso: se guarda para el checkout -->
 <script>try{var wc=new URLSearchParams(location.search).get("codigo");if(wc)sessionStorage.setItem("wuuff_codigo",wc.trim().toUpperCase());}catch(e){}</script>
 <script>

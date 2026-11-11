@@ -103,6 +103,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
 .nota-chica{font-size:12px;color:var(--gris);margin-top:4px}
 #toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--navy);color:#fff;padding:11px 18px;border-radius:14px;font-weight:800;z-index:40;box-shadow:0 6px 20px rgba(0,0,0,.2)}
 .cargando{opacity:.6;pointer-events:none}
+.btn-borrar{margin-left:8px;border:0;background:transparent;font-size:17px;cursor:pointer;opacity:.55;padding:2px 4px;vertical-align:middle}.btn-borrar:hover{opacity:1}
 </style>
 </head>
 <body>
@@ -156,6 +157,8 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
     { id: 'combo', n: 'Combo completo', p: 149900, talla: true },
     { id: 'arnes-correa', n: 'Arnés + correa', p: 109900, talla: true },
     { id: 'collar-correa', n: 'Collar + correa', p: 89900, talla: true },
+    { id: 'collar-correa-nombre', n: 'Collar con nombre + correa', p: 115000, talla: true },
+    { id: 'combo-nombre', n: 'Combo completo con collar con nombre', p: 164900, talla: true },
     { id: 'arnes', n: 'Arnés tipo H', p: 69900, talla: true },
     { id: 'collar-nombre', n: 'Collar con nombre', p: 59900, talla: true },
     { id: 'collar', n: 'Collar', p: 44900, talla: true },
@@ -291,7 +294,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
         : '<div class="vacio"><div class="titulo">Aún no hay pedidos 🐾</div>Los de la web llegan solos. Los de WhatsApp, Instagram o el stand agrégalos con <b>＋ Nuevo</b>.</div>');
     $('lista').querySelectorAll('.pedido').forEach(el => el.onclick = e => {
       const acc = e.target.closest('[data-accion]');
-      if (acc) { e.stopPropagation(); if (acc.dataset.accion === 'avanzar') avanzar(el.dataset.id); return; }
+      if (acc) { e.stopPropagation(); if (acc.dataset.accion === 'avanzar') avanzar(el.dataset.id); if (acc.dataset.accion === 'borrar') borrarPedido(el.dataset.id); return; }
       abrirDetalle(el.dataset.id);
     });
   }
@@ -299,12 +302,19 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
   function siguienteEstado(p) {
     return { 'por-confirmar': 'confirmado', confirmado: 'preparando', preparando: 'enviado', enviado: 'entregado' }[p.estado];
   }
+  // Borrar un pedido (por ejemplo, los de prueba). Pide confirmación; si fue una venta que no se dio, mejor "Cancelado".
+  async function borrarPedido(id) {
+    const p = pedidos.find(x => x.id === id); if (!p) return;
+    const quien = (p.cliente && p.cliente.nombre) || 'sin nombre';
+    if (!confirm('¿Borrar el pedido de ' + quien + ' (' + pesos(p.totalCents) + ')?\n\nNo se puede deshacer. Si es una venta que no se dio, mejor márcalo como Cancelado.')) return;
+    try { await api('POST', { accion: 'borrar', id: id }); pedidos = pedidos.filter(x => x.id !== id); cerrarHoja(); pintar(); toast('Pedido borrado'); } catch (err) { toast(err.message); }
+  }
   function tarjeta(p) {
     const e = EST[p.estado] || EST.confirmado, sig = siguienteEstado(p), c = p.cliente || {};
     return `<article class="pedido" data-id="${esc(p.id)}">
       <div class="arriba">
         <div class="nombre">${esc(c.nombre || 'Sin nombre')}<small>${esc(ORIGENES[p.origen] || p.origen)} · ${esc(hace(p.creado))}${c.ciudad ? ' · ' + esc(c.ciudad) : ''}</small></div>
-        <div class="total">${pesos(p.totalCents)}</div>
+        <div class="total">${pesos(p.totalCents)}<button type="button" class="btn-borrar" data-accion="borrar" aria-label="Borrar este pedido" title="Borrar pedido">🗑</button></div>
       </div>
       <div class="prod">${esc(p.productos || '—')}</div>
       <div class="etiquetas">
@@ -446,10 +456,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
       const extra = h.dataset.pendiente && $('dGuia').value.trim() ? { estado: h.dataset.pendiente } : {};
       try { await guardarDetalle(p.id, extra); cerrarHoja(); } catch (err) { toast(err.message); }
     };
-    $('btnBorrar').onclick = async () => {
-      if (!confirm('¿Borrar este pedido? No se puede deshacer. Si solo no se vendió, mejor márcalo como Cancelado.')) return;
-      try { await api('POST', { accion: 'borrar', id: p.id }); pedidos = pedidos.filter(x => x.id !== p.id); cerrarHoja(); pintar(); toast('Pedido borrado'); } catch (err) { toast(err.message); }
-    };
+    $('btnBorrar').onclick = () => borrarPedido(p.id);
     if (enfocarGuia) { h.dataset.pendiente = enfocarGuia; setTimeout(() => { $('cajaGuia').scrollIntoView({ block: 'center' }); $('dTransp').focus(); toast('Escribe la guía y guarda para marcarlo enviado'); }, 100); }
   }
 
