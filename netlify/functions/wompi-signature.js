@@ -35,8 +35,8 @@ exports.handler = async function (event) {
   if (!calc.ok) return json(400, { error: calc.error, codigoInvalido: !!calc.codigoInvalido, faltaRegalo: !!calc.faltaRegalo });
 
   // Perfil de la placa (chip NFC): "ABC123" o "pendiente (Perro, Macho, Criollo)"
-  const perfil = String(body.perfil || '');
-  const perfilTexto = /^[A-Z0-9]{6,16}$/.test(perfil) ? perfil : (/^pendiente \([^()|<>\[\]]{1,90}\)$/.test(perfil) ? perfil : '');
+  // (con varias placas, uno por placa separados por coma)
+  const perfilTexto = tienda.perfilesValidos(body.perfil).join(', ');
   const nombreProducto = calc.nombreProducto + (perfilTexto ? ' | Perfil NFC: ' + perfilTexto : '');
   const amountInCents = calc.totalCents;
 

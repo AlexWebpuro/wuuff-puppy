@@ -63,6 +63,8 @@ const BASE_DATOS = document.documentElement.dataset.datos || '/placa-nfc/datos/'
 const [GLYPHS, ILUS_DATA] = await Promise.all([cargarJSON('glyphs', BASE_DATOS + 'glyphs.json'), cargarJSON('ilus-data', BASE_DATOS + 'ilustraciones.json')]);
 const G = window.WuuffGeom(window.ClipperLib, GLYPHS);
 const estado = { nombre: 'Luna', diseno: 'huella', base: 'azul', letras: 'blanco', compra: 'sola', talla: 'M', rayosX: false };
+// Varias placas en un pedido (una por perrito): las ya armadas; la que se está diseñando se suma al comprar
+const lista = [], MAX_PLACAS = 6;
 const ILUS = ILUS_DATA;
 const $ = s => document.querySelector(s);
 const cop = n => new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(n);
@@ -301,11 +303,32 @@ function totales() {
   return { total: p.precio + precioPlaca(p.id), ahorro: p.ahorro, producto: p,
     lineas: [[`${p.corto} talla ${estado.talla}`, p.precio], ['Placa Inteligente Wuuff', precioPlaca(p.id)]] };
 }
+// Una placa de la lista: lo necesario para el pago y para mostrarla
+function placaActual() {
+  const t = totales();
+  return { forma: estado.diseno, nombre: estado.nombre.trim(), base: estado.base, letras: estado.letras, con: estado.compra,
+    talla: estado.compra === 'sola' ? '' : estado.talla, total: t.total, ahorro: t.ahorro || 0,
+    desc: `"${estado.nombre.trim()}" · ${DISENOS[estado.diseno].nombre.toLowerCase()} ${color(estado.base).nombre.toLowerCase()}` +
+      (t.producto ? ` + ${t.producto.corto.toLowerCase()} talla ${estado.talla}` : '') };
+}
+function pintarLista() {
+  const caja = $('#placas-lista'); if (!caja) return;
+  caja.hidden = !lista.length;
+  const act = estado.nombre.trim() ? placaActual() : null, n = lista.length + (act ? 1 : 0);
+  caja.innerHTML = lista.length ? `<p class="pl-t">🐶 Tu pedido · ${n} ${n === 1 ? 'placa' : 'placas'}</p>` +
+    lista.map((p, i) => `<div class="pl-it"><span><b>${i + 1}.</b> ${p.desc}</span><span>${cop(p.total)}</span><button type="button" data-quitar="${i}" aria-label="Quitar la placa ${i + 1}">✕</button></div>`).join('') +
+    (act ? `<div class="pl-it pl-actual"><span><b>${n}.</b> ${act.desc} <small>(la que estás diseñando)</small></span><span>${cop(act.total)}</span></div>` : '') : '';
+  $('#btn-otra').hidden = n >= MAX_PLACAS;
+  $('#btn-otra').textContent = '➕ Agregar otra placa' + (lista.length ? '' : ' (para otro perrito)');
+  $('#btn-agregar').textContent = lista.length ? `Comprar ${n} ${n === 1 ? 'placa' : 'placas'} 🐾` : 'Comprar ahora 🐾';
+}
 function actualizarPrecio() {
   const t = totales();
-  $('#total').textContent = cop(t.total);
-  $('#antes').textContent = t.ahorro ? 'Ahorras ' + cop(t.ahorro) : '';
+  const totalLista = lista.reduce((s, p) => s + p.total, 0), ahorroLista = lista.reduce((s, p) => s + p.ahorro, 0);
+  $('#total').textContent = cop(t.total + totalLista);
+  $('#antes').textContent = t.ahorro + ahorroLista ? 'Ahorras ' + cop(t.ahorro + ahorroLista) : '';
   $('#desglose').innerHTML = t.lineas.map(([n, v]) => `<li><span>${n}</span><span>${cop(v)}</span></li>`).join('');
+  pintarLista();
   $('#talla-wrap').hidden = estado.compra === 'sola';
   const TALLAS = { collar: ['cuello 25–33 cm', 'cuello 33–42 cm'], arnes: ['pecho 23–38 cm', 'pecho 32–53 cm'],
     'arnes-correa': ['pecho 23–38 cm', 'pecho 32–53 cm'], 'collar-correa': ['cuello 25–33 cm', 'cuello 33–42 cm'], combo: ['collar 25–33 cm de cuello · arnés pecho 23–38 cm', 'collar 33–42 cm de cuello · arnés pecho 32–53 cm'] }[estado.compra];
@@ -409,6 +432,12 @@ $('#btn-agregar').addEventListener('click', () => {
   if (!estado.nombre.trim()) { input.focus(); validarNombre(''); return; }
   const r = ultimo, t = totales();
   // En wuuffpuppy.co: lleva al mismo pago de la tienda (/?comprar=placa → modal de envío + Wompi)
+  if (lista.length && (/wuuffpuppy\.co$/.test(location.hostname) || location.hostname.endsWith('.netlify.app'))) {
+    const todas = lista.concat([placaActual()]).map(p => ({ forma: p.forma, nombre: p.nombre, base: p.base, letras: p.letras, con: p.con, talla: p.talla }));
+    try { if (window.gtag) gtag('event', 'placa_comprar_varias', { placas: todas.length }); } catch (e) {}
+    location.href = '/?comprar=placa&lista=' + encodeURIComponent(JSON.stringify(todas));
+    return;
+  }
   if (/wuuffpuppy\.co$/.test(location.hostname) || location.hostname.endsWith('.netlify.app')) {
     const q = new URLSearchParams({ comprar: 'placa', forma: estado.diseno, nombre: estado.nombre.trim(), base: estado.base, letras: estado.letras,
       con: estado.compra, talla: estado.compra === 'sola' ? '' : estado.talla });
@@ -428,6 +457,22 @@ $('#btn-agregar').addEventListener('click', () => {
   $('#resumen').hidden = false;
   $('#resumen').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'nearest' });
   $('#resumen-texto').value = 'Pedido Wuuff Puppy\n' + filas.map(([k, v]) => `${k}: ${v}`).join('\n');
+});
+// "Agregar otra placa": guarda la que está diseñando y deja el diseñador listo para la siguiente (otro nombre)
+$('#btn-otra').addEventListener('click', () => {
+  if (!estado.nombre.trim()) { input.focus(); validarNombre(''); return; }
+  if (lista.length + 1 >= MAX_PLACAS + 1) return;
+  lista.push(placaActual());
+  try { if (window.gtag) gtag('event', 'placa_agregar_otra', { placas: lista.length }); } catch (e) {}
+  estado.nombre = ''; input.value = ''; $('#contador').textContent = `0/${MAX_LETRAS}`;
+  estado.compra = 'sola'; pintarCompras();
+  actualizar(true);
+  const av = $('#aviso-nombre'); av.textContent = `✅ Guardamos la placa de ${lista[lista.length - 1].nombre}. Ahora escribe el nombre del siguiente perrito.`; av.hidden = false;
+  input.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' }); setTimeout(() => input.focus({ preventScroll: true }), 350);
+});
+$('#placas-lista').addEventListener('click', e => {
+  const q = e.target.closest('[data-quitar]'); if (!q) return;
+  lista.splice(+q.dataset.quitar, 1); actualizarPrecio();
 });
 $('#btn-copiar').addEventListener('click', async () => {
   const ta = $('#resumen-texto'); const ok = $('#copiado');

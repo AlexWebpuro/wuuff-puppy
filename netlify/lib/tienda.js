@@ -134,26 +134,36 @@ function armar(carrito) {
     lineas.push({ tipo: 'producto', clave: it.p, nombre, cents: prod.cents * qty, qty });
   }
   const claves = lineas.map(l => l.clave);
-  let placa = null;
-  if (c.placa) {
-    placa = placaValida(c.placa);
-    if (!placa) return { error: 'Faltan datos de la placa' };
-    let cents = PLACA_SOLA, nombre = nombrePlaca(placa);
-    if (claves.some(k => CON_PLACA_AGREGADA.indexOf(k) > -1)) {
+  // Placas: "placa" (una) o "placas" (varias, una por perrito; máx. 6)
+  const crudas = Array.isArray(c.placas) && c.placas.length ? c.placas.slice(0, 6) : (c.placa ? [c.placa] : []);
+  const placas = [];
+  for (const cr of crudas) {
+    const pv = placaValida(cr);
+    if (!pv) return { error: 'Faltan datos de la placa' };
+    placas.push(pv);
+  }
+  // Precio de cada placa: $19.900 por cada arnés, arnés + correa, collar + correa o combo del pedido;
+  // luego $20.000 por cada collar (combo collar + placa = $64.900); las demás, $29.900
+  const unidades = ks => lineas.filter(l => ks.indexOf(l.clave) > -1).reduce((n, l) => n + (l.qty || 1), 0);
+  const conAgregada = unidades(CON_PLACA_AGREGADA), conCollar = unidades(['collar']);
+  placas.forEach((pv, i) => {
+    let cents = PLACA_SOLA, nombre = nombrePlaca(pv);
+    if (i < conAgregada) {
       cents = PLACA_AGREGADA;
-    } else if (claves.indexOf('collar') > -1) {
+    } else if (i < conAgregada + conCollar) {
       // Combo collar + placa: $64.900 en total
       cents = COMBO_COLLAR_PLACA - PRODUCTOS.collar.cents;
       nombre += ' — combo Collar + Placa';
     }
     lineas.push({ tipo: 'placa', nombre, cents });
-  }
+  });
+  const placa = placas[0] || null;
   if (!lineas.length) return { error: 'El carrito está vacío' };
   const subtotalCents = lineas.reduce((s, l) => s + l.cents, 0);
   // Placa de regalo del concurso: con arnés + correa (combo o por separado) o combo completo
   const conRegalo = claves.indexOf('combo') > -1 || claves.indexOf('arnes-correa') > -1 ||
     (claves.indexOf('arnes') > -1 && claves.indexOf('correa') > -1);
-  return { lineas, placa, subtotalCents, conRegalo };
+  return { lineas, placa, placas, subtotalCents, conRegalo };
 }
 
 function esBogota(ciudad) { return /bogot|soacha/i.test(String(ciudad || '')); }
@@ -287,4 +297,17 @@ function lineasAviso(calc) {
   return l;
 }
 
-module.exports = { PRODUCTOS, MENSAJES, armar, calcular, revisarCodigo, envioCents, contraentregaPermitida, normalizarCodigo, lineasAviso, pesos, placaValida };
+// Perfiles NFC del pedido (uno por placa): el texto termina en "| Perfil NFC: ID1, ID2, pendiente (…)"
+function perfilesDeTexto(texto) {
+  const m = /Perfil NFC:\s*([^|]*)/.exec(String(texto || ''));
+  if (!m) return { ids: [], pendientes: [] };
+  const partes = m[1].match(/pendiente \([^)]*\)|[A-Z0-9]{6,16}/g) || [];
+  return { ids: partes.filter(p => !/^pendiente/.test(p)), pendientes: partes.filter(p => /^pendiente/.test(p)) };
+}
+// Lo que manda el navegador: "ID" o "pendiente (…)", varios separados por coma (máx. 6)
+function perfilesValidos(texto) {
+  const partes = String(texto || '').match(/pendiente \([^()|<>\[\]]{1,90}\)|[^,\s][^,]*/g) || [];
+  return partes.map(p => p.trim()).filter(p => /^[A-Z0-9]{6,16}$/.test(p) || /^pendiente \([^()|<>\[\]]{1,90}\)$/.test(p)).slice(0, 6);
+}
+
+module.exports = { perfilesDeTexto, perfilesValidos, PRODUCTOS, MENSAJES, armar, calcular, revisarCodigo, envioCents, contraentregaPermitida, normalizarCodigo, lineasAviso, pesos, placaValida };

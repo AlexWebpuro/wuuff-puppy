@@ -17,7 +17,10 @@ exports.handler = async function (event) {
   // Código del concurso y placa de regalo: el cliente los ve en palabras, sin las marcas internas del pedido
   const nombreProducto = String(body.nombreProducto || '').replace(/\s*\[Código[^\]]*\]/g, '').replace(/\s*\[REGALO\]/g, ' (de regalo 🎁)');
   const codigo = esc(body.codigo).slice(0, 40), descuento = esc(body.descuento).slice(0, 20), regalo = esc(body.regalo).slice(0, 120);
-  const enlacePerfil = /^https:\/\/[a-z0-9.-]+\/placa-nfc\/perfil\/#id=[A-Z0-9]+&clave=[a-f0-9]+$/.test(perfilEditar || '') ? perfilEditar : '';
+  const enlaceOk = u => /^https:\/\/[a-z0-9.-]+\/placa-nfc\/perfil\/#id=[A-Z0-9]+&clave=[a-f0-9]+$/.test(u || '');
+  const enlacePerfil = enlaceOk(perfilEditar) ? perfilEditar : '';
+  // Con varias placas: un enlace por perfil (uno por perrito)
+  const perfiles = (Array.isArray(body.perfiles) ? body.perfiles : []).filter(p => p && enlaceOk(p.url)).slice(0, 6);
   const contraentrega = metodoPago === 'contraentrega';
 
   if (!toEmail) {
@@ -54,7 +57,11 @@ exports.handler = async function (event) {
         ${regalo ? `<p style="margin:4px 0;"><strong>🎁 Placa Inteligente Wuuff de regalo:</strong> ${regalo}</p>` : ''}
         ${total ? `<p style="margin:4px 0;"><strong>Total:</strong> ${total}${contraentrega ? ' · se paga al recibir' : ''}</p>` : ''}
       </div>
-      ${enlacePerfil ? `<div style="background:#fff4ef;border:2px solid #f17d57;border-radius:12px;padding:16px 20px;margin:20px 0;">
+      ${perfiles.length > 1 ? `<div style="background:#fff4ef;border:2px solid #f17d57;border-radius:12px;padding:16px 20px;margin:20px 0;">
+        <p style="margin:0 0 8px;"><strong>🏷️ Completa el perfil de cada Placa Inteligente Wuuff</strong></p>
+        <p style="margin:0 0 12px;">Es lo que verá quien escanee cada placa: agrega su foto, vacunas y veterinaria cuando quieras. Guarda este correo: los enlaces son privados y son la única forma de editarlos.</p>
+        ${perfiles.map(p => `<p style="margin:0 0 8px;"><a href="${p.url}" style="display:inline-block;background:#f17d57;color:#fff;font-weight:bold;padding:12px 18px;border-radius:10px;text-decoration:none;">Completar el perfil${p.mascota ? ' de ' + esc(p.mascota) : ''}</a></p>`).join('')}
+      </div>` : enlacePerfil ? `<div style="background:#fff4ef;border:2px solid #f17d57;border-radius:12px;padding:16px 20px;margin:20px 0;">
         <p style="margin:0 0 8px;"><strong>🏷️ Completa el perfil de tu Placa Inteligente Wuuff</strong></p>
         <p style="margin:0 0 12px;">Es lo que verá quien escanee la placa: agrega su foto, vacunas y veterinaria cuando quieras. Guarda este correo: el enlace es privado y es la única forma de editarlo.</p>
         <a href="${enlacePerfil}" style="display:inline-block;background:#f17d57;color:#fff;font-weight:bold;padding:12px 18px;border-radius:10px;text-decoration:none;">Completar el perfil</a>

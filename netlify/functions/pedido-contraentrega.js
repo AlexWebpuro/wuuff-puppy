@@ -5,6 +5,7 @@
 const { getStore, connectLambda } = require('@netlify/blobs');
 const tienda = require('../lib/tienda');
 const resenas = require('../lib/resenas');
+const P = require('../lib/perfiles');
 
 const SITE_URL = 'https://wuuffpuppy.co/';
 const MAXIMO_CENTS = 300000000;     // $3.000.000: tope de recaudo en efectivo de Coordinadora
@@ -35,7 +36,8 @@ exports.handler = async function (event) {
     ciudad: limpio(b.ciudad, 80),
     talla: limpio(b.talla, 40),
     producto: '',
-    perfilId: /^[A-Z0-9]{6,16}$/.test(b.perfilId || '') ? b.perfilId : ''
+    // Un perfil NFC por placa (perfilIds); perfilId es el de antes (una sola placa)
+    perfilIds: (Array.isArray(b.perfilIds) ? b.perfilIds : [b.perfilId]).filter(id => /^[A-Z0-9]{6,16}$/.test(id || '')).slice(0, 6)
   };
 
   if (!pedido.nombre || !pedido.telefono || !pedido.direccion) {
@@ -55,7 +57,7 @@ exports.handler = async function (event) {
     return { statusCode: 400, body: JSON.stringify({ error: calc.error, codigoInvalido: !!calc.codigoInvalido, faltaRegalo: !!calc.faltaRegalo }) };
   }
   const totalCents = calc.totalCents;
-  pedido.producto = limpio(calc.nombreProducto + (pedido.perfilId ? ' | Perfil NFC: ' + pedido.perfilId : ''), 700);
+  pedido.producto = limpio(calc.nombreProducto + (pedido.perfilIds.length ? ' | Perfil NFC: ' + pedido.perfilIds.join(', ') : ''), 900);
   // Mínimo de $49.900 con el subtotal ANTES del descuento (ej.: collar + placa $64.900 − 10 % sigue aplicando)
   if (!calc.contraentrega || totalCents > MAXIMO_CENTS) {
     return { statusCode: 400, body: JSON.stringify({ error: 'El valor del pedido no aplica para contraentrega' }) };
@@ -114,21 +116,12 @@ exports.handler = async function (event) {
   }
 
   // 2. Placa NFC: se marca el perfil y se arman los enlaces (chip y edición)
-  let urlChip = '', urlEditar = '';
-  if (pedido.perfilId) {
-    try {
-      const store = getStore('perfiles-nfc');
-      const perfil = await store.get(pedido.perfilId, { type: 'json' });
-      if (perfil) {
-        perfil.pedido = Object.assign({}, perfil.pedido, { estado: 'contraentrega-pendiente', referencia: referencia });
-        await store.setJSON(perfil.id, perfil);
-        urlChip = SITE_URL + 'm/' + perfil.id;
-        urlEditar = SITE_URL + 'placa-nfc/perfil/#id=' + perfil.id + '&clave=' + perfil.clave;
-      }
-    } catch (err) {
-      console.error('No se pudo actualizar el perfil NFC', err.message);
-    }
+  let perfiles = [];
+  if (pedido.perfilIds.length) {
+    try { perfiles = await P.marcarPerfiles(getStore('perfiles-nfc'), pedido.perfilIds, 'contraentrega-pendiente', referencia, SITE_URL); }
+    catch (err) { console.error('No se pudo actualizar el perfil NFC', err.message); }
   }
+  const urlEditar = perfiles.length ? perfiles[0].urlEditar : '';
 
   const telCliente = pedido.telefono.replace(/\D/g, '').replace(/^(?!57)(\d{10})$/, '57$1');
 
@@ -151,7 +144,7 @@ exports.handler = async function (event) {
             <p><strong>Cliente:</strong> ${pedido.nombre} · ${pedido.telefono}${pedido.correo ? ' · ' + pedido.correo : ''}<br>
             <strong>Dirección:</strong> ${pedido.direccion}, ${pedido.ciudad}<br>
             <strong>Mascota:</strong> ${pedido.mascota}</p>
-            ${urlChip ? `<p style="background:#fffbe6;padding:10px 12px;border-radius:10px"><strong>Grabar en el chip NFC:</strong><br><a href="${urlChip}">${urlChip}</a></p>` : ''}
+            ${P.htmlChips(perfiles)}
             <p><a href="https://wa.me/${telCliente}" style="display:inline-block;background:#25D366;color:#fff;font-weight:bold;padding:10px 16px;border-radius:10px;text-decoration:none;">Escribirle por WhatsApp</a></p>
             <p style="font-size:13px">Antes de crear la guía en Envia.com: confirma dirección, que haya alguien para recibir y que tenga el efectivo listo.</p>
             ${urlGuia ? `<p><a href="${urlGuia}" style="display:inline-block;background:#4964AF;color:#fff;font-weight:bold;padding:10px 16px;border-radius:10px;text-decoration:none;">📦 Ya confirmé: crear guía en Envia</a></p>` : ''}
@@ -184,7 +177,7 @@ exports.handler = async function (event) {
         body: JSON.stringify({
           toEmail: pedido.correo, toName: pedido.nombre, nombreProducto: pedido.producto.replace(/\s*\|\s*Perfil NFC:.*$/, ''),
           mascota: pedido.mascota, direccion: pedido.direccion, ciudad: pedido.ciudad,
-          metodoPago: 'contraentrega', total: total, perfilEditar: urlEditar,
+          metodoPago: 'contraentrega', total: total, perfilEditar: urlEditar, perfiles: perfiles.map(p => ({ url: p.urlEditar, mascota: p.mascota })),
           descuento: calc.descuentoCents ? tienda.pesos(calc.descuentoCents) : '', codigo: calc.codigo ? calc.codigo.codigo : '',
           regalo: calc.regalo ? calc.regalo.texto : ''
         })

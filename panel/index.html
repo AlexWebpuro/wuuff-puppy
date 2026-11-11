@@ -105,6 +105,33 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
 .cargando{opacity:.6;pointer-events:none}
 .btn-borrar{margin-left:8px;border:0;background:transparent;font-size:17px;cursor:pointer;opacity:.55;padding:2px 4px;vertical-align:middle}.btn-borrar:hover{opacity:1}
 .opciones-envio{display:grid;gap:6px;margin-top:10px}.opcion-envio{display:flex;gap:10px;align-items:flex-start;background:var(--fondo);border-radius:12px;padding:10px;font-weight:400}.opcion-envio small{display:block;color:var(--gris);font-size:12px}.opcion-envio input{margin-top:3px}
+/* Pestañas e inventario */
+.pestanas{display:flex;gap:6px;margin-top:10px}
+.pestana{flex:1;border:1.5px solid var(--borde);background:#fff;border-radius:12px;padding:9px 8px;font-weight:800;cursor:pointer;font-size:14px}
+.pestana.activo{background:var(--navy);border-color:var(--navy);color:#fff}
+.inv-acciones{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin:4px 0 14px}
+.inv-acciones .btn{padding:11px 10px;font-size:14px}
+.stock{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-bottom:16px}
+.stock-it{background:#fff;border-radius:18px;padding:12px 14px;border:1.5px solid transparent}
+.stock-it.agotado{border-color:#f2c7c3}.stock-it.pocos{border-color:#ffd59a}
+.stock-it .n{font-weight:800;font-size:13px;color:var(--gris);display:flex;justify-content:space-between;gap:6px;align-items:flex-start}
+.stock-it b{display:block;font-family:'Fredoka One';font-weight:400;font-size:30px;line-height:1.15}
+.stock-it small{display:block;font-size:12px;font-weight:700;color:var(--gris)}
+.stock-it .quitar{border:0;background:transparent;cursor:pointer;opacity:.5;font-size:13px;padding:0}
+.tabla{width:100%;border-collapse:collapse;font-size:14px}
+.tabla th{font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:var(--gris);text-align:right;padding:6px 4px;font-weight:800}
+.tabla th:first-child,.tabla td:first-child{text-align:left}
+.tabla td{padding:7px 4px;border-top:1px dashed var(--borde);text-align:right;font-weight:700}
+.tabla tr.total td{font-weight:900;border-top:1.5px solid var(--borde)}
+.movs{list-style:none;margin:0;padding:0;font-size:14px}
+.movs li{display:flex;gap:8px;align-items:center;padding:8px 0;border-top:1px dashed var(--borde)}
+.movs li span{flex:1;min-width:0}.movs small{display:block;color:var(--gris);font-size:12px}
+.cantidades{display:grid;gap:6px;margin-top:6px}
+.cant{display:flex;align-items:center;gap:8px;font-weight:800;font-size:14px}
+.cant span{flex:1}.cant input{width:76px;text-align:center;padding:8px}
+.cant button{border:0;background:#f3eee6;border-radius:10px;width:36px;height:36px;font-weight:900;cursor:pointer;font-size:16px}
+.sin-leer{display:grid;gap:6px;margin-top:6px}.sin-leer button{text-align:left;border:0;background:#fff7e0;border-radius:12px;padding:9px 11px;cursor:pointer;font-size:13px}
+.t-colaboracion{background:#e8e0fb;color:#5a3aa8}.t-regalo{background:#fde3ef;color:#a0336b}
 </style>
 </head>
 <body>
@@ -129,8 +156,13 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
       <button class="btn claro icono" id="btnRecargar" title="Actualizar" aria-label="Actualizar">⟳</button>
       <button class="btn naranja" id="btnNuevo">＋ Nuevo</button>
     </div>
+    <div class="pestanas" role="tablist">
+      <button class="pestana activo" data-tab="pedidos" role="tab">📋 Pedidos</button>
+      <button class="pestana" data-tab="inventario" role="tab">📦 Inventario</button>
+    </div>
   </header>
-  <main>
+  <main id="vistaInventario" class="oculto"></main>
+  <main id="vistaPedidos">
     <div class="resumen" id="resumen"></div>
     <div class="filtros" id="filtros"></div>
     <input class="buscar" id="buscar" type="search" placeholder="Buscar por nombre, celular, producto, guía o referencia…">
@@ -179,6 +211,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
   ];
   const EST = Object.fromEntries(ESTADOS.map(e => [e.id, e]));
   const ORIGENES = { web: '🌐 Web', whatsapp: '💬 WhatsApp', instagram: '📸 Instagram', facebook: '👍 Facebook', tiktok: '🎵 TikTok', marketplace: '🛒 Marketplace', stand: '⛺ Stand', consignacion: '🏪 Consignación', otro: '✳️ Otro' };
+  const TIPOS = { venta: '💰 Venta', colaboracion: '🤝 Colaboración', regalo: '🎁 Regalo' };
   const PAGOS = { contraentrega: '💵 Contraentrega', wompi: '💳 Wompi', nequi: '📲 Nequi / Bre-B', transferencia: '🏦 Transferencia', efectivo: '💵 Efectivo', otro: 'Otro' };
   const FILTROS = [
     { id: 'activos', n: 'Activos', f: p => ['por-confirmar', 'confirmado', 'preparando', 'enviado'].includes(p.estado) },
@@ -266,7 +299,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
     // Resumen
     const ahora = new Date(), mes = ahora.getFullYear() + '-' + ahora.getMonth();
     const vivos = pedidos.filter(p => !['cancelado', 'devuelto'].includes(p.estado));
-    const delMes = vivos.filter(p => { const d = new Date(p.creado); return d.getFullYear() + '-' + d.getMonth() === mes; });
+    const delMes = vivos.filter(p => { const d = new Date(p.creado); return d.getFullYear() + '-' + d.getMonth() === mes && (p.tipo || 'venta') === 'venta'; });
     const porCobrar = vivos.filter(p => !p.pagado);
     const atrasados = pedidos.filter(atrasado).length;
     const despachar = pedidos.filter(p => ['confirmado', 'preparando'].includes(p.estado)).length;
@@ -451,6 +484,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
         <span class="pill ${p.pagado ? 'p-si' : 'p-no'}">${p.pagado ? '✓ Pagado' : (p.pago === 'contraentrega' ? '💵 Cobrar al entregar' : '✗ Sin pagar')}</span>
         ${atrasado(p) ? `<span class="pill atraso">⚠️ ${diasHabiles(p.creado)} días hábiles</span>` : ''}
         ${p.guia && p.guia.numero ? `<span class="pill">Guía ${esc(p.guia.numero)}</span>` : ''}
+        ${p.tipo && p.tipo !== 'venta' ? `<span class="pill t-${esc(p.tipo)}">${esc(TIPOS[p.tipo] || '')}</span>` : ''}
       </div>
       ${sig ? `<div class="siguiente">
         ${c.telefono ? `<a class="btn verde" data-accion="wa" href="${waUrl(p)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">WhatsApp</a>` : ''}
@@ -480,6 +514,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
     const j = await api('POST', { accion: 'actualizar', id, cambios });
     const i = pedidos.findIndex(p => p.id === id); if (i > -1) pedidos[i] = j.pedido;
     pintar(); if (msg) toast(msg);
+    if (pestana === 'inventario') cargarInventario();
     return j.pedido;
   }
   async function avanzar(id) {
@@ -558,6 +593,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
             <div><label for="dOrigen">Llegó por</label><select id="dOrigen">${opciones(ORIGENES, p.origen)}</select></div>
             <div><label for="dPago">Forma de pago</label><select id="dPago">${opciones(PAGOS, p.pago)}</select></div>
           </div>
+          <label for="dTipo">Tipo (para el inventario)</label><select id="dTipo">${opciones(TIPOS, p.tipo || 'venta')}</select>
           ${p.codigo ? `<p class="aviso" style="margin-top:10px">🏷️ Código ${esc(p.codigo.codigo)}${p.codigo.participante ? ' · ' + esc(p.codigo.participante) : ''}${p.descuentoCents ? ' · descuento ' + pesos(p.descuentoCents) : ''}${p.comisionCents ? '<br>💸 Comisión del creador: <b>' + pesos(p.comisionCents) + '</b> (pagar solo si se entrega)' : ''}</p>` : ''}
         </div>
 
@@ -641,7 +677,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
   async function guardarDetalle(id, extra) {
     const cambios = Object.assign({
       productos: $('dProductos').value, total: $('dTotal').value, costoEnvio: $('dEnvio').value,
-      origen: $('dOrigen').value, pago: $('dPago').value, mascota: $('dMascota').value, notas: $('dNotas').value,
+      origen: $('dOrigen').value, pago: $('dPago').value, tipo: $('dTipo').value, mascota: $('dMascota').value, notas: $('dNotas').value,
       cliente: { nombre: $('dNombre').value, telefono: $('dTel').value, direccion: $('dDir').value, ciudad: $('dCiudad').value, correo: $('dCorreo').value },
       guia: { transportadora: $('dTransp').value, numero: $('dGuia').value, url: $('dUrl').value }
     }, extra || {});
@@ -651,6 +687,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
 
   // ── Hoja: nuevo pedido ──
   $('btnNuevo').onclick = () => {
+    if (pestana === 'inventario') { abrirMovimiento('entrada'); return; }
     let items = [], talla = 'S', totalManual = false;
     const hoy = new Date(Date.now() - 5 * 36e5).toISOString().slice(0, 10);
     abrirHoja(`
@@ -687,6 +724,8 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
             <div><label for="nOrigen">Llegó por</label><select id="nOrigen">${opciones(ORIGENES, 'whatsapp')}</select></div>
             <div><label for="nPago">Forma de pago</label><select id="nPago">${opciones(PAGOS, 'nequi')}</select></div>
           </div>
+          <label for="nTipo">Tipo</label><select id="nTipo">${opciones(TIPOS, 'venta')}</select>
+          <p class="nota-chica">Colaboración o regalo: el producto sale del inventario pero no cuenta como venta.</p>
           <div class="dos">
             <div><label for="nEstado">Estado</label><select id="nEstado">${ESTADOS.slice(0, 5).map(e => `<option value="${e.id}"${e.id === 'confirmado' ? ' selected' : ''}>${e.i} ${esc(e.n)}</option>`).join('')}</select></div>
             <div><label for="nFecha">Fecha</label><input id="nFecha" type="date" value="${hoy}"></div>
@@ -721,7 +760,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
       const btn = e.target.querySelector('button[type=submit]'); btn.disabled = true;
       try {
         const j = await api('POST', { accion: 'crear', pedido: {
-          productos, total: $('nTotal').value, costoEnvio: $('nEnvio').value, origen: $('nOrigen').value, pago: $('nPago').value,
+          productos, total: $('nTotal').value, costoEnvio: $('nEnvio').value, origen: $('nOrigen').value, pago: $('nPago').value, tipo: $('nTipo').value,
           estado: $('nEstado').value, pagado: $('nPagado').checked, fecha: $('nFecha').value, mascota: $('nMascota').value, notas: $('nNotas').value,
           cliente: { nombre: $('nNombre').value, telefono: $('nTel').value, direccion: $('nDir').value, ciudad: $('nCiudad').value }
         } });
@@ -743,6 +782,132 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
     a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
     a.download = 'pedidos-wuuff-' + new Date().toISOString().slice(0, 10) + '.csv'; a.click();
   };
+
+  // ── Pestañas: Pedidos / Inventario ──
+  let pestana = 'pedidos', inv = null, invMes = 'este';
+  document.querySelectorAll('.pestana').forEach(b => b.onclick = () => {
+    pestana = b.dataset.tab;
+    document.querySelectorAll('.pestana').forEach(x => x.classList.toggle('activo', x === b));
+    $('vistaPedidos').classList.toggle('oculto', pestana !== 'pedidos');
+    $('vistaInventario').classList.toggle('oculto', pestana !== 'inventario');
+    $('btnNuevo').textContent = pestana === 'inventario' ? '＋ Llegó producto' : '＋ Nuevo';
+    if (pestana === 'inventario') cargarInventario();
+  });
+  async function cargarInventario(accion) {
+    if (!inv) $('vistaInventario').innerHTML = '<div class="vacio">Cargando inventario…</div>';
+    try { inv = await api('POST', accion || { accion: 'inventario' }); pintarInventario(); return true; }
+    catch (err) { toast(err.message); if (!inv) $('vistaInventario').innerHTML = '<div class="vacio">' + esc(err.message) + '</div>'; return false; }
+  }
+  const MOV = {
+    entrada: { i: '📥', n: 'Llegó producto', t: '¿Cuánto llegó?', nota: 'Proveedor, lote… (opcional)' },
+    conteo: { i: '🔢', n: 'Conteo', t: '¿Cuánto tienes ahora en bodega?', nota: 'Ej.: conteo de fin de mes' },
+    colaboracion: { i: '🤝', n: 'Colaboración', t: '¿Qué le diste?', nota: '¿Con quién? Ej.: @creadora' },
+    regalo: { i: '🎁', n: 'Regalo', t: '¿Qué regalaste?', nota: '¿A quién? Ej.: sorteo, cliente…' },
+    danado: { i: '⚠️', n: 'Dañado o perdido', t: '¿Qué se dañó o se perdió?', nota: '¿Qué pasó?' }
+  };
+  function mesDe(iso) { const d = new Date(new Date(iso).getTime() - 5 * 36e5); return d.toISOString().slice(0, 7); }
+  function mesTexto(m) { const [a, n] = m.split('-'); return new Date(+a, +n - 1, 15).toLocaleDateString('es-CO', { month: 'long', year: 'numeric' }); }
+  function pintarInventario() {
+    const v = $('vistaInventario'), it = inv.items || [];
+    const hoy = mesDe(new Date().toISOString()), d = new Date(); d.setDate(1); d.setMonth(d.getMonth() - 1);
+    const pasado = mesDe(d.toISOString());
+    const meses = { este: hoy, pasado, todo: '' };
+    const salidas = (inv.salidas || []).filter(s => !meses[invMes] || mesDe(s.fecha) === meses[invMes]);
+    const cols = [['venta', 'Vendido'], ['colaboracion', 'Colab.'], ['regalo', 'Regalos'], ['danado', 'Dañados']];
+    const suma = (item, tipo) => salidas.filter(s => s.item === item && s.tipo === tipo).reduce((n, s) => n + s.cantidad, 0);
+    const filas = it.map(x => ({ x, c: cols.map(([t]) => suma(x.id, t)) })).filter(f => f.c.some(Boolean));
+    const nombre = id => (it.find(x => x.id === id) || {}).nombre || id;
+    v.innerHTML = `
+      ${inv.conConteo ? '' : '<p class="aviso" style="margin:4px 0 12px">👋 Para empezar, toca <b>🔢 Hacer conteo</b> y escribe cuánto tienes hoy de cada producto. Desde ahí, lo que se envía en los pedidos se descuenta solo.</p>'}
+      <div class="inv-acciones">
+        <button class="btn naranja" data-mov="entrada">📥 Llegó producto</button>
+        <button class="btn claro" data-mov="conteo">🔢 Hacer conteo</button>
+        <button class="btn claro" data-mov="colaboracion">🤝 Colaboración</button>
+        <button class="btn claro" data-mov="regalo">🎁 Regalo</button>
+        <button class="btn claro" data-mov="danado">⚠️ Dañado o perdido</button>
+      </div>
+      <h3 style="margin:0 0 8px">📦 Lo que tengo</h3>
+      <div class="stock">${it.map(x => {
+        const cls = x.disponible <= 0 ? ' agotado' : (x.disponible <= 3 ? ' pocos' : '');
+        return `<div class="stock-it${cls}"><div class="n"><span>${esc(x.nombre)}</span>${x.extra ? `<button class="quitar" data-quitar-prod="${esc(x.id)}" title="Quitar del inventario" aria-label="Quitar ${esc(x.nombre)}">✕</button>` : ''}</div>
+          <b>${x.bodega}</b><small>en bodega${x.porDespachar ? ` · ${x.porDespachar} por despachar` : ''}</small>
+          <small style="color:${x.disponible <= 0 ? '#b3261e' : (x.disponible <= 3 ? '#a05a00' : 'var(--gris)')}">${x.disponible <= 0 ? '⛔ Agotado para vender' : (x.disponible <= 3 ? '⚠️ Quedan ' + x.disponible + ' para vender' : x.disponible + ' disponibles para vender')}</small>
+          ${x.conteo ? `<small>Conteo: ${esc(fecha(x.conteo.fecha))}</small>` : ''}</div>`;
+      }).join('')}</div>
+      <button class="btn claro" id="btnProducto" style="margin:-6px 0 16px">＋ Agregar otro producto al inventario</button>
+
+      <div class="caja">
+        <h3>📊 Lo que salió</h3>
+        <div class="filtros" style="padding-top:0">${[['este', 'Este mes'], ['pasado', 'Mes pasado'], ['todo', 'Todo']].map(([k, n]) => `<button class="chip${invMes === k ? ' activo' : ''}" data-mes="${k}">${n}</button>`).join('')}</div>
+        <p class="nota-chica" style="margin:-4px 0 8px">${invMes === 'todo' ? 'Desde que empezaste a usar el panel.' : 'En ' + esc(mesTexto(meses[invMes])) + '.'} Las ventas salen de los pedidos <b>enviados o entregados</b>; colaboraciones y regalos, de los pedidos con ese tipo y de lo que anotas aquí.</p>
+        ${filas.length ? `<table class="tabla"><thead><tr><th>Producto</th>${cols.map(c => `<th>${c[1]}</th>`).join('')}</tr></thead><tbody>
+          ${filas.map(f => `<tr><td>${esc(f.x.nombre)}</td>${f.c.map(n => `<td>${n || '—'}</td>`).join('')}</tr>`).join('')}
+          <tr class="total"><td>Total</td>${cols.map((c, i) => `<td>${filas.reduce((n, f) => n + f.c[i], 0)}</td>`).join('')}</tr></tbody></table>`
+          : '<p class="nota-chica">Nada en este periodo.</p>'}
+      </div>
+
+      ${(inv.sinLeer || []).length ? `<div class="caja"><h3>🤔 Pedidos que no pude leer</h3>
+        <p class="nota-chica" style="margin:-4px 0 6px">No entendí qué productos o qué talla llevan, así que no los descuento. Ábrelos y escribe el producto como en el catálogo (ej.: "Arnés tipo H (Talla S)").</p>
+        <div class="sin-leer">${inv.sinLeer.map(s => `<button data-abrir="${esc(s.id)}"><b>${esc(s.cliente || 'Sin nombre')}</b> · ${esc(s.productos || '—')}</button>`).join('')}</div></div>` : ''}
+
+      <div class="caja"><h3>🕑 Movimientos</h3>
+        ${(inv.movimientos || []).length ? `<ul class="movs">${inv.movimientos.slice(0, 40).map(m => `<li><span>${MOV[m.tipo] ? MOV[m.tipo].i : ''} <b>${m.tipo === 'conteo' ? 'Conteo: ' + m.cantidad : (m.tipo === 'entrada' ? '+' : '−') + m.cantidad}</b> ${esc(nombre(m.item))}
+          <small>${esc(fecha(m.fecha))}${m.nota ? ' · ' + esc(m.nota) : ''}</small></span><button class="btn-borrar" data-borrar-mov="${esc(m.id)}" aria-label="Borrar movimiento" title="Borrar">🗑</button></li>`).join('')}</ul>`
+          : '<p class="nota-chica">Aún no hay movimientos.</p>'}
+      </div>`;
+    v.querySelectorAll('[data-mov]').forEach(b => b.onclick = () => abrirMovimiento(b.dataset.mov));
+    v.querySelectorAll('[data-mes]').forEach(b => b.onclick = () => { invMes = b.dataset.mes; pintarInventario(); });
+    v.querySelectorAll('[data-abrir]').forEach(b => b.onclick = () => abrirDetalle(b.dataset.abrir));
+    v.querySelectorAll('[data-borrar-mov]').forEach(b => b.onclick = async () => {
+      if (!confirm('¿Borrar este movimiento del inventario?')) return;
+      if (await cargarInventario({ accion: 'inv-borrar', id: b.dataset.borrarMov })) toast('Movimiento borrado');
+    });
+    v.querySelectorAll('[data-quitar-prod]').forEach(b => b.onclick = async () => {
+      if (!confirm('¿Quitar este producto del inventario?')) return;
+      if (await cargarInventario({ accion: 'inv-quitar-producto', id: b.dataset.quitarProd })) toast('Producto quitado');
+    });
+    $('btnProducto').onclick = async () => {
+      const n = prompt('Nombre del producto (ej.: Bolsas de regalo, Letras rosadas…)');
+      if (n && n.trim() && await cargarInventario({ accion: 'inv-producto', nombre: n.trim() })) toast('Producto agregado');
+    };
+  }
+  function abrirMovimiento(tipo) {
+    const it = (inv && inv.items) || [], hoy = new Date(Date.now() - 5 * 36e5).toISOString().slice(0, 10);
+    abrirHoja(`
+      <div class="cab"><h2>${MOV[tipo].i} ${esc(MOV[tipo].n)}</h2><button class="btn claro icono" data-cerrar aria-label="Cerrar">✕</button></div>
+      <form id="formMov">
+        <div class="caja">
+          <label for="mTipo">Qué pasó</label>
+          <select id="mTipo">${Object.entries(MOV).map(([k, m]) => `<option value="${k}"${k === tipo ? ' selected' : ''}>${m.i} ${esc(m.n)}</option>`).join('')}</select>
+          <h3 style="margin-top:14px" id="mTitulo">${esc(MOV[tipo].t)}</h3>
+          <p class="nota-chica" id="mAyuda" style="margin:-4px 0 4px">${tipo === 'conteo' ? 'Escribe solo los que contaste (deja vacío lo que no contaste).' : 'Deja vacío lo que no aplica.'}</p>
+          <div class="cantidades">${it.map(x => `<div class="cant"><span>${esc(x.nombre)}${tipo === 'conteo' ? '' : ` <small style="color:var(--gris)">(${x.bodega})</small>`}</span>
+            <button type="button" data-menos="${esc(x.id)}" aria-label="Menos">−</button><input type="number" min="0" inputmode="numeric" data-item="${esc(x.id)}" placeholder="—" aria-label="${esc(x.nombre)}"><button type="button" data-mas="${esc(x.id)}" aria-label="Más">＋</button></div>`).join('')}</div>
+        </div>
+        <div class="caja">
+          <div class="dos">
+            <div><label for="mFecha">Fecha</label><input id="mFecha" type="date" value="${hoy}" max="${hoy}"></div>
+            <div><label for="mNota">Nota</label><input id="mNota" maxlength="200" placeholder="${esc(MOV[tipo].nota)}"></div>
+          </div>
+        </div>
+        <button class="btn naranja ancho" type="submit">Guardar</button>
+      </form>`);
+    const h = $('hoja');
+    h.querySelector('[data-cerrar]').onclick = cerrarHoja;
+    const campo = id => h.querySelector(`input[data-item="${id}"]`);
+    h.querySelectorAll('[data-mas]').forEach(b => b.onclick = () => { const c = campo(b.dataset.mas); c.value = (parseInt(c.value, 10) || 0) + 1; });
+    h.querySelectorAll('[data-menos]').forEach(b => b.onclick = () => { const c = campo(b.dataset.menos), n = (parseInt(c.value, 10) || 0) - 1; c.value = n > 0 ? n : (c.value === '' ? '' : 0); });
+    $('mTipo').onchange = () => { const m = MOV[$('mTipo').value]; $('mTitulo').textContent = m.t; $('mNota').placeholder = m.nota; h.querySelector('.cab h2').textContent = m.i + ' ' + m.n; };
+    $('formMov').onsubmit = async e => {
+      e.preventDefault();
+      const t = $('mTipo').value;
+      const movs = Array.from(h.querySelectorAll('input[data-item]')).filter(c => c.value !== '' && (t === 'conteo' || +c.value > 0))
+        .map(c => ({ tipo: t, item: c.dataset.item, cantidad: +c.value, fecha: $('mFecha').value, nota: $('mNota').value }));
+      if (!movs.length) { toast('Escribe al menos una cantidad'); return; }
+      const btn = e.target.querySelector('button[type=submit]'); btn.disabled = true;
+      if (await cargarInventario({ accion: 'inv-guardar', movs })) { cerrarHoja(); toast(MOV[t].i + ' Guardado en el inventario'); } else btn.disabled = false;
+    };
+  }
 
   // Inicio
   if (token) { $('app').classList.remove('oculto'); cargar(); } else mostrarLogin();

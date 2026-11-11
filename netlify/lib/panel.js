@@ -11,6 +11,8 @@ const STORE = 'panel-pedidos';
 const ESTADOS = ['por-confirmar', 'confirmado', 'preparando', 'enviado', 'entregado', 'cancelado', 'devuelto'];
 const ORIGENES = ['web', 'whatsapp', 'instagram', 'facebook', 'tiktok', 'marketplace', 'stand', 'consignacion', 'otro'];
 const PAGOS = ['contraentrega', 'wompi', 'nequi', 'transferencia', 'efectivo', 'otro'];
+const TIPOS = ['venta', 'colaboracion', 'regalo'];
+const TIPO_TXT = { venta: 'Venta', colaboracion: 'Colaboración', regalo: 'Regalo' };
 
 function limpio(v, max) {
   return String(v == null ? '' : v).replace(/[<>]/g, '').trim().slice(0, max || 200);
@@ -71,6 +73,11 @@ function aplicarCambios(p, d, ahora) {
   if (d.notas !== undefined) p.notas = limpio(d.notas, 2000);
   if (d.origen !== undefined && ORIGENES.includes(d.origen)) p.origen = d.origen;
   if (d.pago !== undefined && PAGOS.includes(d.pago)) p.pago = d.pago;
+  // Tipo de salida para el inventario: venta (lo normal), colaboración o regalo
+  if (d.tipo !== undefined && TIPOS.includes(d.tipo) && d.tipo !== (p.tipo || 'venta')) {
+    cambios.push('Tipo: ' + TIPO_TXT[p.tipo || 'venta'] + ' → ' + TIPO_TXT[d.tipo]);
+    p.tipo = d.tipo;
+  }
   if (d.total !== undefined) p.totalCents = centavos(d.total);
   if (d.costoEnvio !== undefined) p.costoEnvioCents = centavos(d.costoEnvio);
   if (d.guia && typeof d.guia === 'object') {
@@ -240,6 +247,6 @@ function correoRecordatorio(pedidos, sitio, ahora) {
 function pesos(cents) { return '$' + Math.round((cents || 0) / 100).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
 
 module.exports = { pesos, listaConContraentrega, diasHabiles, correoRecordatorio,
-  STORE, ESTADOS, ORIGENES, PAGOS, ETIQUETAS, limpio, centavos, idValido,
+  STORE, ESTADOS, ORIGENES, PAGOS, TIPOS, ETIQUETAS, limpio, centavos, idValido,
   crearToken, tokenValido, claveCorrecta, aplicarCambios, nuevoPedido, desdeContraentrega, sincronizarGuia, registrarWompi, historial
 };
