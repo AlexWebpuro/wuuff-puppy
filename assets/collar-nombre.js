@@ -162,7 +162,7 @@
         '<button type="button" class="cn-cta" data-cn="cta">Comprar ahora</button>' +
         (EN_COMBO ? '' : '<button type="button" class="cn-otro" data-cn="otro">➕ Agregar otro collar</button>') +
         '<a class="cn-wa" data-cn="wa" href="#" target="_blank" rel="noopener">¿Dudas? Escríbenos por WhatsApp</a>' +
-        '<p class="cn-fine">Envío: $8.500 en Bogotá y Soacha y $18.500 al resto de Colombia, con pago en línea.</p></section>';
+        '<p class="cn-fine">Envío: $8.500 en Bogotá y Soacha y $18.500 al resto de Colombia, con pago en línea. ' + (EN_COMBO ? '' : '<strong>Desde 2 collares: envío gratis en Bogotá y Soacha y pagas al recibir.</strong>') + '</p></section>';
 
     var keys = $('[data-cn=keys]');
     ABC.concat(ICONOS).forEach(function (k) {
@@ -360,6 +360,12 @@
       if (faltan().length) { $('[data-cn=aviso]').scrollIntoView({ block: 'center' }); return false; }
       return true;
     },
+    // Para "Agregar otro" de las fichas (assets/varios.js): sin avisos, los datos del collar y limpiar para el siguiente
+    valido: function () { return !!CFG && modo === 'nombre' && tokens().length > 0 && !faltan().length; },
+    datos: function () { var d = { texto: state.texto, color: state.color }; if (combinado()) d.mezcla = state.mezcla.slice(0, tokens().length); return d; },
+    precio: function () { return total(); },
+    descripcion: function () { var c = color(); return '"' + state.texto + '" · letras ' + (combinado() ? 'combinadas' : c.nombre.toLowerCase()); },
+    limpiar: function () { setTexto(''); state.mezcla = []; },
     parametros: function () {
       var mix = combinado();
       evento('collar_nombre_comprar', { producto: PRODUCTO, letras: tokens().length, color: state.color, combinado: mix, value: total() });

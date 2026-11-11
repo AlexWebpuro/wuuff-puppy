@@ -131,7 +131,7 @@ function armar(carrito) {
       continue;
     }
     const nombre = prod.nombre + (talla ? ' (Talla ' + textoTalla + ')' : '') + (qty > 1 ? ' x' + qty : '');
-    lineas.push({ tipo: 'producto', clave: it.p, nombre, cents: prod.cents * qty });
+    lineas.push({ tipo: 'producto', clave: it.p, nombre, cents: prod.cents * qty, qty });
   }
   const claves = lineas.map(l => l.clave);
   let placa = null;
@@ -157,9 +157,11 @@ function armar(carrito) {
 }
 
 function esBogota(ciudad) { return /bogot|soacha/i.test(String(ciudad || '')); }
-// Collares (con o sin nombre) y la placa, solos o juntos, no tienen envío gratis ni contraentrega (nov 2026)
+// Un collar solo (con o sin nombre) o la placa, solos o juntos, no tienen envío gratis ni contraentrega (nov 2026).
+// Desde 2 collares en el mismo pedido sí: envío gratis y pago al recibir en Bogotá, como los combos.
+function cuantosCollares(armado) { return armado.lineas.filter(l => l.clave === 'collar').reduce((n, l) => n + (l.qty || 1), 0); }
 function soloCollarOPlaca(armado) {
-  return !!armado && armado.lineas.every(l => l.tipo === 'placa' || l.clave === 'collar');
+  return !!armado && armado.lineas.every(l => l.tipo === 'placa' || l.clave === 'collar') && cuantosCollares(armado) < 2;
 }
 function envioCents(subtotalCents, ciudad, soloLinea) {
   if (!ciudad) return 0;
