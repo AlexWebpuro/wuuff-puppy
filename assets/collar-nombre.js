@@ -14,7 +14,7 @@
   var SVG_HEART = '<path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 2.7 4.5 6.4 4.5c2.1 0 3.8 1.2 5.6 3.3 1.8-2.1 3.5-3.3 5.6-3.3 3.7 0 5.5 3.9 4 7.3C19.5 16.4 12 21 12 21z"/>';
   var SVG_STAR = '<path d="M12 2.6l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.2 1.2-6.5L2.5 9.5l6.6-.9z"/>';
   var CFG = null, STOCK = null;
-  var state = { texto: '', color: 'rosado', mezcla: [], combinar: false, pincel: '', peso: 'p1', tallaManual: 'S' }, flags = { ene: false, corto: false };
+  var state = { texto: '', color: 'rosado', mezcla: [], combinar: false, pincel: '', peso: 'p1', tallaManual: 'S' }, lista = [], flags = { ene: false, corto: false };
 
   function $(s) { return caja.querySelector(s); }
   function cop(n) { return '$' + String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
@@ -48,6 +48,26 @@
     evento('collar_nombre_proponer', { base: base, acento: acento, forma: forma });
     return true;
   }
+  // Varios collares en un mismo pedido (ficha del collar): "lista" guarda los ya armados
+  var MAX_COLLARES = 6;
+  function actualValido() { return modo === 'sin' || (tokens().length > 0 && !faltan().length); }
+  function itemActual() {
+    if (modo === 'sin') return { sin: true, talla: talla(), peso: state.peso };
+    var it = { texto: state.texto, color: state.color, talla: talla(), peso: state.peso };
+    if (combinado()) it.mezcla = state.mezcla.slice(0, tokens().length);
+    return it;
+  }
+  function precioItem(it) { return it.sin ? CFG.precioSinNombre : CFG.precio + Math.max(0, Array.from(it.texto).length - CFG.incluidas) * CFG.precioExtra; }
+  function descItem(it) {
+    if (it.sin) return 'Sin nombre · Talla ' + it.talla;
+    var c = colorPorId(it.color), usados = [];
+    Array.from(it.texto).forEach(function (x, i) { var k = (it.mezcla && colorPorId(it.mezcla[i])) || c; if (usados.indexOf(k.nombre) < 0) usados.push(k.nombre); });
+    return '"' + it.texto + '" · Talla ' + it.talla + ' · letras ' + (usados.length > 1 ? 'combinadas (' + usados.join(', ') + ')' : usados[0]);
+  }
+  // Lo que se compra: los guardados + el que está armando (si ya está listo)
+  function itemsPedido() { return lista.concat(actualValido() ? [itemActual()] : []); }
+  function totalPedido() { return itemsPedido().reduce(function (s0, it) { return s0 + precioItem(it); }, 0); }
+
   // Probador con foto (assets/collar-probador.js): le pasa las piezas con sus colores
   function abrirProbador() {
     var t = tokens();
@@ -134,11 +154,13 @@
         '<button type="button" class="cn-btn-probar" data-cn="probar">Pruébalo en tu perro</button></section>' +
       '<section class="cn-card cn-talla"><h3 class="cn-paso"><span data-cn="num-talla">3</span> Talla por peso</h3><p class="cn-hint">Escoge cuánto pesa tu perrito y te decimos qué talla le queda.</p>' +
         '<div class="cn-opts" data-cn="pesos" role="radiogroup" aria-label="Peso de tu perrito"></div><div class="cn-size" data-cn="size"></div></section>' +
-      '<section class="cn-card cn-precio" aria-label="Resumen del precio"><h3>Tu collar</h3><dl>' +
+      '<section class="cn-card cn-precio" aria-label="Resumen del precio"><h3 data-cn="tit-precio">Tu collar</h3><dl>' +
         '<dt>Collar</dt><dd data-cn="precio-collar"></dd><dt class="cn-solo-nombre">Nombre, hasta ' + CFG.incluidas + ' letras</dt><dd class="cn-solo-nombre">Incluido</dd>' +
         '<dt class="cn-solo-nombre" data-cn="extra-lbl">Letras extra</dt><dd class="cn-solo-nombre" data-cn="extra"></dd><dt data-cn="entrega-lbl">Entrega</dt><dd data-cn="entrega"></dd></dl>' +
+        '<div class="cn-lista" data-cn="lista" hidden></div>' +
         '<div class="cn-total"><span>Total</span><span class="cn-amount" data-cn="total"></span></div>' +
         '<button type="button" class="cn-cta" data-cn="cta">Comprar ahora</button>' +
+        (EN_COMBO ? '' : '<button type="button" class="cn-otro" data-cn="otro">➕ Agregar otro collar</button>') +
         '<a class="cn-wa" data-cn="wa" href="#" target="_blank" rel="noopener">¿Dudas? Escríbenos por WhatsApp</a>' +
         '<p class="cn-fine">Envío: $8.500 en Bogotá y Soacha y $18.500 al resto de Colombia, con pago en línea.</p></section>';
 
@@ -185,6 +207,8 @@
       if (t.closest('[data-cn=borrar]')) { var x = tokens(); x.pop(); return setTexto(x.join('')); }
       if (t.closest('[data-cn=limpiar]')) { setTexto(''); return $('#cn-nombre').focus(); }
       if (t.closest('[data-cn=cta]')) return comprar();
+      if (t.closest('[data-cn=otro]')) return agregarOtro();
+      if ((b = t.closest('[data-quitar]'))) { lista.splice(+b.getAttribute('data-quitar'), 1); return pintar(); }
     });
     $('#cn-nombre').addEventListener('input', function (e) { setTexto(e.target.value); });
     window.addEventListener('resize', ajustar);
@@ -264,13 +288,30 @@
     $('[data-cn=entrega]').textContent = modo === 'sin' ? '1–2 días hábiles' : CFG.entrega;
     $('[data-cn=num-talla]').textContent = modo === 'sin' ? '1' : '3';
     var cta = $('[data-cn=cta]');
-    if (modo === 'sin') { cta.removeAttribute('aria-disabled'); cta.textContent = 'Comprar ahora · ' + cop(tot); }
+    if (!EN_COMBO) {
+      // Con collares guardados: el total es el de todos, y se puede comprar aunque el que está armando no tenga nombre aún
+      var items = itemsPedido(), cuantos = items.length;
+      tot = totalPedido();
+      $('[data-cn=total]').textContent = cop(tot);
+      $('[data-cn=tit-precio]').textContent = lista.length ? 'Tu pedido' : 'Tu collar';
+      var lst = $('[data-cn=lista]'); lst.hidden = !lista.length;
+      lst.innerHTML = lista.length ? '<p class="cn-lista-t">Collares en tu pedido</p>' + lista.map(function (it, i) {
+        return '<div class="cn-item"><span><b>Collar ' + (i + 1) + '</b> ' + descItem(it) + '</span><span>' + cop(precioItem(it)) + '</span><button type="button" class="cn-quitar" data-quitar="' + i + '" aria-label="Quitar el collar ' + (i + 1) + '">✕</button></div>';
+      }).join('') + (actualValido() ? '<div class="cn-item cn-item-actual"><span><b>Collar ' + (lista.length + 1) + '</b> ' + descItem(itemActual()) + ' <small>(el que estás armando)</small></span><span>' + cop(precioItem(itemActual())) + '</span></div>' : '') : '';
+      var otro = $('[data-cn=otro]'); if (otro) { otro.hidden = cuantos >= MAX_COLLARES; otro.textContent = '➕ Agregar otro collar' + (lista.length ? ' (llevas ' + cuantos + ')' : ''); }
+      if (lista.length && !actualValido() && !falta.length) { cta.removeAttribute('aria-disabled'); cta.textContent = 'Comprar ' + cuantos + (cuantos === 1 ? ' collar' : ' collares') + ' · ' + cop(tot); }
+      else if (modo === 'sin' || (n && !falta.length)) { cta.removeAttribute('aria-disabled'); cta.textContent = (cuantos > 1 ? 'Comprar ' + cuantos + ' collares · ' : 'Comprar ahora · ') + cop(tot); }
+      else if (!n) { cta.textContent = 'Escribe un nombre para comprar'; cta.setAttribute('aria-disabled', 'true'); }
+      else { cta.textContent = 'Faltan letras en este color'; cta.setAttribute('aria-disabled', 'true'); }
+    }
+    else if (modo === 'sin') { cta.removeAttribute('aria-disabled'); cta.textContent = 'Comprar ahora · ' + cop(tot); }
     else if (!n) { cta.textContent = 'Escribe un nombre para comprar'; cta.setAttribute('aria-disabled', 'true'); }
     else if (falta.length) { cta.textContent = 'Faltan letras en este color'; cta.setAttribute('aria-disabled', 'true'); }
     else { cta.removeAttribute('aria-disabled'); cta.textContent = 'Comprar ahora · ' + cop(tot); }
     var lineas = modo === 'sin' ? ['Hola Wuuff Puppy, tengo una duda sobre el collar:', '• Talla: ' + tl + ' (' + p.txt + ')', '• Total: ' + cop(tot)]
       : ['Hola Wuuff Puppy, tengo una duda sobre el ' + precios().titulo.toLowerCase() + ':', '• Nombre: ' + (n ? t.join('') : '(sin definir)'),
       '• Letras: ' + (mix ? 'combinadas (' + detalleMezcla() + ')' : col.nombre), (EN_COMBO ? '' : '• Talla: ' + tl + ' (' + p.txt + ')'), '• Total: ' + cop(tot)].filter(Boolean);
+    if (lista.length) lineas.splice(1, 0, '• Ya armé: ' + lista.map(descItem).join(' / '));
     if (falta.length) lineas.push('• ¿Tienen ' + porColor(falta).map(function (g) { return g.piezas.join(', ') + ' en ' + g.color; }).join(' y ') + '?');
     var wa = $('[data-cn=wa]');
     wa.href = 'https://wa.me/' + WA + '?text=' + encodeURIComponent(lineas.join('\n'));
@@ -285,11 +326,30 @@
   function comprar() {
     var cta = $('[data-cn=cta]');
     if (cta.getAttribute('aria-disabled') === 'true') { $('#cn-nombre').focus(); return; }
+    if (!EN_COMBO && lista.length) {
+      var items = itemsPedido();
+      evento('collar_nombre_comprar_varios', { collares: items.length, value: totalPedido() });
+      location.href = '/?comprar=collar&talla=' + items[0].talla + '&lista=' + encodeURIComponent(JSON.stringify(items));
+      return;
+    }
     if (modo === 'sin') { evento('collar_comprar', { talla: talla(), value: total() }); location.href = '/?comprar=collar&talla=' + talla(); return; }
     var mix = combinado();
     evento('collar_nombre_comprar', { letras: tokens().length, color: state.color, combinado: mix, talla: talla(), value: total() });
     location.href = '/?comprar=collar&talla=' + talla() + '&nombre=' + encodeURIComponent(state.texto) + '&color=' + state.color +
       (mix ? '&mezcla=' + state.mezcla.slice(0, tokens().length).join(',') : '') + '&peso=' + state.peso;
+  }
+
+  // Guarda el collar que está armando y deja el personalizador listo para el siguiente (mismos colores y talla)
+  function agregarOtro() {
+    var av = $('[data-cn=aviso]');
+    if (!actualValido()) { $('#cn-nombre').focus(); av.hidden = false; av.textContent = faltan().length ? 'Ese collar tiene letras que no tenemos en ese color.' : 'Escribe el nombre de este collar antes de agregar otro.'; return; }
+    if (itemsPedido().length >= MAX_COLLARES) return;
+    var guardado = itemActual(); lista.push(guardado);
+    evento('collar_nombre_agregar_otro', { collares: lista.length });
+    if (modo === 'sin') cambiarModo('nombre');
+    setTexto(''); state.mezcla = [];
+    $('#cn-nombre').scrollIntoView({ behavior: 'smooth', block: 'center' }); setTimeout(function () { $('#cn-nombre').focus({ preventScroll: true }); }, 350);
+    av.hidden = false; av.textContent = '✅ Guardamos el collar ' + (guardado.sin ? 'sin nombre' : guardado.texto) + '. Ahora escribe el nombre del siguiente.';
   }
 
   // Para el botón "Comprar" de las fichas de combo: ¿lleva nombre?, ¿está listo? y los datos para el pago

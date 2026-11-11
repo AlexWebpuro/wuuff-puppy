@@ -3447,6 +3447,28 @@ function pagarConWompi(estimadoCents, nombreProducto, customerData, shippingAddr
   function iniciar(){
     if(history.replaceState) history.replaceState(null, '', location.pathname + '#productos');
     window.wuuffVolverA = prod.url;
+    // Varios collares en un pedido (/?comprar=collar&lista=[{texto,color,mezcla,talla,peso} o {sin:true,talla}, …])
+    var listaTxt = clave === 'collar' ? q.get('lista') : '';
+    if(listaTxt){
+      fetch('/assets/collar-nombre.json').then(function(r){ return r.json(); }).then(function(cfg){
+        var lst = JSON.parse(listaTxt); if(!Array.isArray(lst) || !lst.length || lst.length > 6) throw new Error('lista');
+        var items = [], nombres = [], cents = 0;
+        lst.forEach(function(it){
+          var tl = String(it && it.talla || '').toUpperCase(); if(tl !== 'S' && tl !== 'M') throw new Error('talla');
+          if(it.sin){ items.push({ p: 'collar', talla: tl }); nombres.push('Collar impermeable (Talla ' + tl + ')'); cents += cfg.precioSinNombre * 100; return; }
+          var texto = piezasNombre(it.texto || '', cfg.maximo), col = cfg.colores.filter(function(c){ return c.id === it.color; })[0];
+          if(!texto || !col) throw new Error('nombre');
+          var mez = Array.isArray(it.mezcla) ? it.mezcla : [], usados = [], combinado = false;
+          Array.from(texto).forEach(function(p, i){ var c = cfg.colores.filter(function(x){ return x.id === mez[i]; })[0] || col; if(c.id !== col.id) combinado = true; if(usados.indexOf(c.nombre) < 0) usados.push(c.nombre); });
+          var extras = Math.max(0, Array.from(texto).length - cfg.incluidas);
+          cents += (cfg.precio + extras * cfg.precioExtra) * 100;
+          nombres.push('Collar con nombre "' + texto + '" (Talla ' + tl + ') · letras ' + (combinado && usados.length > 1 ? 'combinadas (' + usados.join(', ') + ')' : usados[0]) + (extras ? ' · ' + extras + (extras === 1 ? ' letra extra' : ' letras extra') : ''));
+          items.push({ p: 'collar', talla: tl, nombre: { texto: texto, color: col.id, mezcla: combinado ? mez.slice(0, Array.from(texto).length) : [], peso: it.peso || '' } });
+        });
+        iniciarCompra(cents, nombres.join(' + '), '', { items: items });
+      }).catch(function(){ location.replace(prod.url); });
+      return;
+    }
     if(nombreCollar){
       fetch('/assets/collar-nombre.json').then(function(r){ return r.json(); }).then(function(cfg){
         var texto = piezasNombre(nombreCollar, cfg.maximo);
