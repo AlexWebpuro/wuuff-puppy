@@ -93,6 +93,9 @@ function aplicarCambios(p, d, ahora) {
     }
     if (d.estado === 'enviado' && !p.enviado) p.enviado = new Date(ahora || Date.now()).toISOString();
     if (d.estado === 'entregado') p.entregado = new Date(ahora || Date.now()).toISOString();
+    // Si se devuelve a un estado anterior (por ejemplo, se marcó Entregado sin querer), se quitan las fechas que ya no aplican
+    if (['por-confirmar', 'confirmado', 'preparando', 'enviado'].includes(d.estado)) delete p.entregado;
+    if (['por-confirmar', 'confirmado', 'preparando'].includes(d.estado)) delete p.enviado;
   }
   if (d.nota) cambios.push('📝 ' + limpio(d.nota, 280));
   cambios.forEach(t => historial(p, t, ahora));
@@ -172,7 +175,71 @@ async function registrarWompi(store, d) {
   return p;
 }
 
-module.exports = {
+
+// Todos los pedidos del panel + los contraentrega nuevos de la web (que se guardan en el panel) → Map por id.
+// Lo usan la API del panel y el recordatorio diario por correo.
+async function listaConContraentrega(store, ce) {
+  const { blobs } = await store.list();
+  const pedidos = (await Promise.all(blobs.map(b => store.get(b.key, { type: 'json' }).catch(() => null)))).filter(Boolean);
+  const porId = new Map(pedidos.map(p => [p.id, p]));
+  try {
+    const lista = await ce.list();
+    for (const { key } of lista.blobs) {
+      const actual = porId.get(key);
+      if (actual && actual.borrado) continue;
+      // Solo se vuelve a leer el de Envia si es nuevo o si aún puede tener guía nueva
+      if (actual && (actual.guia && actual.guia.numero || !['por-confirmar', 'confirmado', 'preparando'].includes(actual.estado))) continue;
+      const reg = await ce.get(key, { type: 'json' });
+      if (!reg || !reg.referencia) continue;
+      if (!actual) {
+        const p = desdeContraentrega(reg);
+        await store.setJSON(p.id, p);
+        porId.set(p.id, p);
+      } else if (sincronizarGuia(actual, reg)) {
+        await store.setJSON(actual.id, actual);
+      }
+    }
+  } catch (err) {
+    console.error('No se pudieron importar los pedidos contraentrega', err.message);
+  }
+  return porId;
+}
+
+// Días hábiles (lunes a viernes) desde que se creó el pedido
+function diasHabiles(desde, ahora) {
+  let d = new Date(desde), n = 0; const fin = new Date(ahora || Date.now());
+  while (d < fin) { d = new Date(d.getTime() + 864e5); if (d <= fin && d.getUTCDay() % 6 !== 0) n++; }
+  return n;
+}
+
+// Correo del recordatorio: lo pendiente por confirmar, despachar y cobrar. null si no hay nada pendiente.
+function correoRecordatorio(pedidos, sitio, ahora) {
+  const vivos = pedidos.filter(p => !p.borrado);
+  const grupos = [
+    ['🕐 Por confirmar (escríbeles por WhatsApp)', vivos.filter(p => p.estado === 'por-confirmar')],
+    ['📦 Por despachar', vivos.filter(p => ['confirmado', 'preparando'].includes(p.estado))],
+    ['💵 Entregados sin marcar como pagados', vivos.filter(p => p.estado === 'entregado' && !p.pagado)]
+  ].filter(g => g[1].length);
+  if (!grupos.length) return null;
+  const e = v => String(v == null ? '' : v).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const total = grupos.reduce((n, g) => n + g[1].length, 0);
+  const fila = p => {
+    const dias = diasHabiles(p.creado, ahora), c = p.cliente || {};
+    return `<li style="margin:0 0 10px"><strong>${e(c.nombre || 'Sin nombre')}</strong> · ${pesos(p.totalCents)}${dias >= 2 ? ` · <span style="color:#b3261e;font-weight:bold">⚠️ ${dias} días hábiles</span>` : ''}<br>
+      <span style="color:#5b6b93">${e(String(p.productos || '').slice(0, 140))}${c.ciudad ? ' · ' + e(c.ciudad) : ''}</span></li>`;
+  };
+  const html = `<div style="font-family:Arial,sans-serif;color:#2d4375;max-width:560px">
+    <h2 style="margin:0 0 6px">🐾 Pedidos pendientes de hoy</h2>
+    <p style="margin:0 0 14px">Tienes <strong>${total}</strong> pedido${total > 1 ? 's' : ''} por atender.</p>
+    ${grupos.map(([t, l]) => `<h3 style="margin:16px 0 8px">${t} · ${l.length}</h3><ul style="padding-left:18px;margin:0">${l.slice(0, 25).map(fila).join('')}</ul>`).join('')}
+    <p style="margin-top:18px"><a href="${sitio}panel/" style="display:inline-block;background:#4964af;color:#fff;font-weight:bold;text-decoration:none;padding:12px 20px;border-radius:12px">Abrir el panel de pedidos</a></p>
+  </div>`;
+  return { asunto: `🐾 ${total} pedido${total > 1 ? 's' : ''} pendiente${total > 1 ? 's' : ''} hoy · Wuuff Puppy`, html };
+}
+
+function pesos(cents) { return '$' + Math.round((cents || 0) / 100).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
+
+module.exports = { pesos, listaConContraentrega, diasHabiles, correoRecordatorio,
   STORE, ESTADOS, ORIGENES, PAGOS, ETIQUETAS, limpio, centavos, idValido,
   crearToken, tokenValido, claveCorrecta, aplicarCambios, nuevoPedido, desdeContraentrega, sincronizarGuia, registrarWompi, historial
 };

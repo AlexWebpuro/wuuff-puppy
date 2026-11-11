@@ -152,7 +152,11 @@ exports.handler = async function (event) {
   }
 
   // Panel de pedidos (/panel/): el pedido pagado queda listo para despachar. Si Wompi avisa dos veces, no se duplica.
+  // (nuevo = es la primera vez que llega este pago: así el correo a la tienda tampoco se repite)
+  let nuevo = true;
   try {
+    const refPanel = referencia || String(transaction.id || '');
+    if (panel.idValido(refPanel) && await getStore(panel.STORE).get(refPanel, { type: 'json' })) nuevo = false;
     await panel.registrarWompi(getStore(panel.STORE), {
       referencia: referencia || String(transaction.id || ''), nombre, telefono, correo, direccion, ciudad, mascota,
       producto: nombreProducto, totalCents: monto, avisos,
@@ -211,8 +215,8 @@ exports.handler = async function (event) {
       console.error('No se pudo actualizar el perfil NFC', err.message);
     }
   }
-  // Aviso a la tienda: pedidos con placa (para imprimirla y grabar el chip) o con código del concurso
-  if (perfilMatch || avisos.length) {
+  // Aviso a la tienda por correo de CADA pedido pagado (con placa: para imprimirla y grabar el chip; con código o nombre: sus datos)
+  if (nuevo) {
     if (process.env.RESEND_API_KEY) {
       const from = process.env.RESEND_FROM ? `Wuuff Puppy <${process.env.RESEND_FROM}>` : 'Wuuff Puppy <onboarding@resend.dev>';
       try {
@@ -222,20 +226,21 @@ exports.handler = async function (event) {
           body: JSON.stringify({
             from: from,
             to: [process.env.RESEND_REPLY_TO || 'wuuffpuppy@gmail.com'],
-            subject: `${avisos.length ? '🎃 Pedido con código del concurso' : '🏷️ Pedido con Placa Inteligente'} pagado · ${nombre || 'cliente'}`,
+            subject: `💳 Pedido pagado $${Math.round(monto / 100).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')} · ${nombre || 'cliente'}${perfilMatch || /Placa Inteligente/.test(nombreProducto) ? ' · 🏷️ con placa' : ''} · por despachar`,
             html: `<div style="font-family:Arial,sans-serif;color:#2d4375;max-width:520px">
-              <h2>${avisos.length ? '🎃 Pedido con código del concurso' : '🏷️ Pedido con Placa Inteligente Wuuff'} (pagado con Wompi)</h2>
+              <h2>💳 Nuevo pedido pagado con Wompi</h2>
               <p><strong>Pagado:</strong> $${Math.round(monto / 100).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}</p>
               <p><strong>Producto:</strong> ${String(nombreProducto).replace(/[<>]/g, '')}</p>
               ${avisos.length ? `<p style="background:#fff4e5;padding:10px 12px;border-radius:10px">${avisos.map(a => String(a).replace(/[<>]/g, '')).join('<br>')}</p>` : ''}
               <p><strong>Cliente:</strong> ${String(nombre).replace(/[<>]/g, '')} · ${String(telefono).replace(/[<>]/g, '')}<br>
               <strong>Dirección:</strong> ${String(direccion).replace(/[<>]/g, '')}, ${String(ciudad).replace(/[<>]/g, '')}</p>
               ${urlChip ? `<p style="background:#fffbe6;padding:10px 12px;border-radius:10px"><strong>Grabar en el chip NFC:</strong><br><a href="${urlChip}">${urlChip}</a></p>` : (perfilMatch || /Placa Inteligente/.test(nombreProducto) ? '<p>⚠️ No se encontró el perfil NFC de este pedido.</p>' : '')}
+              <p><a href="${siteUrl}panel/" style="display:inline-block;background:#4964af;color:#fff;font-weight:bold;text-decoration:none;padding:11px 18px;border-radius:12px">Abrir el panel de pedidos</a></p>
             </div>`
           })
         });
       } catch (err) {
-        console.error('No se pudo avisar a la tienda del pedido con placa', err.message);
+        console.error('No se pudo avisar a la tienda del pedido pagado', err.message);
       }
     }
     // WhatsApp a la tienda (CallMeBot) cuando el pedido trae código del concurso

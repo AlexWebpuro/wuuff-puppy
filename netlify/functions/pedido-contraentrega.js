@@ -155,6 +155,7 @@ exports.handler = async function (event) {
             <p><a href="https://wa.me/${telCliente}" style="display:inline-block;background:#25D366;color:#fff;font-weight:bold;padding:10px 16px;border-radius:10px;text-decoration:none;">Escribirle por WhatsApp</a></p>
             <p style="font-size:13px">Antes de crear la guía en Envia.com: confirma dirección, que haya alguien para recibir y que tenga el efectivo listo.</p>
             ${urlGuia ? `<p><a href="${urlGuia}" style="display:inline-block;background:#4964AF;color:#fff;font-weight:bold;padding:10px 16px;border-radius:10px;text-decoration:none;">📦 Ya confirmé: crear guía en Envia</a></p>` : ''}
+            <p style="font-size:13px">También lo tienes en el <a href="${SITE_URL}panel/">panel de pedidos</a>, donde puedes crear la guía y marcarlo enviado.</p>
           </div>`
         })
       });
