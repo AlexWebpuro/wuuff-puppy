@@ -162,7 +162,7 @@
         '<button type="button" class="cn-cta" data-cn="cta">Comprar ahora</button>' +
         (EN_COMBO ? '' : '<button type="button" class="cn-otro" data-cn="otro">➕ Agregar otro collar</button>') +
         '<a class="cn-wa" data-cn="wa" href="#" target="_blank" rel="noopener">¿Dudas? Escríbenos por WhatsApp</a>' +
-        '<p class="cn-fine">Envío: $8.500 en Bogotá y Soacha y $18.500 al resto de Colombia, con pago en línea. ' + (EN_COMBO ? '' : '<strong>Desde 2 collares: envío gratis en Bogotá y Soacha y pagas al recibir.</strong>') + '</p></section>';
+        (EN_COMBO ? '' : '<p class="cn-fine"><strong>🐶🐶 Desde 2 collares: envío gratis en Bogotá y Soacha y pagas al recibir.</strong></p>') + '</section>';
 
     var keys = $('[data-cn=keys]');
     ABC.concat(ICONOS).forEach(function (k) {
@@ -292,6 +292,8 @@
       // Con collares guardados: el total es el de todos, y se puede comprar aunque el que está armando no tenga nombre aún
       var items = itemsPedido(), cuantos = items.length;
       tot = totalPedido();
+      // Sin nombre escrito aún: se muestra el precio base (con nombre incluye 5 letras), nunca $0
+      if (!tot) tot = modo === 'sin' ? CFG.precioSinNombre : CFG.precio;
       $('[data-cn=total]').textContent = cop(tot);
       $('[data-cn=tit-precio]').textContent = lista.length ? 'Tu pedido' : 'Tu collar';
       var lst = $('[data-cn=lista]'); lst.hidden = !lista.length;
