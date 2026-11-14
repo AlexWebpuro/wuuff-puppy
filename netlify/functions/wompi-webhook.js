@@ -7,6 +7,7 @@ const resenas = require('../lib/resenas');
 const panel = require('../lib/panel');
 const tienda = require('../lib/tienda');
 const P = require('../lib/perfiles');
+const bwf = require('../lib/bwf');
 
 function getValueByPath(obj, path) {
   return path.split('.').reduce(function (acc, key) {
@@ -109,6 +110,17 @@ exports.handler = async function (event) {
     avisos = Array.isArray(guardado.avisos) ? guardado.avisos.slice() : [];
     if (guardado.amountInCents && monto && guardado.amountInCents !== monto) {
       avisos.push('⚠️ El monto pagado (' + monto / 100 + ') no coincide con el calculado (' + guardado.amountInCents / 100 + '). Revísalo.');
+    }
+    // Black Wuuff Friday: la caja apartada queda pagada (si ya la había pagado otra persona, queda con la siguiente libre)
+    if (guardado.bwf) {
+      try {
+        const r = await bwf.confirmar(getStore(bwf.STORE), guardado.bwf, referencia);
+        if (r.sinCaja) avisos.push('⚠️ Black Wuuff Friday: pagó cuando ya no quedaban cajas (había apartado la #' + r.apartada + '). Escríbele: devolver el dinero o enviarle el combo.');
+        else if (r.cambio) avisos.push('⚠️ Black Wuuff Friday: la caja #' + r.cambio + ' que apartó ya estaba pagada; quedó con la caja #' + r.n + '. Revisa el regalo (el pedido trae los datos de la #' + r.cambio + ').');
+      } catch (err) {
+        console.error('No se pudo confirmar la caja del Black Wuuff Friday', err.message);
+        avisos.push('⚠️ Black Wuuff Friday: no se pudo marcar la caja #' + guardado.bwf.n + ' como pagada. Revísala.');
+      }
     }
     // Código del concurso: se marca como usado solo ahora que el pago quedó APROBADO
     if (guardado.codigo && guardado.codigo.tipo === 'concurso') {

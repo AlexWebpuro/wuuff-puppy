@@ -118,6 +118,11 @@
     <image:image><image:loc>https://wuuffpuppy.co/images/set-completo-nuevo.jpg</image:loc></image:image>
   </url>
   <url>
+    <loc>https://wuuffpuppy.co/blackfriday/</loc>
+    <lastmod>2026-11-14</lastmod>
+    <image:image><image:loc>https://wuuffpuppy.co/blackfriday/img/caja.webp</image:loc></image:image>
+  </url>
+  <url>
     <loc>https://wuuffpuppy.co/placa-para-perro/</loc>
     <lastmod>2026-11-09</lastmod>
     <image:image><image:loc>https://wuuffpuppy.co/images/productos/placa/placa-guardian-de-cerca.webp</image:loc></image:image>

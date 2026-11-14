@@ -40,6 +40,9 @@ exports.handler = async function (event) {
     perfilIds: (Array.isArray(b.perfilIds) ? b.perfilIds : [b.perfilId]).filter(id => /^[A-Z0-9]{6,16}$/.test(id || '')).slice(0, 6)
   };
 
+  if (b.carrito && b.carrito.bwf) {
+    return { statusCode: 400, body: JSON.stringify({ error: 'Las cajas del Black Wuuff Friday se pagan en línea' }) };
+  }
   if (!pedido.nombre || !pedido.telefono || !pedido.direccion) {
     return { statusCode: 400, body: JSON.stringify({ error: 'Faltan datos del pedido' }) };
   }
