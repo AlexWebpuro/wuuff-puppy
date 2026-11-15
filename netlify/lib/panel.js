@@ -30,8 +30,9 @@ function idValido(id) {
 }
 
 // ── Acceso con clave (variable PANEL_CLAVE en Netlify) ─────────────────────────
-// La sesión es un token firmado que dura 30 días; si cambias PANEL_CLAVE, se cierran todas las sesiones.
-const DURACION_MS = 30 * 24 * 60 * 60 * 1000;
+// La sesión es un token firmado que vence a los 30 minutos sin usar el panel: cada uso devuelve uno nuevo
+// (cabecera X-Panel-Token), así que solo se cierra por inactividad. Si cambias PANEL_CLAVE, se cierran todas las sesiones.
+const DURACION_MS = 30 * 60 * 1000;
 function firmar(texto, clave) {
   return crypto.createHmac('sha256', 'wuuff-panel:' + clave).update(texto).digest('base64url');
 }
@@ -191,13 +192,14 @@ async function listaConContraentrega(store, ce) {
   const porId = new Map(pedidos.map(p => [p.id, p]));
   try {
     const lista = await ce.list();
-    for (const { key } of lista.blobs) {
+    // Se revisan todos a la vez (antes, uno detrás de otro)
+    await Promise.all(lista.blobs.map(async ({ key }) => {
       const actual = porId.get(key);
-      if (actual && actual.borrado) continue;
+      if (actual && actual.borrado) return;
       // Solo se vuelve a leer el de Envia si es nuevo o si aún puede tener guía nueva
-      if (actual && (actual.guia && actual.guia.numero || !['por-confirmar', 'confirmado', 'preparando'].includes(actual.estado))) continue;
-      const reg = await ce.get(key, { type: 'json' });
-      if (!reg || !reg.referencia) continue;
+      if (actual && (actual.guia && actual.guia.numero || !['por-confirmar', 'confirmado', 'preparando'].includes(actual.estado))) return;
+      const reg = await ce.get(key, { type: 'json' }).catch(() => null);
+      if (!reg || !reg.referencia) return;
       if (!actual) {
         const p = desdeContraentrega(reg);
         await store.setJSON(p.id, p);
@@ -205,7 +207,7 @@ async function listaConContraentrega(store, ce) {
       } else if (sincronizarGuia(actual, reg)) {
         await store.setJSON(actual.id, actual);
       }
-    }
+    }));
   } catch (err) {
     console.error('No se pudieron importar los pedidos contraentrega', err.message);
   }
@@ -246,7 +248,7 @@ function correoRecordatorio(pedidos, sitio, ahora) {
 
 function pesos(cents) { return '$' + Math.round((cents || 0) / 100).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
 
-module.exports = { pesos, listaConContraentrega, diasHabiles, correoRecordatorio,
+module.exports = { DURACION_MS, pesos, listaConContraentrega, diasHabiles, correoRecordatorio,
   STORE, ESTADOS, ORIGENES, PAGOS, TIPOS, ETIQUETAS, limpio, centavos, idValido,
   crearToken, tokenValido, claveCorrecta, aplicarCambios, nuevoPedido, desdeContraentrega, sincronizarGuia, registrarWompi, historial
 };

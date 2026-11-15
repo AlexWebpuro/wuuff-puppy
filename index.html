@@ -2255,6 +2255,7 @@ function contraentregaDisponible(){
   var select = document.getElementById('envio-ciudad');
   var ciudad = document.getElementById('envio-ciudad-nombre');
   var opcion = select ? select.options[select.selectedIndex] : null;
+  if(pendingPurchase && pendingPurchase.carrito && pendingPurchase.carrito.bwf) return false; // Black Wuuff Friday: solo pago en línea
   return esOpcionBogota(opcion) && pedidoAlcanzaMinimo() &&
     !!ciudad && /bogot/i.test(ciudad.value) && !/soacha/i.test(ciudad.value);
 }
@@ -2581,6 +2582,8 @@ function iniciarCompra(baseAmountInCents, nombreProducto, talla, carrito){
     return;
   }
   pendingPurchase = { baseAmountInCents: baseAmountInCents, nombreProducto: nombreProducto, talla: talla, esCombo: esComboCompleto(nombreProducto), carrito: carrito || null, codigo: null };
+  var cajaCodigo = document.getElementById('codigo-box');
+  if(cajaCodigo) cajaCodigo.hidden = !!(carrito && carrito.bwf); // Black Wuuff Friday: precio fijo, sin códigos
   mostrarCodigo(null);
   var campoCod = document.getElementById('envio-codigo');
   var panelCod = document.getElementById('codigo-panel');
@@ -2741,6 +2744,7 @@ document.addEventListener('submit', function(e){
 // Errores del servidor al crear el pedido (código usado, faltan datos de la placa de regalo…)
 function errorPedido(j){
   var msg = (j && j.error) || 'Hubo un problema con tu pedido. Intenta de nuevo o escríbenos por WhatsApp.';
+  if(j && j.cajaPerdida){ alert(msg); location.href = '/blackfriday/'; return; }
   if(j && j.codigoInvalido){ abrirCodigo(); quitarCodigo(); mostrarCodigo({ ok: false, msg: msg }); }
   alert(msg);
 }
@@ -2892,6 +2896,7 @@ function pagarConWompi(estimadoCents, nombreProducto, customerData, shippingAddr
   }
   var reference = generarReferenciaWompi();
   var amountInCents = 0;
+  var cajaBwf = pedidoServidor.carrito.bwf ? pedidoServidor.carrito.bwf.n : 0; // Black Wuuff Friday
   var btn = document.getElementById('envio-submit');
   if(btn){ btn.disabled = true; btn.textContent = 'Preparando el pago…'; }
 
@@ -2923,7 +2928,7 @@ function pagarConWompi(estimadoCents, nombreProducto, customerData, shippingAddr
       reference: reference,
       publicKey: WOMPI_PUBLIC_KEY,
       signature: { integrity: data.signature },
-      redirectUrl: window.location.origin + window.location.pathname
+      redirectUrl: window.location.origin + (cajaBwf ? '/blackfriday/' : window.location.pathname)
     };
     if(customerData){ config.customerData = customerData; }
     if(shippingAddress){ config.shippingAddress = shippingAddress; }
@@ -2937,6 +2942,12 @@ function pagarConWompi(estimadoCents, nombreProducto, customerData, shippingAddr
       // el webhook de Wompi (más confiable que depender de que el
       // cliente vuelva a esta página). Aquí solo damos aviso inmediato.
       var transaction = result.transaction;
+      if(transaction && transaction.status === 'APPROVED' && cajaBwf){
+        // Black Wuuff Friday: se abre la caja en su página (el webhook confirma el número)
+        if(typeof window.wuuffCompraAprobada === 'function') window.wuuffCompraAprobada(transaction.id, transaction.amountInCents || amountInCents);
+        location.href = '/blackfriday/?abrir=' + cajaBwf + '&ref=' + encodeURIComponent(reference);
+        return;
+      }
       if(transaction && transaction.status === 'APPROVED'){
         guardarCodigoSesion('');
         if(typeof window.wuuffCompraAprobada === 'function'){
@@ -3535,6 +3546,36 @@ function pagarConWompi(estimadoCents, nombreProducto, customerData, shippingAddr
     iniciarCompra(prod.cents, prod.nombre + ' (' + tallaTexto + ')', tallaTexto, { items: [{ p: clave, talla: talla === 'ÚNICA' ? 'Única' : talla }] });
   }
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iniciar); else iniciar();
+})();
+</script>
+<script>
+// Llegada desde /blackfriday/ (/?comprar=bwf&d={n, token, talla, conNombre, nombre:{texto,color}, placa:{nombre,forma,base,letras}}):
+// abre el mismo formulario de envío y pago con la caja apartada. El total real lo calcula el servidor (netlify/lib/bwf.js).
+(function(){
+  var q = new URLSearchParams(location.search);
+  if(q.get('comprar') !== 'bwf') return;
+  var d; try { d = JSON.parse(q.get('d') || ''); } catch(e){ return; }
+  var n = parseInt(d && d.n, 10);
+  if(!(n >= 1 && n <= 10) || !d.token) return;
+  var PRECIO = 9990000, NOMBRE_EXTRA = 1500000, LETRA_EXTRA = 500000, INCLUIDAS = 5;
+  var conRegaloNombre = n <= 5, conPlaca = n === 1 || (n >= 6 && n <= 8), stickers = n === 1 || n >= 9;
+  var talla = String(d.talla || '').toUpperCase();
+  var textoTalla = talla.length === 2 ? 'collar ' + talla[0] + ', arnés ' + talla[1] : talla;
+  var nombre = d.nombre && d.nombre.texto ? String(d.nombre.texto).slice(0, 8) : '';
+  var conNombre = !!nombre && (conRegaloNombre || d.conNombre);
+  var letras = Array.from(nombre).length;
+  var cents = PRECIO + (conNombre ? Math.max(0, letras - INCLUIDAS) * LETRA_EXTRA : 0) + (conNombre && !conRegaloNombre ? NOMBRE_EXTRA : 0);
+  var producto = 'Combo completo (Talla ' + textoTalla + ') · Black Wuuff Friday caja #' + n + (conNombre ? ' · collar con nombre "' + nombre + '"' : '') +
+    (conPlaca && d.placa ? ' + Placa Inteligente Wuuff ' + d.placa.forma + ' "' + d.placa.nombre + '" [REGALO]' : '') + (stickers ? ' + Pack de stickers Wuuff [REGALO]' : '');
+  var carrito = { bwf: d };
+  if(conPlaca && d.placa) carrito.placa = d.placa; // para pedir los datos de su perfil NFC (el servidor usa los de la caja)
+  function abrir(){
+    if(history.replaceState) history.replaceState(null, '', location.pathname);
+    window.wuuffVolverA = '/blackfriday/?seguir=1';
+    try { if(window.gtag) gtag('event', 'bwf_iniciar_pago', { caja: n, value: cents / 100, currency: 'COP' }); } catch(err){}
+    iniciarCompra(cents, producto, 'Talla ' + textoTalla, carrito);
+  }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', abrir); else abrir();
 })();
 </script>
 <script>

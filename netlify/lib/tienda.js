@@ -310,4 +310,4 @@ function perfilesValidos(texto) {
   return partes.map(p => p.trim()).filter(p => /^[A-Z0-9]{6,16}$/.test(p) || /^pendiente \([^()|<>\[\]]{1,90}\)$/.test(p)).slice(0, 6);
 }
 
-module.exports = { perfilesDeTexto, perfilesValidos, PRODUCTOS, MENSAJES, armar, calcular, revisarCodigo, envioCents, contraentregaPermitida, normalizarCodigo, lineasAviso, pesos, placaValida };
+module.exports = { nombreCollar, perfilesDeTexto, perfilesValidos, PRODUCTOS, MENSAJES, armar, calcular, revisarCodigo, envioCents, contraentregaPermitida, normalizarCodigo, lineasAviso, pesos, placaValida };
