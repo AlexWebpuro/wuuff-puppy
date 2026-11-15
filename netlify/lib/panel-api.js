@@ -1,5 +1,5 @@
 // API del panel de pedidos (la pantalla está en /panel/). Todo pasa por aquí y pide la clave.
-// La publica netlify/functions/panel-pedidos.mjs (función v2: lecturas al instante en Netlify Blobs).
+// La publica netlify/functions/panel-pedidos.js.
 //
 // Variable de entorno en Netlify (obligatoria):
 //   PANEL_CLAVE   la clave para entrar al panel (mínimo 8 caracteres). Si la cambias, se cierran todas las sesiones.
@@ -36,7 +36,13 @@ function json(status, data) {
 }
 
 exports.handler = async function (event) {
-  const r = await atender(event);
+  let r;
+  try { r = await atender(event); }
+  catch (err) {
+    // Si algo falla, el panel muestra el motivo (en vez de un 502 sin explicación)
+    console.error('Panel de pedidos', err);
+    return json(500, { error: 'Error en el servidor: ' + String(err && err.message || err).slice(0, 200) });
+  }
   // Sesión activa: cada respuesta trae un token nuevo, así los 30 minutos cuentan desde el último uso
   if (event._sesionOk && r.statusCode < 500) r.headers = Object.assign({}, r.headers, { 'X-Panel-Token': P.crearToken(process.env.PANEL_CLAVE || '') });
   return r;
@@ -46,7 +52,7 @@ async function atender(event) {
   const clave = process.env.PANEL_CLAVE || '';
   if (clave.length < 8) return json(500, { error: 'Falta configurar PANEL_CLAVE en Netlify (mínimo 8 caracteres).' });
 
-  if (event.blobs) connectLambda(event); // v1; la función v2 (netlify/functions/panel-pedidos.mjs) ya trae el contexto
+  if (event.blobs) connectLambda(event);
   const store = getStore(P.STORE);
 
   let b = {};

@@ -1,7 +1,7 @@
-// Almacenes de Netlify Blobs con lectura al instante ("consistencia fuerte") cuando el entorno lo permite.
-// Las funciones v2 (.mjs) traen la dirección que hace falta (uncachedEdgeURL); las v1 con connectLambda no,
-// y ahí pedir lectura fuerte falla. Por eso se pide solo si está disponible; si no, se usa la normal
-// (que puede tardar hasta un minuto en mostrar lo recién guardado).
+// Almacenes de Netlify Blobs con lectura al instante ("consistencia fuerte") solo si el entorno trae la dirección
+// que hace falta (uncachedEdgeURL). Las funciones de este sitio (v1 con connectLambda) no la traen, así que usan la
+// lectura normal, que puede tardar en mostrar lo recién guardado: por eso el panel manda lo que acaba de guardar
+// o borrar (ver inventario.fusionar) y el webhook del Black Wuuff Friday reacomoda la caja si dos se cruzan.
 const { getStore } = require('@netlify/blobs');
 
 function hayLecturaFuerte() {

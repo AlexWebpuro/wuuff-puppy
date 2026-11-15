@@ -3,7 +3,7 @@
 //   GET ?ref=WP-…                → { n, pagada, regalo }   (al volver del pago: qué caja le tocó)
 //   POST { accion: 'apartar', token? }   → { n, token, hasta, regalo }  (10 minutos)
 //   POST { accion: 'soltar', n, token }  → { ok }
-// Las reglas están en netlify/lib/bwf.js. La publica netlify/functions/bwf.mjs (función v2: lectura al instante para apartar sin cruces).
+// Las reglas están en netlify/lib/bwf.js. La publica netlify/functions/bwf.js.
 const { connectLambda } = require('@netlify/blobs');
 const { almacen: getStore } = require('./blobs');
 const B = require('./bwf');
