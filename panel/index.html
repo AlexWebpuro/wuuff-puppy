@@ -130,6 +130,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
 .movs li{display:flex;gap:8px;align-items:center;padding:8px 0;border-top:1px dashed var(--borde)}
 .movs li span{flex:1;min-width:0}
 .resumen-mov{list-style:none;margin:0;padding:0}.resumen-mov li{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-top:1px dashed var(--borde);font-weight:700}
+.resumen-mov .queda{display:block;font-size:12px;font-weight:700;color:var(--gris)}.resumen-mov .queda b{font-family:inherit;font-size:12px;color:var(--navy)}
 .resumen-mov li b{font-family:'Fredoka One';font-weight:400;font-size:18px;white-space:nowrap}
 .confirmar{border:2px solid var(--naranja)}
 .burbuja{font-family:'Malaka Cournt','Fredoka One',sans-serif;color:var(--c);-webkit-text-stroke:1.5px var(--b);paint-order:stroke fill;text-shadow:0 2px 0 var(--b);line-height:1;display:inline-block;vertical-align:middle}
@@ -948,7 +949,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
           <label for="mTipo">Qué pasó</label>
           <select id="mTipo">${Object.entries(MOV).map(([k, m]) => `<option value="${k}"${k === tipo ? ' selected' : ''}>${m.i} ${esc(m.n)}</option>`).join('')}</select>
           <h3 style="margin-top:14px" id="mTitulo">${esc(MOV[tipo].t)}</h3>
-          <p class="nota-chica" id="mAyuda" style="margin:-4px 0 4px">${esc(o.ayuda || (tipo === 'conteo' ? 'Escribe solo los que contaste (deja vacío lo que no contaste).' : 'Deja vacío lo que no aplica.'))}</p>
+          <p class="nota-chica" id="mAyuda" style="margin:-4px 0 4px"></p>
           <div class="cantidades">${it.map(x => `<div class="cant"><span>${x.html || esc(x.nombre)} <small style="color:var(--gris)">(hay ${x.bodega || 0})</small></span>
             <button type="button" data-menos="${esc(x.id)}" aria-label="Menos">−</button><input type="number" min="0" inputmode="numeric" data-item="${esc(x.id)}" placeholder="—" aria-label="${esc(x.nombre)}"${x.valor != null ? ` value="${x.valor}"` : ''}><button type="button" data-mas="${esc(x.id)}" aria-label="Más">＋</button></div>`).join('')}</div>
         </div>
@@ -966,7 +967,11 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
     const campo = id => h.querySelector(`input[data-item="${id}"]`);
     h.querySelectorAll('[data-mas]').forEach(b => b.onclick = () => { const c = campo(b.dataset.mas); c.value = (parseInt(c.value, 10) || 0) + 1; });
     h.querySelectorAll('[data-menos]').forEach(b => b.onclick = () => { const c = campo(b.dataset.menos), n = (parseInt(c.value, 10) || 0) - 1; c.value = n > 0 ? n : (c.value === '' ? '' : 0); });
-    $('mTipo').onchange = () => { const m = MOV[$('mTipo').value]; $('mTitulo').textContent = m.t; $('mNota').placeholder = m.nota; h.querySelector('.cab h2').textContent = m.i + ' ' + (o.titulo || m.n); };
+    // Ayuda según lo que pasó: "Llegó producto" SUMA; el conteo REEMPLAZA (para decir cuántas hay en total)
+    const ayuda = t => o.ayuda && t === tipo ? esc(o.ayuda) : (t === 'conteo' ? 'Escribe <b>cuántas tienes en total</b> (deja vacío lo que no contaste). Reemplaza lo que había.'
+      : (t === 'entrada' ? '<b>Esto se SUMA</b> a lo que ya hay. Si quieres decir cuántas tienes en total, cambia arriba a <b>🔢 Conteo</b>.' : 'Se resta de lo que hay. Deja vacío lo que no aplica.'));
+    $('mAyuda').innerHTML = ayuda(tipo);
+    $('mTipo').onchange = () => { const m = MOV[$('mTipo').value]; $('mTitulo').textContent = m.t; $('mNota').placeholder = m.nota; $('mAyuda').innerHTML = ayuda($('mTipo').value); h.querySelector('.cab h2').textContent = m.i + ' ' + (o.titulo || m.n); };
     // Paso 1: revisar. Paso 2: confirmar (así se ve exactamente lo que se va a guardar, una sola vez)
     $('formMov').onsubmit = e => {
       e.preventDefault();
@@ -977,12 +982,18 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
       const signo = t === 'conteo' ? '' : (t === 'entrada' ? '+' : '−');
       const fechaTxt = new Date($('mFecha').value + 'T12:00:00').toLocaleDateString('es-CO', { weekday: 'long', day: 'numeric', month: 'long' });
       const total = movs.reduce((n, m) => n + m.cantidad, 0);
+      const bodegaDe = id => (it.find(x => x.id === id) || {}).bodega || 0;
+      // Movimientos iguales ya guardados (mismo tipo, producto, cantidad y día): para no registrar dos veces lo mismo
+      const diaDe = iso => new Date(new Date(iso).getTime() - 5 * 36e5).toISOString().slice(0, 10);
+      const repetidos = t === 'conteo' ? [] : movs.filter(m => ((inv && inv.movimientos) || []).some(x => x.tipo === t && x.item === m.item && x.cantidad === m.cantidad && diaDe(x.fecha) === m.fecha));
       $('formMov').classList.add('oculto');
       const c = $('mConfirmar'); c.classList.remove('oculto');
       c.innerHTML = `<div class="caja confirmar">
           <h3>${MOV[t].i} ¿Guardamos esto?</h3>
           <p class="nota-chica" style="margin:-4px 0 8px">${esc(MOV[t].n)} · ${esc(fechaTxt)}${movs[0].nota ? ' · ' + esc(movs[0].nota) : ''}</p>
-          <ul class="resumen-mov">${movs.map(m => `<li><span>${esc(nombreDe(m.item))}</span><b>${t === 'conteo' ? 'Hay ' + m.cantidad : signo + m.cantidad}</b></li>`).join('')}</ul>
+          ${repetidos.length ? `<p class="aviso" style="background:#fde7e1;margin:0 0 8px">⚠️ <b>Ojo:</b> ya registraste esto mismo ese día (${repetidos.map(m => signo + m.cantidad + ' ' + esc(nombreDe(m.item))).slice(0, 3).join(', ')}${repetidos.length > 3 ? '…' : ''}). Si es el mismo producto, no lo guardes otra vez.</p>` : ''}
+          <ul class="resumen-mov">${movs.map(m => { const hay = bodegaDe(m.item), queda = t === 'conteo' ? m.cantidad : (t === 'entrada' ? hay + m.cantidad : hay - m.cantidad);
+            return `<li><span>${esc(nombreDe(m.item))}<small class="queda">hay ${hay} → quedarán <b>${queda}</b></small></span><b>${t === 'conteo' ? 'Hay ' + m.cantidad : signo + m.cantidad}</b></li>`; }).join('')}</ul>
           ${t === 'conteo' ? '<p class="nota-chica">El conteo reemplaza lo que había: desde ahora el inventario parte de estas cantidades.</p>' : `<p class="nota-chica">Total: <b>${signo}${total}</b> ${total === 1 ? 'unidad' : 'unidades'}.</p>`}
         </div>
         <button class="btn naranja ancho" type="button" id="mSi">✅ Sí, guardar</button>
