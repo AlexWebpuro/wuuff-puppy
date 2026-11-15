@@ -175,7 +175,8 @@ exports.handler = async function (event) {
     await panel.registrarWompi(getStore(panel.STORE), {
       referencia: referencia || String(transaction.id || ''), nombre, telefono, correo, direccion, ciudad, mascota,
       producto: nombreProducto, totalCents: monto, avisos,
-      codigo: guardado && guardado.codigo, descuentoCents: guardado && guardado.descuentoCents
+      codigo: guardado && guardado.codigo, descuentoCents: guardado && guardado.descuentoCents,
+      inv: guardado && guardado.inv
     });
   } catch (err) {
     console.error('No se pudo guardar el pedido en el panel', err.message);

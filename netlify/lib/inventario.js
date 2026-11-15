@@ -30,39 +30,53 @@ function sinTildes(t) { return String(t || '').normalize('NFD').replace(/[̀-ͯ]
 // ── Leer los productos de un pedido (texto de la web o del panel) → piezas del inventario ──
 // "Combo completo (collar + arnés + correa) (Talla collar S, arnés M) + Placa … [REGALO]" → collar-S, arnes-M, correa, placa (regalo)
 function piezasDeTexto(texto) {
+  // Se lee línea por línea. Una línea con ":" y sin "(Talla …)" es un DETALLE escrito a mano
+  // (ej. "Combo completo con nombre: Talla M - Letras beige - nombre Oliver"): si el pedido ya trae su producto
+  // en otra línea, el detalle no se cuenta (antes se contaba como un segundo combo).
+  const lineas = String(texto || '').split(/\n/).map(leerLinea).filter(l => l.piezas.length || l.dudas);
+  const productos = lineas.filter(l => !l.detalle && l.piezas.length);
+  const usar = productos.length ? lineas.filter(l => !l.detalle) : lineas;
+  const piezas = [];
+  usar.forEach(l => l.piezas.forEach(pz => {
+    const ya = piezas.find(p => p.item === pz.item && !!p.regalo === !!pz.regalo);
+    if (ya) ya.cantidad += pz.cantidad; else piezas.push(Object.assign({}, pz));
+  }));
+  return { piezas, dudas: usar.some(l => l.dudas) };
+}
+function leerLinea(linea) {
   const piezas = [];
   let dudas = false;
   const sumar = (item, cantidad, regalo) => {
     const ya = piezas.find(p => p.item === item && !!p.regalo === !!regalo);
     if (ya) ya.cantidad += cantidad; else piezas.push(regalo ? { item, cantidad, regalo: true } : { item, cantidad });
   };
-  String(texto || '').split(/\n/).forEach(linea => {
-    // Lo que va después de " | " son datos del pedido (referencia, perfil NFC, nombres), no productos
-    let t = sinTildes(linea.split(' | ')[0])
-      .replace(/\(collar \+ arnes \+ correa\)/g, '')
-      .replace(/\s*[—-]+\s*combo collar \+ placa/g, '')
-      .replace(/combo arnes \+ correa|arnes \+ correa/g, '§ac')
-      .replace(/combo collar \+ correa|collar con nombre \+ correa|collar \+ correa/g, '§cc');
-    t.split(' + ').forEach(seg => {
-      const s = seg.trim();
-      if (!s) return;
-      const regalo = /\[regalo\]/.test(s);
-      const q = /\sx(\d{1,2})\b/.exec(s.replace(/\[[^\]]*\]/g, ''));
-      const n = q ? Math.max(1, parseInt(q[1], 10)) : 1;
-      const doble = /talla collar ([sm]),\s*arnes ([sm])/.exec(s), una = /talla ([sm])\b/.exec(s);
-      const tc = doble ? doble[1].toUpperCase() : (una ? una[1].toUpperCase() : ''), ta = doble ? doble[2].toUpperCase() : tc;
-      const conTalla = (base, talla) => { if (talla) sumar(base + '-' + talla, n); else dudas = true; };
-      if (/^§ac/.test(s)) { conTalla('arnes', ta); sumar('correa', n); }
-      else if (/^§cc/.test(s)) { conTalla('collar', tc); sumar('correa', n); }
-      else if (/^combo completo/.test(s)) { conTalla('collar', tc); conTalla('arnes', ta); sumar('correa', n); }
-      else if (/^combo/.test(s)) dudas = true;
-      else if (/^arnes/.test(s)) conTalla('arnes', ta);
-      else if (/^collar/.test(s)) conTalla('collar', tc);
-      else if (/^correa/.test(s)) sumar('correa', n);
-      else if (/^placa/.test(s)) sumar('placa', n, regalo);
-    });
+  // Lo que va después de " | " son datos del pedido (referencia, perfil NFC, nombres), no productos
+  const base = sinTildes(String(linea || '').split(' | ')[0]);
+  const detalle = base.indexOf(':') > -1 && !/\(talla /.test(base);
+  const t = base
+    .replace(/\(collar \+ arnes \+ correa\)/g, '')
+    .replace(/\s*[—-]+\s*combo collar \+ placa/g, '')
+    .replace(/combo arnes \+ correa|arnes \+ correa/g, '§ac')
+    .replace(/combo collar \+ correa|collar con nombre \+ correa|collar \+ correa/g, '§cc');
+  t.split(' + ').forEach(seg => {
+    const s = seg.trim();
+    if (!s) return;
+    const regalo = /\[regalo\]/.test(s);
+    const q = /\sx(\d{1,2})\b/.exec(s.replace(/\[[^\]]*\]/g, ''));
+    const n = q ? Math.max(1, parseInt(q[1], 10)) : 1;
+    const doble = /talla collar ([sm]),\s*arnes ([sm])/.exec(s), una = /talla ([sm])\b/.exec(s);
+    const tc = doble ? doble[1].toUpperCase() : (una ? una[1].toUpperCase() : ''), ta = doble ? doble[2].toUpperCase() : tc;
+    const conTalla = (b, talla) => { if (talla) sumar(b + '-' + talla, n); else dudas = true; };
+    if (/^§ac/.test(s)) { conTalla('arnes', ta); sumar('correa', n); }
+    else if (/^§cc/.test(s)) { conTalla('collar', tc); sumar('correa', n); }
+    else if (/^combo completo/.test(s)) { conTalla('collar', tc); conTalla('arnes', ta); sumar('correa', n); }
+    else if (/^combo/.test(s)) dudas = true;
+    else if (/^arnes/.test(s)) conTalla('arnes', ta);
+    else if (/^collar/.test(s)) conTalla('collar', tc);
+    else if (/^correa/.test(s)) sumar('correa', n);
+    else if (/^placa/.test(s)) sumar('placa', n, regalo);
   });
-  return { piezas, dudas };
+  return { piezas, dudas, detalle };
 }
 
 // ── Letras del collar con nombre (por letra y color) ──
@@ -110,7 +124,65 @@ function letrasDePedido(p) {
     });
     if (leidas !== piezas.length) dudas = true;
   }
+  // Sin comillas (pedidos escritos a mano): "… Letras beige - nombre Oliver" o "Collar letras lila talla M con nombre: Gris"
+  if (!out.length && !/con nombre[^"\n]*"/i.test(txt)) {
+    const colores = CN.colores.slice().sort((a, b) => b.nombre.length - a.nombre.length);
+    txt.split('\n').forEach(linea => {
+      const l = sinTildes(linea.split(' | ')[0]);
+      if (l.indexOf('nombre') < 0 || l.indexOf('letras') < 0) return;
+      const col = colores.find(c => new RegExp('letras\\s+' + sinTildes(c.nombre) + '\\b').test(l));
+      // El nombre: la palabra después de "nombre" (sin contar "talla", "con", "de"…); si hay varias, la última
+      const NO = ['talla', 'con', 'de', 'del', 'en', 'y', 'letras', 'color', 'collar', 'combo', 'completo', 'para'];
+      const nombres = Array.from(l.matchAll(/nombre:?\s+([a-z♥★]{1,8})\b/g)).map(m => m[1]).filter(w => NO.indexOf(w) < 0);
+      const nom = nombres[nombres.length - 1];
+      if (!col || !nom) { dudas = true; return; }
+      piezasNombre(nom).forEach(ch => sumar(idLetra(col.id, ch), 1));
+    });
+  }
   return { letras: out, dudas };
+}
+
+// ── Productos elegidos con los botones (pedido.inv) → piezas del inventario ──
+// pedido.inv = [{ p: 'combo-nombre', talla: 'M', q: 1, nombre: { texto: 'OLIVER', color: 'beige', mezcla: [] }, regalo: false }]
+// Lo guardan el panel (al crear o corregir un pedido) y la web (wompi-signature / pedido-contraentrega, desde el carrito).
+// Si un pedido no lo trae (pedidos viejos), el inventario lee el texto de "productos" como respaldo.
+const PIEZAS_PRODUCTO = {
+  combo: ['collar', 'arnes', 'correa'], 'combo-nombre': ['collar', 'arnes', 'correa'],
+  'arnes-correa': ['arnes', 'correa'], 'collar-correa': ['collar', 'correa'], 'collar-correa-nombre': ['collar', 'correa'],
+  arnes: ['arnes'], collar: ['collar'], 'collar-nombre': ['collar'], correa: ['correa'],
+  placa: ['placa'], 'placa-add': ['placa'], letra: []
+};
+const TALLAS_INV = ['', 'S', 'M', 'SS', 'SM', 'MS', 'MM'];
+function invValido(lista) {
+  if (!Array.isArray(lista)) return null;
+  return lista.slice(0, 20).map(it => {
+    if (!it || !PIEZAS_PRODUCTO[it.p]) return null;
+    const talla = String(it.talla || '').toUpperCase();
+    const o = { p: it.p, talla: TALLAS_INV.includes(talla) ? talla : '', q: Math.min(Math.max(parseInt(it.q, 10) || 1, 1), 20) };
+    if (it.regalo) o.regalo = true;
+    if (it.nombre && typeof it.nombre === 'object' && COLOR_IDS.includes(it.nombre.color)) {
+      const piezas = piezasNombre(it.nombre.texto).slice(0, 8);
+      if (piezas.length) o.nombre = { texto: piezas.join(''), color: it.nombre.color,
+        mezcla: Array.isArray(it.nombre.mezcla) ? it.nombre.mezcla.slice(0, piezas.length).map(c => COLOR_IDS.includes(c) ? c : '') : [] };
+    }
+    return o;
+  }).filter(Boolean);
+}
+function piezasDeInv(inv) {
+  const piezas = [], letras = [];
+  let dudas = false;
+  const sumar = (lista, item, n, regalo) => { const ya = lista.find(x => x.item === item && !!x.regalo === !!regalo); if (ya) ya.cantidad += n; else lista.push(regalo ? { item, cantidad: n, regalo: true } : { item, cantidad: n }); };
+  inv.forEach(it => {
+    const t = it.talla || '', tc = t[0] || '', ta = t.length === 2 ? t[1] : tc;
+    PIEZAS_PRODUCTO[it.p].forEach(base => {
+      if (base === 'correa' || base === 'placa') return sumar(piezas, base, it.q, it.regalo && base === 'placa');
+      const talla = base === 'arnes' ? ta : tc;
+      if (!talla) { dudas = true; return; }
+      sumar(piezas, base + '-' + talla, it.q, it.regalo);
+    });
+    if (it.nombre) piezasNombre(it.nombre.texto).forEach((ch, i) => sumar(letras, idLetra((it.nombre.mezcla && it.nombre.mezcla[i]) || it.nombre.color, ch), it.q));
+  });
+  return { piezas, letras, dudas };
 }
 
 // ── Movimientos ──
@@ -155,32 +227,35 @@ function calcular(pedidos, movimientos, extras) {
     if (m.tipo === 'entrada') r.llego += m.cantidad;
     else if (COLUMNAS.includes(m.tipo)) {
       r[m.tipo] += m.cantidad;
-      salidas.push({ fecha: m.fecha, item: m.item, tipo: m.tipo, cantidad: m.cantidad, nota: m.nota, origen: 'manual' });
+      salidas.push({ fecha: m.fecha, item: m.item, tipo: m.tipo, cantidad: m.cantidad, nota: m.nota, origen: 'manual', mov: m.id });
     }
   });
 
-  const sinLeer = [], letrasSinLeer = [];
+  const sinLeer = [], letrasSinLeer = [], apartados = [];
   (pedidos || []).filter(p => p && !p.borrado && (SALIO.includes(p.estado) || POR_DESPACHAR.includes(p.estado))).forEach(p => {
-    const { piezas, dudas } = piezasDeTexto(p.productos);
+    const conInv = Array.isArray(p.inv) && p.inv.length;
+    const deInv = conInv ? piezasDeInv(p.inv) : null;
+    const { piezas, dudas } = deInv || piezasDeTexto(p.productos);
     if (!piezas.length || dudas) sinLeer.push({ id: p.id, cliente: (p.cliente && p.cliente.nombre) || '', productos: String(p.productos || '').split(' | ')[0].slice(0, 160) });
     const tipo = TIPOS_PEDIDO.includes(p.tipo) ? p.tipo : 'venta';
     const fecha = p.enviado || p.entregado || p.creado || '';
     const pendiente = POR_DESPACHAR.includes(p.estado);
-    const ls = letrasDePedido(p);
+    const ls = deInv ? { letras: deInv.letras, dudas: false } : letrasDePedido(p);
     if (ls.dudas) letrasSinLeer.push({ id: p.id, cliente: (p.cliente && p.cliente.nombre) || '', productos: String(p.productos || '').split(' | ')[0].slice(0, 160) });
     ls.letras.forEach(l => { const r = asegurar(l.item); if (!r) return; if (pendiente) r.porDespachar += l.cantidad; else r[tipo] += l.cantidad; });
     piezas.forEach(pz => {
       const r = porItem[pz.item]; if (!r) return;
-      if (pendiente) { r.porDespachar += pz.cantidad; return; }
+      const detalle = { item: pz.item, cantidad: pz.cantidad, pedido: p.id, cliente: (p.cliente && p.cliente.nombre) || '', estado: p.estado, productos: String(p.productos || '').split(' | ')[0].slice(0, 160) };
+      if (pendiente) { r.porDespachar += pz.cantidad; apartados.push(Object.assign({ fecha: p.creado || '' }, detalle)); return; }
       const t = pz.regalo ? 'regalo' : tipo;
       r[t] += pz.cantidad;
-      salidas.push({ fecha, item: pz.item, tipo: t, cantidad: pz.cantidad, origen: 'pedido', pedido: p.id, cliente: (p.cliente && p.cliente.nombre) || '' });
+      salidas.push(Object.assign({ fecha, tipo: t, origen: 'pedido' }, detalle));
     });
   });
   const cerrar = r => { r.salio = COLUMNAS.reduce((n, k) => n + r[k], 0); r.bodega = r.llego - r.salio; r.disponible = r.bodega - r.porDespachar; return r; };
   const lista = items.map(it => cerrar(porItem[it.id]));
   const letras = Object.values(porItem).filter(r => r.letra).map(cerrar);
-  return { items: lista, letras, salidas: salidas.filter(s => !esLetra(s.item)), sinLeer: sinLeer.slice(0, 30), letrasSinLeer: letrasSinLeer.slice(0, 30),
+  return { items: lista, letras, apartados, salidas: salidas.filter(s => !esLetra(s.item)), sinLeer: sinLeer.slice(0, 30), letrasSinLeer: letrasSinLeer.slice(0, 30),
     conDatos: lista.some(r => r.llego > 0) };
 }
 
@@ -221,4 +296,4 @@ async function guardarMovimientos(store, movs) {
   await store.setJSON('movimientos', { v: 2, actualizado: new Date().toISOString(), movs });
 }
 
-module.exports = { fusionar, COLUMNAS, letrasDePedido, idLetra, esLetra, STORE, ITEMS, TIPOS_MOV, idMov, TIPOS_PEDIDO, piezasDeTexto, movimiento, idExtra, calcular, leer, guardarMovimientos, limpio };
+module.exports = { PIEZAS_PRODUCTO, invValido, piezasDeInv, fusionar, COLUMNAS, letrasDePedido, idLetra, esLetra, STORE, ITEMS, TIPOS_MOV, idMov, TIPOS_PEDIDO, piezasDeTexto, movimiento, idExtra, calcular, leer, guardarMovimientos, limpio };

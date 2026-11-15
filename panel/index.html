@@ -98,7 +98,8 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
 .catalogo .chip{font-size:12px;padding:6px 10px}
 .items{margin:8px 0 0;padding:0;list-style:none}
 .items li{display:flex;align-items:center;gap:8px;padding:6px 0;border-top:1px dashed var(--borde);font-size:14px}
-.items li span{flex:1}.items button{border:0;background:#f3eee6;border-radius:8px;width:28px;height:28px;cursor:pointer;font-weight:800}
+.items li span{flex:1}.items li.con-nombre{flex-wrap:wrap}
+.nom-fila{display:flex;gap:6px;width:100%;margin-top:4px}.nom-fila input{flex:1;min-width:0;padding:8px 10px;font-size:15px;text-transform:uppercase}.nom-fila select{width:auto;padding:8px;font-size:14px}.items button{border:0;background:#f3eee6;border-radius:8px;width:28px;height:28px;cursor:pointer;font-weight:800}
 .tallas{display:flex;gap:6px;align-items:center;font-size:13px;font-weight:800;margin-top:4px}
 .aviso{background:#fff7e0;border-radius:12px;padding:10px 12px;font-size:14px}
 .nota-chica{font-size:12px;color:var(--gris);margin-top:4px}
@@ -134,6 +135,11 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
 .hc tr.agotado .hc-d{color:#b3261e;background:#fde7e1!important}.hc tr.pocos .hc-d{color:#a05a00;background:#fff4dc!important}
 .hc tfoot td{background:#f8f4ee!important;font-weight:900;border-top:1.5px solid var(--borde);border-bottom:0}
 @media(min-width:760px){.hc{min-width:0;font-size:13px}.hc th{padding:8px 5px;font-size:10px}.hc td{padding:10px 5px}.hc th:first-child,.hc td:first-child{min-width:110px}}
+.hc td.ver{cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px}.hc td.ver:hover{background:#fff4dc!important}
+.origen{list-style:none;margin:0;padding:0}.origen li{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-top:1px dashed var(--borde);font-size:14px}
+.origen li[data-pedido]{cursor:pointer}.origen li b{font-family:'Fredoka One';font-weight:400;font-size:18px;min-width:34px}
+.origen li span{flex:1;min-width:0;font-weight:800}.origen li small{display:block;font-weight:600;color:var(--gris);font-size:12px;margin-top:2px}
+.origen .ir{flex:none;font-size:13px;color:var(--azul);font-weight:900}
 .hc .quitar{border:0;background:transparent;cursor:pointer;opacity:.5;font-size:12px;padding:0 2px}
 .tabla{width:100%;border-collapse:collapse;font-size:13px}
 .tabla th{font-size:10px!important;padding:6px 3px!important}.tabla td{padding:7px 3px!important}
@@ -237,6 +243,45 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
     { id: 'placa-add', n: 'Placa (con otro producto)', p: 19900, talla: false },
     { id: 'letra', n: 'Letra extra', p: 5000, talla: false }
   ];
+  // Editor de productos con los botones del catálogo: lo que se elige aquí es lo que cuenta el inventario
+  // (un combo talla M = 1 collar M + 1 arnés M + 1 correa). Devuelve { items, texto, total }.
+  const CON_NOMBRE = ['collar-nombre', 'collar-correa-nombre', 'combo-nombre'];
+  function editorInv(cont, inicial, alCambiar) {
+    let talla = 'S';
+    const items = (inicial || []).map(it => ({ id: it.p, talla: it.talla || '', q: it.q || 1, nombre: it.nombre ? { texto: it.nombre.texto || '', color: it.nombre.color || 'rosado' } : null, regalo: !!it.regalo }));
+    const cat = id => CATALOGO.find(c => c.id === id) || { n: id, p: 0, talla: false };
+    const linea = it => cat(it.id).n + (it.talla ? ' (Talla ' + it.talla + ')' : '') + (it.nombre && it.nombre.texto ? ' · "' + it.nombre.texto.toUpperCase() + '" letras ' + ((CN_COLORES.find(c => c.id === it.nombre.color) || {}).nombre || it.nombre.color) : '') + (it.regalo ? ' [REGALO]' : '') + (it.q > 1 ? ' x' + it.q : '');
+    cont.innerHTML = `<div class="tallas">Talla: <button type="button" class="chip activo" data-etalla="S">S</button><button type="button" class="chip" data-etalla="M">M</button></div>
+      <div class="catalogo">${CATALOGO.map(x => `<button type="button" class="chip" data-ep="${x.id}">＋ ${esc(x.n)} · ${pesos(x.p * 100)}</button>`).join('')}</div>
+      <ul class="items" data-elista></ul>`;
+    const lista = cont.querySelector('[data-elista]');
+    const pintar = () => {
+      lista.innerHTML = items.map((it, i) => `<li class="${CON_NOMBRE.includes(it.id) ? 'con-nombre' : ''}"><span>${esc(linea(it))}</span><b>${pesos(cat(it.id).p * 100 * it.q)}</b><button type="button" data-emenos="${i}" aria-label="Quitar uno">−</button><button type="button" data-emas="${i}" aria-label="Agregar uno">＋</button>
+        ${CON_NOMBRE.includes(it.id) ? `<div class="nom-fila"><input data-enom="${i}" maxlength="8" placeholder="Nombre (ej. OLIVER)" value="${esc(it.nombre ? it.nombre.texto : '')}" autocomplete="off"><select data-ecol="${i}">${CN_COLORES.map(c => `<option value="${c.id}"${it.nombre && it.nombre.color === c.id ? ' selected' : ''}>${esc(c.nombre)}</option>`).join('')}</select></div>` : ''}</li>`).join('')
+        || '<li class="nota-chica" style="border:0">Toca los productos que lleva (elige primero la talla).</li>';
+      lista.querySelectorAll('[data-emenos]').forEach(b => b.onclick = () => { const it = items[b.dataset.emenos]; it.q--; if (it.q < 1) items.splice(b.dataset.emenos, 1); pintar(); });
+      lista.querySelectorAll('[data-emas]').forEach(b => b.onclick = () => { items[b.dataset.emas].q++; pintar(); });
+      lista.querySelectorAll('[data-enom]').forEach(inp => inp.oninput = () => { const it = items[inp.dataset.enom]; it.nombre = it.nombre || { color: 'rosado' }; it.nombre.texto = inp.value.toUpperCase(); lista.querySelectorAll('li')[inp.dataset.enom].querySelector('span').textContent = linea(it); if (alCambiar) alCambiar(); });
+      lista.querySelectorAll('[data-ecol]').forEach(sel => sel.onchange = () => { const it = items[sel.dataset.ecol]; it.nombre = it.nombre || { texto: '' }; it.nombre.color = sel.value; pintar(); });
+      if (alCambiar) alCambiar();
+    };
+    cont.querySelectorAll('[data-etalla]').forEach(b => b.onclick = () => { talla = b.dataset.etalla; cont.querySelectorAll('[data-etalla]').forEach(x => x.classList.toggle('activo', x === b)); });
+    cont.querySelectorAll('[data-ep]').forEach(b => b.onclick = () => {
+      const x = cat(b.dataset.ep), t = x.talla ? talla : '';
+      const ya = items.find(it => it.id === x.id && it.talla === t && !CON_NOMBRE.includes(x.id));
+      if (ya) ya.q++; else items.push({ id: x.id, talla: t, q: 1, nombre: CON_NOMBRE.includes(x.id) ? { texto: '', color: 'rosado' } : null });
+      pintar();
+    });
+    pintar();
+    return {
+      items: () => items.map(it => Object.assign({ p: it.id, talla: it.talla, q: it.q }, it.nombre && it.nombre.texto ? { nombre: { texto: it.nombre.texto, color: it.nombre.color } } : {}, it.regalo ? { regalo: true } : {})),
+      texto: () => items.map(linea).join('\n'),
+      total: () => items.reduce((n, it) => n + cat(it.id).p * it.q, 0)
+    };
+  }
+  // Colores de las letras (assets/collar-nombre.json), para el nombre del collar en el editor
+  let CN_COLORES = [{ id: 'rosado', nombre: 'Rosado' }];
+  fetch('/assets/collar-nombre.json').then(r => r.json()).then(j => { CN_COLORES = j.colores; }).catch(() => {});
   const ESTADOS = [
     { id: 'por-confirmar', n: 'Por confirmar', i: '🕐' },
     { id: 'confirmado', n: 'Confirmado', i: '👍' },
@@ -647,6 +692,11 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
             <div><label for="dPago">Forma de pago</label><select id="dPago">${opciones(PAGOS, p.pago)}</select></div>
           </div>
           <label for="dTipo">Tipo (para el inventario)</label><select id="dTipo">${opciones(TIPOS, p.tipo || 'venta')}</select>
+        </div>
+        <div class="caja">
+          <h3>📦 Para el inventario</h3>
+          <p class="nota-chica" style="margin:-4px 0 8px">${(p.inv || []).length ? 'Esto es lo que se descuenta del inventario. Corrígelo con los botones si hace falta.' : '⚠️ Este pedido no tiene los productos elegidos: el inventario intenta leerlos del texto. Elígelos aquí con los botones para que cuente bien.'}</p>
+          <div id="dEditor"></div>
           ${p.codigo ? `<p class="aviso" style="margin-top:10px">🏷️ Código ${esc(p.codigo.codigo)}${p.codigo.participante ? ' · ' + esc(p.codigo.participante) : ''}${p.descuentoCents ? ' · descuento ' + pesos(p.descuentoCents) : ''}${p.comisionCents ? '<br>💸 Comisión del creador: <b>' + pesos(p.comisionCents) + '</b> (pagar solo si se entrega)' : ''}</p>` : ''}
         </div>
 
@@ -701,6 +751,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
       try { await guardarDetalle(p.id, extra); cerrarHoja(); } catch (err) { toast(err.message); }
     };
     $('btnBorrar').onclick = () => borrarPedido(p.id);
+    editorDetalle = editorInv($('dEditor'), p.inv || []);
     $('btnEtiqueta').onclick = () => abrirEtiqueta(p.id);
     // Guía de Envia desde el panel: ver precios → elegir → crear (queda Enviado con su guía)
     const datosEnvio = () => ({ nombre: $('eNombre').value, telefono: $('eTel').value, direccion: $('eDir').value, barrio: $('eBarrio').value, cp: $('eCp').value, referencia: $('eRef').value, ciudad: c.ciudad });
@@ -727,8 +778,10 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
     if (enfocarGuia) { h.dataset.pendiente = enfocarGuia; setTimeout(() => { $('cajaGuia').scrollIntoView({ block: 'center' }); $('dTransp').focus(); toast('Escribe la guía y guarda para marcarlo enviado'); }, 100); }
   }
 
+  let editorDetalle = null;
   async function guardarDetalle(id, extra) {
     const cambios = Object.assign({
+      inv: editorDetalle ? editorDetalle.items() : undefined,
       productos: $('dProductos').value, total: $('dTotal').value, costoEnvio: $('dEnvio').value,
       origen: $('dOrigen').value, pago: $('dPago').value, tipo: $('dTipo').value, mascota: $('dMascota').value, notas: $('dNotas').value,
       cliente: { nombre: $('dNombre').value, telefono: $('dTel').value, direccion: $('dDir').value, ciudad: $('dCiudad').value, correo: $('dCorreo').value },
@@ -741,18 +794,16 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
   // ── Hoja: nuevo pedido ──
   $('btnNuevo').onclick = () => {
     if (pestana === 'inventario') { abrirMovimiento('entrada'); return; }
-    let items = [], talla = 'S', totalManual = false;
+    let totalManual = false;
     const hoy = new Date(Date.now() - 5 * 36e5).toISOString().slice(0, 10);
     abrirHoja(`
       <div class="cab"><h2>Nuevo pedido</h2><button class="btn claro icono" data-cerrar aria-label="Cerrar">✕</button></div>
       <form id="formNuevo">
         <div class="caja">
           <h3>¿Qué lleva?</h3>
-          <div class="tallas">Talla: <button type="button" class="chip activo" data-talla="S">S</button><button type="button" class="chip" data-talla="M">M</button></div>
-          <div class="catalogo">${CATALOGO.map(x => `<button type="button" class="chip" data-p="${x.id}">＋ ${esc(x.n)} · ${pesos(x.p * 100)}</button>`).join('')}</div>
-          <ul class="items" id="nItems"></ul>
-          <label for="nDetalle">Detalle (nombre del collar, colores de letras, forma de la placa…)</label>
-          <input id="nDetalle" placeholder="Ej.: LUNA en rosado · placa huella morada">
+          <div id="nEditor"></div>
+          <label for="nDetalle">Detalle (forma y color de la placa, notas…)</label>
+          <input id="nDetalle" placeholder="Ej.: placa huella morada">
           <div class="dos">
             <div><label for="nTotal">Total a cobrar</label><input id="nTotal" inputmode="numeric" placeholder="0"></div>
             <div><label for="nEnvio">Me cuesta el envío</label><input id="nEnvio" inputmode="numeric" placeholder="0"></div>
@@ -790,30 +841,18 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
       </form>`);
     const h = $('hoja');
     h.querySelector('[data-cerrar]').onclick = cerrarHoja;
-    const pintarItems = () => {
-      items.forEach(it => { it.txt = it.base + (it.q > 1 ? ' x' + it.q : ''); });
-      $('nItems').innerHTML = items.map((it, i) => `<li><span>${esc(it.txt)}</span><b>${pesos(it.p * 100 * it.q)}</b><button type="button" data-menos="${i}" aria-label="Quitar uno">−</button><button type="button" data-mas="${i}" aria-label="Agregar uno">＋</button></li>`).join('');
-      $('nItems').querySelectorAll('[data-menos]').forEach(b => b.onclick = () => { const it = items[b.dataset.menos]; it.q--; if (it.q < 1) items.splice(b.dataset.menos, 1); pintarItems(); });
-      $('nItems').querySelectorAll('[data-mas]').forEach(b => b.onclick = () => { items[b.dataset.mas].q++; pintarItems(); });
-      if (!totalManual) $('nTotal').value = items.reduce((s, it) => s + it.p * it.q, 0) || '';
-    };
-    h.querySelectorAll('[data-talla]').forEach(b => b.onclick = () => { talla = b.dataset.talla; h.querySelectorAll('[data-talla]').forEach(x => x.classList.toggle('activo', x === b)); });
-    h.querySelectorAll('[data-p]').forEach(b => b.onclick = () => {
-      const x = CATALOGO.find(c => c.id === b.dataset.p), base = x.n + (x.talla ? ' (Talla ' + talla + ')' : '');
-      const ya = items.find(it => it.base === base);
-      if (ya) ya.q++; else items.push({ base, p: x.p, q: 1 });
-      pintarItems();
-    });
+    let editor = null;
+    editor = editorInv($('nEditor'), [], () => { if (editor && !totalManual) $('nTotal').value = editor.total() || ''; });
     $('nTotal').oninput = () => { totalManual = $('nTotal').value !== ''; };
     $('nPago').onchange = () => { if (['nequi', 'transferencia', 'wompi'].includes($('nPago').value)) $('nPagado').checked = true; if ($('nPago').value === 'contraentrega') $('nPagado').checked = false; };
     $('formNuevo').onsubmit = async e => {
       e.preventDefault();
-      const productos = items.map(it => it.txt).concat($('nDetalle').value.trim() ? [$('nDetalle').value.trim()] : []).join('\n');
+      const productos = [editor.texto()].filter(Boolean).concat($('nDetalle').value.trim() ? [$('nDetalle').value.trim()] : []).join('\n');
       if (!productos && !$('nNombre').value.trim()) { toast('Agrega al menos un producto o el nombre del cliente'); return; }
       const btn = e.target.querySelector('button[type=submit]'); btn.disabled = true;
       try {
         const j = await api('POST', { accion: 'crear', pedido: {
-          productos, total: $('nTotal').value, costoEnvio: $('nEnvio').value, origen: $('nOrigen').value, pago: $('nPago').value, tipo: $('nTipo').value,
+          productos, inv: editor.items(), total: $('nTotal').value, costoEnvio: $('nEnvio').value, origen: $('nOrigen').value, pago: $('nPago').value, tipo: $('nTipo').value,
           estado: $('nEstado').value, pagado: $('nPagado').checked, fecha: $('nFecha').value, mascota: $('nMascota').value, notas: $('nNotas').value,
           cliente: { nombre: $('nNombre').value, telefono: $('nTel').value, direccion: $('nDir').value, ciudad: $('nCiudad').value }
         } });
@@ -875,6 +914,35 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
   function mesTexto(m) { const [a, n] = m.split('-'); return new Date(+a, +n - 1, 15).toLocaleDateString('es-CO', { month: 'long', year: 'numeric' }); }
   // Tabla "Lo que tengo". En el computador, en orden de hoja de cálculo (Llegó … = Quedan); en el celular, primero lo
   // que más importa (Quedan, Disponibles) y el detalle se ve deslizando a la derecha.
+  // Cada número de la tabla se puede tocar para ver de dónde sale (qué pedidos o movimientos)
+  const COL_TIPO = { venta: 'venta', colaboracion: 'colaboracion', regalo: 'regalo', contenido: 'contenido', danado: 'danado' };
+  function verCelda(x, k) { return (k === 'llego' && x.llego) || (COL_TIPO[k] && x[k]) || (k === 'despachar' && x.porDespachar); }
+  function abrirOrigen(id, k) {
+    const x = (inv.items || []).find(i => i.id === id); if (!x) return;
+    const titulo = { llego: '📥 Llegó', venta: '💰 Vendidos', colaboracion: '🤝 Colaboración', regalo: '🎁 Regalos', contenido: '🎬 Contenido', danado: '⚠️ Dañados', despachar: '📦 Por despachar' }[k];
+    let filas = [];
+    if (k === 'llego') filas = (inv.movimientos || []).filter(m => m.item === id && m.tipo === 'entrada').map(m => ({ cantidad: m.cantidad, fecha: m.fecha, txt: 'Llegó producto' + (m.nota ? ' · ' + m.nota : ''), mov: m.id }));
+    else if (k === 'despachar') filas = (inv.apartados || []).filter(s => s.item === id).map(s => ({ cantidad: s.cantidad, fecha: s.fecha, txt: s.cliente || 'Sin nombre', sub: s.productos, pedido: s.pedido, estado: s.estado }));
+    else filas = (inv.salidas || []).filter(s => s.item === id && s.tipo === COL_TIPO[k]).map(s => s.origen === 'pedido'
+      ? { cantidad: s.cantidad, fecha: s.fecha, txt: s.cliente || 'Sin nombre', sub: s.productos, pedido: s.pedido, estado: s.estado }
+      : { cantidad: s.cantidad, fecha: s.fecha, txt: 'Anotado a mano' + (s.nota ? ' · ' + s.nota : ''), mov: s.mov });
+    filas.sort((a, b) => (a.fecha < b.fecha ? 1 : -1));
+    const repetidos = {};
+    filas.filter(f => f.pedido).forEach(f => { const k2 = (f.txt + '|' + f.sub).toLowerCase(); repetidos[k2] = (repetidos[k2] || 0) + 1; });
+    abrirHoja(`
+      <div class="cab"><h2>${titulo} · ${esc(x.nombre)}</h2><button class="btn claro icono" data-cerrar aria-label="Cerrar">✕</button></div>
+      <div class="caja">
+        <p class="nota-chica" style="margin:0 0 8px">Total: <b>${filas.reduce((n, f) => n + f.cantidad, 0)}</b>. ${k === 'llego' ? 'Son los "Llegó producto" que anotaste.' : 'Toca un pedido para abrirlo y corregirlo (estado, tipo o producto).'}</p>
+        <ul class="origen">${filas.map(f => `<li${f.pedido ? ` data-pedido="${esc(f.pedido)}"` : ''}><b>${k === 'llego' ? '+' : (k === 'despachar' ? '' : '−')}${f.cantidad}</b>
+          <span>${esc(f.txt)}${f.estado ? ` <small class="pill e-${esc(f.estado)}" style="display:inline-block;font-size:11px;padding:2px 8px">${esc((EST[f.estado] || {}).n || f.estado)}</small>` : ''}
+          <small>${esc(fecha(f.fecha))}${f.sub ? ' · ' + esc(f.sub) : ''}</small>
+          ${f.pedido && repetidos[(f.txt + '|' + f.sub).toLowerCase()] > 1 ? '<small style="color:#b3261e;font-weight:800">⚠️ Hay otro pedido igual: ¿está repetido?</small>' : ''}</span>
+          ${f.pedido ? '<span class="ir">Abrir ›</span>' : ''}</li>`).join('') || '<li>No hay nada.</li>'}</ul>
+      </div>`);
+    const h = $('hoja');
+    h.querySelector('[data-cerrar]').onclick = cerrarHoja;
+    h.querySelectorAll('[data-pedido]').forEach(li => li.onclick = () => abrirDetalle(li.dataset.pedido));
+  }
   function hojaCalc(it) {
     const salidaCol = (k, n) => ({ k, n, cls: 'menos', v: x => x[k] ? '−' + x[k] : '—', t: xs => xs.reduce((a, x) => a + x[k], 0) || '—' });
     const C = {
@@ -893,7 +961,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
         <thead><tr><th>Producto</th>${orden.map(c => `<th class="${c.cls === 'hc-q' || c.cls === 'hc-d' ? c.cls : ''}" data-col="${c.k}">${c.n}</th>`).join('')}</tr></thead>
         <tbody>${it.map(x => `<tr class="${x.disponible <= 0 ? 'agotado' : (x.disponible <= 3 ? 'pocos' : '')}">
           <td>${esc(x.nombre)}${x.extra ? ` <button class="quitar" data-quitar-prod="${esc(x.id)}" title="Quitar del inventario" aria-label="Quitar ${esc(x.nombre)}">✕</button>` : ''}</td>
-          ${orden.map(c => `<td class="${c.cls}" data-col="${c.k}">${c.v(x)}</td>`).join('')}</tr>`).join('')}</tbody>
+          ${orden.map(c => `<td class="${c.cls}${verCelda(x, c.k) ? ' ver' : ''}" data-col="${c.k}"${verCelda(x, c.k) ? ` data-ver="${esc(x.id)}" title="Ver de dónde sale"` : ''}>${c.v(x)}</td>`).join('')}</tr>`).join('')}</tbody>
         <tfoot><tr><td>Total</td>${orden.map(c => `<td class="${c.cls}" data-col="${c.k}">${c.t(it)}</td>`).join('')}</tr></tfoot>
       </table></div>`;
   }
@@ -976,6 +1044,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
       if (!confirm('¿Borrar este movimiento del inventario?')) return;
       if (await cargarInventario({ accion: 'inv-borrar', id: b.dataset.borrarMov })) toast('Movimiento borrado');
     });
+    v.querySelectorAll('td[data-ver]').forEach(td => td.onclick = () => abrirOrigen(td.dataset.ver, td.dataset.col));
     v.querySelectorAll('[data-quitar-prod]').forEach(b => b.onclick = async () => {
       if (!confirm('¿Quitar este producto del inventario?')) return;
       if (await cargarInventario({ accion: 'inv-quitar-producto', id: b.dataset.quitarProd })) toast('Producto quitado');

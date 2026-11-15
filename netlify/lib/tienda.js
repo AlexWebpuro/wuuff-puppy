@@ -297,6 +297,29 @@ function lineasAviso(calc) {
   return l;
 }
 
+// Lo comprado (carrito) → productos para el inventario del panel (mismo formato que los botones del panel)
+function invDeCarrito(carrito, calc) {
+  const c = carrito && typeof carrito === 'object' ? carrito : {};
+  const inv = [];
+  (Array.isArray(c.items) ? c.items.slice(0, 6) : []).forEach(it => {
+    if (!it || !PRODUCTOS[it.p]) return;
+    const prod = PRODUCTOS[it.p];
+    let talla = elegir(it.talla, prod.tallas);
+    if (talla === 'Única') talla = '';
+    const conNombre = it.nombre && (it.p === 'collar' || CN.combos[it.p]);
+    const id = conNombre ? ({ collar: 'collar-nombre', 'collar-correa': 'collar-correa-nombre', combo: 'combo-nombre' }[it.p] || it.p) : it.p;
+    const o = { p: id, talla, q: Math.min(Math.max(parseInt(it.qty, 10) || 1, 1), 10) };
+    if (conNombre) o.nombre = { texto: String(it.nombre.texto || ''), color: it.nombre.color, mezcla: Array.isArray(it.nombre.mezcla) ? it.nombre.mezcla : String(it.nombre.mezcla || '').split(',') };
+    inv.push(o);
+  });
+  const placas = Array.isArray(c.placas) && c.placas.length ? c.placas.length : (c.placa ? 1 : 0);
+  // Placa de regalo del concurso: si ya traía una placa pagada, esa queda de regalo; si no, se agrega una
+  const regalo = !!(calc && calc.regalo), regaloEsLaPagada = regalo && placas > 0;
+  if (placas - (regaloEsLaPagada ? 1 : 0) > 0) inv.push({ p: 'placa', talla: '', q: placas - (regaloEsLaPagada ? 1 : 0) });
+  if (regalo) inv.push({ p: 'placa', talla: '', q: 1, regalo: true });
+  return inv;
+}
+
 // Perfiles NFC del pedido (uno por placa): el texto termina en "| Perfil NFC: ID1, ID2, pendiente (…)"
 function perfilesDeTexto(texto) {
   const m = /Perfil NFC:\s*([^|]*)/.exec(String(texto || ''));
@@ -310,4 +333,4 @@ function perfilesValidos(texto) {
   return partes.map(p => p.trim()).filter(p => /^[A-Z0-9]{6,16}$/.test(p) || /^pendiente \([^()|<>\[\]]{1,90}\)$/.test(p)).slice(0, 6);
 }
 
-module.exports = { nombreCollar, perfilesDeTexto, perfilesValidos, PRODUCTOS, MENSAJES, armar, calcular, revisarCodigo, envioCents, contraentregaPermitida, normalizarCodigo, lineasAviso, pesos, placaValida };
+module.exports = { invDeCarrito, nombreCollar, perfilesDeTexto, perfilesValidos, PRODUCTOS, MENSAJES, armar, calcular, revisarCodigo, envioCents, contraentregaPermitida, normalizarCodigo, lineasAviso, pesos, placaValida };
