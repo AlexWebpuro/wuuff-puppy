@@ -70,6 +70,8 @@ function aplicarCambios(p, d, ahora) {
     if (c[k] !== undefined) p.cliente[k] = limpio(c[k], k === 'direccion' ? 250 : 160);
   });
   if (d.mascota !== undefined) p.mascota = limpio(d.mascota, 80);
+  // Productos elegidos con los botones (para el inventario)
+  if (d.inv !== undefined) { const v = require('./inventario').invValido(d.inv); if (v) p.inv = v; }
   if (d.productos !== undefined) p.productos = limpio(d.productos, 1500);
   if (d.notas !== undefined) p.notas = limpio(d.notas, 2000);
   if (d.origen !== undefined && ORIGENES.includes(d.origen)) p.origen = d.origen;
@@ -136,7 +138,7 @@ function desdeContraentrega(ce, sitio) {
     id: ce.referencia, origen: 'web', pago: 'contraentrega', pagado: false,
     estado: ce.guia ? 'enviado' : 'por-confirmar',
     cliente: { nombre: ce.nombre || '', telefono: ce.telefono || '', correo: ce.correo || '', direccion: ce.direccion || '', ciudad: ce.ciudad || '' },
-    mascota: ce.mascota || '', productos: ce.producto || '', notas: '',
+    mascota: ce.mascota || '', productos: ce.producto || '', notas: '', inv: Array.isArray(ce.inv) ? ce.inv : undefined,
     totalCents: Math.round(ce.totalCents || 0), costoEnvioCents: 0,
     codigo: ce.codigo ? { codigo: ce.codigo.codigo, tipo: ce.codigo.tipo, participante: ce.codigo.participante || '' } : null,
     descuentoCents: ce.descuentoCents || 0,
@@ -171,7 +173,7 @@ async function registrarWompi(store, d) {
   const p = {
     id: d.referencia, origen: 'web', pago: 'wompi', pagado: true, estado: 'confirmado',
     cliente: { nombre: limpio(d.nombre, 120), telefono: limpio(d.telefono, 30), correo: limpio(d.correo, 160), direccion: limpio(d.direccion, 250), ciudad: limpio(d.ciudad, 80) },
-    mascota: limpio(d.mascota, 80), productos: limpio(d.producto, 1500),
+    mascota: limpio(d.mascota, 80), productos: limpio(d.producto, 1500), inv: Array.isArray(d.inv) ? d.inv : undefined,
     notas: Array.isArray(d.avisos) ? d.avisos.map(a => limpio(a, 300)).join('\n') : '',
     totalCents: Math.round(d.totalCents || 0), costoEnvioCents: 0,
     codigo: d.codigo ? { codigo: d.codigo.codigo, tipo: d.codigo.tipo, participante: d.codigo.participante || '' } : null,

@@ -57,6 +57,7 @@ exports.handler = async function (event) {
         codigo: esBwf ? null : calc.codigo, descuentoCents: esBwf ? 0 : calc.descuentoCents, regalo: esBwf ? null : calc.regalo,
         avisos: esBwf ? calc.avisos : tienda.lineasAviso(calc),
         bwf: esBwf ? { n: calc.n, token: String(body.carrito.bwf.token) } : undefined,
+        inv: esBwf ? calc.inv : tienda.invDeCarrito(body.carrito, calc),
         productos: resenas.productosDeCarrito(body.carrito, calc.regalo), ciudad: String(body.ciudad || '').slice(0, 80)
       });
     } catch (err) { console.error('No se pudo guardar el pedido de Wompi', err.message); }

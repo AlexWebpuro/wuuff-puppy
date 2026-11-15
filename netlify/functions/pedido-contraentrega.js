@@ -104,7 +104,8 @@ exports.handler = async function (event) {
     // totalCents ya trae el descuento: es el valor del recaudo contraentrega en la guía de Envia
     await getStore('pedidos-contraentrega').setJSON(referencia, Object.assign({}, pedido, {
       referencia: referencia, totalCents: totalCents, token: token, estado: 'pendiente-confirmar', creado: new Date().toISOString(),
-      codigo: calc.codigo, descuentoCents: calc.descuentoCents, regalo: calc.regalo
+      codigo: calc.codigo, descuentoCents: calc.descuentoCents, regalo: calc.regalo,
+      inv: tienda.invDeCarrito(b.carrito, calc)
     }));
     urlGuia = SITE_URL + '.netlify/functions/envia-guia?ref=' + encodeURIComponent(referencia) + '&t=' + token;
   } catch (err) {

@@ -142,6 +142,49 @@ function letrasDePedido(p) {
   return { letras: out, dudas };
 }
 
+// ── Productos elegidos con los botones (pedido.inv) → piezas del inventario ──
+// pedido.inv = [{ p: 'combo-nombre', talla: 'M', q: 1, nombre: { texto: 'OLIVER', color: 'beige', mezcla: [] }, regalo: false }]
+// Lo guardan el panel (al crear o corregir un pedido) y la web (wompi-signature / pedido-contraentrega, desde el carrito).
+// Si un pedido no lo trae (pedidos viejos), el inventario lee el texto de "productos" como respaldo.
+const PIEZAS_PRODUCTO = {
+  combo: ['collar', 'arnes', 'correa'], 'combo-nombre': ['collar', 'arnes', 'correa'],
+  'arnes-correa': ['arnes', 'correa'], 'collar-correa': ['collar', 'correa'], 'collar-correa-nombre': ['collar', 'correa'],
+  arnes: ['arnes'], collar: ['collar'], 'collar-nombre': ['collar'], correa: ['correa'],
+  placa: ['placa'], 'placa-add': ['placa'], letra: []
+};
+const TALLAS_INV = ['', 'S', 'M', 'SS', 'SM', 'MS', 'MM'];
+function invValido(lista) {
+  if (!Array.isArray(lista)) return null;
+  return lista.slice(0, 20).map(it => {
+    if (!it || !PIEZAS_PRODUCTO[it.p]) return null;
+    const talla = String(it.talla || '').toUpperCase();
+    const o = { p: it.p, talla: TALLAS_INV.includes(talla) ? talla : '', q: Math.min(Math.max(parseInt(it.q, 10) || 1, 1), 20) };
+    if (it.regalo) o.regalo = true;
+    if (it.nombre && typeof it.nombre === 'object' && COLOR_IDS.includes(it.nombre.color)) {
+      const piezas = piezasNombre(it.nombre.texto).slice(0, 8);
+      if (piezas.length) o.nombre = { texto: piezas.join(''), color: it.nombre.color,
+        mezcla: Array.isArray(it.nombre.mezcla) ? it.nombre.mezcla.slice(0, piezas.length).map(c => COLOR_IDS.includes(c) ? c : '') : [] };
+    }
+    return o;
+  }).filter(Boolean);
+}
+function piezasDeInv(inv) {
+  const piezas = [], letras = [];
+  let dudas = false;
+  const sumar = (lista, item, n, regalo) => { const ya = lista.find(x => x.item === item && !!x.regalo === !!regalo); if (ya) ya.cantidad += n; else lista.push(regalo ? { item, cantidad: n, regalo: true } : { item, cantidad: n }); };
+  inv.forEach(it => {
+    const t = it.talla || '', tc = t[0] || '', ta = t.length === 2 ? t[1] : tc;
+    PIEZAS_PRODUCTO[it.p].forEach(base => {
+      if (base === 'correa' || base === 'placa') return sumar(piezas, base, it.q, it.regalo && base === 'placa');
+      const talla = base === 'arnes' ? ta : tc;
+      if (!talla) { dudas = true; return; }
+      sumar(piezas, base + '-' + talla, it.q, it.regalo);
+    });
+    if (it.nombre) piezasNombre(it.nombre.texto).forEach((ch, i) => sumar(letras, idLetra((it.nombre.mezcla && it.nombre.mezcla[i]) || it.nombre.color, ch), it.q));
+  });
+  return { piezas, letras, dudas };
+}
+
 // ── Movimientos ──
 function nuevoId() { return 'mov-' + Date.now().toString(36) + '-' + crypto.randomBytes(3).toString('hex'); }
 // Fecha del movimiento: hoy → ahora mismo; otro día → mediodía de ese día
@@ -190,12 +233,14 @@ function calcular(pedidos, movimientos, extras) {
 
   const sinLeer = [], letrasSinLeer = [], apartados = [];
   (pedidos || []).filter(p => p && !p.borrado && (SALIO.includes(p.estado) || POR_DESPACHAR.includes(p.estado))).forEach(p => {
-    const { piezas, dudas } = piezasDeTexto(p.productos);
+    const conInv = Array.isArray(p.inv) && p.inv.length;
+    const deInv = conInv ? piezasDeInv(p.inv) : null;
+    const { piezas, dudas } = deInv || piezasDeTexto(p.productos);
     if (!piezas.length || dudas) sinLeer.push({ id: p.id, cliente: (p.cliente && p.cliente.nombre) || '', productos: String(p.productos || '').split(' | ')[0].slice(0, 160) });
     const tipo = TIPOS_PEDIDO.includes(p.tipo) ? p.tipo : 'venta';
     const fecha = p.enviado || p.entregado || p.creado || '';
     const pendiente = POR_DESPACHAR.includes(p.estado);
-    const ls = letrasDePedido(p);
+    const ls = deInv ? { letras: deInv.letras, dudas: false } : letrasDePedido(p);
     if (ls.dudas) letrasSinLeer.push({ id: p.id, cliente: (p.cliente && p.cliente.nombre) || '', productos: String(p.productos || '').split(' | ')[0].slice(0, 160) });
     ls.letras.forEach(l => { const r = asegurar(l.item); if (!r) return; if (pendiente) r.porDespachar += l.cantidad; else r[tipo] += l.cantidad; });
     piezas.forEach(pz => {
@@ -251,4 +296,4 @@ async function guardarMovimientos(store, movs) {
   await store.setJSON('movimientos', { v: 2, actualizado: new Date().toISOString(), movs });
 }
 
-module.exports = { fusionar, COLUMNAS, letrasDePedido, idLetra, esLetra, STORE, ITEMS, TIPOS_MOV, idMov, TIPOS_PEDIDO, piezasDeTexto, movimiento, idExtra, calcular, leer, guardarMovimientos, limpio };
+module.exports = { PIEZAS_PRODUCTO, invValido, piezasDeInv, fusionar, COLUMNAS, letrasDePedido, idLetra, esLetra, STORE, ITEMS, TIPOS_MOV, idMov, TIPOS_PEDIDO, piezasDeTexto, movimiento, idExtra, calcular, leer, guardarMovimientos, limpio };

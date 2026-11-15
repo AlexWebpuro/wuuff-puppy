@@ -139,7 +139,10 @@ async function calcular(store, bwf, ciudad, ahora) {
   }
   if (regalo.stickers) { nombre += ' + Pack de stickers Wuuff [REGALO]'; avisos.push('🎟️ Incluir el pack de stickers'); }
   const envio = tienda.envioCents(subtotal, ciudad, false);
-  return { ok: true, n, regalo, talla, subtotalCents: subtotal, envioCents: envio, totalCents: subtotal + envio, nombreProducto: nombre, avisos,
+  const inv = [{ p: conNombre ? 'combo-nombre' : 'combo', talla, q: 1 }];
+  if (conNombre) inv[0].nombre = { texto: personal.texto, color: (b.nombre && b.nombre.color) || '', mezcla: [] };
+  if (placa) inv.push({ p: 'placa', talla: '', q: 1, regalo: true });
+  return { ok: true, n, regalo, talla, inv, subtotalCents: subtotal, envioCents: envio, totalCents: subtotal + envio, nombreProducto: nombre, avisos,
     placa, personal, conNombre };
 }
 
