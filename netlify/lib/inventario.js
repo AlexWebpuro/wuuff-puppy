@@ -155,11 +155,11 @@ function calcular(pedidos, movimientos, extras) {
     if (m.tipo === 'entrada') r.llego += m.cantidad;
     else if (COLUMNAS.includes(m.tipo)) {
       r[m.tipo] += m.cantidad;
-      salidas.push({ fecha: m.fecha, item: m.item, tipo: m.tipo, cantidad: m.cantidad, nota: m.nota, origen: 'manual' });
+      salidas.push({ fecha: m.fecha, item: m.item, tipo: m.tipo, cantidad: m.cantidad, nota: m.nota, origen: 'manual', mov: m.id });
     }
   });
 
-  const sinLeer = [], letrasSinLeer = [];
+  const sinLeer = [], letrasSinLeer = [], apartados = [];
   (pedidos || []).filter(p => p && !p.borrado && (SALIO.includes(p.estado) || POR_DESPACHAR.includes(p.estado))).forEach(p => {
     const { piezas, dudas } = piezasDeTexto(p.productos);
     if (!piezas.length || dudas) sinLeer.push({ id: p.id, cliente: (p.cliente && p.cliente.nombre) || '', productos: String(p.productos || '').split(' | ')[0].slice(0, 160) });
@@ -171,16 +171,17 @@ function calcular(pedidos, movimientos, extras) {
     ls.letras.forEach(l => { const r = asegurar(l.item); if (!r) return; if (pendiente) r.porDespachar += l.cantidad; else r[tipo] += l.cantidad; });
     piezas.forEach(pz => {
       const r = porItem[pz.item]; if (!r) return;
-      if (pendiente) { r.porDespachar += pz.cantidad; return; }
+      const detalle = { item: pz.item, cantidad: pz.cantidad, pedido: p.id, cliente: (p.cliente && p.cliente.nombre) || '', estado: p.estado, productos: String(p.productos || '').split(' | ')[0].slice(0, 160) };
+      if (pendiente) { r.porDespachar += pz.cantidad; apartados.push(Object.assign({ fecha: p.creado || '' }, detalle)); return; }
       const t = pz.regalo ? 'regalo' : tipo;
       r[t] += pz.cantidad;
-      salidas.push({ fecha, item: pz.item, tipo: t, cantidad: pz.cantidad, origen: 'pedido', pedido: p.id, cliente: (p.cliente && p.cliente.nombre) || '' });
+      salidas.push(Object.assign({ fecha, tipo: t, origen: 'pedido' }, detalle));
     });
   });
   const cerrar = r => { r.salio = COLUMNAS.reduce((n, k) => n + r[k], 0); r.bodega = r.llego - r.salio; r.disponible = r.bodega - r.porDespachar; return r; };
   const lista = items.map(it => cerrar(porItem[it.id]));
   const letras = Object.values(porItem).filter(r => r.letra).map(cerrar);
-  return { items: lista, letras, salidas: salidas.filter(s => !esLetra(s.item)), sinLeer: sinLeer.slice(0, 30), letrasSinLeer: letrasSinLeer.slice(0, 30),
+  return { items: lista, letras, apartados, salidas: salidas.filter(s => !esLetra(s.item)), sinLeer: sinLeer.slice(0, 30), letrasSinLeer: letrasSinLeer.slice(0, 30),
     conDatos: lista.some(r => r.llego > 0) };
 }
 
