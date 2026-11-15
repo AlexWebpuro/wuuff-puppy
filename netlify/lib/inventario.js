@@ -184,12 +184,41 @@ function calcular(pedidos, movimientos, extras) {
     conDatos: lista.some(r => r.llego > 0) };
 }
 
-// Lee todo el almacén: movimientos y productos extra (los que agrega Angie, ej. "Bolsas de regalo")
-async function leer(store) {
-  const { blobs } = await store.list();
-  const movs = (await Promise.all(blobs.filter(b => b.key.indexOf('mov-') === 0).map(b => store.get(b.key, { type: 'json' }).catch(() => null)))).filter(Boolean);
-  const extras = (await store.get('extras', { type: 'json' }).catch(() => null)) || [];
-  return { movimientos: movs, extras: Array.isArray(extras) ? extras : [] };
+// Une la lista del almacén con lo que el panel guardó o borró hace poco (la lista puede tardar en mostrarlo).
+function fusionar(movimientos, recientes, borrados) {
+  const fuera = new Set((Array.isArray(borrados) ? borrados : []).map(String).filter(id => /^mov-[a-z0-9-]{4,60}$/.test(id)).slice(0, 500));
+  const lista = movimientos.filter(m => !fuera.has(m.id));
+  const ya = new Set(lista.map(m => m.id));
+  (Array.isArray(recientes) ? recientes : []).slice(0, 300).forEach(m => {
+    if (!m || !/^mov-[a-z0-9-]{4,60}$/.test(String(m.id)) || ya.has(m.id) || fuera.has(m.id)) return;
+    if (!TIPOS_MOV.includes(m.tipo) || !(ITEMS.some(x => x.id === m.item) || esLetra(m.item) || /^x-[a-z0-9-]{1,40}$/.test(String(m.item)))) return;
+    const cantidad = parseInt(m.cantidad, 10);
+    if (!(cantidad > 0 && cantidad <= 100000) || isNaN(Date.parse(m.fecha))) return;
+    lista.push({ id: m.id, tipo: m.tipo, item: m.item, cantidad, fecha: new Date(m.fecha).toISOString(), nota: limpio(m.nota, 200), creado: new Date(Date.parse(m.creado) || Date.now()).toISOString() });
+    ya.add(m.id);
+  });
+  return lista;
 }
 
-module.exports = { COLUMNAS, letrasDePedido, idLetra, esLetra, STORE, ITEMS, TIPOS_MOV, idMov, TIPOS_PEDIDO, piezasDeTexto, movimiento, idExtra, calcular, leer, limpio };
+// Todos los movimientos viven en UN solo registro ("movimientos"): una sola lectura, mucho más rápido.
+// (Antes había uno por movimiento, "mov-…": la primera vez se pasan solos a este registro y se borran.)
+async function leer(store) {
+  const [doc, extras] = await Promise.all([
+    store.get('movimientos', { type: 'json' }).catch(() => null),
+    store.get('extras', { type: 'json' }).catch(() => null)
+  ]);
+  let movs = doc && Array.isArray(doc.movs) ? doc.movs : null;
+  if (!movs) {
+    const { blobs } = await store.list();
+    const viejos = blobs.filter(b => b.key.indexOf('mov-') === 0);
+    movs = (await Promise.all(viejos.map(b => store.get(b.key, { type: 'json' }).catch(() => null)))).filter(Boolean);
+    await store.setJSON('movimientos', { v: 2, movs });
+    await Promise.all(viejos.map(b => store.delete(b.key).catch(() => null)));
+  }
+  return { movimientos: movs, extras: Array.isArray(extras) ? extras : [] };
+}
+async function guardarMovimientos(store, movs) {
+  await store.setJSON('movimientos', { v: 2, actualizado: new Date().toISOString(), movs });
+}
+
+module.exports = { fusionar, COLUMNAS, letrasDePedido, idLetra, esLetra, STORE, ITEMS, TIPOS_MOV, idMov, TIPOS_PEDIDO, piezasDeTexto, movimiento, idExtra, calcular, leer, guardarMovimientos, limpio };

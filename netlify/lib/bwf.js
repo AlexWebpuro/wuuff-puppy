@@ -40,7 +40,8 @@ function estadoVenta(ahora) {
 
 const clave = n => 'caja-' + String(n).padStart(2, '0');
 async function leerCaja(store, n) {
-  const c = await store.get(clave(n), { type: 'json', consistency: 'strong' }).catch(() => null);
+  // (la lectura al instante la da el almacén cuando el entorno lo permite: netlify/lib/blobs.js)
+  const c = await store.get(clave(n), { type: 'json' });
   return Object.assign({ n }, c || {});
 }
 async function leerCajas(store) {

@@ -846,9 +846,22 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
     $('btnNuevo').textContent = pestana === 'inventario' ? '＋ Llegó producto' : '＋ Nuevo';
     if (pestana === 'inventario') cargarInventario();
   });
+  // Lo guardado o borrado en los últimos 5 minutos se manda en cada consulta: si la lista del almacén aún no
+  // lo muestra, el servidor lo suma igual (así nada "desaparece" mientras Netlify actualiza)
+  let recientes = [], borrados = [];
+  const vigentes = () => { const lim = Date.now() - 5 * 60e3; recientes = recientes.filter(m => m._t > lim); borrados = borrados.filter(b => b.t > lim); };
   async function cargarInventario(accion) {
     if (!inv) $('vistaInventario').innerHTML = '<div class="vacio">Cargando inventario…</div>';
-    try { inv = await api('POST', accion || { accion: 'inventario' }); pintarInventario(); return true; }
+    vigentes();
+    const quitar = accion && accion.accion === 'inv-borrar' ? (accion.ids || [accion.id]) : [];
+    recientes = recientes.filter(m => !quitar.includes(m.id));
+    const cuerpo = Object.assign({ accion: 'inventario' }, accion || {}, { recientes: recientes.map(({ _t, ...m }) => m), borrados: borrados.map(b => b.id).concat(quitar) });
+    try {
+      inv = await api('POST', cuerpo);
+      (inv.guardados || []).forEach(m => { recientes = recientes.filter(x => x.id !== m.id); recientes.push(Object.assign({ _t: Date.now() }, m)); });
+      quitar.forEach(id => borrados.push({ id, t: Date.now() }));
+      pintarInventario(); return true;
+    }
     catch (err) { toast(err.message); if (!inv) $('vistaInventario').innerHTML = '<div class="vacio">' + esc(err.message) + '</div>'; return false; }
   }
   const MOV = {

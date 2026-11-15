@@ -3,17 +3,23 @@
 //   GET ?ref=WP-…                → { n, pagada, regalo }   (al volver del pago: qué caja le tocó)
 //   POST { accion: 'apartar', token? }   → { n, token, hasta, regalo }  (10 minutos)
 //   POST { accion: 'soltar', n, token }  → { ok }
-// Las reglas están en netlify/lib/bwf.js.
-const { getStore, connectLambda } = require('@netlify/blobs');
-const B = require('../lib/bwf');
+// Las reglas están en netlify/lib/bwf.js. La publica netlify/functions/bwf.mjs (función v2: lectura al instante para apartar sin cruces).
+const { connectLambda } = require('@netlify/blobs');
+const { almacen: getStore } = require('./blobs');
+const B = require('./bwf');
 
 function json(status, body) {
   return { statusCode: status, headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' }, body: JSON.stringify(body) };
 }
 
 exports.handler = async function (event) {
+  try { return await atender(event); }
+  catch (err) { console.error('Black Wuuff Friday', err.message); return json(503, { error: 'Intenta de nuevo en un momento' }); }
+};
+
+async function atender(event) {
   let store;
-  try { connectLambda(event); store = getStore(B.STORE); }
+  try { if (event.blobs) connectLambda(event); store = getStore(B.STORE); }
   catch (err) { console.error('Blobs no disponible', err.message); return json(503, { error: 'Intenta de nuevo en un momento' }); }
 
   if (event.httpMethod === 'GET') {
@@ -37,4 +43,4 @@ exports.handler = async function (event) {
     return json(200, { ok: await B.soltar(store, parseInt(b.n, 10), String(b.token || '')) });
   }
   return json(400, { error: 'Acción no válida' });
-};
+}

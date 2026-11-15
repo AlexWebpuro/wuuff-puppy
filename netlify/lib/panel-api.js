@@ -1,4 +1,5 @@
 // API del panel de pedidos (la pantalla está en /panel/). Todo pasa por aquí y pide la clave.
+// La publica netlify/functions/panel-pedidos.mjs (función v2: lecturas al instante en Netlify Blobs).
 //
 // Variable de entorno en Netlify (obligatoria):
 //   PANEL_CLAVE   la clave para entrar al panel (mínimo 8 caracteres). Si la cambias, se cierran todas las sesiones.
@@ -17,10 +18,11 @@
 //   POST { accion: 'inv-producto', nombre }         → inventario  (agrega un producto propio, ej. "Bolsas de regalo")
 //   POST { accion: 'inv-quitar-producto', id }      → inventario
 const crypto = require('crypto');
-const { getStore, connectLambda } = require('@netlify/blobs');
-const P = require('../lib/panel');
-const E = require('../lib/envia');
-const I = require('../lib/inventario');
+const { connectLambda } = require('@netlify/blobs');
+const { almacen: getStore } = require('./blobs');
+const P = require('./panel');
+const E = require('./envia');
+const I = require('./inventario');
 
 const MAX_INTENTOS = 8;                 // intentos de clave fallidos…
 const VENTANA_MS = 15 * 60 * 1000;      // …cada 15 minutos por conexión
@@ -44,7 +46,7 @@ async function atender(event) {
   const clave = process.env.PANEL_CLAVE || '';
   if (clave.length < 8) return json(500, { error: 'Falta configurar PANEL_CLAVE en Netlify (mínimo 8 caracteres).' });
 
-  connectLambda(event);
+  if (event.blobs) connectLambda(event); // v1; la función v2 (netlify/functions/panel-pedidos.mjs) ya trae el contexto
   const store = getStore(P.STORE);
 
   let b = {};
@@ -151,21 +153,27 @@ async function atender(event) {
   // ── Inventario ──
   if (['inventario', 'inv-guardar', 'inv-borrar', 'inv-producto', 'inv-quitar-producto'].includes(b.accion)) {
     const inv = getStore(I.STORE);
+    // Los pedidos se van leyendo mientras tanto (en paralelo)
+    const pedidosPanel = store.list().then(({ blobs }) => Promise.all(blobs.map(x => store.get(x.key, { type: 'json' }).catch(() => null)))).then(l => l.filter(Boolean)).catch(err => { console.error('No se pudieron leer los pedidos', err.message); return []; });
+    let guardados = [];
     let { movimientos, extras } = await I.leer(inv);
+    // Lo que el panel guardó o borró hace un momento (por si la lista del almacén aún no lo muestra)
+    movimientos = I.fusionar(movimientos, b.recientes, b.borrados);
     if (b.accion === 'inv-guardar') {
       const validos = I.ITEMS.concat(extras).map(x => x.id);
       const nuevos = (Array.isArray(b.movs) ? b.movs.slice(0, 60) : []).map(m => I.movimiento(m, validos)).filter(Boolean);
       if (!nuevos.length) return json(400, { error: 'Escribe al menos una cantidad' });
-      await Promise.all(nuevos.map(m => inv.setJSON(m.id, m)));
       // Si el mismo lote ya estaba (se envió dos veces), reemplaza al anterior en vez de sumarse
       const ids = new Set(nuevos.map(m => m.id));
       movimientos = movimientos.filter(m => !ids.has(m.id)).concat(nuevos);
+      await I.guardarMovimientos(inv, movimientos);
+      guardados = nuevos;
     }
     if (b.accion === 'inv-borrar') {
       const ids = (Array.isArray(b.ids) ? b.ids.slice(0, 300) : [b.id]).map(String).filter(id => /^mov-[a-z0-9-]{4,60}$/.test(id));
       if (!ids.length) return json(400, { error: 'Movimiento no válido' });
-      await Promise.all(ids.map(id => inv.delete(id)));
       movimientos = movimientos.filter(m => !ids.includes(m.id));
+      await I.guardarMovimientos(inv, movimientos);
     }
     if (b.accion === 'inv-producto') {
       const nombre = I.limpio(b.nombre, 60), id = I.idExtra(nombre);
@@ -179,10 +187,9 @@ async function atender(event) {
       extras = extras.filter(x => x.id !== b.id);
       await inv.setJSON('extras', extras);
     }
-    const { blobs } = await store.list();
-    const pedidos = (await Promise.all(blobs.map(x => store.get(x.key, { type: 'json' }).catch(() => null)))).filter(Boolean);
+    const pedidos = await pedidosPanel;
     const r = I.calcular(pedidos, movimientos, extras);
-    return json(200, Object.assign(r, { extras, movimientos: movimientos.sort((a, b2) => (a.fecha < b2.fecha ? 1 : a.fecha > b2.fecha ? -1 : (a.creado < b2.creado ? 1 : -1))).slice(0, 300) }));
+    return json(200, Object.assign(r, { extras, guardados, movimientos: movimientos.sort((a, b2) => (a.fecha < b2.fecha ? 1 : a.fecha > b2.fecha ? -1 : (a.creado < b2.creado ? 1 : -1))).slice(0, 300) }));
   }
 
   return json(400, { error: 'Acción no válida' });

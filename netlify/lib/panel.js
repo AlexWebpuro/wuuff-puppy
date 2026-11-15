@@ -192,13 +192,14 @@ async function listaConContraentrega(store, ce) {
   const porId = new Map(pedidos.map(p => [p.id, p]));
   try {
     const lista = await ce.list();
-    for (const { key } of lista.blobs) {
+    // Se revisan todos a la vez (antes, uno detrás de otro)
+    await Promise.all(lista.blobs.map(async ({ key }) => {
       const actual = porId.get(key);
-      if (actual && actual.borrado) continue;
+      if (actual && actual.borrado) return;
       // Solo se vuelve a leer el de Envia si es nuevo o si aún puede tener guía nueva
-      if (actual && (actual.guia && actual.guia.numero || !['por-confirmar', 'confirmado', 'preparando'].includes(actual.estado))) continue;
-      const reg = await ce.get(key, { type: 'json' });
-      if (!reg || !reg.referencia) continue;
+      if (actual && (actual.guia && actual.guia.numero || !['por-confirmar', 'confirmado', 'preparando'].includes(actual.estado))) return;
+      const reg = await ce.get(key, { type: 'json' }).catch(() => null);
+      if (!reg || !reg.referencia) return;
       if (!actual) {
         const p = desdeContraentrega(reg);
         await store.setJSON(p.id, p);
@@ -206,7 +207,7 @@ async function listaConContraentrega(store, ce) {
       } else if (sincronizarGuia(actual, reg)) {
         await store.setJSON(actual.id, actual);
       }
-    }
+    }));
   } catch (err) {
     console.error('No se pudieron importar los pedidos contraentrega', err.message);
   }
