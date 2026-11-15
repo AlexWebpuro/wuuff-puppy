@@ -17,7 +17,8 @@ const ITEMS = [
   { id: 'correa', nombre: 'Correa' },
   { id: 'placa', nombre: 'Placa Inteligente (chip NFC)' }
 ];
-const TIPOS_MOV = ['conteo', 'entrada', 'colaboracion', 'regalo', 'contenido', 'danado'];
+// Sin conteos: lo que hay = lo que llegó − lo que salió (como una hoja de cálculo). Los conteos viejos se ignoran.
+const TIPOS_MOV = ['entrada', 'colaboracion', 'regalo', 'contenido', 'danado'];
 const SALIDAS_MANUALES = ['colaboracion', 'regalo', 'contenido', 'danado']; // contenido = producto que se usa para fotos y videos
 const TIPOS_PEDIDO = ['venta', 'colaboracion', 'regalo'];
 const SALIO = ['enviado', 'entregado'];
@@ -114,7 +115,7 @@ function letrasDePedido(p) {
 
 // ── Movimientos ──
 function nuevoId() { return 'mov-' + Date.now().toString(36) + '-' + crypto.randomBytes(3).toString('hex'); }
-// Fecha del movimiento: hoy → ahora mismo (así un conteo de hoy cuenta lo que ya salió hoy); otro día → mediodía de ese día
+// Fecha del movimiento: hoy → ahora mismo; otro día → mediodía de ese día
 function fechaMov(f, ahora) {
   const hoy = new Date((ahora || Date.now()) - 5 * 36e5).toISOString().slice(0, 10);
   if (!f || !/^\d{4}-\d{2}-\d{2}$/.test(f) || f === hoy) return new Date(ahora || Date.now()).toISOString();
@@ -128,7 +129,7 @@ function idMov(lote, item) {
 function movimiento(d, itemsValidos, ahora) {
   if (!d || !TIPOS_MOV.includes(d.tipo) || !(itemsValidos.includes(d.item) || esLetra(d.item))) return null;
   const cantidad = parseInt(d.cantidad, 10);
-  if (isNaN(cantidad) || cantidad < 0 || cantidad > 100000 || (d.tipo !== 'conteo' && cantidad === 0)) return null;
+  if (isNaN(cantidad) || cantidad < 0 || cantidad > 100000 || cantidad === 0) return null;
   return { id: idMov(d.lote, d.item), tipo: d.tipo, item: d.item, cantidad, fecha: fechaMov(d.fecha, ahora), nota: limpio(d.nota, 200),
     creado: new Date(ahora || Date.now()).toISOString() };
 }
@@ -137,24 +138,26 @@ function idExtra(nombre) {
   return s ? 'x-' + s : '';
 }
 
-// ── El cálculo: bodega, por despachar, disponibles y todas las salidas (para el resumen por mes) ──
+// ── El cálculo (como una hoja de cálculo), por producto:
+//   Llegó − Vendidos − Colaboración − Regalos − Contenido − Dañados = Quedan;   Quedan − Por despachar = Disponibles
+// Vendidos/colaboración/regalos salen de los pedidos ENVIADOS o ENTREGADOS (según su tipo); los por confirmar,
+// confirmados o preparando quedan "por despachar". Las salidas que se anotan a mano suman a su columna.
+const COLUMNAS = ['venta', 'colaboracion', 'regalo', 'contenido', 'danado'];
+function fila(id, extra) { return Object.assign({ id, llego: 0, venta: 0, colaboracion: 0, regalo: 0, contenido: 0, danado: 0, porDespachar: 0 }, extra || {}); }
 function calcular(pedidos, movimientos, extras) {
   const items = ITEMS.concat(extras || []);
-  const porItem = Object.fromEntries(items.map(it => [it.id, { id: it.id, nombre: it.nombre, extra: !it.id.indexOf('x-'), conteo: null, bodega: 0, porDespachar: 0 }]));
+  const porItem = Object.fromEntries(items.map(it => [it.id, fila(it.id, { nombre: it.nombre, extra: !it.id.indexOf('x-') })]));
   // Las letras se crean a medida que tienen movimientos o pedidos (son 10 colores × 28 letras)
-  const asegurar = id => { if (!porItem[id] && esLetra(id)) porItem[id] = { id, letra: true, conteo: null, bodega: 0, porDespachar: 0 }; return porItem[id]; };
-  (movimientos || []).forEach(m => asegurar(m.item));
-  const movs = (movimientos || []).filter(m => porItem[m.item]).sort((a, b) => (a.fecha < b.fecha ? -1 : a.fecha > b.fecha ? 1 : (a.creado < b.creado ? -1 : 1)));
-  movs.filter(m => m.tipo === 'conteo').forEach(m => { porItem[m.item].conteo = { cantidad: m.cantidad, fecha: m.fecha }; });
-  const despues = (it, fecha) => !porItem[it].conteo || fecha > porItem[it].conteo.fecha;
-  Object.values(porItem).forEach(r => { r.bodega = r.conteo ? r.conteo.cantidad : 0; });
-
+  const asegurar = id => { if (!porItem[id] && esLetra(id)) porItem[id] = fila(id, { letra: true }); return porItem[id]; };
   const salidas = [];
-  movs.forEach(m => {
-    if (m.tipo === 'conteo' || !despues(m.item, m.fecha)) return;
-    porItem[m.item].bodega += m.tipo === 'entrada' ? m.cantidad : -m.cantidad;
+  (movimientos || []).forEach(m => {
+    const r = asegurar(m.item); if (!r) return;
+    if (m.tipo === 'entrada') r.llego += m.cantidad;
+    else if (COLUMNAS.includes(m.tipo)) {
+      r[m.tipo] += m.cantidad;
+      salidas.push({ fecha: m.fecha, item: m.item, tipo: m.tipo, cantidad: m.cantidad, nota: m.nota, origen: 'manual' });
+    }
   });
-  movs.filter(m => SALIDAS_MANUALES.includes(m.tipo)).forEach(m => salidas.push({ fecha: m.fecha, item: m.item, tipo: m.tipo, cantidad: m.cantidad, nota: m.nota, origen: 'manual' }));
 
   const sinLeer = [], letrasSinLeer = [];
   (pedidos || []).filter(p => p && !p.borrado && (SALIO.includes(p.estado) || POR_DESPACHAR.includes(p.estado))).forEach(p => {
@@ -162,25 +165,23 @@ function calcular(pedidos, movimientos, extras) {
     if (!piezas.length || dudas) sinLeer.push({ id: p.id, cliente: (p.cliente && p.cliente.nombre) || '', productos: String(p.productos || '').split(' | ')[0].slice(0, 160) });
     const tipo = TIPOS_PEDIDO.includes(p.tipo) ? p.tipo : 'venta';
     const fecha = p.enviado || p.entregado || p.creado || '';
+    const pendiente = POR_DESPACHAR.includes(p.estado);
     const ls = letrasDePedido(p);
     if (ls.dudas) letrasSinLeer.push({ id: p.id, cliente: (p.cliente && p.cliente.nombre) || '', productos: String(p.productos || '').split(' | ')[0].slice(0, 160) });
-    ls.letras.forEach(l => {
-      const r = asegurar(l.item); if (!r) return;
-      if (POR_DESPACHAR.includes(p.estado)) { r.porDespachar += l.cantidad; return; }
-      if (despues(l.item, fecha)) r.bodega -= l.cantidad;
-    });
+    ls.letras.forEach(l => { const r = asegurar(l.item); if (!r) return; if (pendiente) r.porDespachar += l.cantidad; else r[tipo] += l.cantidad; });
     piezas.forEach(pz => {
-      if (!porItem[pz.item]) return;
-      if (POR_DESPACHAR.includes(p.estado)) { porItem[pz.item].porDespachar += pz.cantidad; return; }
-      if (despues(pz.item, fecha)) porItem[pz.item].bodega -= pz.cantidad;
-      salidas.push({ fecha, item: pz.item, tipo: pz.regalo ? 'regalo' : tipo, cantidad: pz.cantidad, origen: 'pedido', pedido: p.id, cliente: (p.cliente && p.cliente.nombre) || '' });
+      const r = porItem[pz.item]; if (!r) return;
+      if (pendiente) { r.porDespachar += pz.cantidad; return; }
+      const t = pz.regalo ? 'regalo' : tipo;
+      r[t] += pz.cantidad;
+      salidas.push({ fecha, item: pz.item, tipo: t, cantidad: pz.cantidad, origen: 'pedido', pedido: p.id, cliente: (p.cliente && p.cliente.nombre) || '' });
     });
   });
-  const lista = items.map(it => { const r = porItem[it.id]; r.disponible = r.bodega - r.porDespachar; return r; });
-  const letras = Object.values(porItem).filter(r => r.letra).map(r => ({ id: r.id, bodega: r.bodega, porDespachar: r.porDespachar,
-    disponible: r.bodega - r.porDespachar, conteo: r.conteo }));
+  const cerrar = r => { r.salio = COLUMNAS.reduce((n, k) => n + r[k], 0); r.bodega = r.llego - r.salio; r.disponible = r.bodega - r.porDespachar; return r; };
+  const lista = items.map(it => cerrar(porItem[it.id]));
+  const letras = Object.values(porItem).filter(r => r.letra).map(cerrar);
   return { items: lista, letras, salidas: salidas.filter(s => !esLetra(s.item)), sinLeer: sinLeer.slice(0, 30), letrasSinLeer: letrasSinLeer.slice(0, 30),
-    conConteo: lista.some(r => r.conteo) };
+    conDatos: lista.some(r => r.llego > 0) };
 }
 
 // Lee todo el almacén: movimientos y productos extra (los que agrega Angie, ej. "Bolsas de regalo")
@@ -191,4 +192,4 @@ async function leer(store) {
   return { movimientos: movs, extras: Array.isArray(extras) ? extras : [] };
 }
 
-module.exports = { letrasDePedido, idLetra, esLetra, STORE, ITEMS, TIPOS_MOV, idMov, TIPOS_PEDIDO, piezasDeTexto, movimiento, idExtra, calcular, leer, limpio };
+module.exports = { COLUMNAS, letrasDePedido, idLetra, esLetra, STORE, ITEMS, TIPOS_MOV, idMov, TIPOS_PEDIDO, piezasDeTexto, movimiento, idExtra, calcular, leer, limpio };

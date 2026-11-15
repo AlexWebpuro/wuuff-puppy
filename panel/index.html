@@ -120,6 +120,21 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
 .stock-it small{display:block;font-size:12px;font-weight:700;color:var(--gris)}
 .stock-it .quitar{border:0;background:transparent;cursor:pointer;opacity:.5;font-size:13px;padding:0}
 .tabla-caja{overflow-x:auto;margin:0 -4px}
+/* Hoja de cálculo "Lo que tengo" */
+.hc{border-collapse:separate;border-spacing:0;width:100%;min-width:760px;font-size:14px;font-variant-numeric:tabular-nums}
+.hc th{font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:var(--gris);font-weight:800;text-align:right;padding:8px 8px;background:#f8f4ee;border-bottom:1.5px solid var(--borde);white-space:nowrap}
+.hc td{padding:10px 8px;text-align:right;font-weight:700;border-bottom:1px solid #f1ebe2;white-space:nowrap}
+.hc th:first-child,.hc td:first-child{text-align:left;position:sticky;left:0;background:#fff;z-index:1;font-weight:800;white-space:normal;min-width:120px;box-shadow:1px 0 0 var(--borde)}
+.hc th:first-child{background:#f8f4ee}
+.hc tbody tr:nth-child(even) td{background:#fcfaf6}
+.hc td.mas{color:#18663a}.hc td.menos{color:#a63c1c}
+.hc .hc-q{background:#eef2fb!important;font-family:'Fredoka One';font-weight:400;font-size:17px;color:var(--navy)}
+.hc th.hc-q,.hc th.hc-d{font-family:'Nunito';font-size:11px}
+.hc .hc-d{font-weight:900}
+.hc tr.agotado .hc-d{color:#b3261e;background:#fde7e1!important}.hc tr.pocos .hc-d{color:#a05a00;background:#fff4dc!important}
+.hc tfoot td{background:#f8f4ee!important;font-weight:900;border-top:1.5px solid var(--borde);border-bottom:0}
+@media(min-width:760px){.hc{min-width:0;font-size:13px}.hc th{padding:8px 5px;font-size:10px}.hc td{padding:10px 5px}.hc th:first-child,.hc td:first-child{min-width:110px}}
+.hc .quitar{border:0;background:transparent;cursor:pointer;opacity:.5;font-size:12px;padding:0 2px}
 .tabla{width:100%;border-collapse:collapse;font-size:13px}
 .tabla th{font-size:10px!important;padding:6px 3px!important}.tabla td{padding:7px 3px!important}
 .tabla th{font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:var(--gris);text-align:right;padding:6px 4px;font-weight:800}
@@ -838,7 +853,6 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
   }
   const MOV = {
     entrada: { i: '📥', n: 'Llegó producto', t: '¿Cuánto llegó?', nota: 'Proveedor, lote… (opcional)' },
-    conteo: { i: '🔢', n: 'Conteo', t: '¿Cuánto tienes ahora en bodega?', nota: 'Ej.: conteo de fin de mes' },
     colaboracion: { i: '🤝', n: 'Colaboración', t: '¿Qué le diste?', nota: '¿Con quién? Ej.: @creadora' },
     regalo: { i: '🎁', n: 'Regalo', t: '¿Qué regalaste?', nota: '¿A quién? Ej.: sorteo, cliente…' },
     contenido: { i: '🎬', n: 'Contenido', t: '¿Qué usaste para hacer contenido?', nota: 'Ej.: fotos para Instagram, video de TikTok' },
@@ -846,6 +860,33 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
   };
   function mesDe(iso) { const d = new Date(new Date(iso).getTime() - 5 * 36e5); return d.toISOString().slice(0, 7); }
   function mesTexto(m) { const [a, n] = m.split('-'); return new Date(+a, +n - 1, 15).toLocaleDateString('es-CO', { month: 'long', year: 'numeric' }); }
+  // Tabla "Lo que tengo". En el computador, en orden de hoja de cálculo (Llegó … = Quedan); en el celular, primero lo
+  // que más importa (Quedan, Disponibles) y el detalle se ve deslizando a la derecha.
+  function hojaCalc(it) {
+    const salidaCol = (k, n) => ({ k, n, cls: 'menos', v: x => x[k] ? '−' + x[k] : '—', t: xs => xs.reduce((a, x) => a + x[k], 0) || '—' });
+    const C = {
+      llego: { k: 'llego', n: 'Llegó', cls: 'mas', v: x => x.llego || '—', t: xs => xs.reduce((a, x) => a + x.llego, 0) },
+      venta: salidaCol('venta', 'Vendidos'), colaboracion: salidaCol('colaboracion', 'Colab.'), regalo: salidaCol('regalo', 'Regalos'),
+      contenido: salidaCol('contenido', 'Contenido'), danado: salidaCol('danado', 'Dañados'),
+      quedan: { k: 'quedan', n: 'Quedan', cls: 'hc-q', v: x => x.bodega, t: xs => xs.reduce((a, x) => a + x.bodega, 0) },
+      despachar: { k: 'despachar', n: 'Por despachar', cls: '', v: x => x.porDespachar || '—', t: xs => xs.reduce((a, x) => a + x.porDespachar, 0) || '—' },
+      disp: { k: 'disp', n: 'Disponibles', cls: 'hc-d', v: x => x.disponible <= 0 ? '⛔ ' + x.disponible : (x.disponible <= 3 ? '⚠️ ' + x.disponible : x.disponible), t: xs => xs.reduce((a, x) => a + x.disponible, 0) }
+    };
+    const celular = window.innerWidth < 760;
+    const orden = (celular ? ['quedan', 'disp', 'despachar', 'llego', 'venta', 'colaboracion', 'regalo', 'contenido', 'danado']
+      : ['llego', 'venta', 'colaboracion', 'regalo', 'contenido', 'danado', 'quedan', 'despachar', 'disp']).map(k => C[k]);
+    return `${celular ? '<p class="nota-chica" style="margin:-4px 0 6px">👉 Desliza la tabla para ver lo que llegó y lo que salió.</p>' : ''}
+      <div class="tabla-caja"><table class="hc">
+        <thead><tr><th>Producto</th>${orden.map(c => `<th class="${c.cls === 'hc-q' || c.cls === 'hc-d' ? c.cls : ''}" data-col="${c.k}">${c.n}</th>`).join('')}</tr></thead>
+        <tbody>${it.map(x => `<tr class="${x.disponible <= 0 ? 'agotado' : (x.disponible <= 3 ? 'pocos' : '')}">
+          <td>${esc(x.nombre)}${x.extra ? ` <button class="quitar" data-quitar-prod="${esc(x.id)}" title="Quitar del inventario" aria-label="Quitar ${esc(x.nombre)}">✕</button>` : ''}</td>
+          ${orden.map(c => `<td class="${c.cls}" data-col="${c.k}">${c.v(x)}</td>`).join('')}</tr>`).join('')}</tbody>
+        <tfoot><tr><td>Total</td>${orden.map(c => `<td class="${c.cls}" data-col="${c.k}">${c.t(it)}</td>`).join('')}</tr></tfoot>
+      </table></div>`;
+  }
+  let anchoAntes = window.innerWidth < 760;
+  window.addEventListener('resize', () => { const a = window.innerWidth < 760; if (a !== anchoAntes && inv && pestana === 'inventario') { anchoAntes = a; pintarInventario(); } });
+
   function pintarInventario() {
     const v = $('vistaInventario'), it = inv.items || [];
     const hoy = mesDe(new Date().toISOString()), d = new Date(); d.setDate(1); d.setMonth(d.getMonth() - 1);
@@ -861,23 +902,19 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
       return (it.find(x => x.id === id) || {}).nombre || id;
     };
     v.innerHTML = `
-      ${inv.conConteo ? '' : '<p class="aviso" style="margin:4px 0 12px">👋 Para empezar, toca <b>🔢 Hacer conteo</b> y escribe cuánto tienes hoy de cada producto. Desde ahí, lo que se envía en los pedidos se descuenta solo.</p>'}
+      ${inv.conDatos ? '' : '<p class="aviso" style="margin:4px 0 12px">👋 Para empezar, toca <b>📥 Llegó producto</b> y escribe el total que llegó de China de cada producto. Desde ahí la tabla se calcula sola con lo que se vende, regala o usa.</p>'}
       <div class="inv-acciones">
         <button class="btn naranja" data-mov="entrada">📥 Llegó producto</button>
-        <button class="btn claro" data-mov="conteo">🔢 Hacer conteo</button>
         <button class="btn claro" data-mov="colaboracion">🤝 Colaboración</button>
         <button class="btn claro" data-mov="regalo">🎁 Regalo</button>
         <button class="btn claro" data-mov="contenido">🎬 Contenido</button>
         <button class="btn claro" data-mov="danado">⚠️ Dañado o perdido</button>
       </div>
-      <h3 style="margin:0 0 8px">📦 Lo que tengo</h3>
-      <div class="stock">${it.map(x => {
-        const cls = x.disponible <= 0 ? ' agotado' : (x.disponible <= 3 ? ' pocos' : '');
-        return `<div class="stock-it${cls}"><div class="n"><span>${esc(x.nombre)}</span>${x.extra ? `<button class="quitar" data-quitar-prod="${esc(x.id)}" title="Quitar del inventario" aria-label="Quitar ${esc(x.nombre)}">✕</button>` : ''}</div>
-          <b>${x.bodega}</b><small>en bodega${x.porDespachar ? ` · ${x.porDespachar} por despachar` : ''}</small>
-          <small style="color:${x.disponible <= 0 ? '#b3261e' : (x.disponible <= 3 ? '#a05a00' : 'var(--gris)')}">${x.disponible <= 0 ? '⛔ Agotado para vender' : (x.disponible <= 3 ? '⚠️ Quedan ' + x.disponible + ' para vender' : x.disponible + ' disponibles para vender')}</small>
-          ${x.conteo ? `<small>Conteo: ${esc(fecha(x.conteo.fecha))}</small>` : ''}</div>`;
-      }).join('')}</div>
+      <div class="caja hoja-calc">
+        <h3>📦 Lo que tengo</h3>
+        <p class="nota-chica" style="margin:-4px 0 10px">Se calcula solo: <b>Llegó − Vendidos − Colaboración − Regalos − Contenido − Dañados = Quedan</b>. Los vendidos salen de los pedidos enviados o entregados; lo que está por despachar ya está apartado.</p>
+        ${hojaCalc(it)}
+      </div>
       <button class="btn claro" id="btnProducto" style="margin:-6px 0 16px">＋ Agregar otro producto al inventario</button>
 
       <div class="caja"><h3>🔤 Letras del collar con nombre</h3>
@@ -901,7 +938,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
 
       <div class="caja"><h3>🕑 Movimientos</h3>
         ${(inv.movimientos || []).length ? `<div class="movs-sel"><label><input type="checkbox" id="movTodos"> Seleccionar todos</label><button class="btn rojo" id="btnBorrarSel" disabled>🗑 Borrar seleccionados</button></div>
-          <ul class="movs">${inv.movimientos.map(m => `<li><input type="checkbox" class="mov-check" value="${esc(m.id)}" aria-label="Seleccionar"><span>${MOV[m.tipo] ? MOV[m.tipo].i : ''} <b>${m.tipo === 'conteo' ? 'Conteo: ' + m.cantidad : (m.tipo === 'entrada' ? '+' : '−') + m.cantidad}</b> ${esc(nombre(m.item))}
+          <ul class="movs">${inv.movimientos.map(m => `<li><input type="checkbox" class="mov-check" value="${esc(m.id)}" aria-label="Seleccionar"><span>${MOV[m.tipo] ? MOV[m.tipo].i : '🔢'} <b>${m.tipo === 'conteo' ? 'Conteo: ' + m.cantidad + ' <span style="color:#b3261e;font-weight:700">(ya no se usa: bórralo)</span>' : (m.tipo === 'entrada' ? '+' : '−') + m.cantidad}</b> ${esc(nombre(m.item))}
           <small>${esc(fecha(m.fecha))}${m.nota ? ' · ' + esc(m.nota) : ''}</small></span><button class="btn-borrar" data-borrar-mov="${esc(m.id)}" aria-label="Borrar movimiento" title="Borrar">🗑</button></li>`).join('')}</ul>`
           : '<p class="nota-chica">Aún no hay movimientos.</p>'}
       </div>`;
@@ -967,34 +1004,34 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
     const campo = id => h.querySelector(`input[data-item="${id}"]`);
     h.querySelectorAll('[data-mas]').forEach(b => b.onclick = () => { const c = campo(b.dataset.mas); c.value = (parseInt(c.value, 10) || 0) + 1; });
     h.querySelectorAll('[data-menos]').forEach(b => b.onclick = () => { const c = campo(b.dataset.menos), n = (parseInt(c.value, 10) || 0) - 1; c.value = n > 0 ? n : (c.value === '' ? '' : 0); });
-    // Ayuda según lo que pasó: "Llegó producto" SUMA; el conteo REEMPLAZA (para decir cuántas hay en total)
-    const ayuda = t => o.ayuda && t === tipo ? esc(o.ayuda) : (t === 'conteo' ? 'Escribe <b>cuántas tienes en total</b> (deja vacío lo que no contaste). Reemplaza lo que había.'
-      : (t === 'entrada' ? '<b>Esto se SUMA</b> a lo que ya hay. Si quieres decir cuántas tienes en total, cambia arriba a <b>🔢 Conteo</b>.' : 'Se resta de lo que hay. Deja vacío lo que no aplica.'));
+    // Ayuda según lo que pasó: "Llegó producto" suma a "Llegó"; lo demás resta
+    const ayuda = t => o.ayuda && t === tipo ? esc(o.ayuda) : (t === 'entrada' ? 'Escribe <b>cuántas llegaron</b> (de China o de otro pedido al proveedor). <b>Se suma</b> a la columna "Llegó". Deja vacío lo que no llegó.'
+      : 'Se resta de lo que hay (columna ' + esc(MOV[t].n) + '). Deja vacío lo que no aplica.');
     $('mAyuda').innerHTML = ayuda(tipo);
     $('mTipo').onchange = () => { const m = MOV[$('mTipo').value]; $('mTitulo').textContent = m.t; $('mNota').placeholder = m.nota; $('mAyuda').innerHTML = ayuda($('mTipo').value); h.querySelector('.cab h2').textContent = m.i + ' ' + (o.titulo || m.n); };
     // Paso 1: revisar. Paso 2: confirmar (así se ve exactamente lo que se va a guardar, una sola vez)
     $('formMov').onsubmit = e => {
       e.preventDefault();
       const t = $('mTipo').value;
-      const movs = Array.from(h.querySelectorAll('input[data-item]')).filter(c => c.value !== '' && (t === 'conteo' || +c.value > 0))
+      const movs = Array.from(h.querySelectorAll('input[data-item]')).filter(c => c.value !== '' && +c.value > 0)
         .map(c => ({ tipo: t, item: c.dataset.item, cantidad: +c.value, fecha: $('mFecha').value, nota: $('mNota').value.trim(), lote }));
       if (!movs.length) { toast('Escribe al menos una cantidad'); return; }
-      const signo = t === 'conteo' ? '' : (t === 'entrada' ? '+' : '−');
+      const signo = t === 'entrada' ? '+' : '−';
       const fechaTxt = new Date($('mFecha').value + 'T12:00:00').toLocaleDateString('es-CO', { weekday: 'long', day: 'numeric', month: 'long' });
       const total = movs.reduce((n, m) => n + m.cantidad, 0);
       const bodegaDe = id => (it.find(x => x.id === id) || {}).bodega || 0;
       // Movimientos iguales ya guardados (mismo tipo, producto, cantidad y día): para no registrar dos veces lo mismo
       const diaDe = iso => new Date(new Date(iso).getTime() - 5 * 36e5).toISOString().slice(0, 10);
-      const repetidos = t === 'conteo' ? [] : movs.filter(m => ((inv && inv.movimientos) || []).some(x => x.tipo === t && x.item === m.item && x.cantidad === m.cantidad && diaDe(x.fecha) === m.fecha));
+      const repetidos = movs.filter(m => ((inv && inv.movimientos) || []).some(x => x.tipo === t && x.item === m.item && x.cantidad === m.cantidad && diaDe(x.fecha) === m.fecha));
       $('formMov').classList.add('oculto');
       const c = $('mConfirmar'); c.classList.remove('oculto');
       c.innerHTML = `<div class="caja confirmar">
           <h3>${MOV[t].i} ¿Guardamos esto?</h3>
           <p class="nota-chica" style="margin:-4px 0 8px">${esc(MOV[t].n)} · ${esc(fechaTxt)}${movs[0].nota ? ' · ' + esc(movs[0].nota) : ''}</p>
           ${repetidos.length ? `<p class="aviso" style="background:#fde7e1;margin:0 0 8px">⚠️ <b>Ojo:</b> ya registraste esto mismo ese día (${repetidos.map(m => signo + m.cantidad + ' ' + esc(nombreDe(m.item))).slice(0, 3).join(', ')}${repetidos.length > 3 ? '…' : ''}). Si es el mismo producto, no lo guardes otra vez.</p>` : ''}
-          <ul class="resumen-mov">${movs.map(m => { const hay = bodegaDe(m.item), queda = t === 'conteo' ? m.cantidad : (t === 'entrada' ? hay + m.cantidad : hay - m.cantidad);
-            return `<li><span>${esc(nombreDe(m.item))}<small class="queda">hay ${hay} → quedarán <b>${queda}</b></small></span><b>${t === 'conteo' ? 'Hay ' + m.cantidad : signo + m.cantidad}</b></li>`; }).join('')}</ul>
-          ${t === 'conteo' ? '<p class="nota-chica">El conteo reemplaza lo que había: desde ahora el inventario parte de estas cantidades.</p>' : `<p class="nota-chica">Total: <b>${signo}${total}</b> ${total === 1 ? 'unidad' : 'unidades'}.</p>`}
+          <ul class="resumen-mov">${movs.map(m => { const hay = bodegaDe(m.item), queda = t === 'entrada' ? hay + m.cantidad : hay - m.cantidad;
+            return `<li><span>${esc(nombreDe(m.item))}<small class="queda">hay ${hay} → quedarán <b>${queda}</b></small></span><b>${signo + m.cantidad}</b></li>`; }).join('')}</ul>
+          <p class="nota-chica">Total: <b>${signo}${total}</b> ${total === 1 ? 'unidad' : 'unidades'}.</p>
         </div>
         <button class="btn naranja ancho" type="button" id="mSi">✅ Sí, guardar</button>
         <button class="btn claro ancho" type="button" id="mCorregir" style="margin-top:8px">✏️ Corregir</button>`;
@@ -1019,7 +1056,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
     return fetch('/assets/collar-nombre.json').then(r => r.json()).then(j => { CN = j; return j; });
   }
   function datoLetra(color, ch) {
-    return (inv.letras || []).find(x => x.id === idLetra(color, ch)) || { bodega: 0, porDespachar: 0, disponible: 0, conteo: null };
+    return (inv.letras || []).find(x => x.id === idLetra(color, ch)) || { llego: 0, venta: 0, colaboracion: 0, regalo: 0, contenido: 0, danado: 0, bodega: 0, porDespachar: 0, disponible: 0 };
   }
   function burbuja(ch, col, tam) {
     return `<span class="burbuja" style="--c:${col.main};--b:${col.edge};font-size:${tam || 30}px">${esc(ch)}</span>`;
@@ -1038,18 +1075,16 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
       <div class="letra-res ${clase(d.disponible)}">
         ${burbuja(letraSel, col, 64)}
         <div><b>${d.bodega}</b><span>${letraSel === '♥' ? 'corazones' : (letraSel === '★' ? 'estrellas' : 'letras ' + esc(letraSel))} ${esc(col.nombre.toLowerCase())} en bodega</span>
-          <small>${d.porDespachar ? d.porDespachar + ' por despachar · ' : ''}${d.disponible <= 0 ? '⛔ Agotada para vender' : d.disponible + ' disponibles'}${d.conteo ? ' · conteo ' + esc(fecha(d.conteo.fecha)) : ''}</small></div>
+          <small>Llegaron ${d.llego} · en pedidos −${d.venta + d.colaboracion + d.regalo}${d.contenido ? ' · contenido −' + d.contenido : ''}${d.danado ? ' · dañadas −' + d.danado : ''}${d.porDespachar ? ' · ' + d.porDespachar + ' por despachar' : ''} · ${d.disponible <= 0 ? '⛔ agotada para vender' : d.disponible + ' disponibles'}</small></div>
       </div>
       <div class="letra-acc">
         <button class="btn naranja" data-lmov="entrada">📥 Llegaron</button>
-        <button class="btn claro" data-lmov="conteo">🔢 Contar</button>
         <button class="btn claro" data-lmov="contenido">🎬 Contenido</button>
         <button class="btn claro" data-lmov="danado">⚠️ Dañadas</button>
       </div>
       <p class="ck-sub" style="margin:14px 0 6px;font-weight:800">Todas las letras en ${esc(col.nombre.toLowerCase())} <small style="color:var(--gris);font-weight:700">· toca una para elegirla</small></p>
       <div class="letras-grid">${LETRAS.map(ch => { const x = datoLetra(col.id, ch); return `<button type="button" class="lg ${clase(x.disponible)}${ch === letraSel ? ' activa' : ''}" data-letra="${ch}">${burbuja(ch, col, 22)}<b>${x.disponible}</b></button>`; }).join('')}</div>
       <div class="letra-acc" style="margin-top:10px">
-        <button class="btn claro" id="lContarColor">🔢 Contar todo el ${esc(col.nombre.toLowerCase())}</button>
         <button class="btn claro" id="lLlegaronColor">📥 Llegaron varias en ${esc(col.nombre.toLowerCase())}</button>
       </div>
       ${(inv.letrasSinLeer || []).length ? `<p class="aviso" style="margin-top:12px">🤔 No pude leer las letras de ${inv.letrasSinLeer.length} pedido${inv.letrasSinLeer.length > 1 ? 's' : ''}: ${inv.letrasSinLeer.slice(0, 4).map(x => esc(x.cliente || 'sin nombre')).join(', ')}. Para que se descuenten solas, escribe el producto así: <i>Collar con nombre "LUNA" (Talla S) · letras Rosado</i>.</p>` : ''}`;
@@ -1059,7 +1094,6 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
     const unaLetra = () => [{ id: idLetra(col.id, letraSel), nombre: (letraSel === '♥' ? 'Corazón' : (letraSel === '★' ? 'Estrella' : 'Letra ' + letraSel)) + ' ' + col.nombre.toLowerCase(), html: burbuja(letraSel, col, 26) + ' ' + esc(col.nombre), bodega: d.bodega }];
     caja.querySelectorAll('[data-lmov]').forEach(b => b.onclick = () => abrirMovimiento(b.dataset.lmov, { items: unaLetra(), titulo: MOV[b.dataset.lmov].n + ' · ' + unaLetra()[0].nombre }));
     const todoColor = () => LETRAS.map(ch => ({ id: idLetra(col.id, ch), nombre: (ch === '♥' ? 'Corazón' : (ch === '★' ? 'Estrella' : 'Letra ' + ch)) + ' ' + col.nombre.toLowerCase(), html: burbuja(ch, col, 24), bodega: datoLetra(col.id, ch).bodega }));
-    $('lContarColor').onclick = () => abrirMovimiento('conteo', { items: todoColor(), titulo: 'Conteo · letras ' + col.nombre.toLowerCase(), ayuda: 'Escribe cuántas hay de cada letra (deja vacío lo que no contaste).' });
     $('lLlegaronColor').onclick = () => abrirMovimiento('entrada', { items: todoColor(), titulo: 'Llegaron letras ' + col.nombre.toLowerCase() });
   }
 
