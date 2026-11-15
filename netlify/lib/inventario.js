@@ -30,39 +30,53 @@ function sinTildes(t) { return String(t || '').normalize('NFD').replace(/[̀-ͯ]
 // ── Leer los productos de un pedido (texto de la web o del panel) → piezas del inventario ──
 // "Combo completo (collar + arnés + correa) (Talla collar S, arnés M) + Placa … [REGALO]" → collar-S, arnes-M, correa, placa (regalo)
 function piezasDeTexto(texto) {
+  // Se lee línea por línea. Una línea con ":" y sin "(Talla …)" es un DETALLE escrito a mano
+  // (ej. "Combo completo con nombre: Talla M - Letras beige - nombre Oliver"): si el pedido ya trae su producto
+  // en otra línea, el detalle no se cuenta (antes se contaba como un segundo combo).
+  const lineas = String(texto || '').split(/\n/).map(leerLinea).filter(l => l.piezas.length || l.dudas);
+  const productos = lineas.filter(l => !l.detalle && l.piezas.length);
+  const usar = productos.length ? lineas.filter(l => !l.detalle) : lineas;
+  const piezas = [];
+  usar.forEach(l => l.piezas.forEach(pz => {
+    const ya = piezas.find(p => p.item === pz.item && !!p.regalo === !!pz.regalo);
+    if (ya) ya.cantidad += pz.cantidad; else piezas.push(Object.assign({}, pz));
+  }));
+  return { piezas, dudas: usar.some(l => l.dudas) };
+}
+function leerLinea(linea) {
   const piezas = [];
   let dudas = false;
   const sumar = (item, cantidad, regalo) => {
     const ya = piezas.find(p => p.item === item && !!p.regalo === !!regalo);
     if (ya) ya.cantidad += cantidad; else piezas.push(regalo ? { item, cantidad, regalo: true } : { item, cantidad });
   };
-  String(texto || '').split(/\n/).forEach(linea => {
-    // Lo que va después de " | " son datos del pedido (referencia, perfil NFC, nombres), no productos
-    let t = sinTildes(linea.split(' | ')[0])
-      .replace(/\(collar \+ arnes \+ correa\)/g, '')
-      .replace(/\s*[—-]+\s*combo collar \+ placa/g, '')
-      .replace(/combo arnes \+ correa|arnes \+ correa/g, '§ac')
-      .replace(/combo collar \+ correa|collar con nombre \+ correa|collar \+ correa/g, '§cc');
-    t.split(' + ').forEach(seg => {
-      const s = seg.trim();
-      if (!s) return;
-      const regalo = /\[regalo\]/.test(s);
-      const q = /\sx(\d{1,2})\b/.exec(s.replace(/\[[^\]]*\]/g, ''));
-      const n = q ? Math.max(1, parseInt(q[1], 10)) : 1;
-      const doble = /talla collar ([sm]),\s*arnes ([sm])/.exec(s), una = /talla ([sm])\b/.exec(s);
-      const tc = doble ? doble[1].toUpperCase() : (una ? una[1].toUpperCase() : ''), ta = doble ? doble[2].toUpperCase() : tc;
-      const conTalla = (base, talla) => { if (talla) sumar(base + '-' + talla, n); else dudas = true; };
-      if (/^§ac/.test(s)) { conTalla('arnes', ta); sumar('correa', n); }
-      else if (/^§cc/.test(s)) { conTalla('collar', tc); sumar('correa', n); }
-      else if (/^combo completo/.test(s)) { conTalla('collar', tc); conTalla('arnes', ta); sumar('correa', n); }
-      else if (/^combo/.test(s)) dudas = true;
-      else if (/^arnes/.test(s)) conTalla('arnes', ta);
-      else if (/^collar/.test(s)) conTalla('collar', tc);
-      else if (/^correa/.test(s)) sumar('correa', n);
-      else if (/^placa/.test(s)) sumar('placa', n, regalo);
-    });
+  // Lo que va después de " | " son datos del pedido (referencia, perfil NFC, nombres), no productos
+  const base = sinTildes(String(linea || '').split(' | ')[0]);
+  const detalle = base.indexOf(':') > -1 && !/\(talla /.test(base);
+  const t = base
+    .replace(/\(collar \+ arnes \+ correa\)/g, '')
+    .replace(/\s*[—-]+\s*combo collar \+ placa/g, '')
+    .replace(/combo arnes \+ correa|arnes \+ correa/g, '§ac')
+    .replace(/combo collar \+ correa|collar con nombre \+ correa|collar \+ correa/g, '§cc');
+  t.split(' + ').forEach(seg => {
+    const s = seg.trim();
+    if (!s) return;
+    const regalo = /\[regalo\]/.test(s);
+    const q = /\sx(\d{1,2})\b/.exec(s.replace(/\[[^\]]*\]/g, ''));
+    const n = q ? Math.max(1, parseInt(q[1], 10)) : 1;
+    const doble = /talla collar ([sm]),\s*arnes ([sm])/.exec(s), una = /talla ([sm])\b/.exec(s);
+    const tc = doble ? doble[1].toUpperCase() : (una ? una[1].toUpperCase() : ''), ta = doble ? doble[2].toUpperCase() : tc;
+    const conTalla = (b, talla) => { if (talla) sumar(b + '-' + talla, n); else dudas = true; };
+    if (/^§ac/.test(s)) { conTalla('arnes', ta); sumar('correa', n); }
+    else if (/^§cc/.test(s)) { conTalla('collar', tc); sumar('correa', n); }
+    else if (/^combo completo/.test(s)) { conTalla('collar', tc); conTalla('arnes', ta); sumar('correa', n); }
+    else if (/^combo/.test(s)) dudas = true;
+    else if (/^arnes/.test(s)) conTalla('arnes', ta);
+    else if (/^collar/.test(s)) conTalla('collar', tc);
+    else if (/^correa/.test(s)) sumar('correa', n);
+    else if (/^placa/.test(s)) sumar('placa', n, regalo);
   });
-  return { piezas, dudas };
+  return { piezas, dudas, detalle };
 }
 
 // ── Letras del collar con nombre (por letra y color) ──
@@ -109,6 +123,21 @@ function letrasDePedido(p) {
       if (id) { sumar(idLetra(id, mm[1]), 1); leidas++; }
     });
     if (leidas !== piezas.length) dudas = true;
+  }
+  // Sin comillas (pedidos escritos a mano): "… Letras beige - nombre Oliver" o "Collar letras lila talla M con nombre: Gris"
+  if (!out.length && !/con nombre[^"\n]*"/i.test(txt)) {
+    const colores = CN.colores.slice().sort((a, b) => b.nombre.length - a.nombre.length);
+    txt.split('\n').forEach(linea => {
+      const l = sinTildes(linea.split(' | ')[0]);
+      if (l.indexOf('nombre') < 0 || l.indexOf('letras') < 0) return;
+      const col = colores.find(c => new RegExp('letras\\s+' + sinTildes(c.nombre) + '\\b').test(l));
+      // El nombre: la palabra después de "nombre" (sin contar "talla", "con", "de"…); si hay varias, la última
+      const NO = ['talla', 'con', 'de', 'del', 'en', 'y', 'letras', 'color', 'collar', 'combo', 'completo', 'para'];
+      const nombres = Array.from(l.matchAll(/nombre:?\s+([a-z♥★]{1,8})\b/g)).map(m => m[1]).filter(w => NO.indexOf(w) < 0);
+      const nom = nombres[nombres.length - 1];
+      if (!col || !nom) { dudas = true; return; }
+      piezasNombre(nom).forEach(ch => sumar(idLetra(col.id, ch), 1));
+    });
   }
   return { letras: out, dudas };
 }
