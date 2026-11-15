@@ -30,8 +30,9 @@ function idValido(id) {
 }
 
 // ── Acceso con clave (variable PANEL_CLAVE en Netlify) ─────────────────────────
-// La sesión es un token firmado que dura 30 días; si cambias PANEL_CLAVE, se cierran todas las sesiones.
-const DURACION_MS = 30 * 24 * 60 * 60 * 1000;
+// La sesión es un token firmado que vence a los 30 minutos sin usar el panel: cada uso devuelve uno nuevo
+// (cabecera X-Panel-Token), así que solo se cierra por inactividad. Si cambias PANEL_CLAVE, se cierran todas las sesiones.
+const DURACION_MS = 30 * 60 * 1000;
 function firmar(texto, clave) {
   return crypto.createHmac('sha256', 'wuuff-panel:' + clave).update(texto).digest('base64url');
 }
@@ -246,7 +247,7 @@ function correoRecordatorio(pedidos, sitio, ahora) {
 
 function pesos(cents) { return '$' + Math.round((cents || 0) / 100).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
 
-module.exports = { pesos, listaConContraentrega, diasHabiles, correoRecordatorio,
+module.exports = { DURACION_MS, pesos, listaConContraentrega, diasHabiles, correoRecordatorio,
   STORE, ESTADOS, ORIGENES, PAGOS, TIPOS, ETIQUETAS, limpio, centavos, idValido,
   crearToken, tokenValido, claveCorrecta, aplicarCambios, nuevoPedido, desdeContraentrega, sincronizarGuia, registrarWompi, historial
 };

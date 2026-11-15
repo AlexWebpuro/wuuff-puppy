@@ -7,6 +7,7 @@
 <meta name="theme-color" content="#fcf8f2">
 <title>Pedidos · Wuuff Puppy</title>
 <style>
+@font-face{font-family:'Malaka Cournt';src:url(/assets/fonts/malaka-cournt.ttf) format('truetype');font-display:swap}
 @font-face{font-family:'Fredoka One';src:url(/assets/fonts/fredoka-one-latin-400-normal.woff2) format('woff2');font-display:swap}
 @font-face{font-family:'Nunito';src:url(/assets/fonts/nunito-latin-400-normal.woff2) format('woff2');font-weight:400;font-display:swap}
 @font-face{font-family:'Nunito';src:url(/assets/fonts/nunito-latin-700-normal.woff2) format('woff2');font-weight:700;font-display:swap}
@@ -118,14 +119,34 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
 .stock-it b{display:block;font-family:'Fredoka One';font-weight:400;font-size:30px;line-height:1.15}
 .stock-it small{display:block;font-size:12px;font-weight:700;color:var(--gris)}
 .stock-it .quitar{border:0;background:transparent;cursor:pointer;opacity:.5;font-size:13px;padding:0}
-.tabla{width:100%;border-collapse:collapse;font-size:14px}
+.tabla-caja{overflow-x:auto;margin:0 -4px}
+.tabla{width:100%;border-collapse:collapse;font-size:13px}
+.tabla th{font-size:10px!important;padding:6px 3px!important}.tabla td{padding:7px 3px!important}
 .tabla th{font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:var(--gris);text-align:right;padding:6px 4px;font-weight:800}
 .tabla th:first-child,.tabla td:first-child{text-align:left}
 .tabla td{padding:7px 4px;border-top:1px dashed var(--borde);text-align:right;font-weight:700}
 .tabla tr.total td{font-weight:900;border-top:1.5px solid var(--borde)}
 .movs{list-style:none;margin:0;padding:0;font-size:14px}
 .movs li{display:flex;gap:8px;align-items:center;padding:8px 0;border-top:1px dashed var(--borde)}
-.movs li span{flex:1;min-width:0}.movs small{display:block;color:var(--gris);font-size:12px}
+.movs li span{flex:1;min-width:0}
+.resumen-mov{list-style:none;margin:0;padding:0}.resumen-mov li{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-top:1px dashed var(--borde);font-weight:700}
+.resumen-mov li b{font-family:'Fredoka One';font-weight:400;font-size:18px;white-space:nowrap}
+.confirmar{border:2px solid var(--naranja)}
+.burbuja{font-family:'Malaka Cournt','Fredoka One',sans-serif;color:var(--c);-webkit-text-stroke:1.5px var(--b);paint-order:stroke fill;text-shadow:0 2px 0 var(--b);line-height:1;display:inline-block;vertical-align:middle}
+.letra-res{display:flex;align-items:center;gap:14px;margin-top:12px;background:#f8f4ee;border-radius:16px;padding:12px 14px;border:2px solid transparent}
+.letra-res b{display:block;font-family:'Fredoka One';font-weight:400;font-size:32px;line-height:1}
+.letra-res span{display:block;font-weight:800;font-size:14px}.letra-res small{display:block;font-size:12px;color:var(--gris);font-weight:700;margin-top:2px}
+.letra-res.agotada{border-color:#f2c7c3}.letra-res.pocas{border-color:#ffd59a}
+.letra-acc{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-top:10px}
+.letra-acc .btn{padding:10px 8px;font-size:13px}
+.letras-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(48px,1fr));gap:6px}
+.lg{border:1.5px solid var(--borde);background:#fff;border-radius:12px;padding:6px 2px 4px;cursor:pointer;display:grid;justify-items:center;gap:2px}
+.lg b{font-size:12px;font-weight:900}.lg.agotada{background:#fde7e1}.lg.pocas{background:#fff4dc}.lg.activa{border-color:var(--azul);box-shadow:0 0 0 2px var(--azul)}
+.movs .mov-check{width:22px;height:22px;flex:none;accent-color:var(--azul)}
+.movs-sel{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+.movs-sel label{display:flex;align-items:center;gap:8px;margin:0;text-transform:none;letter-spacing:0;font-size:14px;color:var(--navy)}
+.movs-sel input{width:22px;height:22px;accent-color:var(--azul)}
+.movs-sel .btn{padding:8px 12px;font-size:13px}.movs small{display:block;color:var(--gris);font-size:12px}
 .cantidades{display:grid;gap:6px;margin-top:6px}
 .cant{display:flex;align-items:center;gap:8px;font-weight:800;font-size:14px}
 .cant span{flex:1}.cant input{width:76px;text-align:center;padding:8px}
@@ -261,6 +282,8 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
       headers: Object.assign({ 'Content-Type': 'application/json' }, token ? { Authorization: 'Bearer ' + token } : {}),
       body: cuerpo ? JSON.stringify(cuerpo) : undefined
     });
+    const nuevo = r.headers.get('X-Panel-Token');
+    if (nuevo && token) { token = nuevo; guardar('wuuffPanelToken', token); }
     let j = {}; try { j = await r.json(); } catch (e) {}
     if (r.status === 401 && j.sesion === false) { salir(); throw new Error('La sesión venció. Vuelve a entrar.'); }
     if (!r.ok) throw new Error(j.error || 'Algo falló (' + r.status + ')');
@@ -270,12 +293,26 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
   // ── Sesión ──
   function mostrarLogin() { $('app').classList.add('oculto'); $('login').classList.remove('oculto'); setTimeout(() => $('clave').focus(), 50); }
   function salir() { token = ''; guardar('wuuffPanelToken', ''); cerrarHoja(); mostrarLogin(); }
+  // Se cierra sola a los 30 minutos sin usar el panel (sin tocar, escribir ni desplazar)
+  const INACTIVO_MS = 30 * 60 * 1000;
+  const usar = () => { if (token) guardar('wuuffPanelUso', String(Date.now())); };
+  ['click', 'keydown', 'touchstart', 'scroll', 'input'].forEach(ev => document.addEventListener(ev, usar, { passive: true, capture: true }));
+  function revisarInactividad() {
+    const ultimo = parseInt(leer('wuuffPanelUso'), 10) || 0;
+    if (token && ultimo && Date.now() - ultimo > INACTIVO_MS) {
+      salir(); $('loginError').textContent = '🔒 Cerramos la sesión porque pasaron 30 minutos sin usar el panel.'; $('loginError').classList.remove('oculto');
+      return true;
+    }
+    return false;
+  }
+  setInterval(revisarInactividad, 30000);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) revisarInactividad(); });
   $('formLogin').addEventListener('submit', async e => {
     e.preventDefault();
     const btn = e.target.querySelector('button[type=submit]'); btn.disabled = true; $('loginError').classList.add('oculto');
     try {
       const j = await api('POST', { accion: 'entrar', clave: $('clave').value });
-      token = j.token; guardar('wuuffPanelToken', token); $('clave').value = '';
+      token = j.token; guardar('wuuffPanelToken', token); usar(); $('clave').value = '';
       $('login').classList.add('oculto'); $('app').classList.remove('oculto'); cargar();
     } catch (err) { $('loginError').textContent = err.message; $('loginError').classList.remove('oculto'); }
     btn.disabled = false;
@@ -803,6 +840,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
     conteo: { i: '🔢', n: 'Conteo', t: '¿Cuánto tienes ahora en bodega?', nota: 'Ej.: conteo de fin de mes' },
     colaboracion: { i: '🤝', n: 'Colaboración', t: '¿Qué le diste?', nota: '¿Con quién? Ej.: @creadora' },
     regalo: { i: '🎁', n: 'Regalo', t: '¿Qué regalaste?', nota: '¿A quién? Ej.: sorteo, cliente…' },
+    contenido: { i: '🎬', n: 'Contenido', t: '¿Qué usaste para hacer contenido?', nota: 'Ej.: fotos para Instagram, video de TikTok' },
     danado: { i: '⚠️', n: 'Dañado o perdido', t: '¿Qué se dañó o se perdió?', nota: '¿Qué pasó?' }
   };
   function mesDe(iso) { const d = new Date(new Date(iso).getTime() - 5 * 36e5); return d.toISOString().slice(0, 7); }
@@ -813,10 +851,14 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
     const pasado = mesDe(d.toISOString());
     const meses = { este: hoy, pasado, todo: '' };
     const salidas = (inv.salidas || []).filter(s => !meses[invMes] || mesDe(s.fecha) === meses[invMes]);
-    const cols = [['venta', 'Vendido'], ['colaboracion', 'Colab.'], ['regalo', 'Regalos'], ['danado', 'Dañados']];
+    const cols = [['venta', 'Vendido'], ['colaboracion', 'Colab.'], ['regalo', 'Regalos'], ['contenido', 'Contenido'], ['danado', 'Dañados']];
     const suma = (item, tipo) => salidas.filter(s => s.item === item && s.tipo === tipo).reduce((n, s) => n + s.cantidad, 0);
     const filas = it.map(x => ({ x, c: cols.map(([t]) => suma(x.id, t)) })).filter(f => f.c.some(Boolean));
-    const nombre = id => (it.find(x => x.id === id) || {}).nombre || id;
+    const nombre = id => {
+      const l = /^L-([a-z]+)-(.+)$/.exec(id);
+      if (l) { const c = CN && CN.colores.find(x => x.id === l[1]); const ch = l[2] === 'corazon' ? 'Corazón' : (l[2] === 'estrella' ? 'Estrella' : 'Letra ' + l[2]); return ch + ' ' + (c ? c.nombre.toLowerCase() : l[1]); }
+      return (it.find(x => x.id === id) || {}).nombre || id;
+    };
     v.innerHTML = `
       ${inv.conConteo ? '' : '<p class="aviso" style="margin:4px 0 12px">👋 Para empezar, toca <b>🔢 Hacer conteo</b> y escribe cuánto tienes hoy de cada producto. Desde ahí, lo que se envía en los pedidos se descuenta solo.</p>'}
       <div class="inv-acciones">
@@ -824,6 +866,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
         <button class="btn claro" data-mov="conteo">🔢 Hacer conteo</button>
         <button class="btn claro" data-mov="colaboracion">🤝 Colaboración</button>
         <button class="btn claro" data-mov="regalo">🎁 Regalo</button>
+        <button class="btn claro" data-mov="contenido">🎬 Contenido</button>
         <button class="btn claro" data-mov="danado">⚠️ Dañado o perdido</button>
       </div>
       <h3 style="margin:0 0 8px">📦 Lo que tengo</h3>
@@ -836,13 +879,18 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
       }).join('')}</div>
       <button class="btn claro" id="btnProducto" style="margin:-6px 0 16px">＋ Agregar otro producto al inventario</button>
 
+      <div class="caja"><h3>🔤 Letras del collar con nombre</h3>
+        <p class="nota-chica" style="margin:-4px 0 8px">Elige la letra y el color para ver cuántas hay. Las de los pedidos con collar con nombre se descuentan solas al enviarlos.</p>
+        <div id="invLetras"></div>
+      </div>
+
       <div class="caja">
         <h3>📊 Lo que salió</h3>
         <div class="filtros" style="padding-top:0">${[['este', 'Este mes'], ['pasado', 'Mes pasado'], ['todo', 'Todo']].map(([k, n]) => `<button class="chip${invMes === k ? ' activo' : ''}" data-mes="${k}">${n}</button>`).join('')}</div>
         <p class="nota-chica" style="margin:-4px 0 8px">${invMes === 'todo' ? 'Desde que empezaste a usar el panel.' : 'En ' + esc(mesTexto(meses[invMes])) + '.'} Las ventas salen de los pedidos <b>enviados o entregados</b>; colaboraciones y regalos, de los pedidos con ese tipo y de lo que anotas aquí.</p>
-        ${filas.length ? `<table class="tabla"><thead><tr><th>Producto</th>${cols.map(c => `<th>${c[1]}</th>`).join('')}</tr></thead><tbody>
+        ${filas.length ? `<div class="tabla-caja"><table class="tabla"><thead><tr><th>Producto</th>${cols.map(c => `<th>${c[1]}</th>`).join('')}</tr></thead><tbody>
           ${filas.map(f => `<tr><td>${esc(f.x.nombre)}</td>${f.c.map(n => `<td>${n || '—'}</td>`).join('')}</tr>`).join('')}
-          <tr class="total"><td>Total</td>${cols.map((c, i) => `<td>${filas.reduce((n, f) => n + f.c[i], 0)}</td>`).join('')}</tr></tbody></table>`
+          <tr class="total"><td>Total</td>${cols.map((c, i) => `<td>${filas.reduce((n, f) => n + f.c[i], 0)}</td>`).join('')}</tr></tbody></table></div>`
           : '<p class="nota-chica">Nada en este periodo.</p>'}
       </div>
 
@@ -851,11 +899,26 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
         <div class="sin-leer">${inv.sinLeer.map(s => `<button data-abrir="${esc(s.id)}"><b>${esc(s.cliente || 'Sin nombre')}</b> · ${esc(s.productos || '—')}</button>`).join('')}</div></div>` : ''}
 
       <div class="caja"><h3>🕑 Movimientos</h3>
-        ${(inv.movimientos || []).length ? `<ul class="movs">${inv.movimientos.slice(0, 40).map(m => `<li><span>${MOV[m.tipo] ? MOV[m.tipo].i : ''} <b>${m.tipo === 'conteo' ? 'Conteo: ' + m.cantidad : (m.tipo === 'entrada' ? '+' : '−') + m.cantidad}</b> ${esc(nombre(m.item))}
+        ${(inv.movimientos || []).length ? `<div class="movs-sel"><label><input type="checkbox" id="movTodos"> Seleccionar todos</label><button class="btn rojo" id="btnBorrarSel" disabled>🗑 Borrar seleccionados</button></div>
+          <ul class="movs">${inv.movimientos.map(m => `<li><input type="checkbox" class="mov-check" value="${esc(m.id)}" aria-label="Seleccionar"><span>${MOV[m.tipo] ? MOV[m.tipo].i : ''} <b>${m.tipo === 'conteo' ? 'Conteo: ' + m.cantidad : (m.tipo === 'entrada' ? '+' : '−') + m.cantidad}</b> ${esc(nombre(m.item))}
           <small>${esc(fecha(m.fecha))}${m.nota ? ' · ' + esc(m.nota) : ''}</small></span><button class="btn-borrar" data-borrar-mov="${esc(m.id)}" aria-label="Borrar movimiento" title="Borrar">🗑</button></li>`).join('')}</ul>`
           : '<p class="nota-chica">Aún no hay movimientos.</p>'}
       </div>`;
     v.querySelectorAll('[data-mov]').forEach(b => b.onclick = () => abrirMovimiento(b.dataset.mov));
+    // Seleccionar varios movimientos y borrarlos juntos
+    const checks = () => Array.from(v.querySelectorAll('.mov-check'));
+    const marcar = () => {
+      const n = checks().filter(c => c.checked).length, b = $('btnBorrarSel'), todos = $('movTodos');
+      if (b) { b.disabled = !n; b.textContent = n ? '🗑 Borrar ' + n + (n === 1 ? ' seleccionado' : ' seleccionados') : '🗑 Borrar seleccionados'; }
+      if (todos) todos.checked = n > 0 && n === checks().length;
+    };
+    checks().forEach(c => c.onchange = marcar);
+    if ($('movTodos')) $('movTodos').onchange = e => { checks().forEach(c => { c.checked = e.target.checked; }); marcar(); };
+    if ($('btnBorrarSel')) $('btnBorrarSel').onclick = async () => {
+      const ids = checks().filter(c => c.checked).map(c => c.value);
+      if (!ids.length || !confirm('¿Borrar ' + ids.length + (ids.length === 1 ? ' movimiento' : ' movimientos') + ' del inventario?')) return;
+      if (await cargarInventario({ accion: 'inv-borrar', ids })) toast(ids.length + (ids.length === 1 ? ' movimiento borrado' : ' movimientos borrados'));
+    };
     v.querySelectorAll('[data-mes]').forEach(b => b.onclick = () => { invMes = b.dataset.mes; pintarInventario(); });
     v.querySelectorAll('[data-abrir]').forEach(b => b.onclick = () => abrirDetalle(b.dataset.abrir));
     v.querySelectorAll('[data-borrar-mov]').forEach(b => b.onclick = async () => {
@@ -866,23 +929,28 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
       if (!confirm('¿Quitar este producto del inventario?')) return;
       if (await cargarInventario({ accion: 'inv-quitar-producto', id: b.dataset.quitarProd })) toast('Producto quitado');
     });
+    pintarLetras();
     $('btnProducto').onclick = async () => {
       const n = prompt('Nombre del producto (ej.: Bolsas de regalo, Letras rosadas…)');
       if (n && n.trim() && await cargarInventario({ accion: 'inv-producto', nombre: n.trim() })) toast('Producto agregado');
     };
   }
-  function abrirMovimiento(tipo) {
-    const it = (inv && inv.items) || [], hoy = new Date(Date.now() - 5 * 36e5).toISOString().slice(0, 10);
+  // Formulario de movimiento. opciones: { items: [{ id, nombre, bodega }], titulo, ayuda } (por defecto, los productos)
+  function abrirMovimiento(tipo, opciones) {
+    const o = opciones || {};
+    const lote = Date.now().toString(36) + Math.random().toString(36).slice(2, 8); // si este formulario se guarda dos veces, no se duplica
+    const it = o.items || (inv && inv.items) || [], hoy = new Date(Date.now() - 5 * 36e5).toISOString().slice(0, 10);
+    const nombreDe = id => (it.find(x => x.id === id) || {}).nombre || id;
     abrirHoja(`
-      <div class="cab"><h2>${MOV[tipo].i} ${esc(MOV[tipo].n)}</h2><button class="btn claro icono" data-cerrar aria-label="Cerrar">✕</button></div>
+      <div class="cab"><h2>${MOV[tipo].i} ${esc(o.titulo || MOV[tipo].n)}</h2><button class="btn claro icono" data-cerrar aria-label="Cerrar">✕</button></div>
       <form id="formMov">
         <div class="caja">
           <label for="mTipo">Qué pasó</label>
           <select id="mTipo">${Object.entries(MOV).map(([k, m]) => `<option value="${k}"${k === tipo ? ' selected' : ''}>${m.i} ${esc(m.n)}</option>`).join('')}</select>
           <h3 style="margin-top:14px" id="mTitulo">${esc(MOV[tipo].t)}</h3>
-          <p class="nota-chica" id="mAyuda" style="margin:-4px 0 4px">${tipo === 'conteo' ? 'Escribe solo los que contaste (deja vacío lo que no contaste).' : 'Deja vacío lo que no aplica.'}</p>
-          <div class="cantidades">${it.map(x => `<div class="cant"><span>${esc(x.nombre)}${tipo === 'conteo' ? '' : ` <small style="color:var(--gris)">(${x.bodega})</small>`}</span>
-            <button type="button" data-menos="${esc(x.id)}" aria-label="Menos">−</button><input type="number" min="0" inputmode="numeric" data-item="${esc(x.id)}" placeholder="—" aria-label="${esc(x.nombre)}"><button type="button" data-mas="${esc(x.id)}" aria-label="Más">＋</button></div>`).join('')}</div>
+          <p class="nota-chica" id="mAyuda" style="margin:-4px 0 4px">${esc(o.ayuda || (tipo === 'conteo' ? 'Escribe solo los que contaste (deja vacío lo que no contaste).' : 'Deja vacío lo que no aplica.'))}</p>
+          <div class="cantidades">${it.map(x => `<div class="cant"><span>${x.html || esc(x.nombre)} <small style="color:var(--gris)">(hay ${x.bodega || 0})</small></span>
+            <button type="button" data-menos="${esc(x.id)}" aria-label="Menos">−</button><input type="number" min="0" inputmode="numeric" data-item="${esc(x.id)}" placeholder="—" aria-label="${esc(x.nombre)}"${x.valor != null ? ` value="${x.valor}"` : ''}><button type="button" data-mas="${esc(x.id)}" aria-label="Más">＋</button></div>`).join('')}</div>
         </div>
         <div class="caja">
           <div class="dos">
@@ -890,27 +958,102 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
             <div><label for="mNota">Nota</label><input id="mNota" maxlength="200" placeholder="${esc(MOV[tipo].nota)}"></div>
           </div>
         </div>
-        <button class="btn naranja ancho" type="submit">Guardar</button>
-      </form>`);
+        <button class="btn naranja ancho" type="submit">Revisar y guardar</button>
+      </form>
+      <div id="mConfirmar" class="oculto"></div>`);
     const h = $('hoja');
     h.querySelector('[data-cerrar]').onclick = cerrarHoja;
     const campo = id => h.querySelector(`input[data-item="${id}"]`);
     h.querySelectorAll('[data-mas]').forEach(b => b.onclick = () => { const c = campo(b.dataset.mas); c.value = (parseInt(c.value, 10) || 0) + 1; });
     h.querySelectorAll('[data-menos]').forEach(b => b.onclick = () => { const c = campo(b.dataset.menos), n = (parseInt(c.value, 10) || 0) - 1; c.value = n > 0 ? n : (c.value === '' ? '' : 0); });
-    $('mTipo').onchange = () => { const m = MOV[$('mTipo').value]; $('mTitulo').textContent = m.t; $('mNota').placeholder = m.nota; h.querySelector('.cab h2').textContent = m.i + ' ' + m.n; };
-    $('formMov').onsubmit = async e => {
+    $('mTipo').onchange = () => { const m = MOV[$('mTipo').value]; $('mTitulo').textContent = m.t; $('mNota').placeholder = m.nota; h.querySelector('.cab h2').textContent = m.i + ' ' + (o.titulo || m.n); };
+    // Paso 1: revisar. Paso 2: confirmar (así se ve exactamente lo que se va a guardar, una sola vez)
+    $('formMov').onsubmit = e => {
       e.preventDefault();
       const t = $('mTipo').value;
       const movs = Array.from(h.querySelectorAll('input[data-item]')).filter(c => c.value !== '' && (t === 'conteo' || +c.value > 0))
-        .map(c => ({ tipo: t, item: c.dataset.item, cantidad: +c.value, fecha: $('mFecha').value, nota: $('mNota').value }));
+        .map(c => ({ tipo: t, item: c.dataset.item, cantidad: +c.value, fecha: $('mFecha').value, nota: $('mNota').value.trim(), lote }));
       if (!movs.length) { toast('Escribe al menos una cantidad'); return; }
-      const btn = e.target.querySelector('button[type=submit]'); btn.disabled = true;
-      if (await cargarInventario({ accion: 'inv-guardar', movs })) { cerrarHoja(); toast(MOV[t].i + ' Guardado en el inventario'); } else btn.disabled = false;
+      const signo = t === 'conteo' ? '' : (t === 'entrada' ? '+' : '−');
+      const fechaTxt = new Date($('mFecha').value + 'T12:00:00').toLocaleDateString('es-CO', { weekday: 'long', day: 'numeric', month: 'long' });
+      const total = movs.reduce((n, m) => n + m.cantidad, 0);
+      $('formMov').classList.add('oculto');
+      const c = $('mConfirmar'); c.classList.remove('oculto');
+      c.innerHTML = `<div class="caja confirmar">
+          <h3>${MOV[t].i} ¿Guardamos esto?</h3>
+          <p class="nota-chica" style="margin:-4px 0 8px">${esc(MOV[t].n)} · ${esc(fechaTxt)}${movs[0].nota ? ' · ' + esc(movs[0].nota) : ''}</p>
+          <ul class="resumen-mov">${movs.map(m => `<li><span>${esc(nombreDe(m.item))}</span><b>${t === 'conteo' ? 'Hay ' + m.cantidad : signo + m.cantidad}</b></li>`).join('')}</ul>
+          ${t === 'conteo' ? '<p class="nota-chica">El conteo reemplaza lo que había: desde ahora el inventario parte de estas cantidades.</p>' : `<p class="nota-chica">Total: <b>${signo}${total}</b> ${total === 1 ? 'unidad' : 'unidades'}.</p>`}
+        </div>
+        <button class="btn naranja ancho" type="button" id="mSi">✅ Sí, guardar</button>
+        <button class="btn claro ancho" type="button" id="mCorregir" style="margin-top:8px">✏️ Corregir</button>`;
+      $('mCorregir').onclick = () => { c.classList.add('oculto'); $('formMov').classList.remove('oculto'); };
+      $('mSi').onclick = async () => {
+        const btn = $('mSi');
+        if (btn.disabled) return;
+        btn.disabled = true; $('mCorregir').disabled = true; btn.textContent = 'Guardando…';
+        if (await cargarInventario({ accion: 'inv-guardar', movs })) { cerrarHoja(); toast(MOV[t].i + ' Guardado en el inventario'); }
+        else { btn.disabled = false; $('mCorregir').disabled = false; btn.textContent = '✅ Sí, guardar'; }
+      };
     };
   }
 
+  // ── Letras del collar con nombre: por letra y color ──
+  const LETRAS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').concat(['♥', '★']);
+  const codLetra = ch => ch === '♥' ? 'corazon' : (ch === '★' ? 'estrella' : ch);
+  const idLetra = (color, ch) => 'L-' + color + '-' + codLetra(ch);
+  let CN = null, letraSel = 'A', colorSel = 'rosado';
+  function cargarCN() {
+    if (CN) return Promise.resolve(CN);
+    return fetch('/assets/collar-nombre.json').then(r => r.json()).then(j => { CN = j; return j; });
+  }
+  function datoLetra(color, ch) {
+    return (inv.letras || []).find(x => x.id === idLetra(color, ch)) || { bodega: 0, porDespachar: 0, disponible: 0, conteo: null };
+  }
+  function burbuja(ch, col, tam) {
+    return `<span class="burbuja" style="--c:${col.main};--b:${col.edge};font-size:${tam || 30}px">${esc(ch)}</span>`;
+  }
+  function pintarLetras() {
+    const caja = $('invLetras'); if (!caja) return;
+    if (!CN) { caja.innerHTML = '<p class="nota-chica">Cargando letras…</p>'; cargarCN().then(pintarInventario).catch(() => { caja.innerHTML = '<p class="nota-chica">No se pudieron cargar los colores.</p>'; }); return; }
+    const col = CN.colores.find(c => c.id === colorSel) || CN.colores[0];
+    const d = datoLetra(col.id, letraSel);
+    const clase = n => n <= 0 ? 'agotada' : (n <= 2 ? 'pocas' : '');
+    caja.innerHTML = `
+      <div class="dos">
+        <div><label for="lLetra">Letra</label><select id="lLetra">${LETRAS.map(ch => `<option value="${ch}"${ch === letraSel ? ' selected' : ''}>${ch === '♥' ? '♥ Corazón' : (ch === '★' ? '★ Estrella' : ch)}</option>`).join('')}</select></div>
+        <div><label for="lColor">Color</label><select id="lColor">${CN.colores.map(c => `<option value="${c.id}"${c.id === col.id ? ' selected' : ''}>${esc(c.nombre)}</option>`).join('')}</select></div>
+      </div>
+      <div class="letra-res ${clase(d.disponible)}">
+        ${burbuja(letraSel, col, 64)}
+        <div><b>${d.bodega}</b><span>${letraSel === '♥' ? 'corazones' : (letraSel === '★' ? 'estrellas' : 'letras ' + esc(letraSel))} ${esc(col.nombre.toLowerCase())} en bodega</span>
+          <small>${d.porDespachar ? d.porDespachar + ' por despachar · ' : ''}${d.disponible <= 0 ? '⛔ Agotada para vender' : d.disponible + ' disponibles'}${d.conteo ? ' · conteo ' + esc(fecha(d.conteo.fecha)) : ''}</small></div>
+      </div>
+      <div class="letra-acc">
+        <button class="btn naranja" data-lmov="entrada">📥 Llegaron</button>
+        <button class="btn claro" data-lmov="conteo">🔢 Contar</button>
+        <button class="btn claro" data-lmov="contenido">🎬 Contenido</button>
+        <button class="btn claro" data-lmov="danado">⚠️ Dañadas</button>
+      </div>
+      <p class="ck-sub" style="margin:14px 0 6px;font-weight:800">Todas las letras en ${esc(col.nombre.toLowerCase())} <small style="color:var(--gris);font-weight:700">· toca una para elegirla</small></p>
+      <div class="letras-grid">${LETRAS.map(ch => { const x = datoLetra(col.id, ch); return `<button type="button" class="lg ${clase(x.disponible)}${ch === letraSel ? ' activa' : ''}" data-letra="${ch}">${burbuja(ch, col, 22)}<b>${x.disponible}</b></button>`; }).join('')}</div>
+      <div class="letra-acc" style="margin-top:10px">
+        <button class="btn claro" id="lContarColor">🔢 Contar todo el ${esc(col.nombre.toLowerCase())}</button>
+        <button class="btn claro" id="lLlegaronColor">📥 Llegaron varias en ${esc(col.nombre.toLowerCase())}</button>
+      </div>
+      ${(inv.letrasSinLeer || []).length ? `<p class="aviso" style="margin-top:12px">🤔 No pude leer las letras de ${inv.letrasSinLeer.length} pedido${inv.letrasSinLeer.length > 1 ? 's' : ''}: ${inv.letrasSinLeer.slice(0, 4).map(x => esc(x.cliente || 'sin nombre')).join(', ')}. Para que se descuenten solas, escribe el producto así: <i>Collar con nombre "LUNA" (Talla S) · letras Rosado</i>.</p>` : ''}`;
+    $('lLetra').onchange = e => { letraSel = e.target.value; pintarLetras(); };
+    $('lColor').onchange = e => { colorSel = e.target.value; pintarLetras(); };
+    caja.querySelectorAll('[data-letra]').forEach(b => b.onclick = () => { letraSel = b.dataset.letra; pintarLetras(); });
+    const unaLetra = () => [{ id: idLetra(col.id, letraSel), nombre: (letraSel === '♥' ? 'Corazón' : (letraSel === '★' ? 'Estrella' : 'Letra ' + letraSel)) + ' ' + col.nombre.toLowerCase(), html: burbuja(letraSel, col, 26) + ' ' + esc(col.nombre), bodega: d.bodega }];
+    caja.querySelectorAll('[data-lmov]').forEach(b => b.onclick = () => abrirMovimiento(b.dataset.lmov, { items: unaLetra(), titulo: MOV[b.dataset.lmov].n + ' · ' + unaLetra()[0].nombre }));
+    const todoColor = () => LETRAS.map(ch => ({ id: idLetra(col.id, ch), nombre: (ch === '♥' ? 'Corazón' : (ch === '★' ? 'Estrella' : 'Letra ' + ch)) + ' ' + col.nombre.toLowerCase(), html: burbuja(ch, col, 24), bodega: datoLetra(col.id, ch).bodega }));
+    $('lContarColor').onclick = () => abrirMovimiento('conteo', { items: todoColor(), titulo: 'Conteo · letras ' + col.nombre.toLowerCase(), ayuda: 'Escribe cuántas hay de cada letra (deja vacío lo que no contaste).' });
+    $('lLlegaronColor').onclick = () => abrirMovimiento('entrada', { items: todoColor(), titulo: 'Llegaron letras ' + col.nombre.toLowerCase() });
+  }
+
   // Inicio
-  if (token) { $('app').classList.remove('oculto'); cargar(); } else mostrarLogin();
+  if (token && !revisarInactividad()) { usar(); $('app').classList.remove('oculto'); cargar(); } else if (!token) mostrarLogin();
 })();
 </script>
 </body>

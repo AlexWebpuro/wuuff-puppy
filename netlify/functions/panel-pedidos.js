@@ -3,7 +3,8 @@
 // Variable de entorno en Netlify (obligatoria):
 //   PANEL_CLAVE   la clave para entrar al panel (mínimo 8 caracteres). Si la cambias, se cierran todas las sesiones.
 //
-//   POST { accion: 'entrar', clave }                → { token }  (sesión de 30 días)
+//   POST { accion: 'entrar', clave }                → { token }  (la sesión se cierra a los 30 minutos sin usar el panel;
+//                                                     cada respuesta trae un token renovado en la cabecera X-Panel-Token)
 //   GET  (Authorization: Bearer token)              → { pedidos: [...] }  (importa los contraentrega nuevos de la web)
 //   POST { accion: 'crear', pedido }                → { pedido }
 //   POST { accion: 'actualizar', id, cambios }      → { pedido }
@@ -12,7 +13,7 @@
 //   POST { accion: 'crear-guia', id, opcion, destino } → { pedido }               (crea la guía y lo marca Enviado)
 //   POST { accion: 'inventario' }                   → { items, salidas, sinLeer, movimientos, extras }
 //   POST { accion: 'inv-guardar', movs: [{ tipo, item, cantidad, fecha, nota }] } → inventario
-//   POST { accion: 'inv-borrar', id }               → inventario
+//   POST { accion: 'inv-borrar', id | ids: [...] } → inventario   (borra uno o varios)
 //   POST { accion: 'inv-producto', nombre }         → inventario  (agrega un producto propio, ej. "Bolsas de regalo")
 //   POST { accion: 'inv-quitar-producto', id }      → inventario
 const crypto = require('crypto');
@@ -33,6 +34,13 @@ function json(status, data) {
 }
 
 exports.handler = async function (event) {
+  const r = await atender(event);
+  // Sesión activa: cada respuesta trae un token nuevo, así los 30 minutos cuentan desde el último uso
+  if (event._sesionOk && r.statusCode < 500) r.headers = Object.assign({}, r.headers, { 'X-Panel-Token': P.crearToken(process.env.PANEL_CLAVE || '') });
+  return r;
+};
+
+async function atender(event) {
   const clave = process.env.PANEL_CLAVE || '';
   if (clave.length < 8) return json(500, { error: 'Falta configurar PANEL_CLAVE en Netlify (mínimo 8 caracteres).' });
 
@@ -68,6 +76,7 @@ exports.handler = async function (event) {
   // ── Todo lo demás pide sesión ──
   const auth = (event.headers && (event.headers.authorization || event.headers.Authorization)) || '';
   if (!P.tokenValido(auth.replace(/^Bearer\s+/i, ''), clave)) return json(401, { error: 'Sesión vencida', sesion: false });
+  event._sesionOk = true;
 
   // ── Lista (y trae los pedidos contraentrega nuevos de la web) ──
   if (event.httpMethod === 'GET') {
@@ -145,15 +154,18 @@ exports.handler = async function (event) {
     let { movimientos, extras } = await I.leer(inv);
     if (b.accion === 'inv-guardar') {
       const validos = I.ITEMS.concat(extras).map(x => x.id);
-      const nuevos = (Array.isArray(b.movs) ? b.movs.slice(0, 40) : []).map(m => I.movimiento(m, validos)).filter(Boolean);
+      const nuevos = (Array.isArray(b.movs) ? b.movs.slice(0, 60) : []).map(m => I.movimiento(m, validos)).filter(Boolean);
       if (!nuevos.length) return json(400, { error: 'Escribe al menos una cantidad' });
-      for (const m of nuevos) await inv.setJSON(m.id, m);
-      movimientos = movimientos.concat(nuevos);
+      await Promise.all(nuevos.map(m => inv.setJSON(m.id, m)));
+      // Si el mismo lote ya estaba (se envió dos veces), reemplaza al anterior en vez de sumarse
+      const ids = new Set(nuevos.map(m => m.id));
+      movimientos = movimientos.filter(m => !ids.has(m.id)).concat(nuevos);
     }
     if (b.accion === 'inv-borrar') {
-      if (!/^mov-[a-z0-9-]{4,40}$/.test(String(b.id || ''))) return json(400, { error: 'Movimiento no válido' });
-      await inv.delete(b.id);
-      movimientos = movimientos.filter(m => m.id !== b.id);
+      const ids = (Array.isArray(b.ids) ? b.ids.slice(0, 300) : [b.id]).map(String).filter(id => /^mov-[a-z0-9-]{4,60}$/.test(id));
+      if (!ids.length) return json(400, { error: 'Movimiento no válido' });
+      await Promise.all(ids.map(id => inv.delete(id)));
+      movimientos = movimientos.filter(m => !ids.includes(m.id));
     }
     if (b.accion === 'inv-producto') {
       const nombre = I.limpio(b.nombre, 60), id = I.idExtra(nombre);
@@ -167,10 +179,11 @@ exports.handler = async function (event) {
       extras = extras.filter(x => x.id !== b.id);
       await inv.setJSON('extras', extras);
     }
-    const porId = await P.listaConContraentrega(store, getStore('pedidos-contraentrega'));
-    const r = I.calcular(Array.from(porId.values()), movimientos, extras);
-    return json(200, Object.assign(r, { extras, movimientos: movimientos.sort((a, b2) => (a.fecha < b2.fecha ? 1 : -1)).slice(0, 80) }));
+    const { blobs } = await store.list();
+    const pedidos = (await Promise.all(blobs.map(x => store.get(x.key, { type: 'json' }).catch(() => null)))).filter(Boolean);
+    const r = I.calcular(pedidos, movimientos, extras);
+    return json(200, Object.assign(r, { extras, movimientos: movimientos.sort((a, b2) => (a.fecha < b2.fecha ? 1 : a.fecha > b2.fecha ? -1 : (a.creado < b2.creado ? 1 : -1))).slice(0, 300) }));
   }
 
   return json(400, { error: 'Acción no válida' });
-};
+}

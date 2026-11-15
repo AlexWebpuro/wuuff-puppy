@@ -17,7 +17,8 @@ const ITEMS = [
   { id: 'correa', nombre: 'Correa' },
   { id: 'placa', nombre: 'Placa Inteligente (chip NFC)' }
 ];
-const TIPOS_MOV = ['conteo', 'entrada', 'colaboracion', 'regalo', 'danado'];
+const TIPOS_MOV = ['conteo', 'entrada', 'colaboracion', 'regalo', 'contenido', 'danado'];
+const SALIDAS_MANUALES = ['colaboracion', 'regalo', 'contenido', 'danado']; // contenido = producto que se usa para fotos y videos
 const TIPOS_PEDIDO = ['venta', 'colaboracion', 'regalo'];
 const SALIO = ['enviado', 'entregado'];
 const POR_DESPACHAR = ['por-confirmar', 'confirmado', 'preparando'];
@@ -63,6 +64,54 @@ function piezasDeTexto(texto) {
   return { piezas, dudas };
 }
 
+// ── Letras del collar con nombre (por letra y color) ──
+// Cada letra es un producto del inventario: "L-<color>-<letra>" (ej. L-rosado-A, L-lila-corazon, L-negro-estrella)
+const CN = require('../../assets/collar-nombre.json');
+const COLOR_IDS = CN.colores.map(c => c.id);
+function codigoLetra(ch) { return ch === '♥' ? 'corazon' : (ch === '★' ? 'estrella' : ch); }
+function idLetra(color, ch) { return 'L-' + color + '-' + codigoLetra(ch); }
+function esLetra(id) {
+  const m = /^L-([a-z]+)-([A-Z]|corazon|estrella)$/.exec(String(id || ''));
+  return !!m && COLOR_IDS.includes(m[1]);
+}
+function colorPorNombre(t) { const n = sinTildes(t).trim(); const c = CN.colores.find(x => sinTildes(x.nombre) === n); return c ? c.id : ''; }
+function piezasNombre(texto) {
+  return Array.from(String(texto || '').toUpperCase()).map(ch => (ch === '♥' || ch === '★') ? ch : ch.normalize('NFD').replace(/[\u0300-\u036f]/g, ''))
+    .filter(ch => /^[A-Z]$/.test(ch) || ch === '♥' || ch === '♥' || ch === '★');
+}
+// Letras que lleva un pedido: de 'collar con nombre "LUNA" … · letras Rosado' (o combinadas: el detalle va en las notas)
+function letrasDePedido(p) {
+  const out = [];
+  let dudas = false;
+  const sumar = (id, n) => { const ya = out.find(x => x.item === id); if (ya) ya.cantidad += n; else out.push({ item: id, cantidad: n }); };
+  const txt = String((p && p.productos) || ''), notas = String((p && p.notas) || '');
+  const re = /con nombre[^"\n]*"([^"\n]{1,12})"[^"\n]*?letras (combinadas|[^·+|(\[\n]+)/gi;
+  let m;
+  while ((m = re.exec(txt))) {
+    const piezas = piezasNombre(m[1]), color = m[2].trim();
+    if (!piezas.length) continue;
+    if (!/^combinadas$/i.test(color)) {
+      const id = colorPorNombre(color);
+      if (!id) { dudas = true; continue; }
+      piezas.forEach(ch => sumar(idLetra(id, ch), 1));
+      continue;
+    }
+    // "✏️ Nombre: LUNA · Letras: combinadas → L Azul rey · U Azul rey · N Rosado · A Rosado · Talla S"
+    const lin = notas.split('\n').find(l => l.indexOf('Nombre: ' + piezas.join('') + ' · Letras: combinadas →') > -1);
+    if (!lin) { dudas = true; continue; }
+    const detalle = lin.split('combinadas →')[1].split(' · ').map(x => x.trim()).filter(Boolean);
+    let leidas = 0;
+    detalle.forEach(par => {
+      const mm = /^(\S)\s+(.+)$/.exec(par);
+      if (!mm || /^(talla|extras)/i.test(par)) return;
+      const id = colorPorNombre(mm[2]);
+      if (id) { sumar(idLetra(id, mm[1]), 1); leidas++; }
+    });
+    if (leidas !== piezas.length) dudas = true;
+  }
+  return { letras: out, dudas };
+}
+
 // ── Movimientos ──
 function nuevoId() { return 'mov-' + Date.now().toString(36) + '-' + crypto.randomBytes(3).toString('hex'); }
 // Fecha del movimiento: hoy → ahora mismo (así un conteo de hoy cuenta lo que ya salió hoy); otro día → mediodía de ese día
@@ -71,11 +120,16 @@ function fechaMov(f, ahora) {
   if (!f || !/^\d{4}-\d{2}-\d{2}$/.test(f) || f === hoy) return new Date(ahora || Date.now()).toISOString();
   return new Date(f + 'T12:00:00-05:00').toISOString();
 }
+// Cada guardado trae un "lote" (uno por formulario): el id sale del lote + el producto, así que si el mismo
+// guardado llega dos veces (doble toque o reintento tras un error), se sobrescribe y no se suma dos veces.
+function idMov(lote, item) {
+  return /^[a-z0-9]{6,24}$/.test(String(lote || '')) ? 'mov-' + lote + '-' + item.toLowerCase().replace(/[^a-z0-9-]/g, '') : nuevoId();
+}
 function movimiento(d, itemsValidos, ahora) {
-  if (!d || !TIPOS_MOV.includes(d.tipo) || !itemsValidos.includes(d.item)) return null;
+  if (!d || !TIPOS_MOV.includes(d.tipo) || !(itemsValidos.includes(d.item) || esLetra(d.item))) return null;
   const cantidad = parseInt(d.cantidad, 10);
   if (isNaN(cantidad) || cantidad < 0 || cantidad > 100000 || (d.tipo !== 'conteo' && cantidad === 0)) return null;
-  return { id: nuevoId(), tipo: d.tipo, item: d.item, cantidad, fecha: fechaMov(d.fecha, ahora), nota: limpio(d.nota, 200),
+  return { id: idMov(d.lote, d.item), tipo: d.tipo, item: d.item, cantidad, fecha: fechaMov(d.fecha, ahora), nota: limpio(d.nota, 200),
     creado: new Date(ahora || Date.now()).toISOString() };
 }
 function idExtra(nombre) {
@@ -87,6 +141,9 @@ function idExtra(nombre) {
 function calcular(pedidos, movimientos, extras) {
   const items = ITEMS.concat(extras || []);
   const porItem = Object.fromEntries(items.map(it => [it.id, { id: it.id, nombre: it.nombre, extra: !it.id.indexOf('x-'), conteo: null, bodega: 0, porDespachar: 0 }]));
+  // Las letras se crean a medida que tienen movimientos o pedidos (son 10 colores × 28 letras)
+  const asegurar = id => { if (!porItem[id] && esLetra(id)) porItem[id] = { id, letra: true, conteo: null, bodega: 0, porDespachar: 0 }; return porItem[id]; };
+  (movimientos || []).forEach(m => asegurar(m.item));
   const movs = (movimientos || []).filter(m => porItem[m.item]).sort((a, b) => (a.fecha < b.fecha ? -1 : a.fecha > b.fecha ? 1 : (a.creado < b.creado ? -1 : 1)));
   movs.filter(m => m.tipo === 'conteo').forEach(m => { porItem[m.item].conteo = { cantidad: m.cantidad, fecha: m.fecha }; });
   const despues = (it, fecha) => !porItem[it].conteo || fecha > porItem[it].conteo.fecha;
@@ -97,14 +154,21 @@ function calcular(pedidos, movimientos, extras) {
     if (m.tipo === 'conteo' || !despues(m.item, m.fecha)) return;
     porItem[m.item].bodega += m.tipo === 'entrada' ? m.cantidad : -m.cantidad;
   });
-  movs.filter(m => ['colaboracion', 'regalo', 'danado'].includes(m.tipo)).forEach(m => salidas.push({ fecha: m.fecha, item: m.item, tipo: m.tipo, cantidad: m.cantidad, nota: m.nota, origen: 'manual' }));
+  movs.filter(m => SALIDAS_MANUALES.includes(m.tipo)).forEach(m => salidas.push({ fecha: m.fecha, item: m.item, tipo: m.tipo, cantidad: m.cantidad, nota: m.nota, origen: 'manual' }));
 
-  const sinLeer = [];
+  const sinLeer = [], letrasSinLeer = [];
   (pedidos || []).filter(p => p && !p.borrado && (SALIO.includes(p.estado) || POR_DESPACHAR.includes(p.estado))).forEach(p => {
     const { piezas, dudas } = piezasDeTexto(p.productos);
     if (!piezas.length || dudas) sinLeer.push({ id: p.id, cliente: (p.cliente && p.cliente.nombre) || '', productos: String(p.productos || '').split(' | ')[0].slice(0, 160) });
     const tipo = TIPOS_PEDIDO.includes(p.tipo) ? p.tipo : 'venta';
     const fecha = p.enviado || p.entregado || p.creado || '';
+    const ls = letrasDePedido(p);
+    if (ls.dudas) letrasSinLeer.push({ id: p.id, cliente: (p.cliente && p.cliente.nombre) || '', productos: String(p.productos || '').split(' | ')[0].slice(0, 160) });
+    ls.letras.forEach(l => {
+      const r = asegurar(l.item); if (!r) return;
+      if (POR_DESPACHAR.includes(p.estado)) { r.porDespachar += l.cantidad; return; }
+      if (despues(l.item, fecha)) r.bodega -= l.cantidad;
+    });
     piezas.forEach(pz => {
       if (!porItem[pz.item]) return;
       if (POR_DESPACHAR.includes(p.estado)) { porItem[pz.item].porDespachar += pz.cantidad; return; }
@@ -113,7 +177,10 @@ function calcular(pedidos, movimientos, extras) {
     });
   });
   const lista = items.map(it => { const r = porItem[it.id]; r.disponible = r.bodega - r.porDespachar; return r; });
-  return { items: lista, salidas, sinLeer: sinLeer.slice(0, 30), conConteo: lista.some(r => r.conteo) };
+  const letras = Object.values(porItem).filter(r => r.letra).map(r => ({ id: r.id, bodega: r.bodega, porDespachar: r.porDespachar,
+    disponible: r.bodega - r.porDespachar, conteo: r.conteo }));
+  return { items: lista, letras, salidas: salidas.filter(s => !esLetra(s.item)), sinLeer: sinLeer.slice(0, 30), letrasSinLeer: letrasSinLeer.slice(0, 30),
+    conConteo: lista.some(r => r.conteo) };
 }
 
 // Lee todo el almacén: movimientos y productos extra (los que agrega Angie, ej. "Bolsas de regalo")
@@ -124,4 +191,4 @@ async function leer(store) {
   return { movimientos: movs, extras: Array.isArray(extras) ? extras : [] };
 }
 
-module.exports = { STORE, ITEMS, TIPOS_MOV, TIPOS_PEDIDO, piezasDeTexto, movimiento, idExtra, calcular, leer, limpio };
+module.exports = { letrasDePedido, idLetra, esLetra, STORE, ITEMS, TIPOS_MOV, idMov, TIPOS_PEDIDO, piezasDeTexto, movimiento, idExtra, calcular, leer, limpio };
