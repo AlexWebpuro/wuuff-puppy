@@ -170,13 +170,6 @@ a { color: var(--blue); }
 .porque p { color: var(--tenue); font-weight: 600; margin: 0; font-size: 15px; }
 @media (max-width: 860px) { .porque { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 480px) { .porque { grid-template-columns: minmax(0, 1fr); } }
-.galeria { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(240px, 1fr); gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 8px; }
-.galeria figure { margin: 0; scroll-snap-align: start; border-radius: 20px; overflow: hidden; box-shadow: var(--sombra); background: var(--white); }
-.galeria .ig-fig { min-width: 326px; aspect-ratio: auto; overflow: auto; display: flex; align-items: center; justify-content: center; padding: 8px; box-sizing: border-box; }
-.galeria .ig-fig .instagram-media { margin: 0 !important; width: 100% !important; min-width: 0 !important; max-width: 540px; text-align: center; }
-.galeria .ig-fig .instagram-media a { font-weight: 800; color: #2d4375; }
-.galeria .placa-sola img { object-fit: contain; background: #fff; }
-.galeria img { display: block; width: 100%; height: 100%; aspect-ratio: 4 / 5; object-fit: cover; }
 .hero-title { font-family: var(--f-display); color: var(--navy); margin: 0; font-size: clamp(36px, 5.6vw, 64px); line-height: 1.38; }
 .t-highlight { background: var(--navy); color: var(--white); padding: 2px 18px; border-radius: 26px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
 .t-coral { background: var(--coral); }
@@ -514,20 +507,6 @@ footer a:hover { opacity: 1; text-decoration: underline; }
     <div class="envoltura"><div class="resenas" id="resenas" data-resenas="placa"></div></div>
   </section>
 
-  <section class="seccion franja" id="galeria" aria-labelledby="t-galeria">
-    <div class="envoltura">
-      <div class="cabeza"><h2 id="t-galeria">Así se ve en su collar 📸</h2><p>Placas personalizadas con el nombre de cada perrihijo, en forma de huella o con su nombre, y su perfil en el celular.</p></div>
-      <div class="galeria">
-        <figure><img src="/images/productos/placa/placa-guardian-de-cerca.webp" width="1122" height="1402" alt="Primer plano de la placa de identificación para perro azul en forma de huella con el nombre Guardian, colgada del collar" loading="lazy" decoding="async"></figure>
-        <figure class="placa-sola"><img src="/images/productos/placa/placa-luna-sola.webp" width="1122" height="1402" alt="Placa de identificación para perro morada en forma de huella con el nombre Luna y chip NFC, sobre fondo blanco" loading="lazy" decoding="async"></figure>
-        <figure><img src="/images/productos/placa/placa-guardian-calle.webp" width="940" height="1672" alt="Pastor alemán Guardian con su placa de identificación para perro azul en forma de huella; un vecino lo encontró y ve su perfil en el celular" loading="lazy" decoding="async"></figure>
-        <figure><img src="/images/productos/placa/placa-monita-veterinaria.webp" width="1122" height="1402" alt="Golden retriever Monita con su placa de identificación para perro morada con su nombre; la veterinaria abre su carné de vacunas en el celular" loading="lazy" decoding="async"></figure>
-        <figure><img src="/images/productos/placa/placa-guardian-perfil.webp" width="1122" height="1402" alt="Placa de identificación para perro en forma de huella azul con el nombre Guardian junto al celular con su perfil" loading="lazy" decoding="async"></figure>
-        <figure><img src="/images/productos/placa/placa-luna-beagle.webp" width="1122" height="1402" alt="Beagle Luna con su placa de identificación para perro roja en forma de huella; al acercar el celular se abre su perfil para contactar" loading="lazy" decoding="async"></figure>
-        <figure class="ig-fig"><blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/DflBQAphIEM/" data-instgrm-version="14"><a href="https://www.instagram.com/p/DflBQAphIEM/" target="_blank" rel="noopener">▶ Ver el video de la Placa Inteligente en Instagram</a></blockquote></figure>
-      </div>
-    </div>
-  </section>
 
   <section class="seccion" id="video" aria-labelledby="t-video">
     <div class="envoltura">
@@ -539,7 +518,7 @@ footer a:hover { opacity: 1; text-decoration: underline; }
         </button>
       </div>
       <div class="ig-video">
-        <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/DfVs0Pdge2p/" data-instgrm-version="14"><a href="https://www.instagram.com/p/DfVs0Pdge2p/" target="_blank" rel="noopener">▶ Ver el video de la Placa Inteligente en Instagram</a></blockquote>
+        <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/DflBQAphIEM/" data-instgrm-version="14"><a href="https://www.instagram.com/p/DflBQAphIEM/" target="_blank" rel="noopener">▶ Ver el video de la Placa Inteligente en Instagram</a></blockquote>
       </div>
     </div>
   </section>
@@ -552,7 +531,7 @@ footer a:hover { opacity: 1; text-decoration: underline; }
   });});
   // Carga el video de Instagram solo cuando la persona baja hasta él, para no hacer lenta la página
   (function(){
-    var caja=document.getElementById('galeria')||document.getElementById('video');if(!caja)return;var listo=false;
+    var caja=document.getElementById('video');if(!caja)return;var listo=false;
     function cargar(){if(listo)return;listo=true;var s=document.createElement('script');s.async=true;s.src='https://www.instagram.com/embed.js';document.body.appendChild(s);}
     if('IntersectionObserver' in window){var io=new IntersectionObserver(function(e){if(e[0].isIntersecting){io.disconnect();cargar();}},{rootMargin:'400px'});io.observe(caja);}else cargar();
   })();
