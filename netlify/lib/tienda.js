@@ -307,7 +307,7 @@ function invDeCarrito(carrito, calc) {
     let talla = elegir(it.talla, prod.tallas);
     if (talla === 'Única') talla = '';
     const conNombre = it.nombre && (it.p === 'collar' || CN.combos[it.p]);
-    const id = conNombre ? ({ collar: 'collar-nombre', 'collar-correa': 'collar-correa-nombre', combo: 'combo-nombre', correa: 'correa-nombre' }[it.p] || it.p) : it.p;
+    const id = conNombre ? ({ collar: 'collar-nombre', 'collar-correa': 'collar-correa-nombre', combo: 'combo-nombre', correa: 'correa-nombre', 'arnes-correa': 'arnes-correa-nombre' }[it.p] || it.p) : it.p;
     const o = { p: id, talla, q: Math.min(Math.max(parseInt(it.qty, 10) || 1, 1), 10) };
     if (conNombre) o.nombre = { texto: String(it.nombre.texto || ''), color: it.nombre.color, mezcla: Array.isArray(it.nombre.mezcla) ? it.nombre.mezcla : String(it.nombre.mezcla || '').split(',') };
     inv.push(o);

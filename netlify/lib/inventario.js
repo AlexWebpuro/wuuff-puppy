@@ -148,7 +148,7 @@ function letrasDePedido(p) {
 // Si un pedido no lo trae (pedidos viejos), el inventario lee el texto de "productos" como respaldo.
 const PIEZAS_PRODUCTO = {
   combo: ['collar', 'arnes', 'correa'], 'combo-nombre': ['collar', 'arnes', 'correa'],
-  'arnes-correa': ['arnes', 'correa'], 'collar-correa': ['collar', 'correa'], 'collar-correa-nombre': ['collar', 'correa'],
+  'arnes-correa': ['arnes', 'correa'], 'arnes-correa-nombre': ['arnes', 'correa'], 'collar-correa': ['collar', 'correa'], 'collar-correa-nombre': ['collar', 'correa'],
   arnes: ['arnes'], collar: ['collar'], 'collar-nombre': ['collar'], correa: ['correa'], 'correa-nombre': ['correa'],
   placa: ['placa'], 'placa-add': ['placa'], letra: []
 };

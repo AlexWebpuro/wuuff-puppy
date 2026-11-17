@@ -3475,7 +3475,7 @@ function pagarConWompi(estimadoCents, nombreProducto, customerData, shippingAddr
   // Collar con nombre (/?comprar=collar&talla=S&nombre=LUNA&color=rosado&peso=p1): precio según /assets/collar-nombre.json;
   // el servidor vuelve a calcular el total con el mismo archivo
   // También Collar + correa y Combo completo con collar con nombre (/?comprar=collar-correa&talla=S&nombre=…)
-  var nombreCollar = (clave === 'collar' || clave === 'collar-correa' || clave === 'combo' || clave === 'correa') ? (q.get('nombre') || '') : '';
+  var nombreCollar = (clave === 'collar' || clave === 'collar-correa' || clave === 'combo' || clave === 'correa' || clave === 'arnes-correa') ? (q.get('nombre') || '') : '';
   function piezasNombre(txt, max){
     var out = [];
     Array.from(String(txt).toUpperCase()).forEach(function(ch){

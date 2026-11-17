@@ -8,8 +8,8 @@
   // data-producto="collar-correa" o "combo": el personalizador va dentro de la ficha del combo
   // (sin el paso de talla ni el resumen; compra el botón de la ficha con window.wuuffCollarNombre)
   var PRODUCTO = caja.getAttribute('data-producto') || 'collar', EN_COMBO = PRODUCTO !== 'collar';
-  // En la correa con nombre los textos hablan de la correa (las letras se deslizan igual por la correa)
-  var ES_CORREA = PRODUCTO === 'correa';
+  // En la correa con nombre (sola o con el arnés) los textos hablan de la correa (las letras se deslizan igual por la correa)
+  var ES_CORREA = PRODUCTO === 'correa' || PRODUCTO === 'arnes-correa';
   function pz(t) { return ES_CORREA ? t.replace(/precio-collar/g, '\u0001').replace(/del collar/g, 'de la correa').replace(/el collar/g, 'la correa').replace(/su collar/g, 'su correa').replace(/por collar/g, 'por correa').replace(/Collar/g, 'Correa').replace(/collar/g, 'correa').replace(/\u0001/g, 'precio-collar') : t; }
   var ABC = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''), ICONOS = ['♥', '★'];
   // Ancho de cada letra en Malaka Cournt (en em), para que el nombre siempre quepa en el collar
