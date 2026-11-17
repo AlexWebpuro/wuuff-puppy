@@ -40,16 +40,17 @@
 @font-face{font-family:'Nunito';font-weight:700;src:url(/assets/fonts/nunito-latin-700-normal.woff2) format('woff2');font-display:swap}
 @font-face{font-family:'Nunito';font-weight:800;src:url(/assets/fonts/nunito-latin-800-normal.woff2) format('woff2');font-display:swap}
 @font-face{font-family:'Nunito';font-weight:900;src:url(/assets/fonts/nunito-latin-900-normal.woff2) format('woff2');font-display:swap}
-:root{--azul:#4964af;--lima:#d5d50c;--rosa:#cc8d9f;--naranja:#ff7d57;--crema:#feeee8;--rosa-cl:#f7d0e8;--celeste:#99b0ee;--navy:#2d4375;--ambar:#ffaa00;--oliva:#99945d}
-.g-display{font-family:'Knicknack','Fredoka One',cursive;font-weight:400;text-transform:uppercase;letter-spacing:.5px;line-height:1}
+:root{--azul:#4964af;--lima:#d5d50c;--rosa:#cc8d9f;--naranja:#ff7d57;--crema:#feeee8;--rosa-cl:#f7d0e8;--celeste:#99b0ee;--navy:#2d4375;--verde:#7bc96f}
+.g-display{font-family:'Knicknack','Fredoka One',cursive;font-weight:400;text-transform:uppercase;letter-spacing:.5px;line-height:1.02}
 .guia{overflow:hidden}
-/* HERO */
+.guia p,.guia li{color:#3d4a6b}
+/* ── HERO ── */
 .g-hero{background:var(--azul);color:#fff;position:relative;overflow:hidden}
-.g-hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:30px;align-items:center;padding-top:44px;padding-bottom:56px;position:relative;z-index:1}
+.g-hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:30px;align-items:center;padding-top:40px;padding-bottom:70px;position:relative;z-index:1}
 .g-chip{display:inline-block;background:var(--lima);color:var(--navy);font-weight:900;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;padding:6px 14px;border-radius:20px;transform:rotate(-2deg)}
-.g-hero h1{font-size:clamp(38px,6.4vw,72px);margin:16px 0 14px;color:#fff}
+.g-hero h1{font-size:clamp(40px,6.6vw,74px);margin:16px 0 14px;color:#fff}
 .g-hero h1 span{color:var(--lima);display:block}
-.g-hero p.lead{color:#fff;font-size:clamp(16px,2vw,19px);font-weight:700;opacity:.95;max-width:520px}
+.g-hero .lead{color:#fff;font-size:clamp(17px,2vw,20px);font-weight:800;opacity:.95;max-width:480px}
 .g-botones{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
 .g-btn{display:inline-flex;align-items:center;gap:8px;font-family:'Nunito',sans-serif;font-weight:900;font-size:17px;padding:15px 24px;border-radius:40px;text-decoration:none;border:none;cursor:pointer;transition:transform .15s}
 .g-btn:hover{transform:translateY(-2px)}
@@ -61,101 +62,130 @@
 .g-nube{aspect-ratio:1/1;border-radius:58% 42% 50% 50%/48% 55% 45% 52%;overflow:hidden;border:8px solid #fff;background:var(--crema);box-shadow:0 14px 0 rgba(45,67,117,.35)}
 .g-nube img{width:100%;height:100%;object-fit:cover}
 .g-hero-foto .masc{position:absolute;width:42%;left:-14%;bottom:-8%;filter:drop-shadow(0 6px 0 rgba(0,0,0,.12))}
-.g-sello{position:absolute;top:-4%;right:-4%;width:110px;height:110px;border-radius:50%;background:var(--naranja);color:#fff;display:grid;place-items:center;text-align:center;font-weight:900;font-size:13px;line-height:1.1;transform:rotate(10deg);box-shadow:0 5px 0 #d65a35}
-.g-sello b{font-family:'Fredoka One',cursive;font-weight:400;font-size:26px;display:block}
-.g-deco{position:absolute;font-size:28px;opacity:.22;pointer-events:none}
-.g-ola{display:block;width:100%;height:40px;margin-top:-1px}
-/* INDICE */
-.g-indice{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;padding:26px 0 6px}
-.g-indice a{background:var(--crema);color:var(--navy);font-weight:800;font-size:14px;padding:9px 16px;border-radius:30px;text-decoration:none;border:2px solid transparent}
-.g-indice a:hover{border-color:var(--azul)}
-.g-indice a b{color:var(--naranja);margin-right:4px}
-/* SECCIONES */
-.g-sec{padding:46px 0}
-.g-sec>.wrap{position:relative}
-.g-sec-head{padding-right:140px}
-.g-sec-head{display:flex;align-items:center;gap:18px;margin-bottom:22px}
-.g-num{flex:none;width:68px;height:68px;border-radius:50%;display:grid;place-items:center;font-family:'Fredoka One',cursive;font-size:34px;color:#fff;background:var(--azul);box-shadow:0 5px 0 var(--navy)}
-.g-sec h2{font-size:clamp(28px,4vw,44px);color:var(--azul)}
-.g-sec .sub{font-weight:800;color:#6b7699;font-size:15px;margin-top:6px}
-.g-sec p,.g-sec li{font-size:16.5px;color:#3d4a6b}
-.g-masc{position:absolute;right:20px;top:-14px;width:130px;filter:drop-shadow(0 6px 0 rgba(45,67,117,.1))}
+.g-hero-foto .hueso{position:absolute;width:30%;right:-6%;bottom:6%;transform:rotate(-25deg);filter:drop-shadow(0 6px 0 rgba(0,0,0,.15))}
+.g-sello{position:absolute;top:-4%;right:-4%;width:108px;height:108px;border-radius:50%;background:var(--naranja);color:#fff;display:grid;place-items:center;text-align:center;font-weight:900;font-size:13px;line-height:1.1;transform:rotate(10deg);box-shadow:0 5px 0 #d65a35}
+.g-sello b{font-family:'Fredoka One',cursive;font-weight:400;font-size:28px;display:block}
+.g-huellas{position:absolute;inset:0;pointer-events:none;opacity:.14}
+.g-ola{position:absolute;left:0;right:0;bottom:-1px;width:100%;height:46px;display:block}
+/* ── ÍNDICE ── */
+.g-indice{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:22px 0 4px}
+.g-indice a{display:flex;flex-direction:column;align-items:center;gap:4px;background:#fff;border:2.5px solid #e6ebfa;border-radius:20px;padding:12px 6px;text-decoration:none;color:var(--navy);font-weight:900;font-size:13.5px;text-align:center;transition:transform .15s,border-color .15s}
+.g-indice a:hover{transform:translateY(-3px);border-color:var(--azul)}
+.g-indice a i{font-style:normal;font-size:28px;line-height:1}
+/* ── SECCIONES ── */
+.g-sec{padding:44px 0;position:relative}
+.g-sec-head{display:flex;align-items:center;gap:16px;margin-bottom:22px}
+.g-num{flex:none;width:62px;height:62px;border-radius:50%;display:grid;place-items:center;font-family:'Fredoka One',cursive;font-size:30px;color:#fff;background:var(--azul);box-shadow:0 5px 0 var(--navy)}
+.g-num.nar{background:var(--naranja);box-shadow:0 5px 0 #d65a35}
+.g-num.ros{background:var(--rosa);box-shadow:0 5px 0 #a8687a}
+.g-num.lim{background:var(--lima);color:var(--navy);box-shadow:0 5px 0 #a3a300}
+.g-sec h2{font-size:clamp(28px,4vw,42px);color:var(--azul)}
+.g-sec .sub{font-weight:800;color:#6b7699;font-size:15.5px;margin-top:6px}
 .g-fondo-crema{background:var(--crema)}
 .g-fondo-rosa{background:#fdf1f8}
 .g-fondo-celeste{background:#eef2fd}
-/* tarjetas equipo */
-.g-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.g-card{background:#fff;border-radius:22px;padding:20px;border:2.5px solid #e6ebfa;position:relative}
-.g-card .ico{font-size:34px;line-height:1;margin-bottom:8px}
-.g-card h3{font-family:'Fredoka One',cursive;font-weight:400;font-size:20px;color:var(--navy);margin-bottom:6px}
-.g-card p{font-size:15px}
-.g-card.top{border-color:var(--lima);background:#fbfbe6}
-.g-card.top::after{content:"CLAVE";position:absolute;top:-11px;right:16px;background:var(--lima);color:var(--navy);font-size:11px;font-weight:900;letter-spacing:1px;padding:3px 10px;border-radius:10px}
-/* cachorro */
-.g-split{display:grid;grid-template-columns:1fr 1fr;gap:26px;align-items:center}
-.g-lista{list-style:none;display:grid;gap:12px}
-.g-lista li{background:#fff;border-radius:18px;padding:14px 16px 14px 52px;position:relative;font-weight:700}
-.g-lista li::before{content:"🐾";position:absolute;left:16px;top:13px;font-size:20px}
-.g-regla{background:var(--azul);color:#fff;border-radius:26px;padding:26px;text-align:center}
-.g-regla .big{font-family:'Fredoka One',cursive;font-size:clamp(46px,7vw,70px);color:var(--lima);line-height:1}
-.g-regla p{color:#fff;font-weight:800;font-size:17px}
-.g-regla small{display:block;margin-top:10px;opacity:.85;font-weight:700}
-/* pasos */
-.g-pasos{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;counter-reset:p}
-.g-paso{background:#fff;border-radius:22px;padding:22px 20px 20px;border:2.5px solid #e6ebfa;counter-increment:p;position:relative}
-.g-paso::before{content:counter(p);position:absolute;top:-16px;left:18px;width:38px;height:38px;border-radius:50%;background:var(--naranja);color:#fff;font-family:'Fredoka One',cursive;font-size:20px;display:grid;place-items:center;box-shadow:0 3px 0 #d65a35}
-.g-paso h3{font-family:'Fredoka One',cursive;font-weight:400;font-size:19px;color:var(--navy);margin:8px 0 4px}
-.g-paso p{font-size:15px}
-/* jala */
-.g-jala{display:grid;grid-template-columns:1.2fr .8fr;gap:24px;align-items:center}
+/* Tip de la pandilla: mascota + globo */
+.g-tip{display:flex;align-items:flex-end;gap:12px;margin-top:24px}
+.g-tip img{width:92px;flex:none;filter:drop-shadow(0 5px 0 rgba(45,67,117,.12))}
+.g-tip p{position:relative;background:#fff;border:2.5px solid var(--navy);border-radius:22px 22px 22px 6px;padding:12px 16px;font-weight:800;font-size:15.5px;color:var(--navy)!important;margin-bottom:24px;box-shadow:4px 4px 0 var(--navy)}
+.g-tip p b{color:var(--naranja)}
+/* 1 · equipo: tarjetas con ilustración */
+.g-equipo{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.g-item{background:#fff;border-radius:24px;padding:16px;border:2.5px solid #e6ebfa;text-align:center;position:relative}
+.g-item .ilu{height:96px;display:grid;place-items:center;margin-bottom:8px;border-radius:18px;background:var(--fondo,#eef2fd)}
+.g-item .ilu img{max-height:84px;max-width:88%;object-fit:contain}
+.g-item .ilu span{font-size:52px;line-height:1}
+.g-item h3{font-family:'Fredoka One',cursive;font-weight:400;font-size:19px;color:var(--navy);margin-bottom:2px}
+.g-item p{font-size:14.5px;font-weight:700;color:#6b7699}
+.g-item.top{border-color:var(--lima);background:#fbfbe6}
+.g-item.top::after{content:"CLAVE";position:absolute;top:-11px;right:16px;background:var(--lima);color:var(--navy);font-size:11px;font-weight:900;letter-spacing:1px;padding:3px 10px;border-radius:10px}
+/* 2 · cachorro: barras por edad */
+.g-cach{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:center}
+.g-pasitos{list-style:none;display:grid;gap:10px}
+.g-pasitos li{display:flex;align-items:center;gap:12px;background:#fff;border-radius:18px;padding:12px 14px;font-weight:800;font-size:15.5px}
+.g-pasitos li i{font-style:normal;flex:none;width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font-size:24px;background:var(--rosa-cl)}
+.g-regla{background:var(--azul);border-radius:28px;padding:22px 22px 18px;color:#fff;position:relative}
+.g-regla .t{font-weight:900;font-size:15px;color:#fff;opacity:.9}
+.g-regla .big{font-family:'Fredoka One',cursive;font-size:clamp(42px,6vw,60px);color:var(--lima);line-height:1;margin:2px 0 12px}
+.g-regla .big small{font-size:.38em;color:#fff;display:block;font-family:'Nunito',sans-serif;font-weight:800;margin-top:4px}
+.g-barras{display:grid;gap:8px}
+.g-barra{display:grid;grid-template-columns:62px 1fr;align-items:center;gap:8px;font-weight:900;font-size:13px;color:#fff}
+.g-barra div{height:26px;border-radius:13px;background:var(--lima);color:var(--navy);display:flex;align-items:center;justify-content:flex-end;padding:0 10px;font-size:12.5px;width:var(--w)}
+.g-regla .masc{position:absolute;width:84px;right:-10px;top:-46px}
+/* 3 · paso a paso: camino con paradas */
+.g-camino{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:30px 18px}
+.g-camino svg.linea{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.g-parada{position:relative;z-index:1;text-align:center}
+@media (min-width:861px),print{.g-parada:nth-of-type(4){order:6}.g-parada:nth-of-type(6){order:4}.g-parada:nth-of-type(5){order:5}}
+.g-parada .circ{width:96px;height:96px;margin:0 auto 8px;border-radius:50%;background:#fff;border:4px solid var(--azul);display:grid;place-items:center;font-size:44px;box-shadow:0 6px 0 rgba(45,67,117,.15);position:relative}
+.g-parada .circ b{position:absolute;top:-6px;left:-6px;width:32px;height:32px;border-radius:50%;background:var(--naranja);color:#fff;font-family:'Fredoka One',cursive;font-weight:400;font-size:17px;display:grid;place-items:center;box-shadow:0 3px 0 #d65a35}
+.g-parada h3{font-family:'Fredoka One',cursive;font-weight:400;font-size:18px;color:var(--navy)}
+.g-parada p{font-size:14.5px;font-weight:700;color:#6b7699;max-width:230px;margin:2px auto 0}
+.g-foto-paseo{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center;background:#fff;border-radius:26px;padding:14px;margin-top:28px;border:2.5px solid #e6ebfa}
+.g-foto-paseo img{width:150px;height:150px;object-fit:cover;border-radius:20px}
+.g-foto-paseo p{font-weight:800;font-size:16px;color:var(--navy)}
+.g-foto-paseo p span{display:block;font-family:'Fredoka One',cursive;font-weight:400;font-size:22px;color:var(--naranja);margin-bottom:4px}
+/* 4 · jala */
+.g-jala{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:center}
+.g-arbol{background:#fff;border-radius:28px;padding:14px 18px 20px;text-align:center;border:3px solid var(--lima)}
+.g-arbol svg{width:100%;max-width:330px;height:auto;display:block;margin:0 auto}
+.g-arbol h3{font-family:'Fredoka One',cursive;font-weight:400;font-size:24px;color:var(--navy);margin-top:4px}
+.g-arbol p{font-weight:800;font-size:15.5px}
 .g-sino{display:grid;gap:12px}
-.g-si,.g-no{border-radius:20px;padding:16px 18px;font-weight:700}
-.g-si{background:#e9f6e6}.g-no{background:#fdeceb}
-.g-si strong,.g-no strong{display:block;font-family:'Fredoka One',cursive;font-weight:400;font-size:18px;margin-bottom:4px}
-.g-si strong{color:#2f7a2a}.g-no strong{color:#c0392b}
-.g-arbol{background:var(--lima);border-radius:26px;padding:26px;text-align:center;color:var(--navy)}
-.g-arbol .e{font-size:60px;line-height:1}
-.g-arbol h3{font-family:'Fredoka One',cursive;font-weight:400;font-size:26px;margin:6px 0}
-.g-arbol p{color:var(--navy);font-weight:800}
-/* seguridad */
-.g-seg{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
-.g-seg div{background:#fff;border-radius:20px;padding:16px 18px 16px 70px;position:relative;min-height:76px}
-.g-seg div span{position:absolute;left:16px;top:14px;width:42px;height:42px;border-radius:14px;background:var(--rosa-cl);display:grid;place-items:center;font-size:22px}
-.g-seg strong{color:var(--navy);font-weight:900}
-.g-seg p{font-size:15px}
-/* tabla */
-.g-tabla{width:100%;border-collapse:separate;border-spacing:0;border-radius:22px;overflow:hidden;border:2.5px solid #e6ebfa;background:#fff}
-.g-tabla th{background:var(--azul);color:#fff;text-align:left;padding:14px 16px;font-size:15px}
-.g-tabla td{padding:13px 16px;border-top:2px solid #eef1fb;font-size:15.5px;color:#3d4a6b}
-.g-tabla td:first-child{font-weight:900;color:var(--navy)}
-.g-tabla tr:nth-child(even) td{background:#f8f9fe}
-.g-nota{font-weight:700;font-size:14px;color:#6b7699;margin-top:10px}
-/* checklist */
-.g-check{background:var(--navy);color:#fff;border-radius:30px;padding:34px;display:grid;grid-template-columns:1fr 1fr;gap:26px;align-items:center}
-.g-check h2{color:var(--lima)}
-.g-check p{color:rgba(255,255,255,.85)}
-.g-check ul{list-style:none;display:grid;gap:10px}
+.g-sino div{display:flex;align-items:center;gap:14px;border-radius:22px;padding:14px 16px;font-weight:800;font-size:15.5px}
+.g-sino i{font-style:normal;flex:none;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-size:24px;color:#fff;font-weight:900}
+.g-si{background:#e9f6e6}.g-si i{background:#4caf50}
+.g-no{background:#fdeceb}.g-no i{background:#e05a4a}
+/* 5 · seguridad: fichas de colores */
+.g-seg{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.g-seg div{border-radius:24px;padding:18px 16px;text-align:center;background:var(--c)}
+.g-seg span{display:block;font-size:46px;line-height:1;margin-bottom:6px}
+.g-seg h3{font-family:'Fredoka One',cursive;font-weight:400;font-size:19px;color:var(--navy)}
+.g-seg p{font-size:14.5px;font-weight:700}
+/* 6 · convivencia */
+.g-conv{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.g-conv div{display:flex;align-items:center;gap:12px;background:#fff;border-radius:22px;padding:14px;border:2.5px solid #e6ebfa}
+.g-conv span{flex:none;width:56px;height:56px;border-radius:18px;background:var(--crema);display:grid;place-items:center;font-size:30px}
+.g-conv p{font-weight:800;font-size:15px;color:var(--navy)!important}
+.g-conv p small{display:block;font-weight:700;color:#6b7699;font-size:13.5px}
+/* 7 · cuánto: tarjetas por etapa */
+.g-etapas{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.g-etapa{background:#fff;border-radius:24px;padding:16px 14px;text-align:center;border:2.5px solid #e6ebfa}
+.g-etapa .e{font-size:44px;line-height:1}
+.g-etapa h3{font-family:'Fredoka One',cursive;font-weight:400;font-size:18px;color:var(--navy);margin:6px 0 8px}
+.g-etapa .dato{display:flex;justify-content:center;gap:6px;flex-wrap:wrap}
+.g-etapa .dato b{background:#eef2fd;border-radius:12px;padding:5px 10px;font-size:13px;color:var(--azul)}
+.g-etapa .dato b.n{background:var(--crema);color:#d65a35}
+.g-nota{font-weight:700;font-size:14px;color:#6b7699!important;margin-top:12px;text-align:center}
+/* 8 · checklist */
+.g-check{background:var(--navy);border-radius:30px;padding:30px;display:grid;grid-template-columns:.9fr 1.1fr;gap:24px;align-items:center;position:relative}
+.g-check h2{color:var(--lima)!important}
+.g-check .masc{width:130px;margin-top:14px}
+.g-check ul{list-style:none;display:grid;gap:9px}
 .g-check label{color:#fff;display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.08);border-radius:14px;padding:11px 14px;font-weight:800;cursor:pointer;font-size:16px}
-.g-check input{appearance:none;-webkit-appearance:none;flex:none;width:24px;height:24px;border-radius:8px;border:2.5px solid var(--lima);display:grid;place-items:center;cursor:pointer}
+.g-check label em{font-style:normal;font-size:20px}
+.g-check input{appearance:none;-webkit-appearance:none;flex:none;width:24px;height:24px;border-radius:8px;border:2.5px solid var(--lima);display:grid;place-items:center;cursor:pointer;margin:0}
 .g-check input:checked{background:var(--lima)}
 .g-check input:checked::after{content:"✓";color:var(--navy);font-weight:900;font-size:15px}
-.g-check input:checked+span{text-decoration:line-through;opacity:.6}
+.g-check input:checked~span{text-decoration:line-through;opacity:.6}
 .g-listo{display:none;margin-top:12px;background:var(--lima);color:var(--navy);font-weight:900;border-radius:14px;padding:10px 14px;text-align:center}
 .g-listo.show{display:block}
 /* cierre */
-.g-cierre{text-align:center;padding:50px 0 20px}
-.g-cierre h2{font-size:clamp(30px,4.6vw,50px);color:var(--naranja)}
-.g-cierre p{max-width:620px;margin:12px auto 0;font-size:18px;font-weight:700;color:#3d4a6b}
-.g-pandilla{display:flex;justify-content:center;gap:4px;margin-top:20px}
-.g-pandilla img{width:92px}
+.g-cierre{text-align:center;padding:46px 0 10px}
+.g-cierre h2{font-size:clamp(30px,4.6vw,48px);color:var(--naranja)}
+.g-cierre p{max-width:560px;margin:10px auto 0;font-size:18px;font-weight:800}
+.g-pandilla{display:flex;justify-content:center;align-items:flex-end;gap:4px;margin-top:18px}
+.g-pandilla img{width:96px}
+.g-pandilla img:nth-child(odd){transform:translateY(-8px)}
 /* producto */
-.g-prod{background:linear-gradient(135deg,var(--rosa-cl),var(--crema));border-radius:34px;padding:34px;display:grid;grid-template-columns:.9fr 1.1fr;gap:30px;align-items:center;margin:30px 0 50px;position:relative}
+.g-prod{background:linear-gradient(135deg,var(--rosa-cl),var(--crema));border-radius:34px;padding:30px;display:grid;grid-template-columns:.9fr 1.1fr;gap:28px;align-items:center;margin:30px 0 50px;position:relative}
 .g-prod .fotos{display:grid;grid-template-columns:1.3fr 1fr;gap:12px}
 .g-prod .fotos img{border-radius:22px;width:100%;height:100%;object-fit:cover;border:5px solid #fff}
 .g-prod .fotos .alta{grid-row:span 2;aspect-ratio:3/4}
 .g-prod .fotos .baja{aspect-ratio:1/1}
-.g-prod h2{font-size:clamp(28px,3.8vw,42px);color:var(--azul);margin:12px 0 10px}
-.g-prod ul{list-style:none;display:grid;gap:7px;margin:14px 0}
+.g-prod .lazo{position:absolute;width:86px;top:-30px;left:-14px;transform:rotate(-14deg)}
+.g-prod h2{font-size:clamp(28px,3.8vw,40px);color:var(--azul);margin:12px 0 8px}
+.g-prod ul{list-style:none;display:grid;gap:6px;margin:12px 0}
 .g-prod li{font-weight:800;font-size:15.5px;color:var(--navy)}
 .g-prod li::before{content:"✓";color:var(--naranja);font-weight:900;margin-right:8px}
 .g-precio{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin:6px 0 4px}
@@ -168,61 +198,85 @@
 .g-pdf-nota{font-size:13px;font-weight:700;opacity:.85;margin-top:10px}
 .solo-pdf{display:none}
 @media (max-width:860px){
- .g-hero .wrap,.g-split,.g-jala,.g-check,.g-prod{grid-template-columns:1fr}
- .g-hero .wrap{padding-top:30px;padding-bottom:44px;text-align:center}
- .g-hero p.lead{margin:0 auto}.g-botones{justify-content:center}
- .g-hero-foto{width:min(82%,340px);margin-top:10px}
- .g-grid,.g-pasos{grid-template-columns:1fr 1fr}
- .g-seg{grid-template-columns:1fr}
- .g-masc{width:84px;top:-20px;right:10px}
- .g-sec-head{padding-right:90px}
+ .g-hero .wrap,.g-cach,.g-jala,.g-check,.g-prod{grid-template-columns:1fr}
+ .g-hero .wrap{padding-top:28px;padding-bottom:64px;text-align:center}
+ .g-hero .lead{margin:0 auto}.g-botones{justify-content:center}
+ .g-hero-foto{width:min(80%,330px);margin-top:10px}
+ .g-equipo,.g-seg,.g-conv{grid-template-columns:1fr 1fr}
+ .g-etapas{grid-template-columns:1fr 1fr}
+ .g-camino{grid-template-columns:1fr 1fr}
+ .g-camino svg.linea{display:none}
+ .g-check{padding:24px;text-align:center}.g-check .masc{width:100px;margin:10px auto 0;display:block}
+ .g-check label{text-align:left}
  .g-prod{padding:22px}
- .g-check{padding:24px}
+ .g-regla{margin-top:30px}
 }
 @media (max-width:540px){
- .g-grid,.g-pasos{grid-template-columns:1fr}
- .g-num{width:54px;height:54px;font-size:26px}
- .g-sec-head{padding-right:64px}
- .g-masc{width:70px}
- .g-pandilla img{width:68px}
- .g-tabla th,.g-tabla td{padding:10px;font-size:14px}
+ .g-indice{grid-template-columns:repeat(4,1fr);gap:6px}
+ .g-indice a{font-size:11.5px;padding:10px 2px;border-radius:16px}
+ .g-indice a i{font-size:24px}
+ .g-num{width:52px;height:52px;font-size:25px}
+ .g-sec{padding:36px 0}
+ .g-item{padding:12px}.g-item .ilu{height:80px}.g-item .ilu img{max-height:70px}.g-item .ilu span{font-size:44px}
+ .g-item h3,.g-seg h3{font-size:16.5px}.g-item p,.g-seg p{font-size:13.5px}
+ .g-seg div{padding:14px 10px}.g-seg span{font-size:38px}
+ .g-conv{grid-template-columns:1fr}
+ .g-parada .circ{width:80px;height:80px;font-size:36px}
+ .g-parada h3{font-size:16px}.g-parada p{font-size:13.5px}
+ .g-foto-paseo{grid-template-columns:1fr;text-align:center}.g-foto-paseo img{width:100%;height:190px}
+ .g-tip img{width:74px}.g-tip p{font-size:14.5px}
+ .g-pandilla img{width:70px}
  .g-btn{width:100%;justify-content:center}
 }
 @media (prefers-reduced-motion:no-preference){
- .g-hero-foto .masc{animation:flota 3.2s ease-in-out infinite}
+ .g-hero-foto .masc,.g-regla .masc{animation:flota 3.2s ease-in-out infinite}
+ .g-hero-foto .hueso{animation:gira2 4s ease-in-out infinite}
  .g-sello{animation:gira 6s ease-in-out infinite}
+ .g-parada .circ{transition:transform .2s}.g-parada:hover .circ{transform:rotate(-6deg) scale(1.06)}
  @keyframes flota{50%{transform:translateY(-10px)}}
  @keyframes gira{50%{transform:rotate(-6deg) scale(1.05)}}
+ @keyframes gira2{50%{transform:rotate(-12deg) translateY(-6px)}}
 }
 /* PDF / impresión */
 @page{size:A4;margin:0}
 @media print{
  body>nav,footer,.wa-float,.g-botones,.g-indice,.no-pdf{display:none!important}
  .solo-pdf{display:block}
+ *{animation:none!important}
  body{-webkit-print-color-adjust:exact;print-color-adjust:exact;font-size:13px}
- .wrap{max-width:none;padding:0 14mm}
- .g-hero .wrap{grid-template-columns:1.15fr .85fr;padding-top:14mm;padding-bottom:12mm;text-align:left}
+ .wrap{max-width:none;padding:0 13mm}
+ .g-hero .wrap{grid-template-columns:1.15fr .85fr;padding-top:13mm;padding-bottom:16mm;text-align:left}
  .g-hero h1{font-size:50px}
- .g-hero-foto{width:72mm}
+ .g-hero-foto{width:68mm}
  .g-sec{padding:7mm 0}
- .g-sec-head{break-after:avoid}
- #cuanto,#checklist{break-inside:avoid}
- .g-hero{padding-bottom:4mm}
- .g-grid,.g-pasos{grid-template-columns:repeat(3,1fr)}
- .g-split,.g-jala,.g-check,.g-prod{grid-template-columns:1fr 1fr}
- .g-seg{grid-template-columns:1fr 1fr}
- .g-card,.g-paso,.g-seg div,.g-lista li,.g-tabla,.g-prod,.g-check{break-inside:avoid}
- .g-masc{width:90px}
- .g-prod{margin:2mm 0 0;padding:8mm;break-inside:avoid}
+ .g-sec-head{break-after:avoid;margin-bottom:5mm}
+ .g-equipo,.g-seg,.g-conv{grid-template-columns:repeat(3,1fr)}
+ .g-etapas{grid-template-columns:repeat(4,1fr)}
+ .g-camino{grid-template-columns:repeat(3,1fr)}
+ .g-cach,.g-jala,.g-check,.g-prod{grid-template-columns:1fr 1fr}
+ .g-item,.g-parada,.g-seg div,.g-conv div,.g-etapa,.g-arbol,.g-regla,.g-tip,.g-foto-paseo,.g-check,.g-prod{break-inside:avoid}
+ /* 5 páginas fijas: 1 portada + equipo · 2 cachorro + paso a paso · 3 jala + seguridad · 4 convivencia + cuánto + checklist · 5 cierre + producto */
+ #cachorro,#jala,#convivencia,#final{break-before:page}
+ .g-sec{padding:6mm 0}
+ .g-sec-head{margin-bottom:4mm}
+ .g-tip{margin-top:4mm}.g-tip img{width:64px}.g-tip p{margin-bottom:14px}
+ .g-item .ilu{height:80px}
+ .g-camino{gap:16px 14px}
+ .g-foto-paseo{margin-top:6mm}
+ .g-check{padding:7mm}.g-check .masc{width:90px}.g-check label{padding:7px 12px;font-size:14px}
+ .g-cierre{padding:10mm 0 2mm}
+ .g-prod{margin:6mm 0 0;padding:8mm}
  .g-prod h2{font-size:30px}
- .g-prod ul{margin:8px 0;gap:3px}
  .g-prod li,.g-prod p{font-size:12.5px!important}
  .g-tallas{flex-wrap:nowrap}.g-tallas div{font-size:11px;padding:6px 10px}
  .g-precio .ahora{font-size:30px}
  .g-prod .g-btn{font-size:14px;padding:10px 18px}
- .g-cierre .g-pandilla img{width:70px}
- .g-cierre{break-before:page}
- .g-cierre{padding:10mm 0 4mm}
+ .g-hero .wrap{padding-top:10mm;padding-bottom:12mm}.g-hero h1{font-size:44px;margin:10px 0}.g-hero-foto{width:58mm}
+ .g-item{padding:10px}.g-item .ilu{height:64px;margin-bottom:4px}.g-item .ilu img{max-height:56px}.g-item .ilu span{font-size:38px}
+ .g-equipo,.g-seg{gap:10px}
+ .g-parada .circ{width:70px;height:70px;font-size:32px}
+ .g-pasitos li{padding:9px 12px}
+ .g-foto-paseo img{width:110px;height:110px}
 }
 </style>
 </head>
@@ -235,12 +289,12 @@
 
 <main class="guia">
 <header class="g-hero">
-  <span class="g-deco" style="top:12%;left:4%">🐾</span><span class="g-deco" style="top:70%;left:46%">🦴</span><span class="g-deco" style="top:20%;left:52%">🐾</span>
+  <svg class="g-huellas" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><g id="huella" fill="#fff"><ellipse cx="0" cy="8" rx="9" ry="8"/><circle cx="-10" cy="-6" r="4"/><circle cx="-3.5" cy="-11" r="4"/><circle cx="3.5" cy="-11" r="4"/><circle cx="10" cy="-6" r="4"/></g></defs><use href="#huella" transform="translate(30 250) rotate(-20)"/><use href="#huella" transform="translate(70 215) rotate(-10)"/><use href="#huella" transform="translate(100 260) rotate(-20)"/><use href="#huella" transform="translate(140 222) rotate(-5)"/><use href="#huella" transform="translate(210 40) rotate(30)"/><use href="#huella" transform="translate(250 70) rotate(40)"/><use href="#huella" transform="translate(360 30) rotate(15)"/><use href="#huella" transform="translate(380 280) rotate(-30)"/></svg>
   <div class="wrap">
     <div>
       <span class="g-chip">Guía gratis · Wuuff Puppy</span>
       <h1 class="g-display">Primeros pasos para <span>pasear a tu perro</span></h1>
-      <p class="lead">Qué llevar, cuándo empezar con tu cachorro, cómo caminar sin tirones y cómo cuidarlo en la calle. Todo en una guía corta, para leer aquí o guardar en PDF.</p>
+      <p class="lead">Qué llevar, cuándo empezar y cómo caminar sin tirones. Corta y fácil, para leer aquí o guardar en PDF.</p>
       <div class="g-botones">
         <a class="g-btn lima" id="btn-pdf" href="/guia/guia-pasear-perro-wuuff-puppy.pdf" download>⬇️ Descargar en PDF</a>
         <a class="g-btn blanco" href="#equipo">Leer la guía 🐾</a>
@@ -250,125 +304,136 @@
     <div class="g-hero-foto">
       <div class="g-nube"><img src="/images/opt/hero/chihuahua-combo-800.webp" alt="Chihuahua con arnés tipo H y correa Wuuff Puppy" width="800" height="800" fetchpriority="high"></div>
       <img class="masc" src="/images/opt/chawi.webp" alt="" aria-hidden="true">
+      <img class="hueso" src="/blackfriday/img/emo-hueso.webp" alt="" aria-hidden="true">
       <div class="g-sello"><div><b>8</b>pasos<br>fáciles</div></div>
     </div>
   </div>
+  <svg class="g-ola" viewBox="0 0 1440 46" preserveAspectRatio="none" aria-hidden="true"><path d="M0 26 C 240 0 480 46 720 24 S 1200 0 1440 22 V46 H0Z" fill="#fff"/></svg>
 </header>
 
 <div class="wrap">
   <nav class="g-indice" aria-label="Contenido">
-    <a href="#equipo"><b>1</b>El equipo</a><a href="#cachorro"><b>2</b>Si es cachorro</a><a href="#pasos"><b>3</b>Paso a paso</a><a href="#jala"><b>4</b>Si jala</a><a href="#seguridad"><b>5</b>Seguridad</a><a href="#convivencia"><b>6</b>Convivencia</a><a href="#cuanto"><b>7</b>Cuánto pasear</a><a href="#checklist"><b>8</b>Checklist</a>
+    <a href="#equipo"><i>🎒</i>El equipo</a><a href="#cachorro"><i>🐶</i>Cachorros</a><a href="#pasos"><i>👣</i>Paso a paso</a><a href="#jala"><i>🌳</i>Si jala</a><a href="#seguridad"><i>🚦</i>Seguridad</a><a href="#convivencia"><i>🤝</i>Convivencia</a><a href="#cuanto"><i>⏱️</i>Cuánto</a><a href="#checklist"><i>✅</i>Checklist</a>
   </nav>
 </div>
 
 <section class="g-sec" id="equipo">
   <div class="wrap">
-    <img class="g-masc" src="/images/opt/chawi.webp" alt="" aria-hidden="true">
-    <div class="g-sec-head"><div class="g-num">1</div><div><h2 class="g-display">Antes de salir: el equipo</h2><p class="sub">Lo básico que siempre va en la maleta del paseo.</p></div></div>
-    <div class="g-grid">
-      <div class="g-card top"><div class="ico">🦺</div><h3>Arnés bien ajustado</h3><p>Deben caber uno o dos dedos entre el arnés y su cuerpo. En cachorros, perros que jalan y razas pequeñas o de nariz chata, el arnés tipo H cuida su cuello y su tráquea.</p></div>
-      <div class="g-card"><div class="ico">〰️</div><h3>Correa de largo fijo</h3><p>De 1,5 a 2 m. Evita la extensible al principio: le enseña que jalar le da más espacio.</p></div>
-      <div class="g-card"><div class="ico">🏷️</div><h3>Placa de identificación</h3><p>Con tu número de celular, o una placa inteligente con su perfil. Si se suelta, es lo que lo trae de vuelta.</p></div>
-      <div class="g-card"><div class="ico">💩</div><h3>Bolsas para recoger</h3><p>Siempre, sin excepción. Tu barrio y tus vecinos te lo agradecen.</p></div>
-      <div class="g-card"><div class="ico">🍖</div><h3>Premios pequeños</h3><p>Blanditos y fáciles de comer, para premiar en el momento lo que hace bien.</p></div>
-      <div class="g-card"><div class="ico">💧</div><h3>Agua</h3><p>Si el paseo pasa de 20 minutos o hace calor, lleva agua y un bebedero portátil.</p></div>
+    <div class="g-sec-head"><div class="g-num">1</div><div><h2 class="g-display">Lo que va en el paseo</h2><p class="sub">Tu kit básico para salir.</p></div></div>
+    <div class="g-equipo">
+      <div class="g-item top"><div class="ilu" style="--fondo:#eef2fd"><img src="/images/opt/arnes-nuevo.webp" alt="Arnés tipo H Wuuff Puppy" loading="lazy"></div><h3>Arnés tipo H</h3><p>Cuida su cuello. Que quepan 2 dedos.</p></div>
+      <div class="g-item"><div class="ilu" style="--fondo:#eef2fd"><img src="/images/opt/correa-nuevo.webp" alt="Correa Wuuff Puppy de 1,8 m" loading="lazy"></div><h3>Correa fija</h3><p>De 1,5 a 2 m. Nada de extensibles al empezar.</p></div>
+      <div class="g-item"><div class="ilu" style="--fondo:#f3ecff"><img src="/blackfriday/img/placa2.webp" alt="Placa de identificación para perro" loading="lazy"></div><h3>Placa</h3><p>Con tu celular. Si se suelta, lo trae de vuelta.</p></div>
+      <div class="g-item"><div class="ilu" style="--fondo:#e9f6e6"><span>💩</span></div><h3>Bolsas</h3><p>Siempre, sin excepción.</p></div>
+      <div class="g-item"><div class="ilu" style="--fondo:var(--crema)"><img src="/blackfriday/img/emo-hueso.webp" alt="" loading="lazy"></div><h3>Premios</h3><p>Pequeños y blanditos.</p></div>
+      <div class="g-item"><div class="ilu" style="--fondo:#e5f6fd"><span>💧</span></div><h3>Agua</h3><p>Si hace calor o pasa de 20 min.</p></div>
     </div>
+    <div class="g-tip"><img src="/images/opt/chawi.webp" alt="Chawi" loading="lazy"><p><b>Tip de Chawi:</b> engancha la correa al arnés, no al collar, mientras aprende a caminar contigo.</p></div>
   </div>
 </section>
 
 <section class="g-sec g-fondo-celeste" id="cachorro">
   <div class="wrap">
-    <img class="g-masc" src="/images/opt/lucas.webp" alt="" aria-hidden="true">
-    <div class="g-sec-head"><div class="g-num" style="background:var(--naranja);box-shadow:0 5px 0 #d65a35">2</div><div><h2 class="g-display">Si es cachorro: cuándo empezar</h2><p class="sub">Primero las vacunas, después la calle.</p></div></div>
-    <div class="g-split">
-      <ul class="g-lista">
-        <li>Espera a que el veterinario confirme que tiene completas las vacunas antes de salir a la calle o a parques con otros perros.</li>
-        <li>Mientras tanto, acostúmbralo al arnés y a la correa dentro de la casa, unos minutos al día mientras juega o come.</li>
-        <li>Puedes sacarlo en brazos para que conozca ruidos, carros y personas sin tocar el piso.</li>
+    <div class="g-sec-head"><div class="g-num nar">2</div><div><h2 class="g-display">Si es cachorro</h2><p class="sub">Primero las vacunas, después la calle.</p></div></div>
+    <div class="g-cach">
+      <ul class="g-pasitos">
+        <li><i>💉</i>Sale a la calle cuando el veterinario confirme sus vacunas.</li>
+        <li><i>🏠</i>Antes, practica en casa con el arnés puesto unos minutos al día.</li>
+        <li><i>🤗</i>Sácalo en brazos para que conozca ruidos, carros y gente.</li>
       </ul>
       <div class="g-regla">
-        <p>La regla fácil para sus primeros paseos:</p>
-        <div class="big">5 min</div>
-        <p>por cada mes de edad, hasta dos veces al día</p>
-        <small>Ejemplo: un cachorro de 4 meses ≈ 20 minutos por paseo.</small>
+        <img class="masc" src="/images/opt/lucas.webp" alt="" aria-hidden="true">
+        <p class="t">La regla fácil:</p>
+        <div class="big">5 min<small>por cada mes de edad, hasta 2 veces al día</small></div>
+        <div class="g-barras" aria-label="Minutos por paseo según la edad">
+          <div class="g-barra">2 meses<div style="--w:40%">10 min</div></div>
+          <div class="g-barra">3 meses<div style="--w:60%">15 min</div></div>
+          <div class="g-barra">4 meses<div style="--w:80%">20 min</div></div>
+          <div class="g-barra">5 meses<div style="--w:100%">25 min</div></div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<section class="g-sec pb" id="pasos">
+<section class="g-sec" id="pasos">
   <div class="wrap">
-    <img class="g-masc" src="/images/opt/guardian.webp" alt="" aria-hidden="true">
-    <div class="g-sec-head"><div class="g-num">3</div><div><h2 class="g-display">Los primeros paseos, paso a paso</h2><p class="sub">Poco a poco y siempre terminando felices.</p></div></div>
-    <div class="g-pasos">
-      <div class="g-paso"><h3>Empieza en casa</h3><p>Practica caminar con correa en la sala o el patio y premia cuando camine a tu lado.</p></div>
-      <div class="g-paso"><h3>Sal a un lugar tranquilo</h3><p>Una cuadra sin mucho tráfico, temprano en la mañana o al final de la tarde.</p></div>
-      <div class="g-paso"><h3>Sesiones cortas</h3><p>De 10 a 15 minutos. Mejor terminar cuando está contento que cuando está agotado o asustado.</p></div>
-      <div class="g-paso"><h3>Déjalo olfatear</h3><p>Oler es su forma de leer el mundo: le cansa la mente tanto como caminar.</p></div>
-      <div class="g-paso"><h3>Premia la calma</h3><p>Correa floja y caminando cerca de ti = premio o una felicitación con voz alegre.</p></div>
-      <div class="g-paso"><h3>Aumenta poco a poco</h3><p>Más distancia, más gente, otros perros, más ruido… y más tiempo.</p></div>
+    <div class="g-sec-head"><div class="g-num">3</div><div><h2 class="g-display">Los primeros paseos</h2><p class="sub">Poco a poco y siempre terminando felices.</p></div></div>
+    <div class="g-camino">
+      <svg class="linea" viewBox="0 0 900 380" preserveAspectRatio="none" aria-hidden="true"><path d="M150 52 H750 C 840 52 840 250 750 250 H150" fill="none" stroke="#99b0ee" stroke-width="5" stroke-dasharray="2 14" stroke-linecap="round"/></svg>
+      <div class="g-parada"><div class="circ"><b>1</b>🏠</div><h3>Empieza en casa</h3><p>Camina con correa en la sala y premia.</p></div>
+      <div class="g-parada"><div class="circ"><b>2</b>🌤️</div><h3>Lugar tranquilo</h3><p>Una cuadra sin tráfico, temprano o al atardecer.</p></div>
+      <div class="g-parada"><div class="circ"><b>3</b>⏱️</div><h3>Ratos cortos</h3><p>10 a 15 minutos. Terminen contentos.</p></div>
+      <div class="g-parada"><div class="circ"><b>4</b>👃</div><h3>Déjalo oler</h3><p>Olfatear lo cansa tanto como caminar.</p></div>
+      <div class="g-parada"><div class="circ"><b>5</b>🦴</div><h3>Premia la calma</h3><p>Correa floja = premio o “¡muy bien!”.</p></div>
+      <div class="g-parada"><div class="circ"><b>6</b>📈</div><h3>Sube poco a poco</h3><p>Más distancia, gente, perros y ruido.</p></div>
     </div>
+    <div class="g-foto-paseo"><img src="/images/opt/montaje-perro-1.webp" alt="Persona paseando a su perro con arnés y correa Wuuff Puppy" loading="lazy"><p><span>¿Y si se asusta?</span>Vuelvan a un lugar más tranquilo y bajen el ritmo. Mañana lo intentan otra vez.</p></div>
   </div>
 </section>
 
 <section class="g-sec g-fondo-crema" id="jala">
   <div class="wrap">
-    <div class="g-sec-head"><div class="g-num" style="background:var(--rosa);box-shadow:0 5px 0 #a8687a">4</div><div><h2 class="g-display">Si tu perro jala la correa</h2><p class="sub">Que aprenda que la correa floja es lo que hace avanzar el paseo.</p></div></div>
+    <div class="g-sec-head"><div class="g-num ros">4</div><div><h2 class="g-display">Si jala la correa</h2><p class="sub">La correa floja es la que hace avanzar el paseo.</p></div></div>
     <div class="g-jala">
-      <div class="g-sino">
-        <div class="g-si"><strong>✓ Sí</strong>Si insiste, cambia de dirección con calma y premia cuando te siga.</div>
-        <div class="g-si"><strong>✓ Sí</strong>Engancha la correa al arnés tipo H, no al collar, mientras aprende.</div>
-        <div class="g-no"><strong>✕ No</strong>No des tirones fuertes ni uses collares de ahorque o de púas: lastiman y generan miedo.</div>
-      </div>
       <div class="g-arbol">
-        <div class="e">🌳</div>
-        <h3>La regla del árbol</h3>
-        <p>Cuando jala, te quedas quieto. Cuando la correa se afloja, siguen caminando.</p>
+        <svg viewBox="0 0 330 190" role="img" aria-label="Dibujo: la persona se queda quieta como un árbol hasta que la correa se afloja">
+          <ellipse cx="165" cy="176" rx="150" ry="10" fill="#e6efd2"/>
+          <rect x="70" y="100" width="18" height="76" rx="6" fill="#a26b45"/>
+          <circle cx="79" cy="76" r="44" fill="#7bc96f"/><circle cx="52" cy="96" r="28" fill="#6ab95e"/><circle cx="108" cy="94" r="28" fill="#6ab95e"/><circle cx="66" cy="58" r="10" fill="#93d887"/>
+          <path d="M96 150 C 150 150 160 170 222 152" fill="none" stroke="#4964af" stroke-width="4" stroke-linecap="round" stroke-dasharray="1 0"/>
+          <g transform="translate(222 124)"><ellipse cx="22" cy="30" rx="26" ry="16" fill="#f2c27a"/><circle cx="48" cy="12" r="15" fill="#f2c27a"/><ellipse cx="54" cy="0" rx="6" ry="10" fill="#c98c4a" transform="rotate(25 54 0)"/><circle cx="52" cy="10" r="2.4" fill="#2d4375"/><circle cx="61" cy="15" r="3" fill="#2d4375"/><rect x="2" y="40" width="7" height="13" rx="3" fill="#f2c27a"/><rect x="34" y="40" width="7" height="13" rx="3" fill="#f2c27a"/><path d="M-2 24 q-10 -8 -6 -18" stroke="#f2c27a" stroke-width="6" fill="none" stroke-linecap="round"/><rect x="10" y="20" width="26" height="9" rx="4" fill="#99b0ee"/></g>
+          <g transform="translate(134 26)"><rect width="78" height="36" rx="18" fill="#fff" stroke="#2d4375" stroke-width="3"/><text x="39" y="24" text-anchor="middle" font-family="Nunito,sans-serif" font-weight="900" font-size="15" fill="#2d4375">¡Quieto!</text></g>
+        </svg>
+        <h3>La regla del árbol 🌳</h3>
+        <p>Si jala, te quedas quieto. Si la correa se afloja, siguen.</p>
+      </div>
+      <div class="g-sino">
+        <div class="g-si"><i>✓</i>Cambia de dirección con calma y premia cuando te siga.</div>
+        <div class="g-si"><i>✓</i>Usa arnés tipo H mientras aprende: no lastima su cuello.</div>
+        <div class="g-no"><i>✕</i>Nada de tirones ni collares de ahorque o de púas.</div>
       </div>
     </div>
-    <p class="no-pdf" style="margin-top:16px;font-weight:700">Más consejos en <a href="/blog/perro-jala-la-correa/">Mi perro jala la correa: 7 consejos</a>.</p>
+    <p class="no-pdf" style="margin-top:16px;font-weight:800">Más ideas: <a href="/blog/perro-jala-la-correa/">Mi perro jala la correa: 7 consejos</a>.</p>
   </div>
 </section>
 
 <section class="g-sec g-fondo-rosa" id="seguridad">
   <div class="wrap">
-    <img class="g-masc" src="/images/opt/arecito.webp" alt="" aria-hidden="true">
-    <div class="g-sec-head"><div class="g-num" style="background:var(--naranja);box-shadow:0 5px 0 #d65a35">5</div><div><h2 class="g-display">Seguridad en la calle</h2><p class="sub">Para volver a casa felices y sin sustos.</p></div></div>
+    <div class="g-sec-head"><div class="g-num nar">5</div><div><h2 class="g-display">Seguridad en la calle</h2><p class="sub">Para volver a casa felices y sin sustos.</p></div></div>
     <div class="g-seg">
-      <div><span>🔥</span><p><strong>Calor:</strong> pon el dorso de tu mano 5 segundos en el pavimento. Si no lo aguantas, le quema las almohadillas. Pasea en horas frescas.</p></div>
-      <div><span>🌧️</span><p><strong>Lluvia y frío:</strong> al volver, seca bien sus patas y su pelo. Los perros pequeños o de pelo corto agradecen una chaqueta.</p></div>
-      <div><span>🚗</span><p><strong>Tráfico:</strong> correa corta al cruzar la calle y en andenes estrechos.</p></div>
-      <div><span>🐕</span><p><strong>Otros perros:</strong> pregunta siempre al dueño antes de que se acerquen. No todos son sociables, y está bien.</p></div>
-      <div><span>🍗</span><p><strong>Comida del piso:</strong> enséñale "déjalo" y vigila que no coma basura, huesos de pollo ni restos.</p></div>
-      <div><span>😮‍💨</span><p><strong>Cansancio:</strong> si jadea mucho, se echa, se queda atrás o no quiere caminar, descansen, dale agua y vuelvan.</p></div>
+      <div style="--c:#ffe6dc"><span>🔥</span><h3>Calor</h3><p>Mano 5 s en el piso: si te quema, a él también.</p></div>
+      <div style="--c:#e3ebfd"><span>🌧️</span><h3>Lluvia</h3><p>Al volver, seca bien sus patas.</p></div>
+      <div style="--c:#fff4c7"><span>🚗</span><h3>Tráfico</h3><p>Correa corta al cruzar.</p></div>
+      <div style="--c:#e9f6e6"><span>🐕</span><h3>Otros perros</h3><p>Pregunta al dueño antes de acercarse.</p></div>
+      <div style="--c:#f7e1f0"><span>🍗</span><h3>Comida del piso</h3><p>Enséñale “déjalo”. Ojo con los huesos.</p></div>
+      <div style="--c:#e5f6fd"><span>😮‍💨</span><h3>Cansancio</h3><p>Si jadea mucho o se echa, paren y denle agua.</p></div>
     </div>
+    <div class="g-tip"><img src="/images/opt/arecito.webp" alt="Arecito" loading="lazy"><p><b>Tip de Arecito:</b> con una placa con su perfil, quien lo encuentre te puede escribir al instante.</p></div>
   </div>
 </section>
 
-<section class="g-sec pb" id="convivencia">
+<section class="g-sec" id="convivencia">
   <div class="wrap">
-    <div class="g-sec-head"><div class="g-num">6</div><div><h2 class="g-display">Buena convivencia</h2><p class="sub">Un paseo feliz también es un barrio feliz.</p></div></div>
-    <div class="g-grid">
-      <div class="g-card"><div class="ico">🗑️</div><h3>Recoge siempre</h3><p>Recoge la popó y bótala en una caneca.</p></div>
-      <div class="g-card"><div class="ico">🔗</div><h3>Correa en la calle</h3><p>Suéltalo solo en zonas habilitadas y si vuelve cuando lo llamas.</p></div>
-      <div class="g-card"><div class="ico">🤝</div><h3>Respeta a los demás</h3><p>No todas las personas quieren que un perro se les acerque. Si tu perro necesita bozal por ley, úsalo.</p></div>
+    <div class="g-sec-head"><div class="g-num">6</div><div><h2 class="g-display">Buena convivencia</h2><p class="sub">Paseo feliz, barrio feliz.</p></div></div>
+    <div class="g-conv">
+      <div><span>🗑️</span><p>Recoge siempre<small>Y bótala en una caneca.</small></p></div>
+      <div><span>🔗</span><p>Con correa en la calle<small>Suéltalo solo en zonas permitidas.</small></p></div>
+      <div><span>🤝</span><p>Respeta a los demás<small>No a todos les gusta que se acerque.</small></p></div>
     </div>
   </div>
 </section>
 
 <section class="g-sec g-fondo-celeste" id="cuanto">
   <div class="wrap">
-    <div class="g-sec-head"><div class="g-num" style="background:var(--naranja);box-shadow:0 5px 0 #d65a35">7</div><div><h2 class="g-display">¿Cuánto y cada cuánto?</h2><p class="sub">Una guía para empezar. Ajústala a la energía y la salud de tu perro.</p></div></div>
-    <table class="g-tabla">
-      <thead><tr><th>Etapa</th><th>Paseos al día</th><th>Duración</th></tr></thead>
-      <tbody>
-        <tr><td>Cachorro (3 a 6 meses)</td><td>2 a 3 cortos</td><td>5 min por mes de edad</td></tr>
-        <tr><td>Joven y adulto</td><td>2</td><td>30 a 60 min en total</td></tr>
-        <tr><td>Razas muy activas</td><td>2 o más</td><td>60 a 90 min, con juego</td></tr>
-        <tr><td>Senior o de nariz chata</td><td>2 a 3 cortos</td><td>15 a 30 min, a ritmo suave</td></tr>
-      </tbody>
-    </table>
-    <p class="g-nota">Si tienes dudas sobre la salud de tu perro, pregúntale a tu veterinario cuánto ejercicio le conviene.</p>
+    <div class="g-sec-head"><div class="g-num nar">7</div><div><h2 class="g-display">¿Cuánto pasear?</h2><p class="sub">Para empezar. Ajústalo a su energía.</p></div></div>
+    <div class="g-etapas">
+      <div class="g-etapa"><div class="e">🐶</div><h3>Cachorro</h3><div class="dato"><b>2–3 cortos</b><b class="n">5 min × mes</b></div></div>
+      <div class="g-etapa"><div class="e">🐕</div><h3>Adulto</h3><div class="dato"><b>2 al día</b><b class="n">30–60 min</b></div></div>
+      <div class="g-etapa"><div class="e">⚡</div><h3>Muy activo</h3><div class="dato"><b>2 o más</b><b class="n">60–90 min</b></div></div>
+      <div class="g-etapa"><div class="e">👴</div><h3>Senior o ñato</h3><div class="dato"><b>2–3 suaves</b><b class="n">15–30 min</b></div></div>
+    </div>
+    <p class="g-nota">¿Dudas con su salud? Pregúntale a tu veterinario.</p>
   </div>
 </section>
 
@@ -376,19 +441,20 @@
   <div class="wrap">
     <div class="g-check">
       <div>
-        <div class="g-num" style="background:var(--lima);color:var(--navy);box-shadow:0 5px 0 #a3a300;margin-bottom:14px">8</div>
-        <h2 class="g-display" style="font-size:clamp(28px,4vw,44px)">Checklist antes de cada paseo</h2>
-        <p style="margin-top:10px;font-weight:700">Márcalo antes de salir. En el PDF lo puedes imprimir y pegar junto a la puerta. 🚪</p>
+        <div class="g-num lim" style="margin:0 0 14px">8</div>
+        <h2 class="g-display" style="font-size:clamp(28px,4vw,42px)">Checklist antes de salir</h2>
+        <p style="margin-top:8px;font-weight:800;color:rgba(255,255,255,.85)">Imprímelo y pégalo junto a la puerta 🚪</p>
+        <img class="masc" src="/images/opt/guardian.webp" alt="Guardian" loading="lazy">
       </div>
       <div>
         <ul>
-          <li><label><input type="checkbox"><span>Arnés o collar bien ajustado</span></label></li>
-          <li><label><input type="checkbox"><span>Placa de identificación puesta</span></label></li>
-          <li><label><input type="checkbox"><span>Correa de largo fijo</span></label></li>
-          <li><label><input type="checkbox"><span>Bolsas para recoger</span></label></li>
-          <li><label><input type="checkbox"><span>Premios</span></label></li>
-          <li><label><input type="checkbox"><span>Agua, si hace calor o el paseo es largo</span></label></li>
-          <li><label><input type="checkbox"><span>Revisé la temperatura del piso</span></label></li>
+          <li><label><input type="checkbox"><em>🦺</em><span>Arnés bien ajustado</span></label></li>
+          <li><label><input type="checkbox"><em>🏷️</em><span>Placa puesta</span></label></li>
+          <li><label><input type="checkbox"><em>〰️</em><span>Correa fija</span></label></li>
+          <li><label><input type="checkbox"><em>💩</em><span>Bolsas</span></label></li>
+          <li><label><input type="checkbox"><em>🦴</em><span>Premios</span></label></li>
+          <li><label><input type="checkbox"><em>💧</em><span>Agua, si hace calor</span></label></li>
+          <li><label><input type="checkbox"><em>🔥</em><span>Revisé el piso</span></label></li>
         </ul>
         <div class="g-listo" id="g-listo">¡Listos para salir! 🐶💛</div>
       </div>
@@ -399,27 +465,27 @@
 <section class="g-cierre" id="final">
   <div class="wrap">
     <h2 class="g-display">Lo más importante</h2>
-    <p>El paseo es el mejor momento del día para tu perro. Ve a su ritmo, ten paciencia, celebra los pequeños avances y disfrútenlo juntos.</p>
-    <div class="g-pandilla"><img src="/images/opt/chawi.webp" alt="Chawi"><img src="/images/opt/arecito.webp" alt="Arecito"><img src="/images/opt/guardian.webp" alt="Guardian"><img src="/images/opt/lucas.webp" alt="Lucas"></div>
+    <p>Ve a su ritmo, celebra cada avance y disfruten el paseo juntos. 💛</p>
+    <div class="g-pandilla"><img src="/images/opt/chawi.webp" alt="Chawi" loading="lazy"><img src="/images/opt/arecito.webp" alt="Arecito" loading="lazy"><img src="/images/opt/guardian.webp" alt="Guardian" loading="lazy"><img src="/images/opt/lucas.webp" alt="Lucas" loading="lazy"></div>
   </div>
 </section>
 
 <div class="wrap">
   <section class="g-prod" id="arnes-correa">
+    <img class="lazo" src="/blackfriday/img/emo-lazo.webp" alt="" aria-hidden="true">
     <div class="fotos">
-      <img class="alta" src="/images/opt/productos/reales/shihtzu-arnes-correa-parque.webp" alt="Shih tzu paseando con el arnés tipo H y la correa Wuuff Puppy">
-      <img class="baja" src="/images/opt/hero/chihuahua-combo-800.webp" alt="Chihuahua con el arnés y la correa Wuuff Puppy">
-      <img class="baja" src="/images/opt/productos/reales/schnauzer-arnes-correa-parque.webp" alt="Schnauzer con el arnés y la correa Wuuff Puppy en el parque">
+      <img class="alta" src="/images/opt/productos/reales/shihtzu-arnes-correa-parque.webp" alt="Shih tzu paseando con el arnés tipo H y la correa Wuuff Puppy" loading="lazy">
+      <img class="baja" src="/images/opt/hero/chihuahua-combo-800.webp" alt="Chihuahua con el arnés y la correa Wuuff Puppy" loading="lazy">
+      <img class="baja" src="/images/opt/productos/reales/schnauzer-arnes-correa-parque.webp" alt="Schnauzer con el arnés y la correa Wuuff Puppy en el parque" loading="lazy">
     </div>
     <div>
       <span class="g-chip" style="background:var(--naranja);color:#fff">Para razas pequeñas 🐾</span>
       <h2 class="g-display">Arnés tipo H + correa Wuuff</h2>
-      <p style="font-weight:700">El combo que te recomendamos para empezar a pasear: cuida su cuello y su tráquea, y se lava con agua después de cada paseo.</p>
+      <p style="font-weight:800">El combo que te recomendamos para empezar a pasear.</p>
       <ul>
-        <li>Arnés tipo H: no presiona el cuello</li>
+        <li>No presiona su cuello ni su tráquea</li>
         <li>Correa de 1,8 m a juego, con gancho metálico</li>
-        <li>Goma impermeable: no guarda mal olor</li>
-        <li>Doble costura y material resistente</li>
+        <li>Goma impermeable: se lava con agua y no huele</li>
       </ul>
       <div class="g-tallas">
         <div><b>Talla S</b>Pecho 23–38 cm · chihuahua, yorkie, pomerania</div>
@@ -430,7 +496,7 @@
       <div style="margin-top:16px;display:flex;flex-wrap:wrap;gap:12px">
         <a class="g-btn naranja" id="btn-combo" href="/arnes-y-correa-impermeable-perro/?utm_source=guia&amp;utm_medium=web&amp;utm_campaign=guia_pasear">Quiero el arnés + correa</a>
       </div>
-      <a class="g-wa" href="https://wa.me/573176431286?text=Hola%20Wuuff%2C%20le%C3%AD%20la%20gu%C3%ADa%20para%20pasear%20y%20quiero%20saber%20qu%C3%A9%20talla%20de%20arn%C3%A9s%20le%20sirve%20a%20mi%20perrito%20%F0%9F%90%BE" target="_blank" rel="noopener">💬 ¿Dudas con la talla? Mándanos una foto y su peso por WhatsApp</a>
+      <a class="g-wa" href="https://wa.me/573176431286?text=Hola%20Wuuff%2C%20le%C3%AD%20la%20gu%C3%ADa%20para%20pasear%20y%20quiero%20saber%20qu%C3%A9%20talla%20de%20arn%C3%A9s%20le%20sirve%20a%20mi%20perrito%20%F0%9F%90%BE" target="_blank" rel="noopener">💬 ¿Dudas con la talla? Escríbenos por WhatsApp</a>
       <p class="solo-pdf g-pdf-nota" style="color:var(--navy)">Cómpralo en <b>wuuffpuppy.co/arnes-y-correa-impermeable-perro</b> o escríbenos al WhatsApp <b>+57 317 643 1286</b>.</p>
     </div>
   </section>
