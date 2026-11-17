@@ -7,7 +7,8 @@
   "maximo": 8,
   "entrega": "3 días hábiles",
   "combos": {
-    "collar-correa": { "titulo": "Collar con nombre + correa", "precio": 115000, "precioSinNombre": 89900 },
+    "collar-correa": { "titulo": "Collar con nombre + correa", "precio": 104900, "precioSinNombre": 89900 },
+    "correa": { "titulo": "Correa con nombre", "precio": 74900, "precioSinNombre": 59900 },
     "combo": { "titulo": "Combo completo con collar con nombre", "precio": 164900, "precioSinNombre": 149900 }
   },
   "colores": [
