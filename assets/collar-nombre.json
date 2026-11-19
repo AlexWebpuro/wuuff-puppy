@@ -1,5 +1,5 @@
 {
-  "_nota": "Collar con nombre: precios, colores y tallas. Lo leen la ficha del collar, el pago (index.html) y el servidor (netlify/lib/tienda.js). Si cambias un precio aquí, cambia en todos lados.",
+  "_nota": "Collar con nombre: precios, colores y tallas. Lo leen la ficha del collar, el pago (index.html) y el servidor (netlify/lib/tienda.js). Si cambias un precio aquí, cambia en todos lados. Los colores con \"oculto\": true no se ofrecen en la web (collar ni placa), pero el panel los sigue contando en el inventario de letras.",
   "precioSinNombre": 44900,
   "precio": 64900,
   "incluidas": 5,
@@ -14,15 +14,15 @@
   },
   "colores": [
     { "id": "rosado",  "nombre": "Rosado",   "main": "#f6a7c9", "edge": "#d97fa6" },
-    { "id": "naranja", "nombre": "Naranja",  "main": "#ff7d57", "edge": "#d9552f" },
+    { "id": "naranja", "nombre": "Naranja",  "main": "#ff7d57", "edge": "#d9552f", "oculto": true },
     { "id": "fucsia",  "nombre": "Fucsia",   "main": "#d9338f", "edge": "#a81b69" },
     { "id": "beige",   "nombre": "Beige",    "main": "#e8d9bc", "edge": "#c7b48f" },
-    { "id": "azulrey", "nombre": "Azul rey", "main": "#2f55c8", "edge": "#1d3a96" },
+    { "id": "azulrey", "nombre": "Azul rey", "main": "#2f55c8", "edge": "#1d3a96", "oculto": true },
     { "id": "cafe",    "nombre": "Café",     "main": "#7a4a33", "edge": "#52301f" },
     { "id": "lila",    "nombre": "Lila",     "main": "#a77bf0", "edge": "#7c52c9" },
-    { "id": "miel",    "nombre": "Miel oscuro", "main": "#b8895c", "edge": "#8a613b" },
-    { "id": "negro",   "nombre": "Negro",    "main": "#2a2a2a", "edge": "#000000" },
-    { "id": "verde",   "nombre": "Verde oscuro", "main": "#1f6142", "edge": "#113d29" }
+    { "id": "miel",    "nombre": "Miel oscuro", "main": "#b8895c", "edge": "#8a613b", "oculto": true },
+    { "id": "negro",   "nombre": "Negro",    "main": "#2a2a2a", "edge": "#000000", "oculto": true },
+    { "id": "verde",   "nombre": "Verde oscuro", "main": "#1f6142", "edge": "#113d29", "oculto": true }
   ],
   "pesos": [
     { "id": "p1", "txt": "Hasta 6 kg",   "sub": "Talla S", "talla": "S" },

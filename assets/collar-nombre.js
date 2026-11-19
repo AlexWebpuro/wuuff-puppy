@@ -31,8 +31,8 @@
   function combinado() { return state.mezcla.some(function (m, i) { return m && m !== state.color && i < tokens().length; }); }
   function nombrePieza(t) { return t === '♥' ? 'corazón' : (t === '★' ? 'estrella' : t); }
   // Combinaciones que se ven bien juntas (letras + acento) y formas de repartir el acento
-  var PAREJAS = [['azulrey', 'naranja'], ['rosado', 'lila'], ['negro', 'fucsia'], ['verde', 'beige'], ['cafe', 'miel'], ['lila', 'fucsia'],
-    ['negro', 'beige'], ['azulrey', 'rosado'], ['verde', 'naranja'], ['miel', 'negro'], ['fucsia', 'rosado'], ['beige', 'cafe']];
+  var PAREJAS = [['rosado', 'lila'], ['cafe', 'beige'], ['lila', 'fucsia'], ['fucsia', 'beige'], ['beige', 'rosado'], ['lila', 'beige'],
+    ['cafe', 'rosado'], ['fucsia', 'rosado'], ['beige', 'cafe']];
   var ultimaPropuesta = -1;
   function proponer() {
     var t = tokens(), n = t.length, ops = [];
@@ -414,6 +414,7 @@
     fetch('/assets/letras-stock.json').then(function (r) { return r.ok ? r.json() : { sinLimite: true }; }).catch(function () { return { sinLimite: true }; })
   ]).then(function (r) {
     CFG = r[0]; STOCK = r[1];
+    CFG.colores = CFG.colores.filter(function (c) { return !c.oculto; }); // colores que por ahora no se ofrecen
     if (EN_COMBO && !(CFG.combos && CFG.combos[PRODUCTO])) throw new Error('combo sin precio');
     construir();
     caja.classList.toggle('cn-en-combo', EN_COMBO);

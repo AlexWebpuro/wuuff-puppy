@@ -26,7 +26,9 @@ const ENVIO_CONTRAENTREGA = 850000;  // $8.500 en Bogotá pagando al recibir (no
 const CN = require('../../assets/collar-nombre.json');
 
 const FORMAS = ['Huella', 'Gato', 'Nombre'];
-const COLORES = ['Morado', 'Azul', 'Blanco', 'Rojo'].concat(CN.colores.map(c => c.nombre)); // placa: los 4 de siempre + los de las letras del collar
+// Colores que se ofrecen (los marcados "oculto" en collar-nombre.json no se venden por ahora; el panel los sigue contando)
+const CN_ACTIVOS = CN.colores.filter(c => !c.oculto);
+const COLORES = ['Morado', 'Blanco', 'Rojo'].concat(CN_ACTIVOS.map(c => c.nombre)); // placa: morado, blanco, rojo + los de las letras del collar
 
 // Concurso #WuuffHalloween: códigos personales en la variable de entorno CODIGOS_CONCURSO
 // (JSON código → participante, o código → { "participante": "...", "vence": "2026-11-01T00:00:00-05:00" }).
@@ -84,7 +86,7 @@ function nombreCollar(n, precioBase) {
   }
   if (!piezas.length) return { error: 'Escribe el nombre para el collar' };
   if (piezas.length > CN.maximo) return { error: 'El collar lleva máximo ' + CN.maximo + ' letras' };
-  const color = CN.colores.find(c => c.id === n.color);
+  const color = CN_ACTIVOS.find(c => c.id === n.color);
   if (!color) return { error: 'Elige el color de las letras' };
   const peso = CN.pesos.find(p => p.id === n.peso) || null;
   const extras = Math.max(0, piezas.length - CN.incluidas);
@@ -92,7 +94,7 @@ function nombreCollar(n, precioBase) {
   const mezcla = Array.isArray(n.mezcla) ? n.mezcla : String(n.mezcla || '').split(',');
   let combinado = false;
   const colores = piezas.map((p, i) => {
-    const c = CN.colores.find(x => x.id === mezcla[i]) || color;
+    const c = CN_ACTIVOS.find(x => x.id === mezcla[i]) || color;
     if (c.id !== color.id) combinado = true;
     return c.nombre;
   });

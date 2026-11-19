@@ -5,8 +5,8 @@
   var CFG = {
     corteHora: 14,              // pedidos antes de las 2:00 p. m. de un día hábil se procesan ese mismo día
     produccionPlaca: 3,         // días hábiles para hacer la Placa Inteligente con su nombre
-    contraentrega: [1, 2],      // días hábiles desde el día en que se procesa (solo Bogotá)
-    lineaBogota: [2, 3],        // pago en línea, Bogotá y Soacha
+    contraentrega: [2, 5],      // días hábiles desde el día en que se procesa (solo Bogotá)
+    lineaBogota: [2, 5],        // pago en línea, Bogotá y Soacha
     lineaOtras: [3, 6]          // pago en línea, resto de Colombia
   };
   var DIAS = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];

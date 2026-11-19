@@ -773,12 +773,13 @@ footer a{color:#aaa}
 
   // ─────────── Paso antes de pagar ───────────
   var CN = null; // assets/collar-nombre.json (colores de las letras)
-  var COLORES_PLACA = [['Morado', '#6E4AA0'], ['Azul', '#3160A6'], ['Blanco', '#F5F5F2'], ['Rojo', '#D3262E']];
+  var COLORES_PLACA = [['Morado', '#6E4AA0'], ['Blanco', '#F5F5F2'], ['Rojo', '#D3262E']];
   var ck = $('checkout'), caja = null, timer = null, ciudad = 'bogota';
-  var nombreColor = 'rosado', placaForma = 'Huella', placaBase = 'Azul', placaLetras = 'Blanco';
+  var nombreColor = 'rosado', placaForma = 'Huella', placaBase = 'Morado', placaLetras = 'Blanco';
   function cargarCN() {
     if (CN) return Promise.resolve(CN);
     return fetch('/assets/collar-nombre.json').then(function (r) { return r.json(); }).then(function (j) {
+      j.colores = j.colores.filter(function (c) { return !c.oculto; }); // colores que por ahora no se ofrecen
       CN = j; COLORES_PLACA = COLORES_PLACA.concat(j.colores.map(function (c) { return [c.nombre, c.main]; }));
       pintarSwatches(); return CN;
     });
