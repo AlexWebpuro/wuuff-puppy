@@ -17,9 +17,10 @@ const PLACA_SOLA = 2990000;          // $29.900
 const PLACA_AGREGADA = 1990000;      // $19.900 al llevarla con arnés, arnés + correa, collar + correa o combo completo
 const COMBO_COLLAR_PLACA = 6490000;  // $64.900 collar + placa (la placa queda en $20.000)
 const CON_PLACA_AGREGADA = ['arnes', 'arnes-correa', 'collar-correa', 'combo'];
-const ENVIO_MINIMO_GRATIS = 4990000; // Bogotá/Soacha gratis desde $49.900 (subtotal ANTES del descuento)
+const ENVIO_MINIMO_GRATIS = 4990000; // Bogotá (no Soacha) gratis desde $49.900 pagando en línea (subtotal ANTES del descuento)
 const ENVIO_BOGOTA_PEQUENO = 850000; // $8.500 para collares, la placa y pedidos menores, solo con Wompi
 const ENVIO_OTRAS = 1850000;         // $18.500 otras ciudades
+const ENVIO_CONTRAENTREGA = 850000;  // $8.500 en Bogotá pagando al recibir (nov 2026: la contraentrega ya no tiene envío gratis)
 
 // Collar con nombre: precios y colores en assets/collar-nombre.json (el mismo archivo que usa la página)
 const CN = require('../../assets/collar-nombre.json');
@@ -167,20 +168,27 @@ function armar(carrito) {
 }
 
 function esBogota(ciudad) { return /bogot|soacha/i.test(String(ciudad || '')); }
+function esBogotaSola(ciudad) { return /bogot/i.test(String(ciudad || '')) && !/soacha/i.test(String(ciudad || '')); }
 // Un collar solo (con o sin nombre) o la placa, solos o juntos, no tienen envío gratis ni contraentrega (nov 2026).
 // Desde 2 collares en el mismo pedido sí: envío gratis y pago al recibir en Bogotá, como los combos.
 function cuantosCollares(armado) { return armado.lineas.filter(l => l.clave === 'collar').reduce((n, l) => n + (l.qty || 1), 0); }
 function soloCollarOPlaca(armado) {
   return !!armado && armado.lineas.every(l => l.tipo === 'placa' || l.clave === 'collar') && cuantosCollares(armado) < 2;
 }
-function envioCents(subtotalCents, ciudad, soloLinea) {
+// Envío (19 nov 2026): gratis solo en Bogotá pagando en línea desde $49.900 (no solo collar o placa);
+// contraentrega en Bogotá paga $8.500; Soacha $8.500 siempre; otras ciudades $18.500.
+function envioCents(subtotalCents, ciudad, soloLinea, metodo) {
   if (!ciudad) return 0;
-  if (esBogota(ciudad)) return subtotalCents >= ENVIO_MINIMO_GRATIS && !soloLinea ? 0 : ENVIO_BOGOTA_PEQUENO;
+  if (esBogotaSola(ciudad)) {
+    if (metodo === 'contraentrega') return ENVIO_CONTRAENTREGA;
+    return subtotalCents >= ENVIO_MINIMO_GRATIS && !soloLinea ? 0 : ENVIO_BOGOTA_PEQUENO;
+  }
+  if (esBogota(ciudad)) return ENVIO_BOGOTA_PEQUENO; // Soacha
   return ENVIO_OTRAS;
 }
 // Contraentrega: solo Bogotá (no Soacha), desde $49.900 ANTES del descuento y sin ser solo collar o placa
 function contraentregaPermitida(subtotalCents, ciudad, soloLinea) {
-  return /bogot/i.test(String(ciudad || '')) && !/soacha/i.test(String(ciudad || '')) && subtotalCents >= ENVIO_MINIMO_GRATIS && !soloLinea;
+  return esBogotaSola(ciudad) && subtotalCents >= ENVIO_MINIMO_GRATIS && !soloLinea;
 }
 
 function codigosConcurso() {
@@ -233,12 +241,12 @@ async function revisarCodigo(texto, armado, opciones) {
 }
 
 // Total del pedido calculado en el servidor.
-// datos = { carrito, ciudad, codigo, regalo: { nombre, forma, color } }
+// datos = { carrito, ciudad, codigo, regalo: { nombre, forma, color }, metodo: 'wompi' | 'contraentrega' }
 async function calcular(datos, opciones) {
   const armado = armar(datos && datos.carrito);
   if (armado.error) return { ok: false, error: armado.error };
   const soloLinea = soloCollarOPlaca(armado);
-  const envio = envioCents(armado.subtotalCents, datos.ciudad, soloLinea);
+  const envio = envioCents(armado.subtotalCents, datos.ciudad, soloLinea, datos.metodo);
   let cod = null;
   if (normalizarCodigo(datos.codigo)) {
     cod = await revisarCodigo(datos.codigo, armado, opciones);
@@ -333,4 +341,4 @@ function perfilesValidos(texto) {
   return partes.map(p => p.trim()).filter(p => /^[A-Z0-9]{6,16}$/.test(p) || /^pendiente \([^()|<>\[\]]{1,90}\)$/.test(p)).slice(0, 6);
 }
 
-module.exports = { invDeCarrito, nombreCollar, perfilesDeTexto, perfilesValidos, PRODUCTOS, MENSAJES, armar, calcular, revisarCodigo, envioCents, contraentregaPermitida, normalizarCodigo, lineasAviso, pesos, placaValida };
+module.exports = { ENVIO_CONTRAENTREGA, invDeCarrito, nombreCollar, perfilesDeTexto, perfilesValidos, PRODUCTOS, MENSAJES, armar, calcular, revisarCodigo, envioCents, contraentregaPermitida, normalizarCodigo, lineasAviso, pesos, placaValida };

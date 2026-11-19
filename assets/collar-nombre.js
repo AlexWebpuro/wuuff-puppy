@@ -165,7 +165,7 @@
         '<button type="button" class="cn-cta" data-cn="cta">Comprar ahora</button>' +
         (EN_COMBO ? '' : '<button type="button" class="cn-otro" data-cn="otro">➕ Agregar otro collar</button>') +
         '<a class="cn-wa" data-cn="wa" href="#" target="_blank" rel="noopener">¿Dudas? Escríbenos por WhatsApp</a>' +
-        (EN_COMBO ? '' : '<p class="cn-fine"><strong>🐶🐶 Desde 2 collares: envío gratis en Bogotá y Soacha y pagas al recibir.</strong></p>') + '</section>');
+        (EN_COMBO ? '' : '<p class="cn-fine"><strong>🐶🐶 Desde 2 collares: envío gratis en Bogotá pagando en línea.</strong></p>') + '</section>');
     if (ES_CORREA) { var pr = $('.cn-probar'); if (pr) pr.remove(); }
 
     var keys = $('[data-cn=keys]');
