@@ -28,7 +28,7 @@ const CN = require('../../assets/collar-nombre.json');
 const FORMAS = ['Huella', 'Gato', 'Nombre'];
 // Colores que se ofrecen (los marcados "oculto" en collar-nombre.json no se venden por ahora; el panel los sigue contando)
 const CN_ACTIVOS = CN.colores.filter(c => !c.oculto);
-const COLORES = ['Morado', 'Blanco', 'Rojo'].concat(CN_ACTIVOS.map(c => c.nombre)); // placa: morado, blanco, rojo + los de las letras del collar
+const COLORES = ['Morado', 'Azul', 'Blanco', 'Rojo'].concat(CN_ACTIVOS.map(c => c.nombre)); // placa: los 4 de siempre + los de las letras del collar
 
 // Concurso #WuuffHalloween: códigos personales en la variable de entorno CODIGOS_CONCURSO
 // (JSON código → participante, o código → { "participante": "...", "vence": "2026-11-01T00:00:00-05:00" }).

@@ -31,7 +31,7 @@
   function combinado() { return state.mezcla.some(function (m, i) { return m && m !== state.color && i < tokens().length; }); }
   function nombrePieza(t) { return t === '♥' ? 'corazón' : (t === '★' ? 'estrella' : t); }
   // Combinaciones que se ven bien juntas (letras + acento) y formas de repartir el acento
-  var PAREJAS = [['rosado', 'lila'], ['cafe', 'beige'], ['lila', 'fucsia'], ['fucsia', 'beige'], ['beige', 'rosado'], ['lila', 'beige'],
+  var PAREJAS = [['azulrey', 'naranja'], ['rosado', 'lila'], ['azulrey', 'rosado'], ['naranja', 'beige'], ['cafe', 'beige'], ['lila', 'fucsia'], ['fucsia', 'beige'], ['beige', 'rosado'], ['lila', 'beige'],
     ['cafe', 'rosado'], ['fucsia', 'rosado'], ['beige', 'cafe']];
   var ultimaPropuesta = -1;
   function proponer() {

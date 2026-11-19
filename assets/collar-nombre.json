@@ -14,10 +14,10 @@
   },
   "colores": [
     { "id": "rosado",  "nombre": "Rosado",   "main": "#f6a7c9", "edge": "#d97fa6" },
-    { "id": "naranja", "nombre": "Naranja",  "main": "#ff7d57", "edge": "#d9552f", "oculto": true },
+    { "id": "naranja", "nombre": "Naranja",  "main": "#ff7d57", "edge": "#d9552f" },
     { "id": "fucsia",  "nombre": "Fucsia",   "main": "#d9338f", "edge": "#a81b69" },
     { "id": "beige",   "nombre": "Beige",    "main": "#e8d9bc", "edge": "#c7b48f" },
-    { "id": "azulrey", "nombre": "Azul rey", "main": "#2f55c8", "edge": "#1d3a96", "oculto": true },
+    { "id": "azulrey", "nombre": "Azul rey", "main": "#2f55c8", "edge": "#1d3a96" },
     { "id": "cafe",    "nombre": "Café",     "main": "#7a4a33", "edge": "#52301f" },
     { "id": "lila",    "nombre": "Lila",     "main": "#a77bf0", "edge": "#7c52c9" },
     { "id": "miel",    "nombre": "Miel oscuro", "main": "#b8895c", "edge": "#8a613b", "oculto": true },
