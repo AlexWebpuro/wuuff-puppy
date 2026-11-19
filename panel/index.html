@@ -100,6 +100,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
 .items li{display:flex;align-items:center;gap:8px;padding:6px 0;border-top:1px dashed var(--borde);font-size:14px}
 .items li span{flex:1}.items li.con-nombre{flex-wrap:wrap}
 .nom-fila{display:flex;gap:6px;width:100%;margin-top:4px}.nom-fila input{flex:1;min-width:0;padding:8px 10px;font-size:15px;text-transform:uppercase}.nom-fila select{width:auto;padding:8px;font-size:14px}.items button{border:0;background:#f3eee6;border-radius:8px;width:28px;height:28px;cursor:pointer;font-weight:800}
+.aviso-extras{margin-top:10px;background:#fff4e0;border:1.5px solid #ffd59a;border-radius:12px;padding:10px 12px;font-size:14px}.aviso-extras.oculto{display:none}
 .tallas{display:flex;gap:6px;align-items:center;font-size:13px;font-weight:800;margin-top:4px}
 .aviso{background:#fff7e0;border-radius:12px;padding:10px 12px;font-size:14px}
 .nota-chica{font-size:12px;color:var(--gris);margin-top:4px}
@@ -248,23 +249,38 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
   // Editor de productos con los botones del catálogo: lo que se elige aquí es lo que cuenta el inventario
   // (un combo talla M = 1 collar M + 1 arnés M + 1 correa). Devuelve { items, texto, total }.
   const CON_NOMBRE = ['collar-nombre', 'collar-correa-nombre', 'combo-nombre', 'correa-nombre', 'arnes-correa-nombre'];
-  function editorInv(cont, inicial, alCambiar) {
+  const LETRAS_INCLUIDAS = 5, PRECIO_LETRA_EXTRA = 5000; // igual que assets/collar-nombre.json (incluidas / precioExtra)
+  const contarLetras = t => Array.from(String(t || '').toUpperCase()).map(ch => (ch === '♥' || ch === '★') ? ch : ch.normalize('NFD').replace(/[\u0300-\u036f]/g, '')).filter(ch => /^[A-Z]$/.test(ch) || ch === '♥' || ch === '★').length;
+  function editorInv(cont, inicial, alCambiar, alUsarTotal) {
     let talla = 'S';
     const items = (inicial || []).map(it => ({ id: it.p, talla: it.talla || '', q: it.q || 1, nombre: it.nombre ? { texto: it.nombre.texto || '', color: it.nombre.color || 'rosado' } : null, regalo: !!it.regalo }));
     const cat = id => CATALOGO.find(c => c.id === id) || { n: id, p: 0, talla: false };
-    const linea = it => cat(it.id).n + (it.talla ? ' (Talla ' + it.talla + ')' : '') + (it.nombre && it.nombre.texto ? ' · "' + it.nombre.texto.toUpperCase() + '" letras ' + ((CN_COLORES.find(c => c.id === it.nombre.color) || {}).nombre || it.nombre.color) : '') + (it.regalo ? ' [REGALO]' : '') + (it.q > 1 ? ' x' + it.q : '');
+    const extrasDe = it => (it.nombre && it.nombre.texto) ? Math.max(0, contarLetras(it.nombre.texto) - LETRAS_INCLUIDAS) : 0; // por unidad
+    const precioLinea = it => (cat(it.id).p + extrasDe(it) * PRECIO_LETRA_EXTRA) * it.q;
+    const linea = it => cat(it.id).n + (it.talla ? ' (Talla ' + it.talla + ')' : '') + (it.nombre && it.nombre.texto ? ' · "' + it.nombre.texto.toUpperCase() + '" letras ' + ((CN_COLORES.find(c => c.id === it.nombre.color) || {}).nombre || it.nombre.color) + (extrasDe(it) ? ' · ' + extrasDe(it) + (extrasDe(it) === 1 ? ' letra extra' : ' letras extra') : '') : '') + (it.regalo ? ' [REGALO]' : '') + (it.q > 1 ? ' x' + it.q : '');
     cont.innerHTML = `<div class="tallas">Talla: <button type="button" class="chip activo" data-etalla="S">S</button><button type="button" class="chip" data-etalla="M">M</button></div>
       <div class="catalogo">${CATALOGO.map(x => `<button type="button" class="chip" data-ep="${x.id}">＋ ${esc(x.n)} · ${pesos(x.p * 100)}</button>`).join('')}</div>
-      <ul class="items" data-elista></ul>`;
+      <ul class="items" data-elista></ul>
+      <div class="aviso-extras oculto" data-eaviso></div>`;
     const lista = cont.querySelector('[data-elista]');
+    const aviso = cont.querySelector('[data-eaviso]');
+    const avisar = () => {
+      const n = items.reduce((a, it) => a + extrasDe(it) * it.q, 0);
+      aviso.classList.toggle('oculto', !n);
+      if (!n) { aviso.innerHTML = ''; return; }
+      const tot = items.reduce((a, it) => a + precioLinea(it), 0);
+      aviso.innerHTML = `✏️ <b>${n} ${n === 1 ? 'letra extra' : 'letras extra'}</b> × ${pesos(PRECIO_LETRA_EXTRA * 100)} = <b>${pesos(n * PRECIO_LETRA_EXTRA * 100)}</b> por cobrar. Total con las letras: <b>${pesos(tot * 100)}</b>` + (alUsarTotal ? ` <button type="button" class="btn azul" data-eusar style="padding:6px 10px;margin-top:6px">Poner este total</button>` : '');
+      const b = aviso.querySelector('[data-eusar]'); if (b) b.onclick = () => alUsarTotal(tot);
+    };
     const pintar = () => {
-      lista.innerHTML = items.map((it, i) => `<li class="${CON_NOMBRE.includes(it.id) ? 'con-nombre' : ''}"><span>${esc(linea(it))}</span><b>${pesos(cat(it.id).p * 100 * it.q)}</b><button type="button" data-emenos="${i}" aria-label="Quitar uno">−</button><button type="button" data-emas="${i}" aria-label="Agregar uno">＋</button>
+      lista.innerHTML = items.map((it, i) => `<li class="${CON_NOMBRE.includes(it.id) ? 'con-nombre' : ''}"><span>${esc(linea(it))}</span><b>${pesos(precioLinea(it) * 100)}</b><button type="button" data-emenos="${i}" aria-label="Quitar uno">−</button><button type="button" data-emas="${i}" aria-label="Agregar uno">＋</button>
         ${CON_NOMBRE.includes(it.id) ? `<div class="nom-fila"><input data-enom="${i}" maxlength="8" placeholder="Nombre (ej. OLIVER)" value="${esc(it.nombre ? it.nombre.texto : '')}" autocomplete="off"><select data-ecol="${i}">${CN_COLORES.map(c => `<option value="${c.id}"${it.nombre && it.nombre.color === c.id ? ' selected' : ''}>${esc(c.nombre)}</option>`).join('')}</select></div>` : ''}</li>`).join('')
         || '<li class="nota-chica" style="border:0">Toca los productos que lleva (elige primero la talla).</li>';
       lista.querySelectorAll('[data-emenos]').forEach(b => b.onclick = () => { const it = items[b.dataset.emenos]; it.q--; if (it.q < 1) items.splice(b.dataset.emenos, 1); pintar(); });
       lista.querySelectorAll('[data-emas]').forEach(b => b.onclick = () => { items[b.dataset.emas].q++; pintar(); });
-      lista.querySelectorAll('[data-enom]').forEach(inp => inp.oninput = () => { const it = items[inp.dataset.enom]; it.nombre = it.nombre || { color: 'rosado' }; it.nombre.texto = inp.value.toUpperCase(); lista.querySelectorAll('li')[inp.dataset.enom].querySelector('span').textContent = linea(it); if (alCambiar) alCambiar(); });
+      lista.querySelectorAll('[data-enom]').forEach(inp => inp.oninput = () => { const it = items[inp.dataset.enom]; it.nombre = it.nombre || { color: 'rosado' }; it.nombre.texto = inp.value.toUpperCase(); const li = lista.querySelectorAll('li')[inp.dataset.enom]; li.querySelector('span').textContent = linea(it); li.querySelector('b').textContent = pesos(precioLinea(it) * 100); avisar(); if (alCambiar) alCambiar(); });
       lista.querySelectorAll('[data-ecol]').forEach(sel => sel.onchange = () => { const it = items[sel.dataset.ecol]; it.nombre = it.nombre || { texto: '' }; it.nombre.color = sel.value; pintar(); });
+      avisar();
       if (alCambiar) alCambiar();
     };
     cont.querySelectorAll('[data-etalla]').forEach(b => b.onclick = () => { talla = b.dataset.etalla; cont.querySelectorAll('[data-etalla]').forEach(x => x.classList.toggle('activo', x === b)); });
@@ -278,7 +294,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
     return {
       items: () => items.map(it => Object.assign({ p: it.id, talla: it.talla, q: it.q }, it.nombre && it.nombre.texto ? { nombre: { texto: it.nombre.texto, color: it.nombre.color } } : {}, it.regalo ? { regalo: true } : {})),
       texto: () => items.map(linea).join('\n'),
-      total: () => items.reduce((n, it) => n + cat(it.id).p * it.q, 0)
+      total: () => items.reduce((n, it) => n + precioLinea(it), 0)
     };
   }
   // Colores de las letras (assets/collar-nombre.json), para el nombre del collar en el editor
@@ -753,7 +769,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
       try { await guardarDetalle(p.id, extra); cerrarHoja(); } catch (err) { toast(err.message); }
     };
     $('btnBorrar').onclick = () => borrarPedido(p.id);
-    editorDetalle = editorInv($('dEditor'), p.inv || []);
+    editorDetalle = editorInv($('dEditor'), p.inv || [], null, t => { $('dTotal').value = t; toast('Total actualizado: ' + pesos(t * 100) + ' (recuerda guardar)'); });
     $('btnEtiqueta').onclick = () => abrirEtiqueta(p.id);
     // Guía de Envia desde el panel: ver precios → elegir → crear (queda Enviado con su guía)
     const datosEnvio = () => ({ nombre: $('eNombre').value, telefono: $('eTel').value, direccion: $('eDir').value, barrio: $('eBarrio').value, cp: $('eCp').value, referencia: $('eRef').value, ciudad: c.ciudad });
