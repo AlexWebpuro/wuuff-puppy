@@ -173,3 +173,10 @@
   for = "/placa-nfc/img/*"
   [headers.values]
     Cache-Control = "public, max-age=2592000"
+
+# Herramientas internas (marca de agua): no se publican
+[[redirects]]
+  from = "/herramientas/*"
+  to = "/404"
+  status = 404
+  force = true
