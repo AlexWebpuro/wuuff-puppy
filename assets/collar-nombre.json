@@ -5,7 +5,7 @@
   "incluidas": 5,
   "precioExtra": 5000,
   "maximo": 8,
-  "entrega": "3 días hábiles",
+  "entrega": "2 a 5 días hábiles",
   "combos": {
     "collar-correa": { "titulo": "Collar con nombre + correa", "precio": 109900, "precioSinNombre": 89900 },
     "correa": { "titulo": "Correa con nombre", "precio": 79900, "precioSinNombre": 59900 },

@@ -288,8 +288,7 @@
     $('[data-cn=extra]').textContent = ex ? cop(ex * CFG.precioExtra) : '$0';
     $('[data-cn=total]').textContent = cop(tot);
     $('[data-cn=precio-collar]').textContent = cop(modo === 'sin' ? precios().precioSinNombre : precios().precio);
-    $('[data-cn=entrega-lbl]').textContent = modo === 'sin' ? 'Despacho' : 'Entrega';
-    $('[data-cn=entrega]').textContent = modo === 'sin' ? '1–2 días hábiles' : CFG.entrega;
+    $('[data-cn=entrega]').textContent = CFG.entrega; // con o sin nombre: 2 a 5 días hábiles
     $('[data-cn=num-talla]').textContent = modo === 'sin' ? '1' : '3';
     var cta = $('[data-cn=cta]');
     if (!EN_COMBO) {
