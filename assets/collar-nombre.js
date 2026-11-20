@@ -31,8 +31,8 @@
   function combinado() { return state.mezcla.some(function (m, i) { return m && m !== state.color && i < tokens().length; }); }
   function nombrePieza(t) { return t === '♥' ? 'corazón' : (t === '★' ? 'estrella' : t); }
   // Combinaciones que se ven bien juntas (letras + acento) y formas de repartir el acento
-  var PAREJAS = [['azulrey', 'naranja'], ['rosado', 'lila'], ['negro', 'fucsia'], ['verde', 'beige'], ['cafe', 'miel'], ['lila', 'fucsia'],
-    ['negro', 'beige'], ['azulrey', 'rosado'], ['verde', 'naranja'], ['miel', 'negro'], ['fucsia', 'rosado'], ['beige', 'cafe']];
+  var PAREJAS = [['azulrey', 'naranja'], ['rosado', 'lila'], ['azulrey', 'rosado'], ['naranja', 'beige'], ['cafe', 'beige'], ['lila', 'fucsia'], ['fucsia', 'beige'], ['beige', 'rosado'], ['lila', 'beige'],
+    ['cafe', 'rosado'], ['fucsia', 'rosado'], ['beige', 'cafe']];
   var ultimaPropuesta = -1;
   function proponer() {
     var t = tokens(), n = t.length, ops = [];
@@ -165,7 +165,7 @@
         '<button type="button" class="cn-cta" data-cn="cta">Comprar ahora</button>' +
         (EN_COMBO ? '' : '<button type="button" class="cn-otro" data-cn="otro">➕ Agregar otro collar</button>') +
         '<a class="cn-wa" data-cn="wa" href="#" target="_blank" rel="noopener">¿Dudas? Escríbenos por WhatsApp</a>' +
-        (EN_COMBO ? '' : '<p class="cn-fine"><strong>🐶🐶 Desde 2 collares: envío gratis en Bogotá y Soacha y pagas al recibir.</strong></p>') + '</section>');
+        (EN_COMBO ? '' : '<p class="cn-fine"><strong>🐶🐶 Desde 2 collares: envío gratis en Bogotá pagando en línea.</strong></p>') + '</section>');
     if (ES_CORREA) { var pr = $('.cn-probar'); if (pr) pr.remove(); }
 
     var keys = $('[data-cn=keys]');
@@ -288,8 +288,7 @@
     $('[data-cn=extra]').textContent = ex ? cop(ex * CFG.precioExtra) : '$0';
     $('[data-cn=total]').textContent = cop(tot);
     $('[data-cn=precio-collar]').textContent = cop(modo === 'sin' ? precios().precioSinNombre : precios().precio);
-    $('[data-cn=entrega-lbl]').textContent = modo === 'sin' ? 'Despacho' : 'Entrega';
-    $('[data-cn=entrega]').textContent = modo === 'sin' ? '1–2 días hábiles' : CFG.entrega;
+    $('[data-cn=entrega]').textContent = CFG.entrega; // con o sin nombre: 2 a 5 días hábiles
     $('[data-cn=num-talla]').textContent = modo === 'sin' ? '1' : '3';
     var cta = $('[data-cn=cta]');
     if (!EN_COMBO) {
@@ -414,6 +413,7 @@
     fetch('/assets/letras-stock.json').then(function (r) { return r.ok ? r.json() : { sinLimite: true }; }).catch(function () { return { sinLimite: true }; })
   ]).then(function (r) {
     CFG = r[0]; STOCK = r[1];
+    CFG.colores = CFG.colores.filter(function (c) { return !c.oculto; }); // colores que por ahora no se ofrecen
     if (EN_COMBO && !(CFG.combos && CFG.combos[PRODUCTO])) throw new Error('combo sin precio');
     construir();
     caja.classList.toggle('cn-en-combo', EN_COMBO);

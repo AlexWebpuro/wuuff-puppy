@@ -28,7 +28,7 @@ function precioPlaca(id) { return id === 'collar' ? PRECIOS.comboCollarPlaca - P
 const TIENDA = 'https://wuuffpuppy.co';
 const ASSETS = JSON.parse(document.getElementById('assets-data').textContent);
 const MAX_LETRAS = 10;
-// Filamentos disponibles
+// Filamentos disponibles (por ahora sin miel oscuro, negro ni verde)
 const COLORES = [
   { id: 'morado', nombre: 'Morado', hex: '#6E4AA0' },
   { id: 'azul', nombre: 'Azul', hex: '#3160A6' },
@@ -42,9 +42,6 @@ const COLORES = [
   { id: 'azulrey', nombre: 'Azul rey', hex: '#2f55c8' },
   { id: 'cafe', nombre: 'Café', hex: '#7a4a33' },
   { id: 'lila', nombre: 'Lila', hex: '#a77bf0' },
-  { id: 'miel', nombre: 'Miel oscuro', hex: '#b8895c' },
-  { id: 'negro', nombre: 'Negro', hex: '#2a2a2a' },
-  { id: 'verde', nombre: 'Verde oscuro', hex: '#1f6142' },
 ];
 const DISENOS = {
   huella: { nombre: 'Huella', base: 'azul', letras: 'blanco' },

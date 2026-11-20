@@ -53,7 +53,7 @@ exports.handler = async function (event) {
   // El total se calcula aquí (precios, envío y código); nunca se usa el que manda el navegador
   let usados = null;
   try { connectLambda(event); usados = getStore('codigos-usados'); } catch (err) { console.error('Blobs no disponible', err.message); }
-  const calc = await tienda.calcular({ carrito: b.carrito, ciudad: pedido.ciudad, codigo: b.codigo, regalo: b.regalo }, {
+  const calc = await tienda.calcular({ carrito: b.carrito, ciudad: pedido.ciudad, codigo: b.codigo, regalo: b.regalo, metodo: 'contraentrega' }, {
     usado: async (c) => !!(usados && await usados.get(c))
   });
   if (!calc.ok) {

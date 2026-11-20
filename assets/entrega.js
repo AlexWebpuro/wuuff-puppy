@@ -5,8 +5,8 @@
   var CFG = {
     corteHora: 14,              // pedidos antes de las 2:00 p. m. de un día hábil se procesan ese mismo día
     produccionPlaca: 3,         // días hábiles para hacer la Placa Inteligente con su nombre
-    contraentrega: [1, 2],      // días hábiles desde el día en que se procesa (solo Bogotá)
-    lineaBogota: [2, 3],        // pago en línea, Bogotá y Soacha
+    contraentrega: [2, 5],      // días hábiles desde el día en que se procesa (solo Bogotá)
+    lineaBogota: [2, 5],        // pago en línea, Bogotá y Soacha
     lineaOtras: [3, 6]          // pago en línea, resto de Colombia
   };
   var DIAS = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
@@ -88,7 +88,7 @@
       : '<p class="cl-linea"><span>Bogotá y Soacha</span><strong>Te llega ' + textoRango(rango('bogota', prod)) + '</strong></p>' +
         '<p class="cl-linea"><span>Otras ciudades</span><strong>Te llega ' + textoRango(rango('otras', prod)) + '</strong></p>' +
         '<p class="cl-nota">💳 Tarjeta, PSE, Nequi, Daviplata o Bancolombia con Wompi.</p>' + notaProd +
-        (soloLinea ? '<p class="cl-nota">💵 Un collar solo y la Placa Inteligente se pagan en línea. Desde 2 collares el envío es gratis en Bogotá y Soacha y puedes pagar al recibir.</p>' : '');
+        (soloLinea ? '<p class="cl-nota">💵 Un collar solo y la Placa Inteligente se pagan en línea. Desde 2 collares el envío es gratis en Bogotá pagando en línea, o puedes pagar al recibir con envío de $8.500.</p>' : '');
     caja.innerHTML =
       '<p class="cl-titulo">📅 ¿Cuándo te llega?</p>' +
       (soloLinea ? '' : '<div class="cl-tabs" role="group" aria-label="Forma de pago">' +

@@ -346,7 +346,7 @@ section.bloque{max-width:1080px;margin:0 auto;padding:54px 18px;overflow-x:clip}
 .ck-talla b{color:#2f55c8}
 .ck-aviso{margin-top:8px;background:#fff1c9;border-radius:12px;padding:10px;font-size:13px;font-weight:700}
 .ck-aviso a{color:#2f55c8}
-.ck-ciudad{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ck-ciudad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .ck-ciudad button{min-height:48px;border-radius:14px;border:2px solid #d9cbc4;font-weight:800;font-size:13px;background:#fff}
 .ck-ciudad button.on{border-color:#90b6e3;background:#e6efff}
 .ck-up[hidden]{display:none!important}
@@ -516,7 +516,7 @@ footer a{color:#aaa}
   <h2 class="h2">Compra <em>tranquilo</em></h2>
   <div class="confianza">
     <div class="conf"><b>Pago 100 % seguro</b>Con Wompi: tarjeta, PSE o Nequi.</div>
-    <div class="conf"><b>Envío gratis en Bogotá</b>y Soacha. Otras ciudades: $18.500.</div>
+    <div class="conf"><b>Envío gratis en Bogotá</b>Soacha: $8.500. Otras ciudades: $18.500.</div>
     <div class="conf"><b>3 días hábiles</b>Despacho con guía de rastreo.</div>
     <div class="conf"><b>¿Dudas?</b><a href="https://wa.me/573176431286" target="_blank" rel="noopener" style="color:inherit">WhatsApp +57 317 6431286</a></div>
   </div>
@@ -603,7 +603,7 @@ footer a{color:#aaa}
     <div class="ck-bloque">
       <p class="ck-label" id="ck-ciudad-titulo">¿A dónde lo enviamos?</p>
       <div class="ck-ciudad">
-        <button class="on" data-c="bogota" type="button">Bogotá o Soacha · envío gratis</button><button data-c="otra" type="button">Otra ciudad · $18.500</button>
+        <button class="on" data-c="bogota" type="button">Bogotá · envío gratis</button><button data-c="soacha" type="button">Soacha · $8.500</button><button data-c="otra" type="button">Otra ciudad · $18.500</button>
       </div>
     </div>
     <label class="ck-check"><input type="checkbox" id="ck-medi"> Medí a mi perrito y está dentro de las medidas de la talla.</label>
@@ -779,6 +779,7 @@ footer a{color:#aaa}
   function cargarCN() {
     if (CN) return Promise.resolve(CN);
     return fetch('/assets/collar-nombre.json').then(function (r) { return r.json(); }).then(function (j) {
+      j.colores = j.colores.filter(function (c) { return !c.oculto; }); // colores que por ahora no se ofrecen
       CN = j; COLORES_PLACA = COLORES_PLACA.concat(j.colores.map(function (c) { return [c.nombre, c.main]; }));
       pintarSwatches(); return CN;
     });
@@ -836,7 +837,7 @@ footer a{color:#aaa}
     document.querySelectorAll('#ck-letras .sw').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.nom === placaLetras)); });
     $('ck-base-nombre').textContent = placaBase; $('ck-letras-nombre').textContent = placaLetras;
     var extras = cn ? Math.max(0, p.piezas.length - INCLUIDAS) : 0;
-    var total = PRECIO + (ciudad === 'otra' ? 18500 : 0) + (cn && r.upsell ? NOMBRE_EXTRA : 0) + extras * LETRA_EXTRA;
+    var total = PRECIO + (ciudad === 'otra' ? 18500 : (ciudad === 'soacha' ? 8500 : 0)) + (cn && r.upsell ? NOMBRE_EXTRA : 0) + extras * LETRA_EXTRA;
     $('ck-total').textContent = fmt(total);
     var falta = !t ? 'Escribe el cuello y el pecho de tu perrito' : (cn && (!p.piezas.length || p.malas.length) ? 'Escribe el nombre para el collar'
       : (r.placa && !$('ck-placa-nombre').value.trim() ? 'Escribe el nombre para la placa' : (!$('ck-medi').checked ? 'Confirma que mediste a tu perrito' : '')));

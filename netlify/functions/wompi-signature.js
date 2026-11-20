@@ -38,7 +38,7 @@ exports.handler = async function (event) {
     catch (err) { console.error('Black Wuuff Friday', err.message); return json(503, { error: 'Intenta de nuevo en un momento' }); }
     if (!calc.ok) return json(400, { error: calc.error, cajaPerdida: !!calc.cajaPerdida });
   } else {
-    calc = await tienda.calcular({ carrito: body.carrito, ciudad: body.ciudad, codigo: body.codigo, regalo: body.regalo }, {
+    calc = await tienda.calcular({ carrito: body.carrito, ciudad: body.ciudad, codigo: body.codigo, regalo: body.regalo, metodo: 'wompi' }, {
       usado: async (c) => !!(usados && await usados.get(c))
     });
     if (!calc.ok) return json(400, { error: calc.error, codigoInvalido: !!calc.codigoInvalido, faltaRegalo: !!calc.faltaRegalo });
