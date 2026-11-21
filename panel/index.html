@@ -605,15 +605,34 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
         ${p.tipo && p.tipo !== 'venta' ? `<span class="pill t-${esc(p.tipo)}">${esc(TIPOS[p.tipo] || '')}</span>` : ''}
       </div>
       ${sig ? `<div class="siguiente">
-        ${c.telefono ? `<a class="btn verde" data-accion="wa" href="${waUrl(p)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">WhatsApp</a>` : ''}
+        ${c.telefono ? `<a class="btn verde" data-accion="wa" href="${waUrl(p)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${p.estado === 'por-confirmar' ? '✅ Confirmar' : 'WhatsApp'}</a>` : ''}
         <button class="btn claro" data-accion="avanzar" style="flex:1">${EST[sig].i} Marcar ${esc(EST[sig].n.toLowerCase())}</button>
       </div>` : `<div class="siguiente"><button class="btn claro" data-accion="abrir" style="flex:1">↩ Cambiar estado o editar</button></div>`}
     </article>`;
   }
 
+  // Mensaje de confirmación con todos los datos del pedido (botón "✅ Confirmar por WhatsApp")
+  function mensajeConfirmacion(p) {
+    const c = p.cliente || {}, n = primerNombre(c.nombre);
+    const productos = String(p.productos || '').split('\n').map(l => l.split(' | ')[0].trim()).filter(Boolean);
+    const bogota = /bogot/i.test(c.ciudad || '') && !/soacha/i.test(c.ciudad || '');
+    const conPlaca = /placa/i.test(p.productos || '');
+    const pago = p.pagado ? '✅ Pago recibido, ¡gracias!'
+      : (p.pago === 'contraentrega' ? `💵 Pagas ${pesos(p.totalCents)} en efectivo cuando lo recibas`
+        : `💳 Falta el pago${PAGOS[p.pago] && p.pago !== 'otro' ? ' por ' + PAGOS[p.pago].replace(/^\S+\s/, '') : ''}`);
+    const dir = [c.direccion, c.ciudad].filter(Boolean).join(', ');
+    return `¡Hola${n ? ' ' + n : ''}! 🐾 Te escribo de Wuuff Puppy para confirmar tu pedido${p.numero ? ' #' + p.numero : ''}:\n\n` +
+      `🛍️ ${productos.length > 1 ? 'Productos:\n' + productos.map(l => '• ' + l).join('\n') : (productos[0] || 'Tu pedido')}\n` +
+      (p.mascota ? `🐶 Para: ${p.mascota}\n` : '') +
+      `💰 Total: ${pesos(p.totalCents)}\n${pago}\n` +
+      (dir ? `📍 Envío a: ${dir}\n` : '') +
+      `📅 Te llega en ${bogota ? '2 a 5' : '3 a 6'} días hábiles después de confirmar${conPlaca ? ' (la placa la hacemos en 3 días hábiles)' : ''}\n\n` +
+      `¿Me confirmas que los datos están bien${p.pago === 'contraentrega' && !p.pagado ? ' y que habrá alguien para recibir' : ''}? Responde SÍ y lo despachamos 💛`;
+  }
+  function waConfirmar(p) { return 'https://wa.me/' + telWa(p.cliente && p.cliente.telefono) + '?text=' + encodeURIComponent(mensajeConfirmacion(p)); }
   function mensajeWa(p) {
     const n = primerNombre(p.cliente && p.cliente.nombre), m = p.mascota ? p.mascota : 'tu perrito';
-    if (p.estado === 'por-confirmar') return `¡Hola ${n}! 🐾 Te escribo de Wuuff Puppy para confirmar tu pedido:\n${p.productos}\n\nTotal${p.pago === 'contraentrega' ? ' a pagar al recibir' : ''}: ${pesos(p.totalCents)}\nDirección: ${(p.cliente && p.cliente.direccion) || ''}\n\n¿Me confirmas que todo está bien y que habrá alguien para recibir? 💛`;
+    if (p.estado === 'por-confirmar') return mensajeConfirmacion(p);
     if (p.estado === 'enviado') return `¡Hola ${n}! Tu pedido Wuuff ya va en camino 🚚${p.guia && p.guia.numero ? `\nGuía ${p.guia.transportadora || ''} ${p.guia.numero}` : ''}${p.guia && p.guia.url ? `\nRastreo: ${p.guia.url}` : ''}${p.pago === 'contraentrega' && !p.pagado ? `\nRecuerda tener listos ${pesos(p.totalCents)} para pagar al recibir.` : ''}`;
     if (p.estado === 'entregado') return `¡Hola ${n}! ¿Cómo le quedó a ${m}? 🐶 Nos encantaría ver una foto con su Wuuff. Si nos dejas una reseña nos ayudas muchísimo 💛`;
     if (p.estado === 'preparando') return `¡Hola ${n}! Ya estamos preparando el pedido de ${m} ✂️🐾 Te aviso apenas salga.`;
@@ -674,7 +693,8 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
       </div>
 
       <div class="acciones" style="margin-bottom:12px">
-        ${c.telefono ? `<a class="btn verde" href="${waUrl(p)}" target="_blank" rel="noopener">💬 Escribirle por WhatsApp</a>` : ''}
+        ${c.telefono ? `<a class="btn verde" id="btnConfirmarWa" href="${waConfirmar(p)}" target="_blank" rel="noopener">✅ Confirmar pedido por WhatsApp</a>` : ''}
+        ${c.telefono ? `<a class="btn claro" href="${waUrl(p)}" target="_blank" rel="noopener">💬 Escribirle por WhatsApp</a>` : ''}
         <button class="btn claro" type="button" id="btnEtiqueta">🏷️ Etiqueta para el paquete</button>
         ${!g.numero && /bogot|soacha/i.test(c.ciudad || '') ? `<button class="btn azul" type="button" id="btnEnvia">📦 Crear guía con Envia</button>` : ''}
         ${g.numero && c.telefono ? `<a class="btn verde" href="${esc(waRastreo(p))}" target="_blank" rel="noopener">📲 Enviarle la guía por WhatsApp</a>` : ''}
