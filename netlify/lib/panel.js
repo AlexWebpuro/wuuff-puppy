@@ -216,6 +216,29 @@ async function listaConContraentrega(store, ce) {
   return porId;
 }
 
+// ── Número de pedido (#1001, #1002…) ──
+// Cada pedido tiene un número consecutivo que no se repite ni se reutiliza (los borrados lo conservan).
+// Los que no tienen número lo reciben en orden de creación: así se numeraron los pedidos que ya existían.
+// Si por una carrera dos quedaran con el mismo número, el más nuevo recibe otro la próxima vez que se lista.
+const NUMERO_INICIAL = 1000; // el primero es el #1001
+function asignarNumeros(pedidos) {
+  const cambiados = [];
+  let max = NUMERO_INICIAL;
+  pedidos.forEach(p => { if (p && Number.isInteger(p.numero) && p.numero > max) max = p.numero; });
+  const activos = pedidos.filter(p => p && !p.borrado && p.id);
+  // Números repetidos: se queda con el número el pedido más viejo
+  const vistos = new Map();
+  activos.slice().sort((a, b) => String(a.creado || '').localeCompare(String(b.creado || '')) || String(a.id).localeCompare(String(b.id)))
+    .forEach(p => {
+      if (!Number.isInteger(p.numero)) return;
+      if (vistos.has(p.numero)) { delete p.numero; } else vistos.set(p.numero, p.id);
+    });
+  activos.filter(p => !Number.isInteger(p.numero))
+    .sort((a, b) => String(a.creado || '').localeCompare(String(b.creado || '')) || String(a.id).localeCompare(String(b.id)))
+    .forEach(p => { p.numero = ++max; cambiados.push(p); });
+  return cambiados;
+}
+
 // Días hábiles (lunes a viernes) desde que se creó el pedido
 function diasHabiles(desde, ahora) {
   let d = new Date(desde), n = 0; const fin = new Date(ahora || Date.now());
@@ -250,7 +273,7 @@ function correoRecordatorio(pedidos, sitio, ahora) {
 
 function pesos(cents) { return '$' + Math.round((cents || 0) / 100).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
 
-module.exports = { DURACION_MS, pesos, listaConContraentrega, diasHabiles, correoRecordatorio,
+module.exports = { NUMERO_INICIAL, asignarNumeros, DURACION_MS, pesos, listaConContraentrega, diasHabiles, correoRecordatorio,
   STORE, ESTADOS, ORIGENES, PAGOS, TIPOS, ETIQUETAS, limpio, centavos, idValido,
   crearToken, tokenValido, claveCorrecta, aplicarCambios, nuevoPedido, desdeContraentrega, sincronizarGuia, registrarWompi, historial
 };

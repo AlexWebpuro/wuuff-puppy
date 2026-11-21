@@ -89,6 +89,9 @@ async function atender(event) {
   // ── Lista (y trae los pedidos contraentrega nuevos de la web) ──
   if (event.httpMethod === 'GET') {
     const porId = await P.listaConContraentrega(store, getStore('pedidos-contraentrega'));
+    // Número de pedido a los que aún no lo tienen (pedidos viejos y los que llegan de la web)
+    const nuevos = P.asignarNumeros(Array.from(porId.values()));
+    await Promise.all(nuevos.map(p => store.setJSON(p.id, p)));
     const lista = Array.from(porId.values()).filter(p => !p.borrado).sort((a, b) => (a.creado < b.creado ? 1 : -1));
     return json(200, { pedidos: lista });
   }
@@ -98,6 +101,10 @@ async function atender(event) {
     const d = b.pedido || {};
     if (!P.limpio(d.cliente && d.cliente.nombre) && !P.limpio(d.productos)) return json(400, { error: 'Escribe al menos el cliente o el producto' });
     const p = P.nuevoPedido(d);
+    // Número de pedido: el siguiente al mayor que ya existe
+    const { blobs } = await store.list();
+    const todos = (await Promise.all(blobs.map(x => store.get(x.key, { type: 'json' }).catch(() => null)))).filter(Boolean);
+    P.asignarNumeros(todos.concat([p]));
     await store.setJSON(p.id, p);
     return json(200, { pedido: p });
   }
@@ -109,7 +116,8 @@ async function atender(event) {
     if (!p || p.borrado) return json(404, { error: 'El pedido no existe' });
     if (b.accion === 'borrar') {
       // Se deja una marca para que un contraentrega de la web no se vuelva a importar
-      await store.setJSON(p.id, { id: p.id, borrado: true, borradoEl: new Date().toISOString() });
+      // (conserva su número para que no se vuelva a usar)
+      await store.setJSON(p.id, Object.assign({ id: p.id, borrado: true, borradoEl: new Date().toISOString() }, Number.isInteger(p.numero) ? { numero: p.numero } : {}));
       return json(200, { ok: true });
     }
     P.aplicarCambios(p, b.cambios || {});
