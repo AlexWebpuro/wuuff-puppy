@@ -46,6 +46,7 @@ main{max-width:860px;margin:0 auto;padding:12px 16px 100px}
 .filtros::-webkit-scrollbar{display:none}
 .chip{white-space:nowrap;border:1.5px solid var(--borde);background:#fff;border-radius:999px;padding:7px 13px;font-weight:800;font-size:13px;cursor:pointer}
 .chip.activo{background:var(--navy);border-color:var(--navy);color:#fff}
+.num-pedido{display:inline-block;background:var(--navy);color:#fff;border-radius:8px;padding:1px 7px;font-size:.78em;font-weight:900;letter-spacing:.3px;vertical-align:1px}
 .buscar{width:100%;border:1.5px solid var(--borde);border-radius:14px;padding:11px 14px;background:#fff;margin-bottom:12px}
 /* Tarjetas */
 .lista{display:grid;gap:10px}
@@ -209,7 +210,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
   <main id="vistaPedidos">
     <div class="resumen" id="resumen"></div>
     <div class="filtros" id="filtros"></div>
-    <input class="buscar" id="buscar" type="search" placeholder="Buscar por nombre, celular, producto, guía o referencia…">
+    <input class="buscar" id="buscar" type="search" placeholder="Buscar por n.º de pedido, nombre, celular, producto, guía o referencia…">
     <div class="lista" id="lista"></div>
     <div style="display:flex;gap:8px;justify-content:center;margin-top:22px;flex-wrap:wrap">
       <button class="btn claro" id="btnCsv">⬇ Descargar Excel (CSV)</button>
@@ -434,7 +435,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
     // Lista
     const ff = (FILTROS.find(f => f.id === filtro) || FILTROS[0]).f;
     const q = texto.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
-    const lista = pedidos.filter(ff).filter(p => !q || [p.id, p.cliente && p.cliente.nombre, p.cliente && p.cliente.telefono, p.mascota, p.productos, p.notas, p.guia && p.guia.numero, p.cliente && p.cliente.direccion]
+    const lista = pedidos.filter(ff).filter(p => !q || [p.id, p.numero ? '#' + p.numero : '', p.cliente && p.cliente.nombre, p.cliente && p.cliente.telefono, p.mascota, p.productos, p.notas, p.guia && p.guia.numero, p.cliente && p.cliente.direccion]
       .join(' ').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').includes(q));
     // Lo urgente primero: atrasados, por confirmar, por despachar; luego el resto por fecha
     const peso = p => atrasado(p) ? 0 : ({ 'por-confirmar': 1, confirmado: 2, preparando: 2, enviado: 3 }[p.estado] || 4);
@@ -502,7 +503,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
       </div>`);
     const h = $('hoja'), cv = $('etqCanvas');
     const datos = () => ({ nombre: $('etqNombre').value.trim(), tel: $('etqTel').value.trim(), dir: $('etqDir').value.trim(), ciudad: $('etqCiudad').value.trim(),
-      depto: $('etqDepto').value.trim(), cont: $('etqCont').value.trim(), cobrar: $('etqCobro').value === 'si' ? p.totalCents : 0, sello: $('etqSello').value.trim() });
+      depto: $('etqDepto').value.trim(), cont: $('etqCont').value.trim(), cobrar: $('etqCobro').value === 'si' ? p.totalCents : 0, sello: $('etqSello').value.trim(), numero: p.numero || '' });
     const pintarEtq = () => dibujarEtiqueta(cv.getContext('2d'), datos());
     h.querySelector('[data-cerrar]').onclick = cerrarHoja;
     h.querySelectorAll('input,select').forEach(el => el.addEventListener('input', pintarEtq));
@@ -549,6 +550,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
     ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
     let y = top + 82;
     ctx.fillStyle = ROSA; ctx.font = F(800, 34); ctx.fillText('PARA', M, y);
+    if (d.numero) { ctx.textAlign = 'right'; ctx.fillStyle = NAVY; ctx.fillText('PEDIDO #' + d.numero, W - M, y); ctx.textAlign = 'left'; }
     y += 92; ajustar(d.nombre || 'Nombre', 800, 74, W - 2 * M, 40); ctx.fillStyle = NAVY; ctx.fillText(d.nombre || 'Nombre', M, y);
     y += 102; ajustar('Tel: ' + d.tel, 800, 66, W - 2 * M, 36); ctx.fillStyle = NARANJA; ctx.fillText('Tel: ' + d.tel, M, y);
     ctx.font = F(600, 54); ctx.fillStyle = NAVY;
@@ -591,7 +593,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
     const e = EST[p.estado] || EST.confirmado, sig = siguienteEstado(p), c = p.cliente || {};
     return `<article class="pedido" data-id="${esc(p.id)}">
       <div class="arriba">
-        <div class="nombre">${esc(c.nombre || 'Sin nombre')}<small>${esc(ORIGENES[p.origen] || p.origen)} · ${esc(hace(p.creado))}${c.ciudad ? ' · ' + esc(c.ciudad) : ''}</small></div>
+        <div class="nombre">${p.numero ? `<span class="num-pedido">#${p.numero}</span> ` : ''}${esc(c.nombre || 'Sin nombre')}<small>${esc(ORIGENES[p.origen] || p.origen)} · ${esc(hace(p.creado))}${c.ciudad ? ' · ' + esc(c.ciudad) : ''}</small></div>
         <div class="total">${pesos(p.totalCents)}<button type="button" class="btn-borrar" data-accion="etiqueta" aria-label="Etiqueta para el paquete" title="Etiqueta para el paquete">🏷️</button><button type="button" class="btn-borrar" data-accion="borrar" aria-label="Borrar este pedido" title="Borrar pedido">🗑</button></div>
       </div>
       <div class="prod">${esc(p.productos || '—')}</div>
@@ -656,8 +658,8 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
     const c = p.cliente || {}, g = p.guia || {};
     const flujo = ESTADOS.slice(0, 5), idx = flujo.findIndex(e => e.id === p.estado);
     abrirHoja(`
-      <div class="cab"><h2>${esc(c.nombre || 'Pedido')}</h2><button class="btn claro icono" data-cerrar aria-label="Cerrar">✕</button></div>
-      <p class="nota-chica" style="margin:-4px 0 12px">${esc(p.id)} · ${esc(fecha(p.creado))} · ${esc(ORIGENES[p.origen] || '')}</p>
+      <div class="cab"><h2>${p.numero ? `<span class="num-pedido">#${p.numero}</span> ` : ''}${esc(c.nombre || 'Pedido')}</h2><button class="btn claro icono" data-cerrar aria-label="Cerrar">✕</button></div>
+      <p class="nota-chica" style="margin:-4px 0 12px">${p.numero ? 'Pedido #' + p.numero + ' · ' : ''}${esc(p.id)} · ${esc(fecha(p.creado))} · ${esc(ORIGENES[p.origen] || '')}</p>
 
       <div class="caja">
         <h3>Estado</h3>
@@ -874,7 +876,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
           estado: $('nEstado').value, pagado: $('nPagado').checked, fecha: $('nFecha').value, mascota: $('nMascota').value, notas: $('nNotas').value,
           cliente: { nombre: $('nNombre').value, telefono: $('nTel').value, direccion: $('nDir').value, ciudad: $('nCiudad').value }
         } });
-        pedidos.unshift(j.pedido); cerrarHoja(); filtro = 'activos'; pintar(); toast('Pedido guardado 🐾');
+        pedidos.unshift(j.pedido); cerrarHoja(); filtro = 'activos'; pintar(); toast(j.pedido.numero ? 'Pedido #' + j.pedido.numero + ' guardado 🐾' : 'Pedido guardado 🐾');
       } catch (err) { toast(err.message); btn.disabled = false; }
     };
   };
@@ -882,8 +884,8 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
   // ── Buscar y exportar ──
   $('buscar').oninput = e => { texto = e.target.value.trim(); pintar(); };
   $('btnCsv').onclick = () => {
-    const col = ['Referencia', 'Fecha', 'Cliente', 'Celular', 'Ciudad', 'Dirección', 'Mascota', 'Productos', 'Total', 'Costo envío', 'Llegó por', 'Pago', 'Pagado', 'Estado', 'Transportadora', 'Guía', 'Código', 'Comisión', 'Notas'];
-    const filas = pedidos.map(p => [p.id, new Date(p.creado).toLocaleDateString('es-CO'), p.cliente && p.cliente.nombre, p.cliente && p.cliente.telefono, p.cliente && p.cliente.ciudad,
+    const col = ['N.º pedido', 'Referencia', 'Fecha', 'Cliente', 'Celular', 'Ciudad', 'Dirección', 'Mascota', 'Productos', 'Total', 'Costo envío', 'Llegó por', 'Pago', 'Pagado', 'Estado', 'Transportadora', 'Guía', 'Código', 'Comisión', 'Notas'];
+    const filas = pedidos.map(p => [p.numero ? '#' + p.numero : '', p.id, new Date(p.creado).toLocaleDateString('es-CO'), p.cliente && p.cliente.nombre, p.cliente && p.cliente.telefono, p.cliente && p.cliente.ciudad,
       p.cliente && p.cliente.direccion, p.mascota, p.productos, Math.round((p.totalCents || 0) / 100), Math.round((p.costoEnvioCents || 0) / 100),
       ORIGENES[p.origen] || p.origen, PAGOS[p.pago] || p.pago, p.pagado ? 'Sí' : 'No', (EST[p.estado] || {}).n, p.guia && p.guia.transportadora, p.guia && p.guia.numero,
       p.codigo && p.codigo.codigo, p.comisionCents ? Math.round(p.comisionCents / 100) : '', p.notas]);
