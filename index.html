@@ -921,6 +921,8 @@ button.instagram-slide{border:none;padding:0;background:none;font:inherit;-webki
 .gr-titulo{font-family:'Fredoka One',cursive;font-weight:400;font-size:clamp(28px,4vw,40px);color:var(--navy);margin-bottom:14px;}
 .gr-resumen{display:inline-flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;background:#fff;border-radius:40px;padding:10px 20px;margin-bottom:24px;font-weight:800;color:var(--navy);box-shadow:0 4px 0 rgba(45,67,117,.08);}
 .gr-resumen[hidden]{display:none;}
+.gr-widget{margin:0 auto 24px;text-align:left;min-height:1px;}
+.gr-widget:empty{margin:0;}
 .gr-nota{font-family:'Fredoka One',cursive;font-weight:400;font-size:28px;}
 .gr-estrellas{color:#f5b301;letter-spacing:2px;font-size:20px;}
 .gr-lista{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-bottom:24px;text-align:left;}
@@ -1640,6 +1642,8 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
 <section class="gr-section" id="resenas-google" aria-labelledby="gr-titulo">
   <div class="gr-wrap">
     <h2 class="gr-titulo" id="gr-titulo">Lo que dicen de nosotros en Google ⭐</h2>
+    <!-- Widget de Trustindex vinculado al Perfil de Negocio de Google (todas las reseñas, con fotos). Se carga al acercarse a la sección. -->
+    <div class="gr-widget" id="gr-widget" data-src="https://cdn.trustindex.io/loader.js?b75e3698698a3383d346d064d6b"></div>
     <div class="gr-resumen" id="gr-resumen" hidden></div>
     <div class="gr-lista" id="gr-lista" aria-live="polite"></div>
     <p class="gr-vacio" id="gr-vacio">¿Ya tienes tu Wuuff? Cuéntale a otras familias cómo les fue: tu reseña en Google nos ayuda muchísimo 💛</p>
@@ -1878,8 +1882,30 @@ document.addEventListener('click', function(e){
     document.getElementById('gr-vacio').hidden = true;
     document.getElementById('gr-fuente').hidden = false;
   }
-  function cargar(){
+  function deGoogle(){
     fetch('/.netlify/functions/google-resenas').then(function(r){ return r.ok ? r.json() : null; }).then(pintar).catch(function(){});
+  }
+  // Primero el widget de Trustindex (vinculado a Google, con fotos); si no carga, las reseñas de la API de Google (si hay llave)
+  function cargar(){
+    var w = document.getElementById('gr-widget'), src = w && w.getAttribute('data-src');
+    if(!src){ deGoogle(); return; }
+    var listo = false;
+    function mostrado(){
+      if(listo) return; listo = true;
+      document.getElementById('gr-vacio').hidden = true;
+      document.getElementById('gr-resumen').hidden = true;
+      lista.innerHTML = '';
+    }
+    // El widget se dibuja junto al script: cuando aparece algo más en el contenedor, ya está
+    if('MutationObserver' in window){
+      var mo = new MutationObserver(function(){ if([].some.call(w.children, function(c){ return c.tagName !== 'SCRIPT'; })){ mo.disconnect(); mostrado(); } });
+      mo.observe(w, { childList: true, subtree: true });
+    }
+    var sc = document.createElement('script');
+    sc.src = src; sc.async = true; sc.defer = true;
+    sc.onerror = function(){ if(!listo) deGoogle(); };
+    w.appendChild(sc);
+    setTimeout(function(){ if(!listo && ![].some.call(w.children, function(c){ return c.tagName !== 'SCRIPT'; })) deGoogle(); }, 8000);
   }
   // Se pide solo cuando la persona se acerca a la sección
   if('IntersectionObserver' in window){
