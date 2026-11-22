@@ -107,6 +107,11 @@ function aplicarCambios(p, d, ahora) {
     if (['por-confirmar', 'confirmado', 'preparando', 'enviado'].includes(d.estado)) delete p.entregado;
     if (['por-confirmar', 'confirmado', 'preparando'].includes(d.estado)) delete p.enviado;
   }
+  // Se le pidió la reseña en Google por WhatsApp (botón del panel)
+  if (d.resenaPedida) {
+    p.resenaPedida = new Date(ahora || Date.now()).toISOString();
+    cambios.push('⭐ Se le pidió la reseña en Google');
+  }
   if (d.nota) cambios.push('📝 ' + limpio(d.nota, 280));
   cambios.forEach(t => historial(p, t, ahora));
   p.actualizado = new Date(ahora || Date.now()).toISOString();
