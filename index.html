@@ -3656,6 +3656,9 @@ function pagarConWompi(estimadoCents, nombreProducto, customerData, shippingAddr
   var COLORES = { morado: 'Morado', azul: 'Azul', blanco: 'Blanco', rojo: 'Rojo', rosado: 'Rosado', naranja: 'Naranja', fucsia: 'Fucsia', beige: 'Beige', azulrey: 'Azul rey', cafe: 'Café', lila: 'Lila' };
 
   function limpiarNombre(t){ return String(t || '').replace(/[^A-Za-z0-9ÁÉÍÓÚÑÜáéíóúñü '\-.&]/g, '').slice(0, 10).trim(); }
+  // Teléfono grabado atrás (opcional, uno solo): de 7 a 10 cifras
+  function limpiarTel(t){ var d = String(t || '').replace(/\D/g, '').slice(0, 10); return d.length >= 7 ? d : ''; }
+  function txtTel(t){ return t ? ', tel atrás ' + t : ''; }
 
   // Varias placas (una por perrito): /?comprar=placa&lista=[{forma,nombre,base,letras,con,talla}, …]
   // Cada una puede ir sola o con su collar, arnés o combo. Mismo precio que el servidor (netlify/lib/tienda.js):
@@ -3668,6 +3671,7 @@ function pagarConWompi(estimadoCents, nombreProducto, customerData, shippingAddr
       if(!Array.isArray(lst) || !lst.length || lst.length > 6) return;
       lst.forEach(function(it){
         var pl = { nombre: limpiarNombre(it && it.nombre), forma: FORMAS[it && it.forma], base: COLORES[it && it.base], letras: COLORES[it && it.letras] };
+        var tl = limpiarTel(it && it.tel); if(tl) pl.telefono = tl;
         if(!pl.nombre || !pl.forma || !pl.base || !pl.letras) throw new Error('placa');
         var c = PRODUCTOS.hasOwnProperty(it.con) ? it.con : 'sola', t = String(it.talla || '').toUpperCase();
         if(t !== 'S' && t !== 'M') t = 'M';
@@ -3678,7 +3682,7 @@ function pagarConWompi(estimadoCents, nombreProducto, customerData, shippingAddr
     var agregada = items.filter(function(it){ return it.p !== 'collar'; }).length, collares = items.length - agregada;
     var totalL = items.reduce(function(s, it){ return s + PRODUCTOS[it.p].cents; }, 0);
     placas.forEach(function(pl, i){
-      var tx = 'Placa Inteligente Wuuff ' + pl.forma + ' "' + pl.nombre + '" (placa ' + pl.base + ', letras ' + pl.letras + ')';
+      var tx = 'Placa Inteligente Wuuff ' + pl.forma + ' "' + pl.nombre + '" (placa ' + pl.base + ', letras ' + pl.letras + txtTel(pl.telefono) + ')';
       if(i < agregada) totalL += PLACA_AGREGADA;
       else if(i < agregada + collares){ totalL += COMBO_COLLAR_PLACA - PRODUCTOS.collar.cents; tx += ' — combo Collar + Placa'; }
       else totalL += PLACA_SOLA;
@@ -3702,7 +3706,8 @@ function pagarConWompi(estimadoCents, nombreProducto, customerData, shippingAddr
   var talla = (q.get('talla') || '').toUpperCase();
   if(talla !== 'S' && talla !== 'M') talla = (con === 'sola') ? '' : 'M';
 
-  var placa = 'Placa Inteligente Wuuff ' + forma + ' "' + nombre + '" (placa ' + base + ', letras ' + letras + ')';
+  var telefono = limpiarTel(q.get('tel'));
+  var placa = 'Placa Inteligente Wuuff ' + forma + ' "' + nombre + '" (placa ' + base + ', letras ' + letras + txtTel(telefono) + ')';
   var total, producto;
   if(con === 'sola'){
     total = PLACA_SOLA;
@@ -3719,7 +3724,7 @@ function pagarConWompi(estimadoCents, nombreProducto, customerData, shippingAddr
     try { if(window.gtag) gtag('event', 'placa_iniciar_compra', { forma: q.get('forma'), con: con, value: total / 100, currency: 'COP' }); } catch(err){}
     iniciarCompra(total, producto, talla, {
       items: con === 'sola' ? [] : [{ p: con, talla: talla }],
-      placa: { nombre: nombre, forma: forma, base: base, letras: letras }
+      placa: telefono ? { nombre: nombre, forma: forma, base: base, letras: letras, telefono: telefono } : { nombre: nombre, forma: forma, base: base, letras: letras }
     });
   }
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', abrir); else abrir();

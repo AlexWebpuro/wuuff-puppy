@@ -237,6 +237,10 @@ form { display: grid; grid-template-columns: minmax(0, 1fr); gap: 22px; min-widt
 .campo { display: flex; align-items: center; gap: 10px; background: var(--white); border: 2px solid var(--lblue); border-radius: 16px; padding: 4px 16px; }
 .campo:focus-within { border-color: var(--blue); box-shadow: 0 0 0 4px rgba(73, 100, 175, .15); }
 .campo input { flex: 1 1 auto; width: 0; min-width: 0; border: 0; background: transparent; color: var(--navy); font: 400 26px/1.4 var(--f-display); padding: 8px 0; outline: none; }
+.tel-label { display: block; margin: 14px 0 6px; font-weight: 800; color: var(--navy); font-size: 15px; }
+.tel-label small { font-weight: 700; color: var(--tenue); }
+.campo-tel input { font: 700 20px/1.4 var(--f-body, inherit); letter-spacing: .04em; }
+.ayuda-tel { margin: 6px 0 0; font-size: 13px; color: var(--tenue); font-weight: 600; }
 .contador { font-size: 13px; font-weight: 700; color: var(--tenue); font-variant-numeric: tabular-nums; }
 .aviso { font-size: 14px; font-weight: 600; color: var(--aviso); background: var(--aviso-bg); padding: 8px 12px; border-radius: 12px; }
 .opciones { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
@@ -447,6 +451,12 @@ footer a:hover { opacity: 1; text-decoration: underline; }
               <span class="contador" id="contador">0/10</span>
             </div>
             <p class="aviso" id="aviso-nombre" role="status" hidden></p>
+            <label for="telefono" class="tel-label">📞 Teléfono grabado atrás <small>(opcional, uno solo)</small></label>
+            <div class="campo campo-tel">
+              <input id="telefono" name="telefono" type="tel" inputmode="numeric" autocomplete="tel-national" maxlength="16" placeholder="Ej.: 3001234567" aria-describedby="aviso-tel ayuda-tel">
+            </div>
+            <p class="ayuda-tel" id="ayuda-tel">Va grabado por detrás de la placa. Gratis. Toca <b>Reverso</b> para verlo.</p>
+            <p class="aviso" id="aviso-tel" role="status" hidden>Escribe el número completo (mínimo 7 cifras).</p>
           </div>
 
           <fieldset class="paso">

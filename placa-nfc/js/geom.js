@@ -226,5 +226,21 @@
     return res;
   }
 
-  return { placaNube, placaSilueta, placaFigura, formas, bounds, area, toMM, soportado: ch => ch in GLYPHS.titan.glyphs && ch in GLYPHS.bagel.glyphs };
+  // ---------- Teléfono grabado atrás (opcional, uno solo) ----------
+  // Centrado en la placa (a la altura del NFC si lo tiene) y en espejo, para que se lea al voltear la placa.
+  // Devuelve los contornos del texto; la vista lo dibuja como grabado en la cara de atrás.
+  function textoAtras(g, tel, o = {}) {
+    const t = String(tel || '').replace(/[^0-9 +]/g, '').trim();
+    if (!t) return [];
+    const font = GLYPHS.titan, bb = bounds(g.base);
+    const cx = (bb.x0 + bb.x1) / 2, cy = g.nfc ? g.nfc.y : (bb.y0 + bb.y1) / 2;
+    const ancho1 = anchoTabla(font, t) / 0.72;                    // ancho con letra de 1 mm
+    const tam = Math.max(2.4, Math.min(o.tamMax || 4.2, (bb.w * 0.72) / Math.max(ancho1, 0.01)));
+    const txt = texto(font, t, tam, 1, 'center', 'center');
+    const X = Math.round(cx * S), Y = Math.round(cy * S);
+    const espejo = txt.map(p => p.map(q => ({ X: X - q.X, Y: Y + q.Y })).reverse());
+    return inter(union(espejo), offD(g.base, -0.8));
+  }
+
+  return { placaNube, placaSilueta, placaFigura, textoAtras, formas, bounds, area, toMM, soportado: ch => ch in GLYPHS.titan.glyphs && ch in GLYPHS.bagel.glyphs };
 });
