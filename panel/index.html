@@ -48,6 +48,9 @@ main{max-width:860px;margin:0 auto;padding:12px 16px 100px}
 .chip.activo{background:var(--navy);border-color:var(--navy);color:#fff}
 .armar .armar-item{padding:10px 0;border-top:1px dashed var(--borde)}.armar .armar-item:first-of-type{border-top:0;padding-top:0}
 .armar-t{font-weight:900;font-size:14px;margin-bottom:6px}
+.armar .cn.armar-cn{background:none;padding:0;margin:0;display:block}
+.armar .armar-cn .cn-stage{padding:6px 10px}
+.armar .armar-cn .cn-box{height:auto;min-height:90px;padding:8px 0}
 .armar-collar{display:flex;flex-wrap:wrap;gap:4px;background:#b8d8f5;border-radius:12px;padding:8px 10px;border:2px solid #9cc4ea}
 .armar-l{display:inline-grid;place-items:center;min-width:34px;height:42px;padding:0 4px;border-radius:9px;background:var(--c);border-bottom:4px solid var(--e);color:#fff;font-weight:900;font-size:22px;font-family:'Fredoka One','Nunito',sans-serif;text-shadow:0 1px 0 rgba(0,0,0,.25)}
 .armar-l.osc{color:#2d4375;text-shadow:none}
@@ -189,6 +192,8 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
 .sin-leer{display:grid;gap:6px;margin-top:6px}.sin-leer button{text-align:left;border:0;background:#fff7e0;border-radius:12px;padding:9px 11px;cursor:pointer;font-size:13px}
 .t-colaboracion{background:#e8e0fb;color:#5a3aa8}.t-regalo{background:#fde3ef;color:#a0336b}
 </style>
+<!-- Misma vista previa del collar con nombre que la web (tipografía Malaka Cournt, colores y relieve de las letras) -->
+<link rel="stylesheet" href="/assets/collar-nombre.css?v=9">
 </head>
 <body>
 
@@ -725,7 +730,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
       const usados = piezas.map(x => x.c.nombre).filter((n, i, a) => a.indexOf(n) === i);
       const prod = (CATALOGO.find(c => c.id === it.p) || { n: it.p }).n + (it.talla ? (it.talla.length === 2 ? ' · Talla collar ' + it.talla[0] + ', arnés ' + it.talla[1] : ' · Talla ' + it.talla) : '') + (it.q > 1 ? ' · x' + it.q : '');
       return `<div class="armar-item"><p class="armar-t">${esc(prod)}</p>
-        <div class="armar-collar">${piezas.map((x, i) => `<span class="armar-l${claro(x.c.main) ? ' osc' : ''}" style="--c:${esc(x.c.main)};--e:${esc(x.c.edge || x.c.main)}" title="${i + 1}. ${esc(x.ch)} · ${esc(x.c.nombre)}">${esc(x.ch)}</span>`).join('')}</div>
+        <div class="cn armar-cn"><div class="cn-stage"><div class="cn-box"><div class="cn-strap"><div class="cn-name" data-armar-nombre style="--c:${esc(base.main)};--e:${esc(base.edge || base.main)}">${piezas.map((x, i) => `<span class="cn-ch" title="${i + 1}. ${esc(x.ch)} · ${esc(x.c.nombre)}" style="--c:${esc(x.c.main)};--e:${esc(x.c.edge || x.c.main)}">${x.ch === '♥' || x.ch === '★' ? `<svg class="cn-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="${x.ch === '♥' ? 'M12 21s-7.5-4.6-9.6-9.2C.9 8.4 2.7 4.5 6.4 4.5c2.1 0 3.8 1.2 5.6 3.3 1.8-2.1 3.5-3.3 5.6-3.3 3.7 0 5.5 3.9 4 7.3C19.5 16.4 12 21 12 21z' : 'M12 2.6l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.2 1.2-6.5L2.5 9.5l6.6-.9z'}"/></svg>` : esc(x.ch)}</span>`).join('')}</div></div></div></div></div>
         <p class="armar-d">${piezas.map((x, i) => `<b>${i + 1}.</b> ${esc(x.ch)} ${esc(x.c.nombre.toLowerCase())}`).join(' · ')}</p>
         <p class="nota-chica">${usados.length > 1 ? '🎨 Letras combinadas: ' + esc(usados.join(', ')) : 'Todas las letras en ' + esc(usados[0].toLowerCase())}</p></div>`;
     });
@@ -771,6 +776,16 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
     const bc = colorPorNombre(d.base), lc = colorPorNombre(d.letras || 'Blanco');
     const borde = claro(bc.main) ? 'rgba(0,0,0,.35)' : 'rgba(0,0,0,.15)';
     return `<svg viewBox="0 0 ${W.toFixed(2)} ${H.toFixed(2)}" role="img" aria-label="Placa ${esc(d.forma)} ${esc(d.base)} con ${esc(n)} en ${esc(d.letras || '')}"><path fill-rule="evenodd" fill="${bc.main}" stroke="${borde}" stroke-width=".5" d="${ruta(g.base)}"/><path fill-rule="evenodd" fill="${lc.main}" stroke="${claro(lc.main) && claro(bc.main) ? 'rgba(0,0,0,.35)' : 'none'}" stroke-width=".3" d="${ruta(g.letras)}"/></svg>`;
+  }
+  function ajustarCollares() {
+    document.querySelectorAll('[data-armar-nombre]').forEach(name => {
+      const strap = name.parentNode, n = name.children.length || 1;
+      let fs = Math.max(26, Math.min(110, strap.clientWidth * 0.76 / (n * 0.68)));
+      name.style.setProperty('--fs', fs + 'px');
+      const max = strap.clientWidth * 0.84;
+      if (name.scrollWidth > max) { fs = Math.max(20, fs * max / name.scrollWidth); name.style.setProperty('--fs', fs + 'px'); }
+      strap.style.height = Math.max(16, fs * 0.5) + 'px';
+    });
   }
   function pintarPlacasExactas() {
     const cajas = document.querySelectorAll('.armar-svg[data-placa]');
@@ -908,6 +923,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
     editorDetalle = editorInv($('dEditor'), p.inv || [], null, t => { $('dTotal').value = t; toast('Total actualizado: ' + pesos(t * 100) + ' (recuerda guardar)'); });
     $('btnEtiqueta').onclick = () => abrirEtiqueta(p.id);
     pintarPlacasExactas();
+    ajustarCollares(); if (document.fonts && document.fonts.load) document.fonts.load('40px "Malaka Cournt"').then(ajustarCollares).catch(() => {});
     // Guía de Envia desde el panel: ver precios → elegir → crear (queda Enviado con su guía)
     const datosEnvio = () => ({ nombre: $('eNombre').value, telefono: $('eTel').value, direccion: $('eDir').value, barrio: $('eBarrio').value, cp: $('eCp').value, referencia: $('eRef').value, ciudad: c.ciudad });
     if ($('btnEnvia')) $('btnEnvia').onclick = () => { $('cajaEnvia').classList.remove('oculto'); $('cajaEnvia').scrollIntoView({ behavior: 'smooth', block: 'start' }); };
