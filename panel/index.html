@@ -52,7 +52,10 @@ main{max-width:860px;margin:0 auto;padding:12px 16px 100px}
 .armar-l{display:inline-grid;place-items:center;min-width:34px;height:42px;padding:0 4px;border-radius:9px;background:var(--c);border-bottom:4px solid var(--e);color:#fff;font-weight:900;font-size:22px;font-family:'Fredoka One','Nunito',sans-serif;text-shadow:0 1px 0 rgba(0,0,0,.25)}
 .armar-l.osc{color:#2d4375;text-shadow:none}
 .armar-d{font-size:13px;margin-top:6px;line-height:1.6}
-.armar-placa{display:flex;gap:12px;align-items:center}.armar-placa svg{flex:none;background:#f6f3ee;border-radius:14px}
+.armar-placa{display:flex;gap:12px;align-items:center}
+.armar-svg{flex:none;width:130px;min-height:110px;display:grid;place-items:center;background:#f6f3ee;border-radius:14px;padding:8px}
+.armar-svg svg{display:block;width:100%;height:auto;max-height:130px}
+.armar-svg.exacta svg{filter:drop-shadow(0 2px 2px rgba(45,67,117,.25))}
 .armar-sw{display:inline-block;width:14px;height:14px;border-radius:50%;background:var(--c);box-shadow:0 0 0 1px rgba(45,67,117,.3);vertical-align:-2px;margin-right:4px}
 .num-pedido{display:inline-block;background:var(--navy);color:#fff;border-radius:8px;padding:1px 7px;font-size:.78em;font-weight:900;letter-spacing:.3px;vertical-align:1px}
 .buscar{width:100%;border:1.5px solid var(--borde);border-radius:14px;padding:11px 14px;background:#fff;margin-bottom:12px}
@@ -743,10 +746,38 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
     const out = []; let m;
     while ((m = re.exec(p.productos || ''))) {
       const [, forma, nombre, base, letras] = m;
-      out.push(`<div class="armar-item armar-placa">${svgPlaca(forma, base.trim(), (letras || '').trim(), nombre)}<div><p class="armar-t">Placa ${esc(forma.toLowerCase())} · "${esc(nombre)}"</p>
+      out.push(`<div class="armar-item armar-placa"><div class="armar-svg" data-placa="${esc(JSON.stringify({ forma, nombre, base: base.trim(), letras: (letras || '').trim() }))}">${svgPlaca(forma, base.trim(), (letras || '').trim(), nombre)}</div><div><p class="armar-t">Placa ${esc(forma.toLowerCase())} · "${esc(nombre)}"</p>
         <p class="armar-d"><span class="armar-sw" style="--c:${esc(colorPorNombre(base.trim()).main)}"></span> Placa ${esc(base.trim().toLowerCase())}<br><span class="armar-sw" style="--c:${esc(colorPorNombre((letras || 'Blanco').trim()).main)}"></span> Letras ${esc((letras || 'sin indicar').trim().toLowerCase())}</p></div></div>`);
     }
     return out;
+  }
+  // Forma exacta de la placa: la misma geometría del diseñador (placa-nfc/js/geom.js + ClipperLib + letras).
+  // Se carga solo la primera vez que se abre un pedido con placa; mientras tanto se ve el dibujo aproximado.
+  let geomPromesa = null;
+  function cargarScript(src) { return new Promise((ok, mal) => { const sc = document.createElement('script'); sc.src = src; sc.onload = ok; sc.onerror = mal; document.head.appendChild(sc); }); }
+  function cargarGeom() {
+    if (!geomPromesa) geomPromesa = Promise.all([
+      window.ClipperLib ? null : cargarScript('https://cdn.jsdelivr.net/npm/clipper-lib@6.4.2/clipper.js'),
+      window.WuuffGeom ? null : cargarScript('/placa-nfc/js/geom.js'),
+      fetch('/placa-nfc/datos/glyphs.json').then(r => r.json())
+    ]).then(r => window.WuuffGeom(window.ClipperLib, r[2])).catch(err => { geomPromesa = null; throw err; });
+    return geomPromesa;
+  }
+  function svgPlacaExacta(G, d) {
+    const n = String(d.nombre || '').trim();
+    const g = d.forma === 'Nombre' ? G.placaSilueta(n) : G.placaFigura(d.forma.toLowerCase(), n);
+    const bb = G.bounds(g.base), pad = 2, W = bb.w + 2 * pad, H = bb.h + 2 * pad;
+    const ruta = paths => G.formas(paths).map(f => [f.exterior, ...f.huecos].map(q => 'M' + q.map(([x, y]) => `${(x - bb.x0 + pad).toFixed(2)},${(bb.y1 - y + pad).toFixed(2)}`).join('L') + 'Z').join('')).join('');
+    const bc = colorPorNombre(d.base), lc = colorPorNombre(d.letras || 'Blanco');
+    const borde = claro(bc.main) ? 'rgba(0,0,0,.35)' : 'rgba(0,0,0,.15)';
+    return `<svg viewBox="0 0 ${W.toFixed(2)} ${H.toFixed(2)}" role="img" aria-label="Placa ${esc(d.forma)} ${esc(d.base)} con ${esc(n)} en ${esc(d.letras || '')}"><path fill-rule="evenodd" fill="${bc.main}" stroke="${borde}" stroke-width=".5" d="${ruta(g.base)}"/><path fill-rule="evenodd" fill="${lc.main}" stroke="${claro(lc.main) && claro(bc.main) ? 'rgba(0,0,0,.35)' : 'none'}" stroke-width=".3" d="${ruta(g.letras)}"/></svg>`;
+  }
+  function pintarPlacasExactas() {
+    const cajas = document.querySelectorAll('.armar-svg[data-placa]');
+    if (!cajas.length) return;
+    cargarGeom().then(G => cajas.forEach(el => {
+      try { el.innerHTML = svgPlacaExacta(G, JSON.parse(el.dataset.placa)); el.classList.add('exacta'); } catch (e) { /* se queda el dibujo aproximado */ }
+    })).catch(() => {});
   }
   function cajaArmado(p) {
     const items = armadoCollares(p).concat(armadoPlacas(p));
@@ -876,6 +907,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
     $('btnBorrar').onclick = () => borrarPedido(p.id);
     editorDetalle = editorInv($('dEditor'), p.inv || [], null, t => { $('dTotal').value = t; toast('Total actualizado: ' + pesos(t * 100) + ' (recuerda guardar)'); });
     $('btnEtiqueta').onclick = () => abrirEtiqueta(p.id);
+    pintarPlacasExactas();
     // Guía de Envia desde el panel: ver precios → elegir → crear (queda Enviado con su guía)
     const datosEnvio = () => ({ nombre: $('eNombre').value, telefono: $('eTel').value, direccion: $('eDir').value, barrio: $('eBarrio').value, cp: $('eCp').value, referencia: $('eRef').value, ciudad: c.ciudad });
     if ($('btnEnvia')) $('btnEnvia').onclick = () => { $('cajaEnvia').classList.remove('oculto'); $('cajaEnvia').scrollIntoView({ behavior: 'smooth', block: 'start' }); };
