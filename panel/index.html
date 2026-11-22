@@ -114,7 +114,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
 .items{margin:8px 0 0;padding:0;list-style:none}
 .items li{display:flex;align-items:center;gap:8px;padding:6px 0;border-top:1px dashed var(--borde);font-size:14px}
 .items li span{flex:1}.items li.con-nombre{flex-wrap:wrap}
-.nom-fila{display:flex;gap:6px;width:100%;margin-top:4px}.nom-fila input{flex:1;min-width:0;padding:8px 10px;font-size:15px;text-transform:uppercase}.nom-fila select{width:auto;padding:8px;font-size:14px}.items button{border:0;background:#f3eee6;border-radius:8px;width:28px;height:28px;cursor:pointer;font-weight:800}
+.nom-fila{display:flex;gap:6px;width:100%;margin-top:4px}.nom-fila .nom-ico{width:36px;height:auto;min-height:36px;font-size:18px;color:#d9338f;background:#fff;border:1.5px solid var(--borde)}.nom-fila input{flex:1;min-width:0;padding:8px 10px;font-size:15px;text-transform:uppercase}.nom-fila select{width:auto;padding:8px;font-size:14px}.items button{border:0;background:#f3eee6;border-radius:8px;width:28px;height:28px;cursor:pointer;font-weight:800}
 .aviso-extras{margin-top:10px;background:#fff4e0;border:1.5px solid #ffd59a;border-radius:12px;padding:10px 12px;font-size:14px}.aviso-extras.oculto{display:none}
 .tallas{display:flex;gap:6px;align-items:center;font-size:13px;font-weight:800;margin-top:4px}
 .aviso{background:#fff7e0;border-radius:12px;padding:10px 12px;font-size:14px}
@@ -291,10 +291,16 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
     };
     const pintar = () => {
       lista.innerHTML = items.map((it, i) => `<li class="${CON_NOMBRE.includes(it.id) ? 'con-nombre' : ''}"><span>${esc(linea(it))}</span><b>${pesos(precioLinea(it) * 100)}</b><button type="button" data-emenos="${i}" aria-label="Quitar uno">−</button><button type="button" data-emas="${i}" aria-label="Agregar uno">＋</button>
-        ${CON_NOMBRE.includes(it.id) ? `<div class="nom-fila"><input data-enom="${i}" maxlength="8" placeholder="Nombre (ej. OLIVER)" value="${esc(it.nombre ? it.nombre.texto : '')}" autocomplete="off"><select data-ecol="${i}">${CN_COLORES.map(c => `<option value="${c.id}"${it.nombre && it.nombre.color === c.id ? ' selected' : ''}>${esc(c.nombre)}</option>`).join('')}</select></div>` : ''}</li>`).join('')
+        ${CON_NOMBRE.includes(it.id) ? `<div class="nom-fila"><input data-enom="${i}" maxlength="8" placeholder="Nombre (ej. OLIVER)" value="${esc(it.nombre ? it.nombre.texto : '')}" autocomplete="off"><button type="button" class="nom-ico" data-eico="${i}" data-ch="♥" title="Agregar corazón" aria-label="Agregar corazón">♥</button><button type="button" class="nom-ico" data-eico="${i}" data-ch="★" title="Agregar estrella" aria-label="Agregar estrella">★</button><select data-ecol="${i}">${CN_COLORES.map(c => `<option value="${c.id}"${it.nombre && it.nombre.color === c.id ? ' selected' : ''}>${esc(c.nombre)}</option>`).join('')}</select></div>` : ''}</li>`).join('')
         || '<li class="nota-chica" style="border:0">Toca los productos que lleva (elige primero la talla).</li>';
       lista.querySelectorAll('[data-emenos]').forEach(b => b.onclick = () => { const it = items[b.dataset.emenos]; it.q--; if (it.q < 1) items.splice(b.dataset.emenos, 1); pintar(); });
       lista.querySelectorAll('[data-emas]').forEach(b => b.onclick = () => { items[b.dataset.emas].q++; pintar(); });
+      // ♥ y ★ también van en el nombre (como en la web)
+      lista.querySelectorAll('[data-eico]').forEach(b => b.onclick = () => {
+        const inp = lista.querySelector('[data-enom="' + b.dataset.eico + '"]');
+        if (Array.from(inp.value).length >= 8) { toast('Máximo 8 letras o figuras'); return; }
+        inp.value += b.dataset.ch; inp.oninput(); inp.focus();
+      });
       lista.querySelectorAll('[data-enom]').forEach(inp => inp.oninput = () => { const it = items[inp.dataset.enom]; it.nombre = it.nombre || { color: 'rosado' }; it.nombre.texto = inp.value.toUpperCase(); const li = lista.querySelectorAll('li')[inp.dataset.enom]; li.querySelector('span').textContent = linea(it); li.querySelector('b').textContent = pesos(precioLinea(it) * 100); avisar(); if (alCambiar) alCambiar(); });
       lista.querySelectorAll('[data-ecol]').forEach(sel => sel.onchange = () => { const it = items[sel.dataset.ecol]; it.nombre = it.nombre || { texto: '' }; it.nombre.color = sel.value; pintar(); });
       avisar();

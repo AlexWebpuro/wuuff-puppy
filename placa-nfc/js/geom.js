@@ -86,17 +86,19 @@
   }
 
   // ---------- Marca NFC: pastilla con ondas y "NFC" calados (igual que placa_figura.scad) ----------
-  // Centrada en (cx, cy). Devuelve la marca (lo que se imprime del color de las letras) y la pastilla completa.
-  function marcaNfc(cx, cy) {
+  // Centrada en (cx, cy); k = escala (1 = tamaño de la huella). Devuelve la marca (lo que se imprime del color
+  // de las letras) y la pastilla completa.
+  function marcaNfc(cx, cy, k = 1) {
     const font = GLYPHS.titan;
-    const R = 3.6, TXT = 3.4, XT = 4.9, XL = 1.8;
+    const R = 3.6 * k, TXT = 3.4 * k, XT = 4.9 * k, XL = 1.8 * k;
     const tw = anchoTabla(font, 'NFC') * TXT / 0.72;
-    const xr = XT + tw - R + 1.2, dx = cx - ((XL - R) + (xr + R)) / 2;
+    const xr = XT + tw - R + 1.2 * k, dx = cx - ((XL - R) + (xr + R)) / 2;
     const pastilla = hull(circle(XL + dx, cy, 2 * R, 64).concat(circle(xr + dx, cy, 2 * R, 64)));
     const rad = a => a * Math.PI / 180;
-    const cuña = toInt([[[dx, cy], [dx + 10 * Math.cos(rad(42)), cy + 10 * Math.sin(rad(42))], [dx + 10, cy], [dx + 10 * Math.cos(rad(-42)), cy + 10 * Math.sin(rad(-42))]]]);
-    let ondas = circle(dx, cy, 1.6, 64);
-    for (const r of [2.0, 3.6]) ondas = union(ondas, inter(diff(circle(dx, cy, 2 * (r + 0.4), 64), circle(dx, cy, 2 * (r - 0.4), 64)), cuña));
+    const L = 10 * k;
+    const cuña = toInt([[[dx, cy], [dx + L * Math.cos(rad(42)), cy + L * Math.sin(rad(42))], [dx + L, cy], [dx + L * Math.cos(rad(-42)), cy + L * Math.sin(rad(-42))]]]);
+    let ondas = circle(dx, cy, 1.6 * k, 64);
+    for (const r of [2.0 * k, 3.6 * k]) ondas = union(ondas, inter(diff(circle(dx, cy, 2 * (r + 0.4 * k), 64), circle(dx, cy, 2 * (r - 0.4 * k), 64)), cuña));
     ondas = union(ondas, translate(texto(font, 'NFC', TXT, 1, 'left', 'center'), dx + XT, cy));
     return { marca: diff(pastilla, ondas), pastilla, alto: 2 * R };
   }
@@ -150,7 +152,8 @@
     // Marca NFC debajo del nombre, dentro del medallón (como en la huella)
     const conMarca = P.nfc && P.marcaNfc !== false;
     // justo debajo de las letras (1 mm), sin acercarse a menos de 2 mm del borde del medallón
-    const m = conMarca ? marcaNfc(cN[0], Math.max(Math.min(0, bounds(txt).y0) - 1 - 3.6, cN[1] - (rCav + P.pared) + 2 + 3.6)) : null;
+    const KM = P.escalaMarca || 0.65, RM = 3.6 * KM; // más pequeña que en la huella
+    const m = conMarca ? marcaNfc(cN[0], Math.max(Math.min(0, bounds(txt).y0) - 1 - RM, cN[1] - (rCav + P.pared) + 2.5 + RM), KM) : null;
     const base = diff(closing(u, 1.2), circle(cA[0], cA[1], P.dAgujero, 64));
     const letras = union(diff(txt, circle(cA[0], cA[1], P.dAgujero + 2, 64)).concat(m ? m.marca : []));
     return { tipo: 'silueta', base, letras, grosor: P.grosor, altoLetras: P.altoLetras, tamLetra: P.tam,
