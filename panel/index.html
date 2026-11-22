@@ -763,7 +763,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
   function cargarGeom() {
     if (!geomPromesa) geomPromesa = Promise.all([
       window.ClipperLib ? null : cargarScript('https://cdn.jsdelivr.net/npm/clipper-lib@6.4.2/clipper.js'),
-      window.WuuffGeom ? null : cargarScript('/placa-nfc/js/geom.js'),
+      window.WuuffGeom ? null : cargarScript('/placa-nfc/js/geom.js?v=20261122'),
       fetch('/placa-nfc/datos/glyphs.json').then(r => r.json())
     ]).then(r => window.WuuffGeom(window.ClipperLib, r[2])).catch(err => { geomPromesa = null; throw err; });
     return geomPromesa;
