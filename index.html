@@ -916,6 +916,30 @@ button.instagram-slide{border:none;padding:0;background:none;font:inherit;-webki
 
 /* TOOLS */
 .tools-section{padding:70px 20px;background:#fff;}
+.gr-section{padding:64px 20px;background:var(--cream);}
+.gr-wrap{max-width:1100px;margin:0 auto;text-align:center;}
+.gr-titulo{font-family:'Fredoka One',cursive;font-weight:400;font-size:clamp(28px,4vw,40px);color:var(--navy);margin-bottom:14px;}
+.gr-resumen{display:inline-flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;background:#fff;border-radius:40px;padding:10px 20px;margin-bottom:24px;font-weight:800;color:var(--navy);box-shadow:0 4px 0 rgba(45,67,117,.08);}
+.gr-resumen[hidden]{display:none;}
+.gr-nota{font-family:'Fredoka One',cursive;font-weight:400;font-size:28px;}
+.gr-estrellas{color:#f5b301;letter-spacing:2px;font-size:20px;}
+.gr-lista{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-bottom:24px;text-align:left;}
+.gr-lista:empty{display:none;}
+.gr-card{background:#fff;border-radius:22px;padding:18px;box-shadow:0 4px 0 rgba(45,67,117,.08);}
+.gr-cab{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.gr-cab img,.gr-ini{width:40px;height:40px;border-radius:50%;object-fit:cover;flex:none;}
+.gr-ini{display:grid;place-items:center;background:var(--lblue);color:var(--blue);font-weight:900;}
+.gr-cab b{display:block;color:var(--navy);font-size:15px;}
+.gr-cab small{color:#6b7a99;font-size:13px;}
+.gr-card .gr-estrellas{font-size:17px;margin-bottom:6px;}
+.gr-card p{font-size:15px;line-height:1.55;color:#3d4a6b;}
+.gr-vacio{max-width:560px;margin:0 auto 22px;font-size:17px;font-weight:700;color:var(--navy);}
+.gr-botones{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;}
+.gr-btn{display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:12px 24px;border-radius:30px;font-weight:900;font-size:16px;text-decoration:none;}
+.gr-btn-azul{background:var(--blue);color:#fff;box-shadow:0 4px 0 var(--navy);}
+.gr-btn-claro{background:#fff;color:var(--blue);border:2px solid var(--blue);}
+.gr-fuente{margin-top:14px;font-size:13px;color:#6b7a99;}
+@media(max-width:540px){.gr-btn{width:100%;}}
 .real-section{padding:64px 20px 70px;background:var(--cream);text-align:center;}
 .real-section h2{font-family:'Fredoka One',cursive;font-size:clamp(28px,4vw,42px);color:var(--navy);margin-bottom:8px;}
 .real-section h2 span{color:var(--coral-texto);}
@@ -1613,21 +1637,17 @@ src="https://www.facebook.com/tr?id=1681628992892925&ev=PageView&noscript=1"
 </section>
 
 <!-- ¿QUÉ TALLA NECESITA? -->
-<section class="tools-section tools-section-alt" id="que-talla">
-  <div class="tools-single">
-    <div class="tool-card">
-      <h3>¿Qué talla necesita tu perrihijo? 📏</h3>
-      <p class="tool-sub">Mide el contorno de cuello de tu perrihijo con una cinta métrica</p>
-      <div class="size-slider-wrap">
-        <input type="range" min="18" max="46" value="27" id="weight-slider" class="size-slider" aria-label="Contorno de cuello en centímetros">
-        <div class="size-weight-label"><span id="weight-value">27</span> cm de cuello</div>
-      </div>
-      <div class="size-result">
-        <span class="size-result-badge" id="size-badge">Collar S · Arnés S</span>
-        <span class="size-result-text" id="size-text">Collar talla S (cuello 25–33 cm) · Arnés talla S</span>
-      </div>
-      <p class="size-disclaimer">*Medidas oficiales. <strong>Collar:</strong> hasta 33 cm de cuello → S; de 34 a 42 cm → M. <strong>Arnés:</strong> hasta 29 cm de cuello → S; desde 30 cm → M. Si mide entre 32 y 34 cm, o pasa de 40 cm, escríbenos por WhatsApp y te ayudamos a elegir 🐾</p>
+<section class="gr-section" id="resenas-google" aria-labelledby="gr-titulo">
+  <div class="gr-wrap">
+    <h2 class="gr-titulo" id="gr-titulo">Lo que dicen de nosotros en Google ⭐</h2>
+    <div class="gr-resumen" id="gr-resumen" hidden></div>
+    <div class="gr-lista" id="gr-lista" aria-live="polite"></div>
+    <p class="gr-vacio" id="gr-vacio">¿Ya tienes tu Wuuff? Cuéntale a otras familias cómo les fue: tu reseña en Google nos ayuda muchísimo 💛</p>
+    <div class="gr-botones">
+      <a class="gr-btn gr-btn-azul" id="gr-escribir" href="https://g.page/r/CYtp9VSFSfteEBM/review" target="_blank" rel="noopener">⭐ Dejar mi reseña en Google</a>
+      <a class="gr-btn gr-btn-claro" id="gr-ver" href="https://share.google/bdI2UwcPLJIJHrmIU" target="_blank" rel="noopener">Ver todas en Google</a>
     </div>
+    <p class="gr-fuente" id="gr-fuente" hidden>Reseñas tomadas de <b>Google</b></p>
   </div>
 </section>
 
@@ -1828,25 +1848,44 @@ document.addEventListener('click', function(e){
 </footer>
 
 <script>
-// Selector de talla por contorno de cuello (tabla oficial de fábrica)
+// Reseñas de Google (netlify/functions/google-resenas.js; con la llave de Google en Netlify muestra las más relevantes)
 (function(){
-  var slider = document.getElementById('weight-slider');
-  if(!slider) return;
-  var weightValue = document.getElementById('weight-value');
-  var sizeBadge = document.getElementById('size-badge');
-  var sizeText = document.getElementById('size-text');
-  function updateSize(){
-    var n = parseInt(slider.value, 10);
-    weightValue.textContent = n;
-    // El collar y el arnés tienen cortes distintos
-    var collar = n <= 33 ? 'S' : (n <= 42 ? 'M' : '');
-    var arnes = n <= 29 ? 'S' : (n <= 38 ? 'M' : '');
-    sizeBadge.textContent = (collar ? 'Collar ' + collar : 'Collar: pregúntanos') + ' · ' + (arnes ? 'Arnés ' + arnes : 'Arnés: pregúntanos');
-    sizeText.innerHTML = (collar ? 'Collar talla ' + collar + ' (cuello ' + (collar === 'S' ? '25–33' : '33–42') + ' cm)' : 'Más de 42 cm de cuello: <a href="https://wa.me/573176431286?text=Hola%2C%20quiero%20saber%20qu%C3%A9%20talla%20le%20queda%20a%20mi%20perrito" target="_blank" rel="noopener">escríbenos por WhatsApp</a> y te ayudamos a ver si le sirve') +
-      (arnes ? ' · Arnés talla ' + arnes + ' (pecho ' + (arnes === 'S' ? '23–38' : '32–53') + ' cm)' : '');
+  var lista = document.getElementById('gr-lista');
+  if(!lista) return;
+  function esc(t){ return String(t == null ? '' : t).replace(/[&<>"]/g, function(c){ return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function estrellas(n){ var r = Math.round(n || 0), t = ''; for(var i = 1; i <= 5; i++) t += i <= r ? '★' : '☆'; return t; }
+  function pintar(d){
+    if(!d) return;
+    if(d.escribir) document.getElementById('gr-escribir').href = d.escribir;
+    if(d.url) document.getElementById('gr-ver').href = d.url;
+    var res = (d.resenas || []).filter(function(r){ return r.texto; });
+    if(d.rating && d.total){
+      var re = document.getElementById('gr-resumen');
+      re.innerHTML = '<b class="gr-nota">' + String(Math.round(d.rating * 10) / 10).replace('.', ',') + '</b><span class="gr-estrellas" aria-hidden="true">' + estrellas(d.rating) + '</span><span>' + d.total + (d.total === 1 ? ' reseña' : ' reseñas') + ' en Google</span>';
+      re.setAttribute('aria-label', 'Calificación ' + d.rating + ' de 5 con ' + d.total + ' reseñas en Google');
+      re.hidden = false;
+    }
+    if(!res.length) return;
+    lista.innerHTML = res.map(function(r){
+      return '<article class="gr-card"><div class="gr-cab">' +
+        (r.foto ? '<img src="' + esc(r.foto) + '" alt="" width="40" height="40" loading="lazy" referrerpolicy="no-referrer" data-ini="' + esc(r.autor.charAt(0)) + '">' : '<span class="gr-ini">' + esc(r.autor.charAt(0)) + '</span>') +
+        '<div><b>' + esc(r.autor) + '</b><small>' + esc(r.cuando) + '</small></div></div>' +
+        '<div class="gr-estrellas" aria-label="' + r.estrellas + ' de 5 estrellas">' + estrellas(r.estrellas) + '</div>' +
+        '<p>' + esc(r.texto.length > 280 ? r.texto.slice(0, 277) + '…' : r.texto) + '</p></article>';
+    }).join('');
+    // Si la foto del autor no carga, se muestra su inicial
+    lista.querySelectorAll('img[data-ini]').forEach(function(im){ im.addEventListener('error', function(){ var sp = document.createElement('span'); sp.className = 'gr-ini'; sp.textContent = im.getAttribute('data-ini'); im.replaceWith(sp); }); });
+    document.getElementById('gr-vacio').hidden = true;
+    document.getElementById('gr-fuente').hidden = false;
   }
-  slider.addEventListener('input', updateSize);
-  updateSize();
+  function cargar(){
+    fetch('/.netlify/functions/google-resenas').then(function(r){ return r.ok ? r.json() : null; }).then(pintar).catch(function(){});
+  }
+  // Se pide solo cuando la persona se acerca a la sección
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(e){ if(e[0].isIntersecting){ io.disconnect(); cargar(); } }, { rootMargin: '600px' });
+    io.observe(document.getElementById('resenas-google'));
+  } else cargar();
 })();
 
 // FAQ acordeón
@@ -3441,15 +3480,11 @@ function pagarConWompi(estimadoCents, nombreProducto, customerData, shippingAddr
 
   // 8. ViewContent: lo registra cada página de producto (las tarjetas del inicio solo llevan a ella)
 
-  // 9. Medidor de talla por contorno (una vez por visita)
-  var slider = document.getElementById('weight-slider');
-  if (slider) {
-    var usado = false;
-    slider.addEventListener('change', function(){
-      if (usado) return; usado = true;
-      track('medidor_talla_usado', { valor: slider.value });
-    });
-  }
+  // 9. Botones de reseñas de Google
+  ['gr-escribir', 'gr-ver'].forEach(function(id){
+    var b = document.getElementById(id);
+    if (b) b.addEventListener('click', function(){ track(id === 'gr-escribir' ? 'resena_google_escribir' : 'resena_google_ver', {}); });
+  });
 })();
 </script>
 <script>
