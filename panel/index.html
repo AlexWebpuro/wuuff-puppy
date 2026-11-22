@@ -345,6 +345,9 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
   function esc(v) { return String(v == null ? '' : v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
   function pesos(c) { return '$' + Math.round((c || 0) / 100).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
   function numero(v) { return parseInt(String(v || '').replace(/[^\d]/g, ''), 10) || 0; }
+  // Enlace de WhatsApp con el mensaje escrito. Se usa api.whatsapp.com/send y no wa.me: con wa.me, WhatsApp Web
+  // y la app de computador muestran los emojis como "�".
+  function waLink(p, texto) { return 'https://api.whatsapp.com/send?phone=' + telWa(p.cliente && p.cliente.telefono) + '&text=' + encodeURIComponent(texto); }
   function telWa(t) { const d = String(t || '').replace(/\D/g, ''); return d.length === 10 ? '57' + d : d; }
   function primerNombre(n) { return String(n || '').trim().split(/\s+/)[0] || ''; }
   function fecha(iso) {
@@ -647,7 +650,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
       `Si te gustó, ¿nos ayudas con una reseña en Google? Toma un minuto y nos ayuda muchísimo a que más familias nos conozcan 💛\n` +
       `⭐ ${RESENA_GOOGLE}\n\nY si nos mandas una foto de ${m} con su Wuuff, ¡nos alegras el día! 📸`;
   }
-  function waResena(p) { return 'https://wa.me/' + telWa(p.cliente && p.cliente.telefono) + '?text=' + encodeURIComponent(mensajeResena(p)); }
+  function waResena(p) { return waLink(p, mensajeResena(p)); }
   // Al tocar el botón: abre WhatsApp y deja marcado el pedido como "reseña pedida"
   document.addEventListener('click', e => {
     const a = e.target.closest('[data-resena]'); if (!a) return;
@@ -659,7 +662,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
     if (!(p.cliente && p.cliente.telefono)) return '';
     return `<a class="btn ${clase || 'lima'}" data-resena="${esc(p.id)}" href="${waResena(p)}" target="_blank" rel="noopener">${p.resenaPedida ? '⭐ Volver a pedir reseña' : '⭐ Pedir reseña en Google'}</a>`;
   }
-  function waConfirmar(p) { return 'https://wa.me/' + telWa(p.cliente && p.cliente.telefono) + '?text=' + encodeURIComponent(mensajeConfirmacion(p)); }
+  function waConfirmar(p) { return waLink(p, mensajeConfirmacion(p)); }
   function mensajeWa(p) {
     const n = primerNombre(p.cliente && p.cliente.nombre), m = p.mascota ? p.mascota : 'tu perrito';
     if (p.estado === 'por-confirmar') return mensajeConfirmacion(p);
@@ -673,9 +676,9 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
     const g = p.guia || {}, n = primerNombre(p.cliente && p.cliente.nombre);
     const t = `¡Hola${n ? ' ' + n : ''}! 🐾 Tu pedido de Wuuff Puppy ya va en camino con ${g.transportadora || 'la transportadora'}.\nNúmero de guía: ${g.numero}` +
       (g.url ? `\nRastréalo aquí: ${g.url}` : '') + (!p.pagado ? `\nRecuerda tener listos ${pesos(p.totalCents)} para pagar al recibir 💵` : '');
-    return 'https://wa.me/' + telWa(p.cliente && p.cliente.telefono) + '?text=' + encodeURIComponent(t);
+    return waLink(p, t);
   }
-  function waUrl(p) { return 'https://wa.me/' + telWa(p.cliente && p.cliente.telefono) + '?text=' + encodeURIComponent(mensajeWa(p)); }
+  function waUrl(p) { return waLink(p, mensajeWa(p)); }
 
   async function cambiar(id, cambios, msg) {
     const j = await api('POST', { accion: 'actualizar', id, cambios });
