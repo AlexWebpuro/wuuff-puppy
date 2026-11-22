@@ -112,15 +112,17 @@ async function guardarPorInvitar(store, ref, p) {
   return true;
 }
 
+// Enlace directo para escribir la reseña en Google (Perfil de Negocio de Wuuff Puppy).
+// El correo pide la reseña solo en Google (nov 2026); las reseñas de la web se siguen mostrando.
+const RESENA_GOOGLE = 'https://g.page/r/CYtp9VSFSfteEBM/review';
 function correoInvitacion(inv, tok) {
   const hola = inv.nombre ? esc(inv.nombre.split(' ')[0]) : '';
   const perro = inv.mascota ? esc(inv.mascota) : 'tu perrihijo';
-  const botones = inv.productos.map(k => `<p style="margin:10px 0;"><a href="${SITIO}${PRODUCTOS[k].url}?resena=${tok}#resenas" style="display:inline-block;background:#4964af;color:#fff;font-weight:bold;text-decoration:none;padding:12px 20px;border-radius:12px;">⭐ Opinar sobre: ${esc(PRODUCTOS[k].nombre)}</a></p>`).join('');
   return `<div style="font-family:Arial,sans-serif;color:#2d4375;max-width:520px;">
     <h2 style="margin:0 0 8px;">¿Cómo le quedó a ${perro}? 🐾</h2>
-    <p>${hola ? 'Hola ' + hola + ', ' : ''}gracias por comprar en Wuuff Puppy. Nos ayudaría mucho que nos cuentes cómo les ha ido: tu opinión ayuda a otras familias a elegir la talla y el producto.</p>
-    ${botones}
-    <p style="font-size:13px;color:#6b7a99;">Toma un minuto. Si quieres, sube una foto de ${perro} usándolo 📸. Tu reseña aparece en la web marcada como <strong>compra verificada</strong>, con tu nombre y la inicial del apellido.</p>
+    <p>${hola ? 'Hola ' + hola + ', ' : ''}gracias por comprar en Wuuff Puppy. ¿Nos ayudas con una reseña en Google? Toma un minuto y nos ayuda muchísimo a que más familias nos conozcan 💛</p>
+    <p style="margin:18px 0;"><a href="${RESENA_GOOGLE}" style="display:inline-block;background:#4964af;color:#fff;font-weight:bold;text-decoration:none;padding:14px 22px;border-radius:12px;">⭐ Dejar mi reseña en Google</a></p>
+    <p style="font-size:13px;color:#6b7a99;">Y si quieres, responde este correo con una foto de ${perro} usando su Wuuff 📸 ¡Nos alegras el día!</p>
   </div>`;
 }
 
@@ -148,11 +150,11 @@ async function invitarPendientes(store, ahora) {
     if (!p || !listoParaInvitar(p, ahora || Date.now())) continue;
     const tok = token(16);
     await store.setJSON('inv-' + tok, { ref: p.ref, correo: p.correo, nombre: p.nombre, mascota: p.mascota, productos: p.productos, hechas: [], creado: new Date(ahora || Date.now()).toISOString() });
-    const ok = await enviarCorreo(p.correo, '¿Cómo le quedó a ' + (p.mascota || 'tu perrihijo') + '? Cuéntanos 🐾', correoInvitacion(p, tok));
+    const ok = await enviarCorreo(p.correo, '¿Cómo le quedó a ' + (p.mascota || 'tu perrihijo') + '? Déjanos tu reseña ⭐', correoInvitacion(p, tok));
     if (ok) { await store.delete(b.key); enviadas++; } else await store.delete('inv-' + tok);
   }
   return enviadas;
 }
 
-module.exports = { MAX_FOTOS, fotosValidas, claveFoto, TIENDA_CORREO, enviarCorreo, invitarPendientes, SITIO, PRODUCTOS, INDICE_MAX, limpio, esc, token, nombrePublico, productosDeCarrito, fotoValida, validar, publica, resumen,
+module.exports = { RESENA_GOOGLE, MAX_FOTOS, fotosValidas, claveFoto, TIENDA_CORREO, enviarCorreo, invitarPendientes, SITIO, PRODUCTOS, INDICE_MAX, limpio, esc, token, nombrePublico, productosDeCarrito, fotoValida, validar, publica, resumen,
   listoParaInvitar, guardarPorInvitar, correoInvitacion };
