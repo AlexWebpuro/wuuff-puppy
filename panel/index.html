@@ -46,6 +46,14 @@ main{max-width:860px;margin:0 auto;padding:12px 16px 100px}
 .filtros::-webkit-scrollbar{display:none}
 .chip{white-space:nowrap;border:1.5px solid var(--borde);background:#fff;border-radius:999px;padding:7px 13px;font-weight:800;font-size:13px;cursor:pointer}
 .chip.activo{background:var(--navy);border-color:var(--navy);color:#fff}
+.armar .armar-item{padding:10px 0;border-top:1px dashed var(--borde)}.armar .armar-item:first-of-type{border-top:0;padding-top:0}
+.armar-t{font-weight:900;font-size:14px;margin-bottom:6px}
+.armar-collar{display:flex;flex-wrap:wrap;gap:4px;background:#b8d8f5;border-radius:12px;padding:8px 10px;border:2px solid #9cc4ea}
+.armar-l{display:inline-grid;place-items:center;min-width:34px;height:42px;padding:0 4px;border-radius:9px;background:var(--c);border-bottom:4px solid var(--e);color:#fff;font-weight:900;font-size:22px;font-family:'Fredoka One','Nunito',sans-serif;text-shadow:0 1px 0 rgba(0,0,0,.25)}
+.armar-l.osc{color:#2d4375;text-shadow:none}
+.armar-d{font-size:13px;margin-top:6px;line-height:1.6}
+.armar-placa{display:flex;gap:12px;align-items:center}.armar-placa svg{flex:none;background:#f6f3ee;border-radius:14px}
+.armar-sw{display:inline-block;width:14px;height:14px;border-radius:50%;background:var(--c);box-shadow:0 0 0 1px rgba(45,67,117,.3);vertical-align:-2px;margin-right:4px}
 .num-pedido{display:inline-block;background:var(--navy);color:#fff;border-radius:8px;padding:1px 7px;font-size:.78em;font-weight:900;letter-spacing:.3px;vertical-align:1px}
 .buscar{width:100%;border:1.5px solid var(--borde);border-radius:14px;padding:11px 14px;background:#fff;margin-bottom:12px}
 /* Tarjetas */
@@ -694,6 +702,54 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
 
   function opciones(obj, sel) { return Object.entries(obj).map(([k, v]) => `<option value="${k}"${k === sel ? ' selected' : ''}>${esc(v)}</option>`).join(''); }
 
+  // ── "🎨 Cómo armarlo": collares con letras (cada letra con su color, en orden) y placas (forma, colores y nombre) ──
+  // Collares: de los productos elegidos (p.inv: nombre { texto, color, mezcla }); placas: del texto del pedido
+  // ("Placa Inteligente Wuuff Huella "Toby" (placa Morado, letras Blanco)"), así sirve también para los pedidos viejos.
+  const PLACA_HEX = { Morado: '#6E4AA0', Azul: '#3160A6', Blanco: '#F5F5F2', Rojo: '#D3262E' };
+  function colorPorNombre(n) {
+    if (PLACA_HEX[n]) return { nombre: n, main: PLACA_HEX[n], edge: n === 'Blanco' ? '#cfcfc8' : PLACA_HEX[n] };
+    const c = CN_COLORES.find(x => x.nombre === n); return c && c.main ? c : { nombre: n || '—', main: '#cccccc', edge: '#999999' };
+  }
+  function claro(hex) { const h = String(hex || '#000').replace('#', ''); const r = parseInt(h.substr(0, 2), 16), g = parseInt(h.substr(2, 2), 16), b = parseInt(h.substr(4, 2), 16); return (0.299 * r + 0.587 * g + 0.114 * b) > 170; }
+  function armadoCollares(p) {
+    return (p.inv || []).filter(it => it.nombre && it.nombre.texto).map(it => {
+      const base = CN_COLORES.find(c => c.id === it.nombre.color) || { id: it.nombre.color, nombre: it.nombre.color, main: '#ccc', edge: '#999' };
+      const mez = it.nombre.mezcla || [];
+      const piezas = Array.from(String(it.nombre.texto).toUpperCase()).map((ch, i) => ({ ch, c: CN_COLORES.find(c => c.id === mez[i]) || base }));
+      const usados = piezas.map(x => x.c.nombre).filter((n, i, a) => a.indexOf(n) === i);
+      const prod = (CATALOGO.find(c => c.id === it.p) || { n: it.p }).n + (it.talla ? (it.talla.length === 2 ? ' · Talla collar ' + it.talla[0] + ', arnés ' + it.talla[1] : ' · Talla ' + it.talla) : '') + (it.q > 1 ? ' · x' + it.q : '');
+      return `<div class="armar-item"><p class="armar-t">${esc(prod)}</p>
+        <div class="armar-collar">${piezas.map((x, i) => `<span class="armar-l${claro(x.c.main) ? ' osc' : ''}" style="--c:${esc(x.c.main)};--e:${esc(x.c.edge || x.c.main)}" title="${i + 1}. ${esc(x.ch)} · ${esc(x.c.nombre)}">${esc(x.ch)}</span>`).join('')}</div>
+        <p class="armar-d">${piezas.map((x, i) => `<b>${i + 1}.</b> ${esc(x.ch)} ${esc(x.c.nombre.toLowerCase())}`).join(' · ')}</p>
+        <p class="nota-chica">${usados.length > 1 ? '🎨 Letras combinadas: ' + esc(usados.join(', ')) : 'Todas las letras en ' + esc(usados[0].toLowerCase())}</p></div>`;
+    });
+  }
+  function svgPlaca(forma, base, letras, nombre) {
+    const bc = colorPorNombre(base), lc = colorPorNombre(letras || 'Blanco');
+    const n = String(nombre || ''), fs = Math.max(12, Math.min(26, Math.round(150 / Math.max(n.length, 1))));
+    const borde = bc.main.toLowerCase() === '#f5f5f2' ? '#cfcfc8' : 'rgba(0,0,0,.15)';
+    const figura = forma === 'Gato'
+      ? `<polygon points="22,46 28,6 54,30" fill="${bc.main}" stroke="${borde}"/><polygon points="98,46 92,6 66,30" fill="${bc.main}" stroke="${borde}"/><circle cx="60" cy="68" r="44" fill="${bc.main}" stroke="${borde}"/>`
+      : forma === 'Nombre' ? `<rect x="4" y="38" width="112" height="48" rx="24" fill="${bc.main}" stroke="${borde}"/>`
+        : `<circle cx="27" cy="44" r="13" fill="${bc.main}" stroke="${borde}"/><circle cx="47" cy="26" r="13" fill="${bc.main}" stroke="${borde}"/><circle cx="73" cy="26" r="13" fill="${bc.main}" stroke="${borde}"/><circle cx="93" cy="44" r="13" fill="${bc.main}" stroke="${borde}"/><ellipse cx="60" cy="80" rx="38" ry="31" fill="${bc.main}" stroke="${borde}"/>`;
+    const ty = forma === 'Gato' ? 74 : forma === 'Nombre' ? 63 : 84;
+    return `<svg viewBox="0 0 120 120" width="120" height="120" role="img" aria-label="Placa ${esc(forma)} ${esc(base)} con el nombre ${esc(n)} en ${esc(letras || '')}">${figura}<text x="60" y="${ty}" text-anchor="middle" dominant-baseline="middle" font-family="Nunito,sans-serif" font-weight="900" font-size="${fs}" fill="${lc.main}" stroke="${claro(lc.main) && claro(bc.main) ? '#888' : 'none'}" stroke-width=".6">${esc(n)}</text></svg>`;
+  }
+  function armadoPlacas(p) {
+    const re = /Placa Inteligente Wuuff (Huella|Gato|Nombre) "([^"]+)" \(placa ([^,)]+)(?:, letras ([^)]+))?\)/g;
+    const out = []; let m;
+    while ((m = re.exec(p.productos || ''))) {
+      const [, forma, nombre, base, letras] = m;
+      out.push(`<div class="armar-item armar-placa">${svgPlaca(forma, base.trim(), (letras || '').trim(), nombre)}<div><p class="armar-t">Placa ${esc(forma.toLowerCase())} · "${esc(nombre)}"</p>
+        <p class="armar-d"><span class="armar-sw" style="--c:${esc(colorPorNombre(base.trim()).main)}"></span> Placa ${esc(base.trim().toLowerCase())}<br><span class="armar-sw" style="--c:${esc(colorPorNombre((letras || 'Blanco').trim()).main)}"></span> Letras ${esc((letras || 'sin indicar').trim().toLowerCase())}</p></div></div>`);
+    }
+    return out;
+  }
+  function cajaArmado(p) {
+    const items = armadoCollares(p).concat(armadoPlacas(p));
+    return items.length ? `<div class="caja armar"><h3>🎨 Cómo armarlo</h3>${items.join('')}</div>` : '';
+  }
+
   function abrirDetalle(id, enfocarGuia) {
     const p = pedidos.find(x => x.id === id); if (!p) return;
     const c = p.cliente || {}, g = p.guia || {};
@@ -701,6 +757,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
     abrirHoja(`
       <div class="cab"><h2>${p.numero ? `<span class="num-pedido">#${p.numero}</span> ` : ''}${esc(c.nombre || 'Pedido')}</h2><button class="btn claro icono" data-cerrar aria-label="Cerrar">✕</button></div>
       <p class="nota-chica" style="margin:-4px 0 12px">${p.numero ? 'Pedido #' + p.numero + ' · ' : ''}${esc(p.id)} · ${esc(fecha(p.creado))} · ${esc(ORIGENES[p.origen] || '')}</p>
+      ${cajaArmado(p)}
 
       <div class="caja">
         <h3>Estado</h3>
