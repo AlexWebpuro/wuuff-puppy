@@ -321,6 +321,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
     { id: 'enviado', n: '🚚 En camino', f: p => p.estado === 'enviado' },
     { id: 'cobrar', n: '💵 Por cobrar', f: p => !p.pagado && !['cancelado', 'devuelto'].includes(p.estado) },
     { id: 'entregado', n: '🎉 Entregados', f: p => p.estado === 'entregado' },
+    { id: 'resena', n: '⭐ Pedir reseña', f: p => p.estado === 'entregado' && !p.resenaPedida && !!(p.cliente && p.cliente.telefono) && (p.tipo || 'venta') === 'venta' },
     { id: 'cerrados', n: '✖ Cancelados', f: p => ['cancelado', 'devuelto'].includes(p.estado) },
     { id: 'todos', n: 'Todos', f: () => true }
   ];
@@ -602,12 +603,13 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
         <span class="pill ${p.pagado ? 'p-si' : 'p-no'}">${p.pagado ? '✓ Pagado' : (p.pago === 'contraentrega' ? '💵 Cobrar al entregar' : '✗ Sin pagar')}</span>
         ${atrasado(p) ? `<span class="pill atraso">⚠️ ${diasHabiles(p.creado)} días hábiles</span>` : ''}
         ${p.guia && p.guia.numero ? `<span class="pill">Guía ${esc(p.guia.numero)}</span>` : ''}
+        ${p.resenaPedida ? '<span class="pill p-si">⭐ Reseña pedida</span>' : ''}
         ${p.tipo && p.tipo !== 'venta' ? `<span class="pill t-${esc(p.tipo)}">${esc(TIPOS[p.tipo] || '')}</span>` : ''}
       </div>
       ${sig ? `<div class="siguiente">
         ${c.telefono ? `<a class="btn verde" data-accion="wa" href="${waUrl(p)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${p.estado === 'por-confirmar' ? '✅ Confirmar' : 'WhatsApp'}</a>` : ''}
         <button class="btn claro" data-accion="avanzar" style="flex:1">${EST[sig].i} Marcar ${esc(EST[sig].n.toLowerCase())}</button>
-      </div>` : `<div class="siguiente"><button class="btn claro" data-accion="abrir" style="flex:1">↩ Cambiar estado o editar</button></div>`}
+      </div>` : `<div class="siguiente">${p.estado === 'entregado' ? botonResena(p) : ''}<button class="btn claro" data-accion="abrir" style="flex:1">↩ Cambiar estado o editar</button></div>`}
     </article>`;
   }
 
@@ -629,12 +631,32 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
       `📅 Te llega en ${bogota ? '2 a 5' : '3 a 6'} días hábiles después de confirmar${conPlaca ? ' (la placa la hacemos en 3 días hábiles)' : ''}\n\n` +
       `¿Me confirmas que los datos están bien${p.pago === 'contraentrega' && !p.pagado ? ' y que habrá alguien para recibir' : ''}? Responde SÍ y lo despachamos 💛`;
   }
+  // Reseña en Google (enlace directo para escribirla, del Perfil de Negocio)
+  const RESENA_GOOGLE = 'https://g.page/r/CYtp9VSFSfteEBM/review';
+  function mensajeResena(p) {
+    const n = primerNombre(p.cliente && p.cliente.nombre), m = p.mascota || 'tu perrito';
+    return `¡Hola${n ? ' ' + n : ''}! 🐾 Te escribimos de Wuuff Puppy. ¿Cómo le ha ido a ${m} con su Wuuff?\n\n` +
+      `Si te gustó, ¿nos ayudas con una reseña en Google? Toma un minuto y nos ayuda muchísimo a que más familias nos conozcan 💛\n` +
+      `⭐ ${RESENA_GOOGLE}\n\nY si nos mandas una foto de ${m} con su Wuuff, ¡nos alegras el día! 📸`;
+  }
+  function waResena(p) { return 'https://wa.me/' + telWa(p.cliente && p.cliente.telefono) + '?text=' + encodeURIComponent(mensajeResena(p)); }
+  // Al tocar el botón: abre WhatsApp y deja marcado el pedido como "reseña pedida"
+  document.addEventListener('click', e => {
+    const a = e.target.closest('[data-resena]'); if (!a) return;
+    e.stopPropagation();
+    const id = a.dataset.resena;
+    setTimeout(() => cambiar(id, { resenaPedida: true }, '⭐ Marcado: reseña pedida').then(() => { if (!$('hoja').classList.contains('oculto')) abrirDetalle(id); }).catch(err => toast(err.message)), 400);
+  }, true);
+  function botonResena(p, clase) {
+    if (!(p.cliente && p.cliente.telefono)) return '';
+    return `<a class="btn ${clase || 'lima'}" data-resena="${esc(p.id)}" href="${waResena(p)}" target="_blank" rel="noopener">${p.resenaPedida ? '⭐ Volver a pedir reseña' : '⭐ Pedir reseña en Google'}</a>`;
+  }
   function waConfirmar(p) { return 'https://wa.me/' + telWa(p.cliente && p.cliente.telefono) + '?text=' + encodeURIComponent(mensajeConfirmacion(p)); }
   function mensajeWa(p) {
     const n = primerNombre(p.cliente && p.cliente.nombre), m = p.mascota ? p.mascota : 'tu perrito';
     if (p.estado === 'por-confirmar') return mensajeConfirmacion(p);
     if (p.estado === 'enviado') return `¡Hola ${n}! Tu pedido Wuuff ya va en camino 🚚${p.guia && p.guia.numero ? `\nGuía ${p.guia.transportadora || ''} ${p.guia.numero}` : ''}${p.guia && p.guia.url ? `\nRastreo: ${p.guia.url}` : ''}${p.pago === 'contraentrega' && !p.pagado ? `\nRecuerda tener listos ${pesos(p.totalCents)} para pagar al recibir.` : ''}`;
-    if (p.estado === 'entregado') return `¡Hola ${n}! ¿Cómo le quedó a ${m}? 🐶 Nos encantaría ver una foto con su Wuuff. Si nos dejas una reseña nos ayudas muchísimo 💛`;
+    if (p.estado === 'entregado') return mensajeResena(p);
     if (p.estado === 'preparando') return `¡Hola ${n}! Ya estamos preparando el pedido de ${m} ✂️🐾 Te aviso apenas salga.`;
     return `¡Hola ${n}! Te escribo de Wuuff Puppy por tu pedido 🐾`;
   }
@@ -693,7 +715,8 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
       </div>
 
       <div class="acciones" style="margin-bottom:12px">
-        ${c.telefono ? `<a class="btn verde" id="btnConfirmarWa" href="${waConfirmar(p)}" target="_blank" rel="noopener">✅ Confirmar pedido por WhatsApp</a>` : ''}
+        ${p.estado === 'entregado' ? botonResena(p) : ''}
+        ${c.telefono && p.estado !== 'entregado' ? `<a class="btn verde" id="btnConfirmarWa" href="${waConfirmar(p)}" target="_blank" rel="noopener">✅ Confirmar pedido por WhatsApp</a>` : ''}
         ${c.telefono ? `<a class="btn claro" href="${waUrl(p)}" target="_blank" rel="noopener">💬 Escribirle por WhatsApp</a>` : ''}
         <button class="btn claro" type="button" id="btnEtiqueta">🏷️ Etiqueta para el paquete</button>
         ${!g.numero && /bogot|soacha/i.test(c.ciudad || '') ? `<button class="btn azul" type="button" id="btnEnvia">📦 Crear guía con Envia</button>` : ''}
