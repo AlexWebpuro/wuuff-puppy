@@ -91,7 +91,9 @@ async function atender(event) {
     const porId = await P.listaConContraentrega(store, getStore('pedidos-contraentrega'));
     // Número de pedido a los que aún no lo tienen (pedidos viejos y los que llegan de la web)
     const nuevos = P.asignarNumeros(Array.from(porId.values()));
-    await Promise.all(nuevos.map(p => store.setJSON(p.id, p)));
+    const conRegalo = P.asignarRegaloSorpresa(Array.from(porId.values()));
+    const porGuardar = new Map(nuevos.concat(conRegalo).map(p => [p.id, p]));
+    await Promise.all(Array.from(porGuardar.values()).map(p => store.setJSON(p.id, p)));
     const lista = Array.from(porId.values()).filter(p => !p.borrado).sort((a, b) => (a.creado < b.creado ? 1 : -1));
     return json(200, { pedidos: lista });
   }
@@ -120,7 +122,19 @@ async function atender(event) {
       await store.setJSON(p.id, Object.assign({ id: p.id, borrado: true, borradoEl: new Date().toISOString() }, Number.isInteger(p.numero) ? { numero: p.numero } : {}));
       return json(200, { ok: true });
     }
-    P.aplicarCambios(p, b.cambios || {});
+    const cambios = b.cambios || {};
+    // Mover el regalo sorpresa: se le quita a los demás pedidos (no se vuelve a asignar solo al que lo pierde)
+    if (cambios.regaloSorpresa === true && !p.regaloSorpresa) {
+      const { blobs } = await store.list();
+      const otros = (await Promise.all(blobs.filter(x => x.key !== p.id).map(x => store.get(x.key, { type: 'json' }).catch(() => null)))).filter(o => o && o.regaloSorpresa);
+      await Promise.all(otros.map(o => {
+        delete o.regaloSorpresa; o.regaloMovido = true;
+        P.historial(o, '🎁 Regalo sorpresa movido al pedido ' + (Number.isInteger(p.numero) ? '#' + p.numero : p.id));
+        return store.setJSON(o.id, o);
+      }));
+      delete p.regaloMovido;
+    }
+    P.aplicarCambios(p, cambios);
     await store.setJSON(p.id, p);
     return json(200, { pedido: p });
   }

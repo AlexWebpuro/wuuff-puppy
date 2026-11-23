@@ -56,6 +56,35 @@ const MENSAJES = {
   vencido: 'Este código venció el 2 de noviembre'
 };
 
+// ── Black Wuuff Friday (assets/collar-nombre.json → "promo") ──
+// Se decide SIEMPRE con la hora del servidor (nunca con la fecha del navegador).
+const PROMO = CN.promo || null;
+const AVISO_PROMO_CODIGO = 'Los códigos no se acumulan con la promo del Black Wuuff';
+function promoActiva(ahora) {
+  if (!PROMO) return null;
+  const t = ahora ? new Date(ahora).getTime() : Date.now();
+  return t >= Date.parse(PROMO.inicio) && t <= Date.parse(PROMO.fin) ? PROMO : null;
+}
+
+// Teaser: el jueves anterior (día antes del inicio) se anuncia
+function fasePromo(ahora) {
+  if (!PROMO) return null;
+  const t = ahora ? new Date(ahora).getTime() : Date.now();
+  if (promoActiva(t)) return 'activa';
+  const ini = Date.parse(PROMO.inicio);
+  return t < ini && t >= ini - 864e5 ? 'teaser' : null;
+}
+// Solo en las vistas previas de Netlify (deploy-preview-N--…) se puede simular la fecha para revisar la promo
+// (?simular=jueves | promo | despues). En wuuffpuppy.co siempre manda la hora real del servidor.
+const SIMULACION = { jueves: '2026-11-26T12:00:00-05:00', promo: '2026-11-28T12:00:00-05:00', despues: '2026-12-01T09:00:00-05:00' };
+function ahoraDe(event, simular) {
+  const h = (event && event.headers) || {};
+  const host = String(h['x-forwarded-host'] || h.host || '');
+  const s = simular || (event && event.queryStringParameters && event.queryStringParameters.simular);
+  if (/^deploy-preview-\d+--/.test(host) && SIMULACION[s]) return Date.parse(SIMULACION[s]);
+  return Date.now();
+}
+
 function pesos(cents) { return '$' + Math.round(cents / 100).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
 function limpio(v, max) { return String(v == null ? '' : v).replace(/[<>|\[\]]/g, '').replace(/\s+/g, ' ').trim().slice(0, max); }
 function normalizarCodigo(c) { return String(c == null ? '' : c).trim().toUpperCase(); }
@@ -108,8 +137,9 @@ function nombreCollar(n, precioBase) {
 }
 
 // carrito = { items: [{ p: 'collar', talla: 'S', qty: 1, nombre: { texto, color, peso } }], placa: { nombre, forma, base, letras } }
-function armar(carrito) {
+function armar(carrito, ahora) {
   const c = carrito && typeof carrito === 'object' ? carrito : {};
+  const promo = promoActiva(ahora);
   const items = Array.isArray(c.items) ? c.items.slice(0, 6) : [];
   const lineas = [];
   for (const it of items) {
@@ -120,11 +150,14 @@ function armar(carrito) {
     const textoTalla = talla.length === 2 ? 'collar ' + talla[0] + ', arnés ' + talla[1] : (talla === 'Única' ? 'única' : talla);
     // Collar + correa y Combo completo con collar con nombre (precio en assets/collar-nombre.json; mismo envío y pago que los combos)
     if (CN.combos[it.p] && it.nombre) {
-      const cb = CN.combos[it.p], cn = nombreCollar(it.nombre, cb.precio);
+      const cb = CN.combos[it.p];
+      // Black Wuuff Friday: el nombre va gratis (se paga el combo sin nombre + las letras extra)
+      const gratis = !!(promo && promo.nombreGratisEn.indexOf(it.p) > -1);
+      const cn = nombreCollar(it.nombre, gratis ? cb.precioSinNombre : cb.precio);
       if (!cn || cn.error) return { error: (cn && cn.error) || 'Revisa el nombre del collar' };
       if (!talla) return { error: 'Elige la talla' };
-      lineas.push({ tipo: 'producto', clave: it.p, personal: Object.assign({ talla: textoTalla }, cn), cents: cn.cents,
-        nombre: cb.titulo + ' "' + cn.texto + '" (Talla ' + textoTalla + ') · letras ' + (cn.detalle ? 'combinadas (' + cn.usados.join(', ') + ')' : cn.color) + (cn.extras ? ' · ' + cn.extras + (cn.extras === 1 ? ' letra extra' : ' letras extra') : '') });
+      lineas.push({ tipo: 'producto', clave: it.p, personal: Object.assign({ talla: textoTalla }, cn), cents: cn.cents, promo: gratis || undefined,
+        nombre: cb.titulo + ' "' + cn.texto + '" (Talla ' + textoTalla + ') · letras ' + (cn.detalle ? 'combinadas (' + cn.usados.join(', ') + ')' : cn.color) + (cn.extras ? ' · ' + cn.extras + (cn.extras === 1 ? ' letra extra' : ' letras extra') : '') + (gratis ? ' · nombre gratis (Black Wuuff)' : '') });
       continue;
     }
     if (it.p === 'collar' && it.nombre) {
@@ -168,7 +201,7 @@ function armar(carrito) {
   // Placa de regalo del concurso: con arnés + correa (combo o por separado) o combo completo
   const conRegalo = claves.indexOf('combo') > -1 || claves.indexOf('arnes-correa') > -1 ||
     (claves.indexOf('arnes') > -1 && claves.indexOf('correa') > -1);
-  return { lineas, placa, placas, subtotalCents, conRegalo };
+  return { lineas, placa, placas, subtotalCents, conRegalo, promo: lineas.some(l => l.promo) ? promo : null };
 }
 
 function esBogota(ciudad) { return /bogot|soacha/i.test(String(ciudad || '')); }
@@ -223,6 +256,7 @@ async function revisarCodigo(texto, armado, opciones) {
   const ahora = o.ahora ? new Date(o.ahora) : new Date();
   const codigo = normalizarCodigo(texto);
   if (!codigo) return { valido: false, vacio: true };
+  if (armado.promo && !armado.promo.acumulaConCodigos) return { valido: false, promo: true, mensaje: AVISO_PROMO_CODIGO };
   // Código de colaboración: reutilizable, sin placa de regalo
   const colab = CODIGOS_COLABORACION[codigo];
   if (colab) {
@@ -247,12 +281,15 @@ async function revisarCodigo(texto, armado, opciones) {
 // Total del pedido calculado en el servidor.
 // datos = { carrito, ciudad, codigo, regalo: { nombre, forma, color }, metodo: 'wompi' | 'contraentrega' }
 async function calcular(datos, opciones) {
-  const armado = armar(datos && datos.carrito);
+  const o = opciones || {};
+  const armado = armar(datos && datos.carrito, o.ahora);
   if (armado.error) return { ok: false, error: armado.error };
   const soloLinea = soloCollarOPlaca(armado);
   const envio = envioCents(armado.subtotalCents, datos.ciudad, soloLinea, datos.metodo);
-  let cod = null;
-  if (normalizarCodigo(datos.codigo)) {
+  let cod = null, avisoCodigo = '';
+  if (normalizarCodigo(datos.codigo) && armado.promo && !armado.promo.acumulaConCodigos) {
+    avisoCodigo = AVISO_PROMO_CODIGO; // el código no se aplica, pero el pedido sigue con la promo
+  } else if (normalizarCodigo(datos.codigo)) {
     cod = await revisarCodigo(datos.codigo, armado, opciones);
     if (!cod.valido) return { ok: false, error: cod.mensaje, codigoInvalido: true };
   }
@@ -272,6 +309,8 @@ async function calcular(datos, opciones) {
     }
     regaloTexto = '"' + regaloPlaca.nombre + '" · Forma: ' + regaloPlaca.forma + ' · Color: ' + regaloPlaca.base;
   }
+  // Stickers de la pandilla Wuuff de regalo en los pedidos con la promo
+  if (armado.promo && armado.promo.regaloStickers) armado.lineas.push({ tipo: 'regalo', clave: 'stickers', nombre: 'Stickers pandilla Wuuff (regalo)', cents: 0 });
   const totalCents = armado.subtotalCents - descuento - regaloCents + envio;
   const nombreProducto = armado.lineas.map(l => l.nombre + (l.regalo ? ' [REGALO]' : '')).join(' + ') +
     (cod ? ' [Código ' + cod.codigo + (cod.participante ? ' ' + cod.participante : '') + ': -' + pesos(descuento) + ']' : '');
@@ -286,7 +325,9 @@ async function calcular(datos, opciones) {
     nombreProducto,
     codigo: cod ? { codigo: cod.codigo, tipo: cod.tipo, participante: cod.participante, porcentaje: cod.porcentaje || CONCURSO_PORCENTAJE } : null,
     regalo: regaloPlaca ? { texto: regaloTexto, placa: regaloPlaca } : null,
-    contraentrega: contraentregaPermitida(armado.subtotalCents, datos.ciudad, soloLinea)
+    contraentrega: contraentregaPermitida(armado.subtotalCents, datos.ciudad, soloLinea),
+    promo: armado.promo ? armado.promo.id : null,
+    avisoCodigo
   };
 }
 
@@ -294,7 +335,8 @@ async function calcular(datos, opciones) {
 function lineasAviso(calc) {
   if (!calc) return [];
   const nombres = (calc.lineas || []).filter(x => x.personal).map(x => '✏️ Nombre: ' + x.personal.texto + ' · Letras: ' + (x.personal.detalle ? 'combinadas → ' + x.personal.detalle : x.personal.color) +
-    ' · Talla ' + x.personal.talla + (x.personal.peso ? ' (' + x.personal.peso.toLowerCase() + ')' : '') + ' · Extras: ' + x.personal.extras);
+    ' · Talla ' + x.personal.talla + (x.personal.peso ? ' (' + x.personal.peso.toLowerCase() + ')' : '') + ' · Extras: ' + x.personal.extras + (x.promo ? ' · Nombre: gratis (Black Wuuff)' : ''));
+  if (calc.promo) nombres.push('🖤 Black Wuuff Friday: nombre gratis · 🎁 Stickers pandilla Wuuff (regalo)' + (calc.avisoCodigo ? ' · código ignorado (no se acumula)' : ''));
   if (!calc.codigo) return nombres;
   if (calc.codigo.tipo === 'colaboracion') {
     const base = calc.subtotalCents - calc.descuentoCents;
@@ -307,6 +349,31 @@ function lineasAviso(calc) {
     'Descuento: −' + pesos(calc.descuentoCents) + ' (' + calc.codigo.porcentaje + ' %)']);
   if (calc.regalo) l.push('🎁 Placa de regalo: ' + calc.regalo.texto);
   return l;
+}
+
+// ── Regalo sorpresa al primer pedido de la promo ──
+// Marca "primer-pedido-<promo>" en el almacén "promo-marcas". Netlify Blobs (8.x) no tiene escritura condicional,
+// así que: si la marca no existe se escribe, se espera un momento y se vuelve a leer; gana el pedido que quedó escrito.
+// Si dos pedidos llegaran exactamente a la vez, el panel deja el regalo solo en el más antiguo (asignarRegaloSorpresa).
+async function marcarPrimerPedido(store, promoId, referencia, espera) {
+  if (!store || !PROMO || !PROMO.regaloPrimerPedido || promoId !== PROMO.id || !referencia) return false;
+  const clave = 'primer-pedido-' + promoId;
+  const ya = await store.get(clave, { type: 'json' });
+  if (ya) return ya.referencia === referencia;
+  await store.setJSON(clave, { referencia, fecha: new Date().toISOString() });
+  await new Promise(r => setTimeout(r, espera == null ? 400 : espera));
+  const quedo = await store.get(clave, { type: 'json' });
+  return !!quedo && quedo.referencia === referencia;
+}
+const TITULO_CORTO = { combo: 'Combo completo', 'collar-correa': 'Collar + correa' };
+// "🎁 PRIMER PEDIDO · regalo sorpresa · Combo completo · Nombre: LUNA (rosado) · Bogotá · $149.900"
+function lineaPrimerPedido(calc, ciudad, totalCents) {
+  const l = ((calc && calc.lineas) || []).find(x => x.promo) || ((calc && calc.lineas) || []).find(x => x.personal);
+  const partes = ['🎁 PRIMER PEDIDO', 'regalo sorpresa'];
+  if (l) partes.push(TITULO_CORTO[l.clave] || l.clave, 'Nombre: ' + l.personal.texto + ' (' + String(l.personal.color || '').toLowerCase() + ')');
+  if (ciudad) partes.push(String(ciudad).split(',')[0].trim());
+  partes.push(pesos(totalCents != null ? totalCents : (calc && calc.totalCents) || 0));
+  return partes.join(' · ');
 }
 
 // Lo comprado (carrito) → productos para el inventario del panel (mismo formato que los botones del panel)
@@ -345,4 +412,4 @@ function perfilesValidos(texto) {
   return partes.map(p => p.trim()).filter(p => /^[A-Z0-9]{6,16}$/.test(p) || /^pendiente \([^()|<>\[\]]{1,90}\)$/.test(p)).slice(0, 6);
 }
 
-module.exports = { ENVIO_CONTRAENTREGA, invDeCarrito, nombreCollar, perfilesDeTexto, perfilesValidos, PRODUCTOS, MENSAJES, armar, calcular, revisarCodigo, envioCents, contraentregaPermitida, normalizarCodigo, lineasAviso, pesos, placaValida };
+module.exports = { marcarPrimerPedido, lineaPrimerPedido, promoActiva, fasePromo, ahoraDe, PROMO, AVISO_PROMO_CODIGO, ENVIO_CONTRAENTREGA, invDeCarrito, nombreCollar, perfilesDeTexto, perfilesValidos, PRODUCTOS, MENSAJES, armar, calcular, revisarCodigo, envioCents, contraentregaPermitida, normalizarCodigo, lineasAviso, pesos, placaValida };

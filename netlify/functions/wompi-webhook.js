@@ -121,6 +121,15 @@ exports.handler = async function (event) {
         console.error('No se pudo marcar el código como usado', err.message);
       }
     }
+    // Black Wuuff Friday: el primer pedido APROBADO con la promo se lleva un regalo sorpresa
+    if (guardado.promo && referencia) {
+      try {
+        guardado.regaloSorpresa = await tienda.marcarPrimerPedido(getStore('promo-marcas'), guardado.promo, referencia);
+        if (guardado.regaloSorpresa) avisos.unshift(guardado.lineaPrimerPedido || ('🎁 PRIMER PEDIDO · regalo sorpresa · ' + (guardado.ciudad || ciudad) + ' · $' + Math.round(monto / 100).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')));
+      } catch (err) {
+        console.error('No se pudo revisar el primer pedido de la promo', err.message);
+      }
+    }
     // Pago aprobado: unos días después se le pide la reseña (función programada resenas-invitar)
     try {
       await resenas.guardarPorInvitar(getStore('resenas-invitaciones'), referencia, { correo, nombre, mascota,
@@ -164,7 +173,8 @@ exports.handler = async function (event) {
       referencia: referencia || String(transaction.id || ''), nombre, telefono, correo, direccion, ciudad, mascota,
       producto: nombreProducto, totalCents: monto, avisos,
       codigo: guardado && guardado.codigo, descuentoCents: guardado && guardado.descuentoCents,
-      inv: guardado && guardado.inv
+      inv: guardado && guardado.inv,
+      promo: guardado && guardado.promo, regaloSorpresa: !!(guardado && guardado.regaloSorpresa)
     });
   } catch (err) {
     console.error('No se pudo guardar el pedido en el panel', err.message);

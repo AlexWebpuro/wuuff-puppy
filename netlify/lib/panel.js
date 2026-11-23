@@ -112,6 +112,8 @@ function aplicarCambios(p, d, ahora) {
     p.resenaPedida = new Date(ahora || Date.now()).toISOString();
     cambios.push('⭐ Se le pidió la reseña en Google');
   }
+  // Regalo sorpresa movido a mano desde el panel (la API se lo quita a los demás pedidos)
+  if (d.regaloSorpresa === true && !p.regaloSorpresa) { p.regaloSorpresa = true; cambios.push('🎁 Regalo sorpresa movido a este pedido'); }
   if (d.nota) cambios.push('📝 ' + limpio(d.nota, 280));
   cambios.forEach(t => historial(p, t, ahora));
   p.actualizado = new Date(ahora || Date.now()).toISOString();
@@ -153,7 +155,11 @@ function desdeContraentrega(ce, sitio) {
   if (p.codigo && p.codigo.tipo === 'colaboracion') {
     p.comisionCents = Math.round(p.totalCents * 0.10 / 100) * 100; // 10 % del pedido (contraentrega no cobra envío)
   }
+  if (ce.promo) p.promo = limpio(ce.promo, 40);
+  if (ce.regaloSorpresa) p.regaloSorpresa = true;
+  if (Array.isArray(ce.avisos) && ce.avisos.length) p.notas = ce.avisos.map(a => limpio(a, 300)).join('\n');
   historial(p, 'Pedido contraentrega de la web', Date.parse(p.creado));
+  if (p.regaloSorpresa) historial(p, '🎁 Primer pedido del Black Wuuff: regalo sorpresa', Date.parse(p.creado));
   if (ce.guia) sincronizarGuia(p, ce);
   return p;
 }
@@ -185,7 +191,10 @@ async function registrarWompi(store, d) {
     descuentoCents: d.descuentoCents || 0,
     creado: new Date().toISOString(), historial: []
   };
+  if (d.promo) p.promo = limpio(d.promo, 40);
+  if (d.regaloSorpresa) p.regaloSorpresa = true;
   historial(p, '💳 Pagado con Wompi en la web');
+  if (p.regaloSorpresa) historial(p, '🎁 Primer pedido del Black Wuuff: regalo sorpresa');
   await store.setJSON(p.id, p);
   return p;
 }
@@ -244,6 +253,27 @@ function asignarNumeros(pedidos) {
   return cambiados;
 }
 
+// ── Regalo sorpresa del primer pedido del Black Wuuff ──
+// Lo marca el pago (marca "primer-pedido-…"); aquí se garantiza que quede en UN solo pedido:
+// si por una carrera quedó en dos, se queda en el más antiguo. Si no lo tiene ninguno (por ejemplo, se borró el
+// pedido que lo tenía), pasa al pedido más antiguo de la promo que no esté cancelado.
+// Si el ganador se cancela, Angie lo mueve a mano con el botón "🎁 Mover el regalo aquí" (cambios.regaloSorpresa).
+const PROMO_ID = (require('../../assets/collar-nombre.json').promo || {}).id || '';
+function asignarRegaloSorpresa(pedidos) {
+  const cambiados = [];
+  if (!PROMO_ID) return cambiados;
+  const orden = (a, b) => String(a.creado || '').localeCompare(String(b.creado || '')) || String(a.id).localeCompare(String(b.id));
+  const vivos = pedidos.filter(p => p && !p.borrado && p.id);
+  const con = vivos.filter(p => p.regaloSorpresa).sort(orden);
+  if (con.length > 1) {
+    con.slice(1).forEach(p => { delete p.regaloSorpresa; historial(p, '🎁 El regalo sorpresa quedó en otro pedido (llegaron al tiempo)'); cambiados.push(p); });
+  } else if (!con.length) {
+    const primero = vivos.filter(p => p.promo === PROMO_ID && !p.regaloMovido && !['cancelado', 'devuelto'].includes(p.estado)).sort(orden)[0];
+    if (primero) { primero.regaloSorpresa = true; historial(primero, '🎁 Primer pedido del Black Wuuff: regalo sorpresa'); cambiados.push(primero); }
+  }
+  return cambiados;
+}
+
 // Días hábiles (lunes a viernes) desde que se creó el pedido
 function diasHabiles(desde, ahora) {
   let d = new Date(desde), n = 0; const fin = new Date(ahora || Date.now());
@@ -278,7 +308,7 @@ function correoRecordatorio(pedidos, sitio, ahora) {
 
 function pesos(cents) { return '$' + Math.round((cents || 0) / 100).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
 
-module.exports = { NUMERO_INICIAL, asignarNumeros, DURACION_MS, pesos, listaConContraentrega, diasHabiles, correoRecordatorio,
+module.exports = { asignarRegaloSorpresa, NUMERO_INICIAL, asignarNumeros, DURACION_MS, pesos, listaConContraentrega, diasHabiles, correoRecordatorio,
   STORE, ESTADOS, ORIGENES, PAGOS, TIPOS, ETIQUETAS, limpio, centavos, idValido,
   crearToken, tokenValido, claveCorrecta, aplicarCambios, nuevoPedido, desdeContraentrega, sincronizarGuia, registrarWompi, historial
 };

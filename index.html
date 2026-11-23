@@ -632,6 +632,8 @@ body{font-family:'Nunito',sans-serif;background:var(--white);color:var(--navy);o
 .codigo-box{margin:2px 0 8px;text-align:left;}
 .codigo-toggle{background:none;border:0;padding:4px 0;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;color:var(--blue);text-decoration:underline;cursor:pointer;}
 .codigo-panel{margin-top:6px;}
+.promo-resumen{background:#1b1b1b;color:#fff;border-radius:14px;padding:10px 14px;margin:0 0 8px;text-align:left;font-size:14px;line-height:1.45}
+.promo-resumen b{color:#d5d50c}.promo-resumen p{margin:2px 0}
 .codigo-resumen{background:#f4f8ff;border:2px solid var(--lblue);border-radius:14px;padding:10px 14px;margin:0 0 4px;text-align:left;}
 .codigo-resumen[hidden],.regalo-placa[hidden]{display:none;}
 .cr-fila{display:flex;justify-content:space-between;gap:10px;margin:3px 0;font-size:13px;font-weight:700;color:var(--navy);}
@@ -2508,6 +2510,29 @@ function comprarProducto(btn, amountInCents, nombreBase){
 // Códigos de descuento: se validan en el servidor (netlify/functions/validar-codigo).
 // El total final también lo calcula el servidor al crear el pedido (contraentrega o Wompi).
 function codigoNormal(t){ return String(t || '').trim().toUpperCase(); }
+// Black Wuuff Friday: en las vistas previas de Netlify se puede simular la fecha (?simular=promo); en la web real no hace nada
+function simularPromo(){
+  try { var s = new URLSearchParams(location.search).get('simular'); if(s) sessionStorage.setItem('wuuff_simular', s); return sessionStorage.getItem('wuuff_simular') || ''; } catch(e){ return ''; }
+}
+// Mismo estado que usa /assets/promo.js (se pide una sola vez por página)
+function estadoPromo(){
+  if(window.wuuffPromoEstado) return window.wuuffPromoEstado();
+  if(!window.__wuuffPromo){
+    var s = simularPromo();
+    window.__wuuffPromo = fetch('/.netlify/functions/promo' + (s ? '?simular=' + encodeURIComponent(s) : '')).then(function(r){ return r.ok ? r.json() : { fase: null }; }).catch(function(){ return { fase: null }; });
+  }
+  return window.__wuuffPromo;
+}
+// ¿El carrito lleva un combo con nombre de los que tienen el nombre gratis? (el servidor decide el precio final)
+function carritoConPromo(carrito, p){
+  return !!(p && p.fase === 'activa' && carrito && Array.isArray(carrito.items) && carrito.items.some(function(it){ return it && it.nombre && (p.nombreGratisEn || []).indexOf(it.p) > -1; }));
+}
+function mostrarPromoPago(on){
+  var box = document.getElementById('promo-resumen'), cod = document.getElementById('codigo-box');
+  if(box) box.hidden = !on;
+  if(cod) cod.hidden = !!on;
+  if(on && pendingPurchase && pendingPurchase.codigo){ quitarCodigo(); mostrarCodigo(null); }
+}
 function guardarCodigoSesion(c){ try { if(c) sessionStorage.setItem('wuuff_codigo', c); else sessionStorage.removeItem('wuuff_codigo'); } catch(e){} }
 function leerCodigoSesion(){ try { return sessionStorage.getItem('wuuff_codigo') || ''; } catch(e){ return ''; } }
 // Link directo: wuuffpuppy.co/?codigo=<código> → se aplica solo al llegar al checkout
@@ -2592,7 +2617,7 @@ function aplicarCodigo(){
   if(btn){ btn.disabled = true; btn.textContent = '…'; }
   return fetch('/.netlify/functions/validar-codigo', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ codigo: codigo, carrito: pendingPurchase.carrito })
+    body: JSON.stringify({ codigo: codigo, carrito: pendingPurchase.carrito, simular: simularPromo() })
   })
     .then(function(r){ return r.json(); })
     .then(function(j){
@@ -2644,6 +2669,7 @@ function iniciarCompra(baseAmountInCents, nombreProducto, talla, carrito){
   pendingPurchase = { baseAmountInCents: baseAmountInCents, nombreProducto: nombreProducto, talla: talla, esCombo: esComboCompleto(nombreProducto), carrito: carrito || null, codigo: null };
   var cajaCodigo = document.getElementById('codigo-box');
   if(cajaCodigo) cajaCodigo.hidden = false;
+  mostrarPromoPago(false);
   mostrarCodigo(null);
   var campoCod = document.getElementById('envio-codigo');
   var panelCod = document.getElementById('codigo-panel');
@@ -2665,9 +2691,16 @@ function iniciarCompra(baseAmountInCents, nombreProducto, talla, carrito){
   }
   actualizarPerfilPlaca();
   document.getElementById('shipping-modal-overlay').classList.add('open');
-  // Código guardado (link ?codigo=… o aplicado antes): se aplica solo
-  var guardado = leerCodigoSesion();
-  if(guardado && campoCod){ abrirCodigo(); campoCod.value = guardado; aplicarCodigo(); }
+  // Black Wuuff Friday: con un combo con nombre, el nombre va gratis y no se usan códigos.
+  // Si no, el código guardado (link ?codigo=… o aplicado antes) se aplica solo.
+  var compra = pendingPurchase;
+  estadoPromo().then(function(p){
+    if(pendingPurchase !== compra) return;
+    compra.promo = carritoConPromo(compra.carrito, p);
+    if(compra.promo){ mostrarPromoPago(true); return; }
+    var guardado = leerCodigoSesion();
+    if(guardado && campoCod){ abrirCodigo(); campoCod.value = guardado; aplicarCodigo(); }
+  });
 }
 
 // Delegación de eventos: funciona sin importar el orden del HTML
@@ -2719,7 +2752,7 @@ document.addEventListener('submit', function(e){
   var nombreProducto = pendingPurchase.nombreProducto;
   // Código de descuento: si lo escribieron y no lo aplicaron (o lo cambiaron), primero se valida en el servidor
   var campoCodigo = document.getElementById('envio-codigo');
-  var codigoTxt = codigoNormal(campoCodigo ? campoCodigo.value : '');
+  var codigoTxt = pendingPurchase.promo ? '' : codigoNormal(campoCodigo ? campoCodigo.value : '');
   var aplicado = pendingPurchase.codigo;
   if(codigoTxt && (!aplicado || aplicado.codigo !== codigoTxt)){
     abrirCodigo();
@@ -2778,7 +2811,7 @@ document.addEventListener('submit', function(e){
 
   // Lo que el servidor necesita para calcular el total: carrito, ciudad, código y placa de regalo
   var pedidoServidor = {
-    carrito: pendingPurchase.carrito, ciudad: ciudadNombre, codigo: aplicado ? aplicado.codigo : '', regalo: regalo,
+    carrito: pendingPurchase.carrito, ciudad: ciudadNombre, codigo: aplicado ? aplicado.codigo : '', regalo: regalo, simular: simularPromo(),
     perfil: perfiles.map(function(p){ return p.pendiente || p.id || ''; }).join(', ')
   };
 
@@ -2787,7 +2820,7 @@ document.addEventListener('submit', function(e){
       nombre: nombre, mascota: mascota, telefono: telefono, correo: correo,
       direccion: direccion, ciudad: ciudadNombre, talla: pendingPurchase.talla || '',
       producto: nombreProducto, totalCents: totalCents,
-      carrito: pedidoServidor.carrito, codigo: pedidoServidor.codigo, regalo: regalo,
+      carrito: pedidoServidor.carrito, codigo: pedidoServidor.codigo, regalo: regalo, simular: pedidoServidor.simular,
       perfilId: perfilesIds[0] || '', perfilIds: perfilesIds,
       honeypot: (form.querySelector('[name="bot-field-envio"]') || {}).value || ''
     });
@@ -3099,6 +3132,12 @@ function pagarConWompi(estimadoCents, nombreProducto, customerData, shippingAddr
           <span><strong>💵 Pago contraentrega · envío $8.500</strong><small>Pagas en efectivo cuando recibes tu pedido (el envío va sumado). Te confirmamos por WhatsApp antes de enviarlo.</small></span></label>
       </fieldset>
       <p class="envio-despacho" id="envio-entrega">🚀 Despachamos tu pedido en <strong>1–2 días hábiles</strong>. Entrega de 2 a 5 días según tu ciudad.</p>
+      <div class="promo-resumen" id="promo-resumen" hidden>
+        <p><b>🖤 Black Wuuff Friday</b></p>
+        <p>✏️ Nombre: <b>gratis</b> (Black Wuuff)</p>
+        <p>🎁 Stickers de la pandilla Wuuff: <b>regalo</b></p>
+        <p style="opacity:.85">El primer pedido se lleva un regalo sorpresa. Los códigos de descuento no se acumulan con la promo.</p>
+      </div>
       <div class="codigo-box" id="codigo-box">
         <button type="button" class="codigo-toggle" id="codigo-toggle" aria-expanded="false" aria-controls="codigo-panel">¿Tienes un código de descuento?</button>
         <div class="codigo-panel" id="codigo-panel" hidden>
@@ -3544,7 +3583,8 @@ function pagarConWompi(estimadoCents, nombreProducto, customerData, shippingAddr
     // Sirve para todas las fichas: cada uno con su talla y, en collar y combos, con su nombre si lo lleva.
     var listaTxt = q.get('lista');
     if(listaTxt){
-      fetch('/assets/collar-nombre.json').then(function(r){ return r.json(); }).then(function(cfg){
+      Promise.all([fetch('/assets/collar-nombre.json').then(function(r){ return r.json(); }), estadoPromo()]).then(function(rr){
+        var cfg = rr[0], promo = rr[1];
         cfg.colores = cfg.colores.filter(function(c){ return !c.oculto; }); // colores que por ahora no se ofrecen
         var lst = JSON.parse(listaTxt); if(!Array.isArray(lst) || !lst.length || lst.length > 6) throw new Error('lista');
         var items = [], nombres = [], cents = 0;
@@ -3559,13 +3599,15 @@ function pagarConWompi(estimadoCents, nombreProducto, customerData, shippingAddr
             items.push({ p: clave, talla: talla }); nombres.push(prod.nombre + (tTxt ? ' (' + tTxt + ')' : '')); cents += prod.cents; return;
           }
           var cb = clave === 'collar' ? { titulo: 'Collar con nombre', precio: cfg.precio } : cfg.combos[clave];
+          var gratis = carritoConPromo({ items: [{ p: clave, nombre: true }] }, promo);
+          if(gratis) cb = { titulo: cb.titulo, precio: cb.precioSinNombre };
           var texto = piezasNombre(it.texto || '', cfg.maximo), col = cfg.colores.filter(function(c){ return c.id === it.color; })[0];
           if(!texto || !col) throw new Error('nombre');
           var mez = Array.isArray(it.mezcla) ? it.mezcla : [], usados = [], combinado = false;
           Array.from(texto).forEach(function(p, i){ var c = cfg.colores.filter(function(x){ return x.id === mez[i]; })[0] || col; if(c.id !== col.id) combinado = true; if(usados.indexOf(c.nombre) < 0) usados.push(c.nombre); });
           var extras = Math.max(0, Array.from(texto).length - cfg.incluidas);
           cents += (cb.precio + extras * cfg.precioExtra) * 100;
-          nombres.push(cb.titulo + ' "' + texto + '"' + (tTxt ? ' (' + tTxt + ')' : '') + ' · letras ' + (combinado && usados.length > 1 ? 'combinadas (' + usados.join(', ') + ')' : usados[0]) + (extras ? ' · ' + extras + (extras === 1 ? ' letra extra' : ' letras extra') : ''));
+          nombres.push(cb.titulo + ' "' + texto + '"' + (tTxt ? ' (' + tTxt + ')' : '') + ' · letras ' + (combinado && usados.length > 1 ? 'combinadas (' + usados.join(', ') + ')' : usados[0]) + (extras ? ' · ' + extras + (extras === 1 ? ' letra extra' : ' letras extra') : '') + (gratis ? ' · nombre gratis (Black Wuuff)' : ''));
           items.push({ p: clave, talla: talla, nombre: { texto: texto, color: col.id, mezcla: combinado ? mez.slice(0, Array.from(texto).length) : [], peso: it.peso || '' } });
         });
         iniciarCompra(cents, nombres.join(' + '), '', { items: items });
@@ -3573,7 +3615,8 @@ function pagarConWompi(estimadoCents, nombreProducto, customerData, shippingAddr
       return;
     }
     if(nombreCollar){
-      fetch('/assets/collar-nombre.json').then(function(r){ return r.json(); }).then(function(cfg){
+      Promise.all([fetch('/assets/collar-nombre.json').then(function(r){ return r.json(); }), estadoPromo()]).then(function(rr){
+        var cfg = rr[0], promo = rr[1];
         cfg.colores = cfg.colores.filter(function(c){ return !c.oculto; }); // colores que por ahora no se ofrecen
         var texto = piezasNombre(nombreCollar, cfg.maximo);
         var col = cfg.colores.filter(function(c){ return c.id === q.get('color'); })[0];
@@ -3584,8 +3627,11 @@ function pagarConWompi(estimadoCents, nombreProducto, customerData, shippingAddr
         var extras = Math.max(0, Array.from(texto).length - cfg.incluidas);
         var cb = clave === 'collar' ? { titulo: 'Collar con nombre', precio: cfg.precio } : (cfg.combos || {})[clave];
         if(!cb){ location.replace(prod.url); return; }
+        // Black Wuuff Friday: el nombre va gratis en estos combos (las letras extra sí se cobran)
+        var gratis = carritoConPromo({ items: [{ p: clave, nombre: true }] }, promo);
+        if(gratis) cb = { titulo: cb.titulo, precio: cb.precioSinNombre };
         window.wuuffVolverA = prod.url + '?nombre=' + encodeURIComponent(texto);
-        iniciarCompra((cb.precio + extras * cfg.precioExtra) * 100, cb.titulo + ' "' + texto + '" (' + tallaTexto + ') · letras ' + (combinado && usados.length > 1 ? 'combinadas (' + usados.join(', ') + ')' : usados[0]), tallaTexto,
+        iniciarCompra((cb.precio + extras * cfg.precioExtra) * 100, cb.titulo + ' "' + texto + '" (' + tallaTexto + ') · letras ' + (combinado && usados.length > 1 ? 'combinadas (' + usados.join(', ') + ')' : usados[0]) + (gratis ? ' · nombre gratis (Black Wuuff)' : ''), tallaTexto,
           { items: [{ p: clave, talla: talla, nombre: { texto: texto, color: col.id, mezcla: combinado ? mez.slice(0, Array.from(texto).length) : [], peso: q.get('peso') || '' } }] });
       }).catch(function(){ location.replace(prod.url); });
       return;
@@ -3813,5 +3859,6 @@ document.addEventListener('click', function(e){
   }, {passive:true});
 })();
 </script>
+<script src="/assets/promo.js?v=1" defer></script>
 </body>
 </html>

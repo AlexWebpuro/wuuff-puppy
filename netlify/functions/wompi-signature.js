@@ -32,6 +32,7 @@ exports.handler = async function (event) {
   // Las cajas del Black Wuuff Friday (10 cajas a $99.900) se cancelaron el 23 nov 2026: ya no se cobran
   if (body.carrito && body.carrito.bwf) return json(400, { error: 'Esta promoción ya no está disponible' });
   const calc = await tienda.calcular({ carrito: body.carrito, ciudad: body.ciudad, codigo: body.codigo, regalo: body.regalo, metodo: 'wompi' }, {
+    ahora: tienda.ahoraDe(event, body.simular),
     usado: async (c) => !!(usados && await usados.get(c))
   });
   if (!calc.ok) return json(400, { error: calc.error, codigoInvalido: !!calc.codigoInvalido, faltaRegalo: !!calc.faltaRegalo });
@@ -47,7 +48,8 @@ exports.handler = async function (event) {
       await pedidos.setJSON(reference, {
         reference, amountInCents, nombreProducto, creado: new Date().toISOString(),
         codigo: calc.codigo, descuentoCents: calc.descuentoCents, regalo: calc.regalo,
-        avisos: tienda.lineasAviso(calc),
+        avisos: tienda.lineasAviso(calc), promo: calc.promo || undefined,
+        lineaPrimerPedido: calc.promo ? tienda.lineaPrimerPedido(calc, body.ciudad, amountInCents) : undefined,
         inv: tienda.invDeCarrito(body.carrito, calc),
         productos: resenas.productosDeCarrito(body.carrito, calc.regalo), ciudad: String(body.ciudad || '').slice(0, 80)
       });
@@ -55,5 +57,5 @@ exports.handler = async function (event) {
   }
 
   const signature = crypto.createHash('sha256').update(`${reference}${amountInCents}COP${secret}`).digest('hex');
-  return json(200, { signature, amountInCents, nombreProducto });
+  return json(200, { signature, amountInCents, nombreProducto, promo: calc.promo, avisoCodigo: calc.avisoCodigo || '' });
 };

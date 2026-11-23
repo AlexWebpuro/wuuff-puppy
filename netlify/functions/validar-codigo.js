@@ -13,16 +13,18 @@ exports.handler = async function (event) {
   let b;
   try { b = JSON.parse(event.body || '{}'); } catch (err) { return json(400, { valido: false, mensaje: 'JSON inválido' }); }
 
-  const armado = tienda.armar(b.carrito);
+  const ahora = tienda.ahoraDe(event, b.simular);
+  const armado = tienda.armar(b.carrito, ahora);
   if (armado.error) return json(400, { valido: false, mensaje: armado.error });
 
   let usados = null;
   try { connectLambda(event); usados = getStore('codigos-usados'); } catch (err) { console.error('Blobs no disponible', err.message); }
   const r = await tienda.revisarCodigo(b.codigo, armado, {
+    ahora,
     usado: async (c) => !!(usados && await usados.get(c))
   });
   if (r.vacio) return json(200, { valido: false, mensaje: 'Escribe tu código' });
-  if (!r.valido) return json(200, { valido: false, mensaje: r.mensaje });
+  if (!r.valido) return json(200, { valido: false, mensaje: r.mensaje, promo: !!r.promo });
 
   // Resumen para mostrar en el checkout (el total final se vuelve a calcular al crear el pedido)
   const placaEnCarrito = armado.lineas.find(l => l.tipo === 'placa');

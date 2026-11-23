@@ -74,6 +74,8 @@ main{max-width:860px;margin:0 auto;padding:12px 16px 100px}
 .pedido .prod{margin:6px 0 8px;font-size:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .etiquetas{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
 .pill{font-size:12px;font-weight:800;border-radius:999px;padding:4px 10px;background:#f3eee6;white-space:nowrap}
+.pill.bwf{background:#1b1b1b;color:#d5d50c}.pill.sorpresa{background:#d5d50c;color:#1b1b1b}
+.caja.sorpresa{background:#1b1b1b;color:#fff}.caja.sorpresa h3{color:#d5d50c}
 .e-por-confirmar{background:#fff1cc;color:#8a5a00}.e-confirmado{background:#e3eafb;color:#2f4a96}.e-preparando{background:#f3f3c4;color:#5c5c00}
 .e-enviado{background:var(--rosa);color:#8a2f5d}.e-entregado{background:#dcf3e4;color:#18663a}.e-cancelado,.e-devuelto{background:#eceef3;color:#6b7a99}
 .p-si{background:#dcf3e4;color:#18663a}.p-no{background:#fde7e1;color:#a63c1c}
@@ -345,6 +347,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
     { id: 'cobrar', n: '💵 Por cobrar', f: p => !p.pagado && !['cancelado', 'devuelto'].includes(p.estado) },
     { id: 'entregado', n: '🎉 Entregados', f: p => p.estado === 'entregado' },
     { id: 'resena', n: '⭐ Pedir reseña', f: p => p.estado === 'entregado' && !p.resenaPedida && !!(p.cliente && p.cliente.telefono) && (p.tipo || 'venta') === 'venta' },
+    { id: 'promo', n: '🖤 Black Wuuff', f: p => !!p.promo },
     { id: 'cerrados', n: '✖ Cancelados', f: p => ['cancelado', 'devuelto'].includes(p.estado) },
     { id: 'todos', n: 'Todos', f: () => true }
   ];
@@ -630,6 +633,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
         ${atrasado(p) ? `<span class="pill atraso">⚠️ ${diasHabiles(p.creado)} días hábiles</span>` : ''}
         ${p.guia && p.guia.numero ? `<span class="pill">Guía ${esc(p.guia.numero)}</span>` : ''}
         ${p.resenaPedida ? '<span class="pill p-si">⭐ Reseña pedida</span>' : ''}
+        ${p.regaloSorpresa ? '<span class="pill sorpresa">🎁 PRIMER PEDIDO · regalo sorpresa</span>' : (p.promo ? '<span class="pill bwf">🖤 Black Wuuff</span>' : '')}
         ${p.tipo && p.tipo !== 'venta' ? `<span class="pill t-${esc(p.tipo)}">${esc(TIPOS[p.tipo] || '')}</span>` : ''}
       </div>
       ${sig ? `<div class="siguiente">
@@ -652,6 +656,8 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
     return `¡Hola${n ? ' ' + n : ''}! 🐾 Te escribo de Wuuff Puppy para confirmar tu pedido${p.numero ? ' #' + p.numero : ''}:\n\n` +
       `🛍️ ${productos.length > 1 ? 'Productos:\n' + productos.map(l => '• ' + l).join('\n') : (productos[0] || 'Tu pedido')}\n` +
       (p.mascota ? `🐶 Para: ${p.mascota}\n` : '') +
+      (p.promo ? `🖤 Black Wuuff Friday: el nombre fue por nuestra cuenta y te llevas stickers de la pandilla Wuuff de regalo\n` : '') +
+      (p.regaloSorpresa ? `🎁 ¡Y fuiste el primer pedido del Black Wuuff: te llevas un regalo sorpresa!\n` : '') +
       `💰 Total: ${pesos(p.totalCents)}\n${pago}\n` +
       (dir ? `📍 Envío a: ${dir}\n` : '') +
       `📅 Te llega en ${bogota ? '2 a 5' : '3 a 6'} días hábiles después de confirmar${conPlaca ? ' (la placa la hacemos en 3 días hábiles)' : ''}\n\n` +
@@ -807,6 +813,19 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
     return items.length ? `<div class="caja armar"><h3>🎨 Cómo armarlo</h3>${items.join('')}</div>` : '';
   }
 
+  // Black Wuuff Friday: regalo sorpresa del primer pedido (y botón para moverlo si ese pedido se cancela)
+  function lineaSorpresa(p) {
+    const l = String(p.notas || '').split('\n').find(x => /^🎁 PRIMER PEDIDO/.test(x));
+    return l || ['🎁 PRIMER PEDIDO', 'regalo sorpresa', String(p.productos || '').split(' | ')[0], (p.cliente && p.cliente.ciudad) || '', pesos(p.totalCents)].filter(Boolean).join(' · ');
+  }
+  function cajaRegalo(p) {
+    if (p.regaloSorpresa) return `<div class="caja sorpresa"><h3>🎁 Regalo sorpresa</h3><p style="margin:0">${esc(lineaSorpresa(p))}</p>
+      <p class="nota-chica" style="margin:8px 0 0;color:#ddd">Mete el regalo sorpresa en este paquete (además de los stickers). Si este pedido se cancela, abre el siguiente pedido del Black Wuuff y toca "Mover el regalo sorpresa aquí".</p></div>`;
+    if (p.promo) return `<div class="caja"><h3>🖤 Black Wuuff Friday</h3><p class="nota-chica" style="margin:0 0 8px">Nombre gratis · incluye stickers de la pandilla Wuuff de regalo.</p>
+      <button class="btn claro" type="button" id="btnMoverRegalo">🎁 Mover el regalo sorpresa aquí</button></div>`;
+    return '';
+  }
+
   function abrirDetalle(id, enfocarGuia) {
     const p = pedidos.find(x => x.id === id); if (!p) return;
     const c = p.cliente || {}, g = p.guia || {};
@@ -814,6 +833,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
     abrirHoja(`
       <div class="cab"><h2>${p.numero ? `<span class="num-pedido">#${p.numero}</span> ` : ''}${esc(c.nombre || 'Pedido')}</h2><button class="btn claro icono" data-cerrar aria-label="Cerrar">✕</button></div>
       <p class="nota-chica" style="margin:-4px 0 12px">${p.numero ? 'Pedido #' + p.numero + ' · ' : ''}${esc(p.id)} · ${esc(fecha(p.creado))} · ${esc(ORIGENES[p.origen] || '')}</p>
+      ${cajaRegalo(p)}
       ${cajaArmado(p)}
 
       <div class="caja">
@@ -921,6 +941,11 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
       }
       try { await guardarDetalle(p.id, { estado }); } catch (err) { toast(err.message); }
     });
+    if ($('btnMoverRegalo')) $('btnMoverRegalo').onclick = async () => {
+      const otro = pedidos.find(x => x.regaloSorpresa);
+      if (!confirm('¿Mover el regalo sorpresa a este pedido?' + (otro ? '\n\nSe le quita al pedido ' + (otro.numero ? '#' + otro.numero : otro.id) + ' de ' + ((otro.cliente && otro.cliente.nombre) || 'sin nombre') + '.' : ''))) return;
+      try { await cambiar(p.id, { regaloSorpresa: true }, '🎁 Regalo sorpresa movido'); await cargar(); abrirDetalle(p.id); } catch (err) { toast(err.message); }
+    };
     $('dPagado').onchange = async e => { try { await cambiar(p.id, { pagado: e.target.checked }, e.target.checked ? '💰 Pagado' : 'Marcado sin pagar'); } catch (err) { toast(err.message); e.target.checked = !e.target.checked; } };
     $('formDetalle').onsubmit = async e => {
       e.preventDefault();
