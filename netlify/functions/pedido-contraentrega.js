@@ -41,7 +41,7 @@ exports.handler = async function (event) {
   };
 
   if (b.carrito && b.carrito.bwf) {
-    return { statusCode: 400, body: JSON.stringify({ error: 'Las cajas del Black Wuuff Friday se pagan en línea' }) };
+    return { statusCode: 400, body: JSON.stringify({ error: 'Esta promoción ya no está disponible' }) };
   }
   if (!pedido.nombre || !pedido.telefono || !pedido.direccion) {
     return { statusCode: 400, body: JSON.stringify({ error: 'Faltan datos del pedido' }) };
