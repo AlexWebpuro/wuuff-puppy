@@ -59,7 +59,7 @@ async function cargarJSON(id, url) {
 const BASE_DATOS = document.documentElement.dataset.datos || '/placa-nfc/datos/';
 const [GLYPHS, ILUS_DATA] = await Promise.all([cargarJSON('glyphs', BASE_DATOS + 'glyphs.json'), cargarJSON('ilus-data', BASE_DATOS + 'ilustraciones.json')]);
 const G = window.WuuffGeom(window.ClipperLib, GLYPHS);
-const estado = { nombre: 'Luna', diseno: 'huella', base: 'azul', letras: 'blanco', compra: 'sola', talla: 'M', rayosX: false };
+const estado = { telefono: '', nombre: 'Luna', diseno: 'huella', base: 'azul', letras: 'blanco', compra: 'sola', talla: 'M', rayosX: false };
 // Varias placas en un pedido (una por perrito): las ya armadas; la que se está diseñando se suma al comprar
 const lista = [], MAX_PLACAS = 6;
 const ILUS = ILUS_DATA;
@@ -190,6 +190,15 @@ function construirModelo(g, bb) {
     piezas.add(extruir(g.base, g.grosor, 0, matBase));
   }
   piezas.add(extruir(g.letras, g.letrasAlto ?? g.altoLetras, g.letrasZ0 ?? g.grosor, matLetras));
+  // Teléfono grabado atrás (opcional): se ve al tocar "Reverso"
+  if (estado.telefono) {
+    const tel = G.textoAtras(g, formatoTel(estado.telefono));
+    if (tel.length) {
+      const c = new THREE.Color(color(estado.base).hex), oscuro = c.getHSL({}).l > 0.6;
+      const matTel = materialPLA('#' + c.clone().offsetHSL(0, 0, oscuro ? -0.28 : 0.22).getHexString());
+      piezas.add(extruir(tel, 0.12, -0.1, matTel));
+    }
+  }
 
   if (g.nfc) {
     const r = g.nfc.d / 2;
@@ -288,7 +297,7 @@ function actualizar(reencuadrar) {
 }
 
 function textoProduccion() {
-  const n = estado.nombre.trim(), c = `· base ${color(estado.base).nombre} · letras ${color(estado.letras).nombre}`;
+  const n = estado.nombre.trim(), c = `· base ${color(estado.base).nombre} · letras ${color(estado.letras).nombre}` + (estado.telefono ? ` · teléfono atrás="${formatoTel(estado.telefono)}"` : '');
   if (estado.diseno === 'nombre')
     return `llavero_nombre.scad · ajuste "Placa collar NFC (hueco arriba)" · nombre="${n}" ${c}`;
   return `placa_figura.scad · forma="${estado.diseno}" · nombre="${n}" · nfc="embebido" ${c}`;
@@ -303,9 +312,10 @@ function totales() {
 // Una placa de la lista: lo necesario para el pago y para mostrarla
 function placaActual() {
   const t = totales();
-  return { forma: estado.diseno, nombre: estado.nombre.trim(), base: estado.base, letras: estado.letras, con: estado.compra,
+  return { forma: estado.diseno, nombre: estado.nombre.trim(), base: estado.base, letras: estado.letras, telefono: estado.telefono, con: estado.compra,
     talla: estado.compra === 'sola' ? '' : estado.talla, total: t.total, ahorro: t.ahorro || 0,
     desc: `"${estado.nombre.trim()}" · ${DISENOS[estado.diseno].nombre.toLowerCase()} ${color(estado.base).nombre.toLowerCase()}` +
+      (estado.telefono ? ` · 📞 atrás ${formatoTel(estado.telefono)}` : '') +
       (t.producto ? ` + ${t.producto.corto.toLowerCase()} talla ${estado.talla}` : '') };
 }
 function pintarLista() {
@@ -395,6 +405,20 @@ function avisoContraste() {
 }
 
 const input = $('#nombre');
+// Teléfono grabado atrás (opcional, uno solo): solo números, de 7 a 10 cifras (300 123 4567)
+function formatoTel(t) { const d = String(t || '').replace(/\D/g, ''); return d.length === 10 ? d.slice(0, 3) + ' ' + d.slice(3, 6) + ' ' + d.slice(6) : d; }
+const inputTel = $('#telefono');
+if (inputTel) {
+  const verAtras = () => { if (modelo) { balanceo = false; modelo.rotation.set(0, Math.PI, 0); encuadrar(false); } };
+  inputTel.addEventListener('input', () => {
+    const d = inputTel.value.replace(/\D/g, '').slice(0, 10);
+    if (inputTel.value !== d) inputTel.value = d;
+    estado.telefono = d.length >= 7 ? d : '';
+    $('#aviso-tel').hidden = !d || d.length >= 7;
+    actualizar(false); verAtras();
+  });
+  inputTel.addEventListener('focus', verAtras);
+}
 function validarNombre(v) {
   const malos = [...new Set([...v].filter(ch => !G.soportado(ch)))];
   const msg = $('#aviso-nombre');
@@ -430,7 +454,7 @@ $('#btn-agregar').addEventListener('click', () => {
   const r = ultimo, t = totales();
   // En wuuffpuppy.co: lleva al mismo pago de la tienda (/?comprar=placa → modal de envío + Wompi)
   if (lista.length && (/wuuffpuppy\.co$/.test(location.hostname) || location.hostname.endsWith('.netlify.app'))) {
-    const todas = lista.concat([placaActual()]).map(p => ({ forma: p.forma, nombre: p.nombre, base: p.base, letras: p.letras, con: p.con, talla: p.talla }));
+    const todas = lista.concat([placaActual()]).map(p => ({ forma: p.forma, nombre: p.nombre, base: p.base, letras: p.letras, tel: p.telefono || '', con: p.con, talla: p.talla }));
     try { if (window.gtag) gtag('event', 'placa_comprar_varias', { placas: todas.length }); } catch (e) {}
     location.href = '/?comprar=placa&lista=' + encodeURIComponent(JSON.stringify(todas));
     return;
@@ -438,6 +462,7 @@ $('#btn-agregar').addEventListener('click', () => {
   if (/wuuffpuppy\.co$/.test(location.hostname) || location.hostname.endsWith('.netlify.app')) {
     const q = new URLSearchParams({ comprar: 'placa', forma: estado.diseno, nombre: estado.nombre.trim(), base: estado.base, letras: estado.letras,
       con: estado.compra, talla: estado.compra === 'sola' ? '' : estado.talla });
+    if (estado.telefono) q.set('tel', estado.telefono);
     try { if (window.gtag) gtag('event', 'placa_comprar', { forma: estado.diseno, con: estado.compra }); } catch (e) {}
     location.href = '/?' + q.toString();
     return;
@@ -446,6 +471,7 @@ $('#btn-agregar').addEventListener('click', () => {
     ['Placa', `Inteligente Wuuff · forma ${DISENOS[estado.diseno].nombre.toLowerCase()}`],
     ['Nombre', estado.nombre.trim()],
     ['Colores', `Base ${color(estado.base).nombre} · letras ${color(estado.letras).nombre}`],
+    ...(estado.telefono ? [['Atrás', 'Teléfono ' + formatoTel(estado.telefono)]] : []),
     ['Medidas', `${mm(r.bb.w)} × ${mm(r.bb.h)} × ${mm(r.grosorTotal, 1)} mm`],
     ...(t.producto ? [['Con', `${t.producto.corto} talla ${estado.talla}`]] : []),
     ['Total', cop(t.total)],

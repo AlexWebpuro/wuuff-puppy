@@ -46,6 +46,21 @@ main{max-width:860px;margin:0 auto;padding:12px 16px 100px}
 .filtros::-webkit-scrollbar{display:none}
 .chip{white-space:nowrap;border:1.5px solid var(--borde);background:#fff;border-radius:999px;padding:7px 13px;font-weight:800;font-size:13px;cursor:pointer}
 .chip.activo{background:var(--navy);border-color:var(--navy);color:#fff}
+.armar .armar-item{padding:10px 0;border-top:1px dashed var(--borde)}.armar .armar-item:first-of-type{border-top:0;padding-top:0}
+.armar-t{font-weight:900;font-size:14px;margin-bottom:6px}
+.armar .cn.armar-cn{background:none;padding:0;margin:0;display:block}
+.armar .armar-cn .cn-stage{padding:6px 10px}
+.armar .armar-cn .cn-box{height:auto;min-height:90px;padding:8px 0}
+.armar-collar{display:flex;flex-wrap:wrap;gap:4px;background:#b8d8f5;border-radius:12px;padding:8px 10px;border:2px solid #9cc4ea}
+.armar-l{display:inline-grid;place-items:center;min-width:34px;height:42px;padding:0 4px;border-radius:9px;background:var(--c);border-bottom:4px solid var(--e);color:#fff;font-weight:900;font-size:22px;font-family:'Fredoka One','Nunito',sans-serif;text-shadow:0 1px 0 rgba(0,0,0,.25)}
+.armar-l.osc{color:#2d4375;text-shadow:none}
+.armar-d{font-size:13px;margin-top:6px;line-height:1.6}
+.armar-placa{display:flex;gap:12px;align-items:center}
+.armar-svg{flex:none;width:130px;min-height:110px;display:grid;place-items:center;background:#f6f3ee;border-radius:14px;padding:8px}
+.armar-svg svg{display:block;width:100%;height:auto;max-height:130px}
+.armar-svg.exacta svg{filter:drop-shadow(0 2px 2px rgba(45,67,117,.25))}
+.armar-tel{margin-top:6px;font-size:14px;background:#fff7e0;border-radius:10px;padding:6px 10px;display:inline-block}
+.armar-sw{display:inline-block;width:14px;height:14px;border-radius:50%;background:var(--c);box-shadow:0 0 0 1px rgba(45,67,117,.3);vertical-align:-2px;margin-right:4px}
 .num-pedido{display:inline-block;background:var(--navy);color:#fff;border-radius:8px;padding:1px 7px;font-size:.78em;font-weight:900;letter-spacing:.3px;vertical-align:1px}
 .buscar{width:100%;border:1.5px solid var(--borde);border-radius:14px;padding:11px 14px;background:#fff;margin-bottom:12px}
 /* Tarjetas */
@@ -100,7 +115,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
 .items{margin:8px 0 0;padding:0;list-style:none}
 .items li{display:flex;align-items:center;gap:8px;padding:6px 0;border-top:1px dashed var(--borde);font-size:14px}
 .items li span{flex:1}.items li.con-nombre{flex-wrap:wrap}
-.nom-fila{display:flex;gap:6px;width:100%;margin-top:4px}.nom-fila input{flex:1;min-width:0;padding:8px 10px;font-size:15px;text-transform:uppercase}.nom-fila select{width:auto;padding:8px;font-size:14px}.items button{border:0;background:#f3eee6;border-radius:8px;width:28px;height:28px;cursor:pointer;font-weight:800}
+.nom-fila{display:flex;gap:6px;width:100%;margin-top:4px}.nom-fila .nom-ico{width:36px;height:auto;min-height:36px;font-size:18px;color:#d9338f;background:#fff;border:1.5px solid var(--borde)}.nom-fila input{flex:1;min-width:0;padding:8px 10px;font-size:15px;text-transform:uppercase}.nom-fila select{width:auto;padding:8px;font-size:14px}.items button{border:0;background:#f3eee6;border-radius:8px;width:28px;height:28px;cursor:pointer;font-weight:800}
 .aviso-extras{margin-top:10px;background:#fff4e0;border:1.5px solid #ffd59a;border-radius:12px;padding:10px 12px;font-size:14px}.aviso-extras.oculto{display:none}
 .tallas{display:flex;gap:6px;align-items:center;font-size:13px;font-weight:800;margin-top:4px}
 .aviso{background:#fff7e0;border-radius:12px;padding:10px 12px;font-size:14px}
@@ -178,6 +193,8 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
 .sin-leer{display:grid;gap:6px;margin-top:6px}.sin-leer button{text-align:left;border:0;background:#fff7e0;border-radius:12px;padding:9px 11px;cursor:pointer;font-size:13px}
 .t-colaboracion{background:#e8e0fb;color:#5a3aa8}.t-regalo{background:#fde3ef;color:#a0336b}
 </style>
+<!-- Misma vista previa del collar con nombre que la web (tipografía Malaka Cournt, colores y relieve de las letras) -->
+<link rel="stylesheet" href="/assets/collar-nombre.css?v=9">
 </head>
 <body>
 
@@ -275,10 +292,16 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
     };
     const pintar = () => {
       lista.innerHTML = items.map((it, i) => `<li class="${CON_NOMBRE.includes(it.id) ? 'con-nombre' : ''}"><span>${esc(linea(it))}</span><b>${pesos(precioLinea(it) * 100)}</b><button type="button" data-emenos="${i}" aria-label="Quitar uno">−</button><button type="button" data-emas="${i}" aria-label="Agregar uno">＋</button>
-        ${CON_NOMBRE.includes(it.id) ? `<div class="nom-fila"><input data-enom="${i}" maxlength="8" placeholder="Nombre (ej. OLIVER)" value="${esc(it.nombre ? it.nombre.texto : '')}" autocomplete="off"><select data-ecol="${i}">${CN_COLORES.map(c => `<option value="${c.id}"${it.nombre && it.nombre.color === c.id ? ' selected' : ''}>${esc(c.nombre)}</option>`).join('')}</select></div>` : ''}</li>`).join('')
+        ${CON_NOMBRE.includes(it.id) ? `<div class="nom-fila"><input data-enom="${i}" maxlength="8" placeholder="Nombre (ej. OLIVER)" value="${esc(it.nombre ? it.nombre.texto : '')}" autocomplete="off"><button type="button" class="nom-ico" data-eico="${i}" data-ch="♥" title="Agregar corazón" aria-label="Agregar corazón">♥</button><button type="button" class="nom-ico" data-eico="${i}" data-ch="★" title="Agregar estrella" aria-label="Agregar estrella">★</button><select data-ecol="${i}">${CN_COLORES.map(c => `<option value="${c.id}"${it.nombre && it.nombre.color === c.id ? ' selected' : ''}>${esc(c.nombre)}</option>`).join('')}</select></div>` : ''}</li>`).join('')
         || '<li class="nota-chica" style="border:0">Toca los productos que lleva (elige primero la talla).</li>';
       lista.querySelectorAll('[data-emenos]').forEach(b => b.onclick = () => { const it = items[b.dataset.emenos]; it.q--; if (it.q < 1) items.splice(b.dataset.emenos, 1); pintar(); });
       lista.querySelectorAll('[data-emas]').forEach(b => b.onclick = () => { items[b.dataset.emas].q++; pintar(); });
+      // ♥ y ★ también van en el nombre (como en la web)
+      lista.querySelectorAll('[data-eico]').forEach(b => b.onclick = () => {
+        const inp = lista.querySelector('[data-enom="' + b.dataset.eico + '"]');
+        if (Array.from(inp.value).length >= 8) { toast('Máximo 8 letras o figuras'); return; }
+        inp.value += b.dataset.ch; inp.oninput(); inp.focus();
+      });
       lista.querySelectorAll('[data-enom]').forEach(inp => inp.oninput = () => { const it = items[inp.dataset.enom]; it.nombre = it.nombre || { color: 'rosado' }; it.nombre.texto = inp.value.toUpperCase(); const li = lista.querySelectorAll('li')[inp.dataset.enom]; li.querySelector('span').textContent = linea(it); li.querySelector('b').textContent = pesos(precioLinea(it) * 100); avisar(); if (alCambiar) alCambiar(); });
       lista.querySelectorAll('[data-ecol]').forEach(sel => sel.onchange = () => { const it = items[sel.dataset.ecol]; it.nombre = it.nombre || { texto: '' }; it.nombre.color = sel.value; pintar(); });
       avisar();
@@ -337,6 +360,9 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
   function esc(v) { return String(v == null ? '' : v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
   function pesos(c) { return '$' + Math.round((c || 0) / 100).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
   function numero(v) { return parseInt(String(v || '').replace(/[^\d]/g, ''), 10) || 0; }
+  // Enlace de WhatsApp con el mensaje escrito. Se usa api.whatsapp.com/send y no wa.me: con wa.me, WhatsApp Web
+  // y la app de computador muestran los emojis como "�".
+  function waLink(p, texto) { return 'https://api.whatsapp.com/send?phone=' + telWa(p.cliente && p.cliente.telefono) + '&text=' + encodeURIComponent(texto); }
   function telWa(t) { const d = String(t || '').replace(/\D/g, ''); return d.length === 10 ? '57' + d : d; }
   function primerNombre(n) { return String(n || '').trim().split(/\s+/)[0] || ''; }
   function fecha(iso) {
@@ -639,7 +665,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
       `Si te gustó, ¿nos ayudas con una reseña en Google? Toma un minuto y nos ayuda muchísimo a que más familias nos conozcan 💛\n` +
       `⭐ ${RESENA_GOOGLE}\n\nY si nos mandas una foto de ${m} con su Wuuff, ¡nos alegras el día! 📸`;
   }
-  function waResena(p) { return 'https://wa.me/' + telWa(p.cliente && p.cliente.telefono) + '?text=' + encodeURIComponent(mensajeResena(p)); }
+  function waResena(p) { return waLink(p, mensajeResena(p)); }
   // Al tocar el botón: abre WhatsApp y deja marcado el pedido como "reseña pedida"
   document.addEventListener('click', e => {
     const a = e.target.closest('[data-resena]'); if (!a) return;
@@ -651,7 +677,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
     if (!(p.cliente && p.cliente.telefono)) return '';
     return `<a class="btn ${clase || 'lima'}" data-resena="${esc(p.id)}" href="${waResena(p)}" target="_blank" rel="noopener">${p.resenaPedida ? '⭐ Volver a pedir reseña' : '⭐ Pedir reseña en Google'}</a>`;
   }
-  function waConfirmar(p) { return 'https://wa.me/' + telWa(p.cliente && p.cliente.telefono) + '?text=' + encodeURIComponent(mensajeConfirmacion(p)); }
+  function waConfirmar(p) { return waLink(p, mensajeConfirmacion(p)); }
   function mensajeWa(p) {
     const n = primerNombre(p.cliente && p.cliente.nombre), m = p.mascota ? p.mascota : 'tu perrito';
     if (p.estado === 'por-confirmar') return mensajeConfirmacion(p);
@@ -665,9 +691,9 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
     const g = p.guia || {}, n = primerNombre(p.cliente && p.cliente.nombre);
     const t = `¡Hola${n ? ' ' + n : ''}! 🐾 Tu pedido de Wuuff Puppy ya va en camino con ${g.transportadora || 'la transportadora'}.\nNúmero de guía: ${g.numero}` +
       (g.url ? `\nRastréalo aquí: ${g.url}` : '') + (!p.pagado ? `\nRecuerda tener listos ${pesos(p.totalCents)} para pagar al recibir 💵` : '');
-    return 'https://wa.me/' + telWa(p.cliente && p.cliente.telefono) + '?text=' + encodeURIComponent(t);
+    return waLink(p, t);
   }
-  function waUrl(p) { return 'https://wa.me/' + telWa(p.cliente && p.cliente.telefono) + '?text=' + encodeURIComponent(mensajeWa(p)); }
+  function waUrl(p) { return waLink(p, mensajeWa(p)); }
 
   async function cambiar(id, cambios, msg) {
     const j = await api('POST', { accion: 'actualizar', id, cambios });
@@ -694,6 +720,93 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
 
   function opciones(obj, sel) { return Object.entries(obj).map(([k, v]) => `<option value="${k}"${k === sel ? ' selected' : ''}>${esc(v)}</option>`).join(''); }
 
+  // ── "🎨 Cómo armarlo": collares con letras (cada letra con su color, en orden) y placas (forma, colores y nombre) ──
+  // Collares: de los productos elegidos (p.inv: nombre { texto, color, mezcla }); placas: del texto del pedido
+  // ("Placa Inteligente Wuuff Huella "Toby" (placa Morado, letras Blanco)"), así sirve también para los pedidos viejos.
+  const PLACA_HEX = { Morado: '#6E4AA0', Azul: '#3160A6', Blanco: '#F5F5F2', Rojo: '#D3262E' };
+  function colorPorNombre(n) {
+    if (PLACA_HEX[n]) return { nombre: n, main: PLACA_HEX[n], edge: n === 'Blanco' ? '#cfcfc8' : PLACA_HEX[n] };
+    const c = CN_COLORES.find(x => x.nombre === n); return c && c.main ? c : { nombre: n || '—', main: '#cccccc', edge: '#999999' };
+  }
+  function claro(hex) { const h = String(hex || '#000').replace('#', ''); const r = parseInt(h.substr(0, 2), 16), g = parseInt(h.substr(2, 2), 16), b = parseInt(h.substr(4, 2), 16); return (0.299 * r + 0.587 * g + 0.114 * b) > 170; }
+  function armadoCollares(p) {
+    return (p.inv || []).filter(it => it.nombre && it.nombre.texto).map(it => {
+      const base = CN_COLORES.find(c => c.id === it.nombre.color) || { id: it.nombre.color, nombre: it.nombre.color, main: '#ccc', edge: '#999' };
+      const mez = it.nombre.mezcla || [];
+      const piezas = Array.from(String(it.nombre.texto).toUpperCase()).map((ch, i) => ({ ch, c: CN_COLORES.find(c => c.id === mez[i]) || base }));
+      const usados = piezas.map(x => x.c.nombre).filter((n, i, a) => a.indexOf(n) === i);
+      const prod = (CATALOGO.find(c => c.id === it.p) || { n: it.p }).n + (it.talla ? (it.talla.length === 2 ? ' · Talla collar ' + it.talla[0] + ', arnés ' + it.talla[1] : ' · Talla ' + it.talla) : '') + (it.q > 1 ? ' · x' + it.q : '');
+      return `<div class="armar-item"><p class="armar-t">${esc(prod)}</p>
+        <div class="cn armar-cn"><div class="cn-stage"><div class="cn-box"><div class="cn-strap"><div class="cn-name" data-armar-nombre style="--c:${esc(base.main)};--e:${esc(base.edge || base.main)}">${piezas.map((x, i) => `<span class="cn-ch" title="${i + 1}. ${esc(x.ch)} · ${esc(x.c.nombre)}" style="--c:${esc(x.c.main)};--e:${esc(x.c.edge || x.c.main)}">${x.ch === '♥' || x.ch === '★' ? `<svg class="cn-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="${x.ch === '♥' ? 'M12 21s-7.5-4.6-9.6-9.2C.9 8.4 2.7 4.5 6.4 4.5c2.1 0 3.8 1.2 5.6 3.3 1.8-2.1 3.5-3.3 5.6-3.3 3.7 0 5.5 3.9 4 7.3C19.5 16.4 12 21 12 21z' : 'M12 2.6l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.2 1.2-6.5L2.5 9.5l6.6-.9z'}"/></svg>` : esc(x.ch)}</span>`).join('')}</div></div></div></div></div>
+        <p class="armar-d">${piezas.map((x, i) => `<b>${i + 1}.</b> ${esc(x.ch)} ${esc(x.c.nombre.toLowerCase())}`).join(' · ')}</p>
+        <p class="nota-chica">${usados.length > 1 ? '🎨 Letras combinadas: ' + esc(usados.join(', ')) : 'Todas las letras en ' + esc(usados[0].toLowerCase())}</p></div>`;
+    });
+  }
+  function svgPlaca(forma, base, letras, nombre) {
+    const bc = colorPorNombre(base), lc = colorPorNombre(letras || 'Blanco');
+    const n = String(nombre || ''), fs = Math.max(12, Math.min(26, Math.round(150 / Math.max(n.length, 1))));
+    const borde = bc.main.toLowerCase() === '#f5f5f2' ? '#cfcfc8' : 'rgba(0,0,0,.15)';
+    const figura = forma === 'Gato'
+      ? `<polygon points="22,46 28,6 54,30" fill="${bc.main}" stroke="${borde}"/><polygon points="98,46 92,6 66,30" fill="${bc.main}" stroke="${borde}"/><circle cx="60" cy="68" r="44" fill="${bc.main}" stroke="${borde}"/>`
+      : forma === 'Nombre' ? `<rect x="4" y="38" width="112" height="48" rx="24" fill="${bc.main}" stroke="${borde}"/>`
+        : `<circle cx="27" cy="44" r="13" fill="${bc.main}" stroke="${borde}"/><circle cx="47" cy="26" r="13" fill="${bc.main}" stroke="${borde}"/><circle cx="73" cy="26" r="13" fill="${bc.main}" stroke="${borde}"/><circle cx="93" cy="44" r="13" fill="${bc.main}" stroke="${borde}"/><ellipse cx="60" cy="80" rx="38" ry="31" fill="${bc.main}" stroke="${borde}"/>`;
+    const ty = forma === 'Gato' ? 74 : forma === 'Nombre' ? 63 : 84;
+    return `<svg viewBox="0 0 120 120" width="120" height="120" role="img" aria-label="Placa ${esc(forma)} ${esc(base)} con el nombre ${esc(n)} en ${esc(letras || '')}">${figura}<text x="60" y="${ty}" text-anchor="middle" dominant-baseline="middle" font-family="Nunito,sans-serif" font-weight="900" font-size="${fs}" fill="${lc.main}" stroke="${claro(lc.main) && claro(bc.main) ? '#888' : 'none'}" stroke-width=".6">${esc(n)}</text></svg>`;
+  }
+  function armadoPlacas(p) {
+    const re = /Placa Inteligente Wuuff (Huella|Gato|Nombre) "([^"]+)" \(placa ([^,)]+)(?:, letras ([^,)]+))?(?:, tel atrás ([\d ]+))?\)/g;
+    const out = []; let m;
+    while ((m = re.exec(p.productos || ''))) {
+      const [, forma, nombre, base, letras, tel] = m;
+      const telTxt = tel ? (d => d.length === 10 ? d.slice(0, 3) + ' ' + d.slice(3, 6) + ' ' + d.slice(6) : d)(tel.replace(/\D/g, '')) : '';
+      out.push(`<div class="armar-item armar-placa"><div class="armar-svg" data-placa="${esc(JSON.stringify({ forma, nombre, base: base.trim(), letras: (letras || '').trim() }))}">${svgPlaca(forma, base.trim(), (letras || '').trim(), nombre)}</div><div><p class="armar-t">Placa ${esc(forma.toLowerCase())} · "${esc(nombre)}"</p>
+        <p class="armar-d"><span class="armar-sw" style="--c:${esc(colorPorNombre(base.trim()).main)}"></span> Placa ${esc(base.trim().toLowerCase())}<br><span class="armar-sw" style="--c:${esc(colorPorNombre((letras || 'Blanco').trim()).main)}"></span> Letras ${esc((letras || 'sin indicar').trim().toLowerCase())}</p>${telTxt ? `<p class="armar-tel">📞 Atrás: <b>${esc(telTxt)}</b></p>` : ''}</div></div>`);
+    }
+    return out;
+  }
+  // Forma exacta de la placa: la misma geometría del diseñador (placa-nfc/js/geom.js + ClipperLib + letras).
+  // Se carga solo la primera vez que se abre un pedido con placa; mientras tanto se ve el dibujo aproximado.
+  let geomPromesa = null;
+  function cargarScript(src) { return new Promise((ok, mal) => { const sc = document.createElement('script'); sc.src = src; sc.onload = ok; sc.onerror = mal; document.head.appendChild(sc); }); }
+  function cargarGeom() {
+    if (!geomPromesa) geomPromesa = Promise.all([
+      window.ClipperLib ? null : cargarScript('https://cdn.jsdelivr.net/npm/clipper-lib@6.4.2/clipper.js'),
+      window.WuuffGeom ? null : cargarScript('/placa-nfc/js/geom.js?v=20261122'),
+      fetch('/placa-nfc/datos/glyphs.json').then(r => r.json())
+    ]).then(r => window.WuuffGeom(window.ClipperLib, r[2])).catch(err => { geomPromesa = null; throw err; });
+    return geomPromesa;
+  }
+  function svgPlacaExacta(G, d) {
+    const n = String(d.nombre || '').trim();
+    const g = d.forma === 'Nombre' ? G.placaSilueta(n) : G.placaFigura(d.forma.toLowerCase(), n);
+    const bb = G.bounds(g.base), pad = 2, W = bb.w + 2 * pad, H = bb.h + 2 * pad;
+    const ruta = paths => G.formas(paths).map(f => [f.exterior, ...f.huecos].map(q => 'M' + q.map(([x, y]) => `${(x - bb.x0 + pad).toFixed(2)},${(bb.y1 - y + pad).toFixed(2)}`).join('L') + 'Z').join('')).join('');
+    const bc = colorPorNombre(d.base), lc = colorPorNombre(d.letras || 'Blanco');
+    const borde = claro(bc.main) ? 'rgba(0,0,0,.35)' : 'rgba(0,0,0,.15)';
+    return `<svg viewBox="0 0 ${W.toFixed(2)} ${H.toFixed(2)}" role="img" aria-label="Placa ${esc(d.forma)} ${esc(d.base)} con ${esc(n)} en ${esc(d.letras || '')}"><path fill-rule="evenodd" fill="${bc.main}" stroke="${borde}" stroke-width=".5" d="${ruta(g.base)}"/><path fill-rule="evenodd" fill="${lc.main}" stroke="${claro(lc.main) && claro(bc.main) ? 'rgba(0,0,0,.35)' : 'none'}" stroke-width=".3" d="${ruta(g.letras)}"/></svg>`;
+  }
+  function ajustarCollares() {
+    document.querySelectorAll('[data-armar-nombre]').forEach(name => {
+      const strap = name.parentNode, n = name.children.length || 1;
+      let fs = Math.max(26, Math.min(110, strap.clientWidth * 0.76 / (n * 0.68)));
+      name.style.setProperty('--fs', fs + 'px');
+      const max = strap.clientWidth * 0.84;
+      if (name.scrollWidth > max) { fs = Math.max(20, fs * max / name.scrollWidth); name.style.setProperty('--fs', fs + 'px'); }
+      strap.style.height = Math.max(16, fs * 0.5) + 'px';
+    });
+  }
+  function pintarPlacasExactas() {
+    const cajas = document.querySelectorAll('.armar-svg[data-placa]');
+    if (!cajas.length) return;
+    cargarGeom().then(G => cajas.forEach(el => {
+      try { el.innerHTML = svgPlacaExacta(G, JSON.parse(el.dataset.placa)); el.classList.add('exacta'); } catch (e) { /* se queda el dibujo aproximado */ }
+    })).catch(() => {});
+  }
+  function cajaArmado(p) {
+    const items = armadoCollares(p).concat(armadoPlacas(p));
+    return items.length ? `<div class="caja armar"><h3>🎨 Cómo armarlo</h3>${items.join('')}</div>` : '';
+  }
+
   function abrirDetalle(id, enfocarGuia) {
     const p = pedidos.find(x => x.id === id); if (!p) return;
     const c = p.cliente || {}, g = p.guia || {};
@@ -701,6 +814,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
     abrirHoja(`
       <div class="cab"><h2>${p.numero ? `<span class="num-pedido">#${p.numero}</span> ` : ''}${esc(c.nombre || 'Pedido')}</h2><button class="btn claro icono" data-cerrar aria-label="Cerrar">✕</button></div>
       <p class="nota-chica" style="margin:-4px 0 12px">${p.numero ? 'Pedido #' + p.numero + ' · ' : ''}${esc(p.id)} · ${esc(fecha(p.creado))} · ${esc(ORIGENES[p.origen] || '')}</p>
+      ${cajaArmado(p)}
 
       <div class="caja">
         <h3>Estado</h3>
@@ -816,6 +930,8 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
     $('btnBorrar').onclick = () => borrarPedido(p.id);
     editorDetalle = editorInv($('dEditor'), p.inv || [], null, t => { $('dTotal').value = t; toast('Total actualizado: ' + pesos(t * 100) + ' (recuerda guardar)'); });
     $('btnEtiqueta').onclick = () => abrirEtiqueta(p.id);
+    pintarPlacasExactas();
+    ajustarCollares(); if (document.fonts && document.fonts.load) document.fonts.load('40px "Malaka Cournt"').then(ajustarCollares).catch(() => {});
     // Guía de Envia desde el panel: ver precios → elegir → crear (queda Enviado con su guía)
     const datosEnvio = () => ({ nombre: $('eNombre').value, telefono: $('eTel').value, direccion: $('eDir').value, barrio: $('eBarrio').value, cp: $('eCp').value, referencia: $('eRef').value, ciudad: c.ciudad });
     if ($('btnEnvia')) $('btnEnvia').onclick = () => { $('cajaEnvia').classList.remove('oculto'); $('cajaEnvia').scrollIntoView({ behavior: 'smooth', block: 'start' }); };

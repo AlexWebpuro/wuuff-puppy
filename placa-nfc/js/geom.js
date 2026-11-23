@@ -85,6 +85,24 @@
     return union(toInt(moved));
   }
 
+  // ---------- Marca NFC: pastilla con ondas y "NFC" calados (igual que placa_figura.scad) ----------
+  // Centrada en (cx, cy); k = escala (1 = tamaño de la huella). Devuelve la marca (lo que se imprime del color
+  // de las letras) y la pastilla completa.
+  function marcaNfc(cx, cy, k = 1) {
+    const font = GLYPHS.titan;
+    const R = 3.6 * k, TXT = 3.4 * k, XT = 4.9 * k, XL = 1.8 * k;
+    const tw = anchoTabla(font, 'NFC') * TXT / 0.72;
+    const xr = XT + tw - R + 1.2 * k, dx = cx - ((XL - R) + (xr + R)) / 2;
+    const pastilla = hull(circle(XL + dx, cy, 2 * R, 64).concat(circle(xr + dx, cy, 2 * R, 64)));
+    const rad = a => a * Math.PI / 180;
+    const L = 10 * k;
+    const cuña = toInt([[[dx, cy], [dx + L * Math.cos(rad(42)), cy + L * Math.sin(rad(42))], [dx + L, cy], [dx + L * Math.cos(rad(-42)), cy + L * Math.sin(rad(-42))]]]);
+    let ondas = circle(dx, cy, 1.6 * k, 64);
+    for (const r of [2.0 * k, 3.6 * k]) ondas = union(ondas, inter(diff(circle(dx, cy, 2 * (r + 0.4 * k), 64), circle(dx, cy, 2 * (r - 0.4 * k), 64)), cuña));
+    ondas = union(ondas, translate(texto(font, 'NFC', TXT, 1, 'left', 'center'), dx + XT, cy));
+    return { marca: diff(pastilla, ondas), pastilla, alto: 2 * R };
+  }
+
   // ---------- PLACA NUBE (placa_nube.scad) ----------
   function placaNube(nombre, o = {}) {
     const P = Object.assign({ ancho: 38, alto: 33, tamMax: 11, tamMin: 6, margen: 4, despY: -2.5, espaciado: 1,
@@ -131,8 +149,13 @@
     const pest = hull(circle(cA[0], cA[1], P.dArgolla, 64).concat(circle(cA[0], cA[1] - P.dArgolla * 0.35, P.dArgolla * 0.8, 64)));
     let u = union(sil, pest);
     if (P.nfc) u = union(u, circle(cN[0], cN[1], 2 * (rCav + P.pared), 128));
+    // Marca NFC debajo del nombre, dentro del medallón (como en la huella)
+    const conMarca = P.nfc && P.marcaNfc !== false;
+    // justo debajo de las letras (1 mm), sin acercarse a menos de 2 mm del borde del medallón
+    const KM = P.escalaMarca || 0.65, RM = 3.6 * KM; // más pequeña que en la huella
+    const m = conMarca ? marcaNfc(cN[0], Math.max(Math.min(0, bounds(txt).y0) - 1 - RM, cN[1] - (rCav + P.pared) + 2.5 + RM), KM) : null;
     const base = diff(closing(u, 1.2), circle(cA[0], cA[1], P.dAgujero, 64));
-    const letras = diff(txt, circle(cA[0], cA[1], P.dAgujero + 2, 64));
+    const letras = union(diff(txt, circle(cA[0], cA[1], P.dAgujero + 2, 64)).concat(m ? m.marca : []));
     return { tipo: 'silueta', base, letras, grosor: P.grosor, altoLetras: P.altoLetras, tamLetra: P.tam,
       agujero: { x: cA[0], y: cA[1], d: P.dAgujero },
       nfc: P.nfc ? { x: cN[0], y: cN[1], d: P.dNfc, z: P.piso, cabe: true } : null };
@@ -146,8 +169,8 @@
       dAgujero: 4.5, margenAgujero: 2.2, nfc: true, dNfc: 25, holgura: 0.6, pared: 1.2, piso: 0.6,
       encajadas: true, marcaNfc: true, profMarca: 0.6, holguraMarca: 0.15 }, o);
     const gato = forma === 'gato', font = GLYPHS.titan;
-    const conMarca = !gato && P.marcaNfc, encajadas = !gato && P.encajadas;
-    const FR = 0.74, YT = gato ? -0.06 : (conMarca ? 0.06 : -0.07), YM = -0.215;
+    const conMarca = P.marcaNfc, encajadas = !gato && P.encajadas;
+    const FR = 0.74, YT = gato ? (conMarca ? 0.03 : -0.06) : (conMarca ? 0.06 : -0.07), YM = gato ? -0.2 : -0.215;
     if (conMarca) P.tamMax = Math.min(P.tamMax, 8);
     const rCav = (P.dNfc + P.holgura) / 2;
     const a10 = anchoTabla(font, nombre) * 10 / 0.72 * P.espaciado;
@@ -177,18 +200,7 @@
     const nombreRecortado = inter(txt, diff(offD(contorno, -1), agujero));
     // Marca NFC: pastilla con ondas y "NFC" calados (igual que placa_figura.scad)
     let marca = [], pastilla = [];
-    if (conMarca) {
-      const R = 3.6, TXT = 3.4, XT = 4.9, XL = 1.8;
-      const tw = anchoTabla(font, 'NFC') * TXT / 0.72;
-      const xr = XT + tw - R + 1.2, dx = -((XL - R) + (xr + R)) / 2, cy = YM * W;
-      pastilla = hull(circle(XL + dx, cy, 2 * R, 64).concat(circle(xr + dx, cy, 2 * R, 64)));
-      const rad = a => a * Math.PI / 180;
-      const cuña = toInt([[[dx, cy], [dx + 10 * Math.cos(rad(42)), cy + 10 * Math.sin(rad(42))], [dx + 10, cy], [dx + 10 * Math.cos(rad(-42)), cy + 10 * Math.sin(rad(-42))]]]);
-      let ondas = circle(dx, cy, 1.6, 64);
-      for (const r of [2.0, 3.6]) ondas = union(ondas, inter(diff(circle(dx, cy, 2 * (r + 0.4), 64), circle(dx, cy, 2 * (r - 0.4), 64)), cuña));
-      ondas = union(ondas, translate(texto(font, 'NFC', TXT, 1, 'left', 'center'), dx + XT, cy));
-      marca = diff(pastilla, ondas);
-    }
+    if (conMarca) ({ marca, pastilla } = marcaNfc(0, YM * W));
     const letras = union(nombreRecortado.concat(detalles, marca));
     const rebajes = encajadas ? union(offR(nombreRecortado, P.holguraMarca).concat(conMarca ? offR(pastilla, P.holguraMarca) : [])) : null;
     return { tipo: forma, base, letras, grosor: P.grosor, altoLetras: P.altoLetras, tamLetra: tam,
@@ -214,5 +226,21 @@
     return res;
   }
 
-  return { placaNube, placaSilueta, placaFigura, formas, bounds, area, toMM, soportado: ch => ch in GLYPHS.titan.glyphs && ch in GLYPHS.bagel.glyphs };
+  // ---------- Teléfono grabado atrás (opcional, uno solo) ----------
+  // Centrado en la placa (a la altura del NFC si lo tiene) y en espejo, para que se lea al voltear la placa.
+  // Devuelve los contornos del texto; la vista lo dibuja como grabado en la cara de atrás.
+  function textoAtras(g, tel, o = {}) {
+    const t = String(tel || '').replace(/[^0-9 +]/g, '').trim();
+    if (!t) return [];
+    const font = GLYPHS.titan, bb = bounds(g.base);
+    const cx = (bb.x0 + bb.x1) / 2, cy = g.nfc ? g.nfc.y : (bb.y0 + bb.y1) / 2;
+    const ancho1 = anchoTabla(font, t) / 0.72;                    // ancho con letra de 1 mm
+    const tam = Math.max(2.4, Math.min(o.tamMax || 4.2, (bb.w * 0.72) / Math.max(ancho1, 0.01)));
+    const txt = texto(font, t, tam, 1, 'center', 'center');
+    const X = Math.round(cx * S), Y = Math.round(cy * S);
+    const espejo = txt.map(p => p.map(q => ({ X: X - q.X, Y: Y + q.Y })).reverse());
+    return inter(union(espejo), offD(g.base, -0.8));
+  }
+
+  return { placaNube, placaSilueta, placaFigura, textoAtras, formas, bounds, area, toMM, soportado: ch => ch in GLYPHS.titan.glyphs && ch in GLYPHS.bagel.glyphs };
 });

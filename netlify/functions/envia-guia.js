@@ -70,7 +70,7 @@ function vistaGuia(p) {
       <strong>Guía ${esc(g.carrier || '')}:</strong> ${esc(g.trackingNumber)}<br>
       <strong>Cobrar al entregar:</strong> ${pesos(p.totalCents / 100)}${g.totalPrice ? `<br><strong>Costo de la guía:</strong> ${pesos(g.totalPrice)}` : ''}</p>
       <a class="btn azul" href="${esc(g.label)}" target="_blank" rel="noopener">Descargar guía (PDF)</a>
-      <a class="btn verde" href="https://wa.me/${tel}?text=${encodeURIComponent(msg)}" target="_blank" rel="noopener">Enviarle el rastreo por WhatsApp</a>
+      <a class="btn verde" href="https://api.whatsapp.com/send?phone=${tel}&text=${encodeURIComponent(msg)}" target="_blank" rel="noopener">Enviarle el rastreo por WhatsApp</a>
       ${g.trackUrl ? `<a class="btn claro" href="${esc(g.trackUrl)}" target="_blank" rel="noopener">Ver rastreo</a>` : ''}
     </div>
     <p class="aviso">Imprime la guía, pégala en la caja y programa la recogida en Envia.com (o lleva el paquete a un punto Coordinadora).</p>`);

@@ -68,10 +68,12 @@ function placaValida(p) {
   const forma = elegir(p.forma, FORMAS), base = elegir(p.base || p.color, COLORES);
   const letras = p.letras ? elegir(p.letras, COLORES) : '';
   if (!nombre || !forma || !base) return null;
-  return { nombre, forma, base, letras };
+  // Teléfono grabado atrás (opcional, uno solo): de 7 a 10 cifras
+  const tel = String(p.telefono || '').replace(/\D/g, '').slice(0, 10);
+  return tel.length >= 7 ? { nombre, forma, base, letras, telefono: tel } : { nombre, forma, base, letras };
 }
 function nombrePlaca(p) {
-  return 'Placa Inteligente Wuuff ' + p.forma + ' "' + p.nombre + '" (placa ' + p.base + (p.letras ? ', letras ' + p.letras : '') + ')';
+  return 'Placa Inteligente Wuuff ' + p.forma + ' "' + p.nombre + '" (placa ' + p.base + (p.letras ? ', letras ' + p.letras : '') + (p.telefono ? ', tel atrás ' + p.telefono : '') + ')';
 }
 
 // Nombre del collar: solo A–Z, corazón y estrella; las tildes se quitan (José → JOSE) y la Ñ no existe

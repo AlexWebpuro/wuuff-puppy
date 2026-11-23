@@ -237,6 +237,10 @@ form { display: grid; grid-template-columns: minmax(0, 1fr); gap: 22px; min-widt
 .campo { display: flex; align-items: center; gap: 10px; background: var(--white); border: 2px solid var(--lblue); border-radius: 16px; padding: 4px 16px; }
 .campo:focus-within { border-color: var(--blue); box-shadow: 0 0 0 4px rgba(73, 100, 175, .15); }
 .campo input { flex: 1 1 auto; width: 0; min-width: 0; border: 0; background: transparent; color: var(--navy); font: 400 26px/1.4 var(--f-display); padding: 8px 0; outline: none; }
+.tel-label { display: block; margin: 14px 0 6px; font-weight: 800; color: var(--navy); font-size: 15px; }
+.tel-label small { font-weight: 700; color: var(--tenue); }
+.campo-tel input { font: 700 20px/1.4 var(--f-body, inherit); letter-spacing: .04em; }
+.ayuda-tel { margin: 6px 0 0; font-size: 13px; color: var(--tenue); font-weight: 600; }
 .contador { font-size: 13px; font-weight: 700; color: var(--tenue); font-variant-numeric: tabular-nums; }
 .aviso { font-size: 14px; font-weight: 600; color: var(--aviso); background: var(--aviso-bg); padding: 8px 12px; border-radius: 12px; }
 .opciones { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
@@ -447,6 +451,12 @@ footer a:hover { opacity: 1; text-decoration: underline; }
               <span class="contador" id="contador">0/10</span>
             </div>
             <p class="aviso" id="aviso-nombre" role="status" hidden></p>
+            <label for="telefono" class="tel-label">📞 Teléfono grabado atrás <small>(opcional, uno solo)</small></label>
+            <div class="campo campo-tel">
+              <input id="telefono" name="telefono" type="tel" inputmode="numeric" autocomplete="tel-national" maxlength="16" placeholder="Ej.: 3001234567" aria-describedby="aviso-tel ayuda-tel">
+            </div>
+            <p class="ayuda-tel" id="ayuda-tel">Va grabado por detrás de la placa. Gratis. Toca <b>Reverso</b> para verlo.</p>
+            <p class="aviso" id="aviso-tel" role="status" hidden>Escribe el número completo (mínimo 7 cifras).</p>
           </div>
 
           <fieldset class="paso">
@@ -455,9 +465,9 @@ footer a:hover { opacity: 1; text-decoration: underline; }
               <label class="opcion"><input type="radio" name="diseno" value="huella" checked>
                 <div class="mini" id="mini-huella" aria-hidden="true"></div><strong>Huella</strong><span>La huella Wuuff con su nombre y el sello NFC.</span></label>
               <label class="opcion"><input type="radio" name="diseno" value="gato">
-                <div class="mini" id="mini-gato" aria-hidden="true"></div><strong>Gato</strong><span>Carita de gato con orejitas de color.</span></label>
+                <div class="mini" id="mini-gato" aria-hidden="true"></div><strong>Gato</strong><span>Carita de gato con orejitas de color y el sello NFC.</span></label>
               <label class="opcion"><input type="radio" name="diseno" value="nombre">
-                <div class="mini" id="mini-nombre" aria-hidden="true"></div><strong>Nombre</strong><span>Sigue la forma de las letras.</span></label>
+                <div class="mini" id="mini-nombre" aria-hidden="true"></div><strong>Nombre</strong><span>Sigue la forma de las letras, con el sello NFC.</span></label>
             </div>
           </fieldset>
 
@@ -658,9 +668,9 @@ footer a:hover { opacity: 1; text-decoration: underline; }
 <script type="application/json" id="assets-data">{"fotos": {"combo": "/images/web/set-completo-nuevo.webp", "arnes-correa": "/images/web/productos/reales/schnauzer-arnes-correa-estudio-2.webp", "collar-correa": "/images/web/productos/reales/pastor-correa-estudio-1.webp", "collar": "/images/web/collar-nuevo.webp", "arnes": "/images/web/productos/reales/shihtzu-arnes-estudio-1.webp"}, "alts": {"collar": "Collar impermeable Wuuff Puppy azul cielo", "collar-correa": "Pastor alemán con collar y correa Wuuff Puppy", "arnes": "Shih tzu con arnés tipo H Wuuff Puppy", "combo": "Combo completo Wuuff Puppy: collar, arnés y correa impermeables azul cielo", "arnes-correa": "Schnauzer miniatura con arnés tipo H y correa Wuuff Puppy"}, "boceto": "/placa-nfc/img/boceto-perro.webp", "pastor": "/placa-nfc/img/pastor.webp", "logo": "/images/wuuff-puppy.png"}</script>
 <script src="https://cdn.jsdelivr.net/npm/clipper-lib@6.4.2/clipper.js"></script>
 <script type="application/json" id="glyphs"></script>
-<script src="/placa-nfc/js/geom.js"></script>
+<script src="/placa-nfc/js/geom.js?v=20261122"></script>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
-<script type="module" src="/placa-nfc/js/app.js?v=20261119"></script>
+<script type="module" src="/placa-nfc/js/app.js?v=20261122"></script>
 <script src="/assets/entrega.js?v=3" defer></script>
 <!-- Link directo con código del concurso: se guarda para el checkout -->
 <script>try{var wc=new URLSearchParams(location.search).get("codigo");if(wc)sessionStorage.setItem("wuuff_codigo",wc.trim().toUpperCase());}catch(e){}</script>
