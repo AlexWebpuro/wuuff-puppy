@@ -17,6 +17,8 @@
   var SVG_HEART = '<path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 2.7 4.5 6.4 4.5c2.1 0 3.8 1.2 5.6 3.3 1.8-2.1 3.5-3.3 5.6-3.3 3.7 0 5.5 3.9 4 7.3C19.5 16.4 12 21 12 21z"/>';
   var SVG_STAR = '<path d="M12 2.6l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.2 1.2-6.5L2.5 9.5l6.6-.9z"/>';
   var CFG = null, STOCK = null;
+  // Black Wuuff Friday: con la promo activa (la decide el servidor), el nombre va gratis en estos combos
+  var PROMO = null, GRATIS = false;
   var state = { texto: '', color: 'rosado', mezcla: [], combinar: false, pincel: '', peso: 'p1', tallaManual: 'S' }, lista = [], flags = { ene: false, corto: false };
 
   function $(s) { return caja.querySelector(s); }
@@ -87,7 +89,8 @@
   function peso() { return CFG.pesos.filter(function (p) { return p.id === state.peso; })[0]; }
   function talla() { return peso().talla || state.tallaManual; }
   function extras() { return Math.max(0, tokens().length - CFG.incluidas); }
-  function precios() { return EN_COMBO ? CFG.combos[PRODUCTO] : { precio: CFG.precio, precioSinNombre: CFG.precioSinNombre, titulo: 'Collar con nombre' }; }
+  function preciosNormales() { return EN_COMBO ? CFG.combos[PRODUCTO] : { precio: CFG.precio, precioSinNombre: CFG.precioSinNombre, titulo: 'Collar con nombre' }; }
+  function precios() { var p = preciosNormales(); return GRATIS ? { precio: p.precioSinNombre, precioSinNombre: p.precioSinNombre, titulo: p.titulo } : p; }
   function total() { return modo === 'sin' ? precios().precioSinNombre : precios().precio + extras() * CFG.precioExtra; }
   function disponibles(l, colorId) {
     if (!STOCK || STOCK.sinLimite) return Infinity;
@@ -158,11 +161,12 @@
       '<section class="cn-card cn-talla"><h3 class="cn-paso"><span data-cn="num-talla">3</span> Talla por peso</h3><p class="cn-hint">Escoge cuánto pesa tu perrito y te decimos qué talla le queda.</p>' +
         '<div class="cn-opts" data-cn="pesos" role="radiogroup" aria-label="Peso de tu perrito"></div><div class="cn-size" data-cn="size"></div></section>' +
       '<section class="cn-card cn-precio" aria-label="Resumen del precio"><h3 data-cn="tit-precio">Tu collar</h3><dl>' +
-        '<dt>Collar</dt><dd data-cn="precio-collar"></dd><dt class="cn-solo-nombre">Nombre, hasta ' + CFG.incluidas + ' letras</dt><dd class="cn-solo-nombre">Incluido</dd>' +
+        '<dt>Collar</dt><dd data-cn="precio-collar"></dd><dt class="cn-solo-nombre">Nombre, hasta ' + CFG.incluidas + ' letras</dt><dd class="cn-solo-nombre" data-cn="nombre-incl">Incluido</dd>' +
         '<dt class="cn-solo-nombre" data-cn="extra-lbl">Letras extra</dt><dd class="cn-solo-nombre" data-cn="extra"></dd><dt data-cn="entrega-lbl">Entrega</dt><dd data-cn="entrega"></dd></dl>' +
         '<div class="cn-lista" data-cn="lista" hidden></div>' +
         '<div class="cn-total"><span>Total</span><span class="cn-amount" data-cn="total"></span></div>' +
         '<button type="button" class="cn-cta" data-cn="cta">Comprar ahora</button>' +
+        '<p class="cn-bwf" data-cn="bwf" hidden></p>' +
         (EN_COMBO ? '' : '<button type="button" class="cn-otro" data-cn="otro">➕ Agregar otro collar</button>') +
         '<a class="cn-wa" data-cn="wa" href="#" target="_blank" rel="noopener">¿Dudas? Escríbenos por WhatsApp</a>' +
         (EN_COMBO ? '' : '<p class="cn-fine"><strong>🐶🐶 Desde 2 collares: envío gratis en Bogotá pagando en línea.</strong></p>') + '</section>');
@@ -324,7 +328,38 @@
     var ahora = document.querySelector('.info .precio .ahora');
     if (ahora) ahora.textContent = cop(tot) + ' COP';
     var antes = document.querySelector('.info .precio .antes');
-    if (antes && EN_COMBO) antes.hidden = modo === 'nombre';
+    if (antes && EN_COMBO) {
+      if (antes.getAttribute('data-original') === null) antes.setAttribute('data-original', antes.innerHTML);
+      // Con la promo: precio normal tachado y "Nombre gratis"; sin la promo, con nombre no se muestra el ahorro
+      if (GRATIS && modo === 'nombre') { antes.hidden = false; antes.innerHTML = '<s>' + cop(preciosNormales().precio + extras() * CFG.precioExtra) + '</s> <span class="off">✏️ Nombre gratis</span>'; }
+      else { antes.innerHTML = antes.getAttribute('data-original'); antes.hidden = modo === 'nombre'; }
+    }
+    pintarPromo();
+  }
+
+  // Black Wuuff Friday: textos de la promo en la ficha
+  function pintarPromo() {
+    if (!PROMO) return;
+    var incl = $('[data-cn=nombre-incl]');
+    if (incl) incl.innerHTML = GRATIS ? '<s>+' + cop(preciosNormales().precio - preciosNormales().precioSinNombre) + '</s> GRATIS' : 'Incluido';
+    var bwf = $('[data-cn=bwf]');
+    // Collar con nombre solo: no entra en la promo, pero se le cuenta que con el collar + correa sí
+    if (bwf && !EN_COMBO) {
+      bwf.hidden = modo !== 'nombre';
+      bwf.innerHTML = '🖤 ¿Sabías? Con el <a href="/collar-y-correa-impermeable-perro/?modo=nombre' + (state.texto ? '&nombre=' + encodeURIComponent(state.texto) : '') + '&utm_source=web&utm_medium=ficha&utm_campaign=black-wuuff-2026">collar + correa</a> el nombre te sale gratis hasta el lunes';
+    }
+    if (!GRATIS) return;
+    var boton = document.querySelector('.modo-collar [data-modo=nombre] span');
+    if (boton) boton.innerHTML = '<s>' + cop(preciosNormales().precio) + '</s> ' + cop(precios().precio) + ' · nombre <s>+' + cop(preciosNormales().precio - preciosNormales().precioSinNombre) + '</s> GRATIS';
+    var nota = document.getElementById('bwf-nota');
+    var comprar = document.getElementById('btn-comprar');
+    if (!nota && comprar) {
+      nota = document.createElement('p'); nota.id = 'bwf-nota'; nota.className = 'bwf-nota';
+      comprar.parentNode.insertBefore(nota, comprar.nextSibling);
+    }
+    if (nota) nota.innerHTML = modo === 'nombre'
+      ? '🎁 Incluye stickers de la pandilla Wuuff. El primer pedido se lleva un regalo sorpresa.'
+      : '🖤 Black Wuuff Friday: elige <b>con su nombre</b> y el nombre va por nuestra cuenta (hasta el lun 30).';
   }
 
   // Va directo al pago con el collar ya armado; el servidor vuelve a calcular el total
@@ -410,16 +445,25 @@
 
   Promise.all([
     fetch('/assets/collar-nombre.json').then(function (r) { return r.json(); }),
-    fetch('/assets/letras-stock.json').then(function (r) { return r.ok ? r.json() : { sinLimite: true }; }).catch(function () { return { sinLimite: true }; })
+    fetch('/assets/letras-stock.json').then(function (r) { return r.ok ? r.json() : { sinLimite: true }; }).catch(function () { return { sinLimite: true }; }),
+    window.wuuffPromoEstado ? window.wuuffPromoEstado() : Promise.resolve({ fase: null })
   ]).then(function (r) {
     CFG = r[0]; STOCK = r[1];
+    PROMO = r[2] && r[2].fase === 'activa' ? r[2] : null;
+    GRATIS = !!(PROMO && EN_COMBO && (PROMO.nombreGratisEn || []).indexOf(PRODUCTO) > -1);
+    if (PROMO) {
+      var css = document.createElement('style');
+      css.textContent = '.bwf-nota,.cn-bwf{margin:10px 0 0;padding:10px 12px;border-radius:12px;background:#1b1b1b;color:#fff;font-size:14px;line-height:1.4;font-weight:600}.bwf-nota b{color:#d5d50c}.cn-bwf a{color:#d5d50c;font-weight:800}' +
+        '.modo-collar [data-modo=nombre] span s,.info .precio .antes s{opacity:.65}';
+      document.head.appendChild(css);
+    }
     CFG.colores = CFG.colores.filter(function (c) { return !c.oculto; }); // colores que por ahora no se ofrecen
     if (EN_COMBO && !(CFG.combos && CFG.combos[PRODUCTO])) throw new Error('combo sin precio');
     construir();
     caja.classList.toggle('cn-en-combo', EN_COMBO);
     var q = new URLSearchParams(location.search);
     setTexto(q.get('nombre') || '');
-    var inicial = q.get('modo') || (q.get('nombre') ? 'nombre' : caja.getAttribute('data-modo-inicial')) || 'nombre';
+    var inicial = q.get('modo') || (q.get('nombre') || GRATIS ? 'nombre' : caja.getAttribute('data-modo-inicial')) || 'nombre';
     cambiarModo(inicial === 'sin' ? 'sin' : 'nombre');
   }).catch(function () {
     if (EN_COMBO) { document.querySelectorAll('.modo-collar').forEach(function (m) { m.hidden = true; }); return; }

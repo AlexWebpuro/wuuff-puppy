@@ -3,6 +3,19 @@
   publish = "."
 
 # wuuffpuppy.com (y www) redirige al dominio principal wuuffpuppy.co, conservando la ruta
+# Black Wuuff Friday de las 10 cajas: cancelado (23 nov 2026). La página lleva al combo completo.
+[[redirects]]
+  from = "/blackfriday"
+  to = "/combo-collar-arnes-correa/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/blackfriday/*"
+  to = "/combo-collar-arnes-correa/"
+  status = 301
+  force = true
+
 [[redirects]]
   from = "https://wuuffpuppy.com/*"
   to = "https://wuuffpuppy.co/:splat"

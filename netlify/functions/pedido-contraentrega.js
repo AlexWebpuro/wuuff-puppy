@@ -41,7 +41,7 @@ exports.handler = async function (event) {
   };
 
   if (b.carrito && b.carrito.bwf) {
-    return { statusCode: 400, body: JSON.stringify({ error: 'Las cajas del Black Wuuff Friday se pagan en línea' }) };
+    return { statusCode: 400, body: JSON.stringify({ error: 'Esta promoción ya no está disponible' }) };
   }
   if (!pedido.nombre || !pedido.telefono || !pedido.direccion) {
     return { statusCode: 400, body: JSON.stringify({ error: 'Faltan datos del pedido' }) };
@@ -54,6 +54,7 @@ exports.handler = async function (event) {
   let usados = null;
   try { connectLambda(event); usados = getStore('codigos-usados'); } catch (err) { console.error('Blobs no disponible', err.message); }
   const calc = await tienda.calcular({ carrito: b.carrito, ciudad: pedido.ciudad, codigo: b.codigo, regalo: b.regalo, metodo: 'contraentrega' }, {
+    ahora: tienda.ahoraDe(event, b.simular),
     usado: async (c) => !!(usados && await usados.get(c))
   });
   if (!calc.ok) {
@@ -69,6 +70,14 @@ exports.handler = async function (event) {
 
   const referencia = 'CE-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).slice(2, 5).toUpperCase();
   const total = pesos(totalCents);
+
+  // Black Wuuff Friday: el primer pedido con la promo se lleva un regalo sorpresa
+  let regaloSorpresa = false;
+  if (calc.promo) {
+    try { regaloSorpresa = await tienda.marcarPrimerPedido(getStore('promo-marcas'), calc.promo, referencia); }
+    catch (err) { console.error('No se pudo revisar el primer pedido de la promo', err.message); }
+    if (regaloSorpresa) avisos.unshift(tienda.lineaPrimerPedido(calc, pedido.ciudad, totalCents));
+  }
 
   // Código del concurso: 1 solo uso. En contraentrega se marca al guardar el pedido.
   if (calc.codigo && calc.codigo.tipo === 'concurso' && usados) {
@@ -105,7 +114,8 @@ exports.handler = async function (event) {
     await getStore('pedidos-contraentrega').setJSON(referencia, Object.assign({}, pedido, {
       referencia: referencia, totalCents: totalCents, token: token, estado: 'pendiente-confirmar', creado: new Date().toISOString(),
       codigo: calc.codigo, descuentoCents: calc.descuentoCents, regalo: calc.regalo,
-      inv: tienda.invDeCarrito(b.carrito, calc)
+      inv: tienda.invDeCarrito(b.carrito, calc),
+      promo: calc.promo || undefined, regaloSorpresa: regaloSorpresa || undefined, avisos
     }));
     urlGuia = SITE_URL + '.netlify/functions/envia-guia?ref=' + encodeURIComponent(referencia) + '&t=' + token;
   } catch (err) {
@@ -191,5 +201,5 @@ exports.handler = async function (event) {
     }
   }
 
-  return { statusCode: 200, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ok: true, referencia: referencia, totalCents: totalCents, producto: pedido.producto }) };
+  return { statusCode: 200, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ok: true, referencia: referencia, totalCents: totalCents, producto: pedido.producto, promo: calc.promo, avisoCodigo: calc.avisoCodigo || '' }) };
 };

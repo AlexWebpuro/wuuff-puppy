@@ -7,7 +7,6 @@ const resenas = require('../lib/resenas');
 const panel = require('../lib/panel');
 const tienda = require('../lib/tienda');
 const P = require('../lib/perfiles');
-const bwf = require('../lib/bwf');
 
 function getValueByPath(obj, path) {
   return path.split('.').reduce(function (acc, key) {
@@ -111,17 +110,6 @@ exports.handler = async function (event) {
     if (guardado.amountInCents && monto && guardado.amountInCents !== monto) {
       avisos.push('⚠️ El monto pagado (' + monto / 100 + ') no coincide con el calculado (' + guardado.amountInCents / 100 + '). Revísalo.');
     }
-    // Black Wuuff Friday: la caja apartada queda pagada (si ya la había pagado otra persona, queda con la siguiente libre)
-    if (guardado.bwf) {
-      try {
-        const r = await bwf.confirmar(getStore(bwf.STORE), guardado.bwf, referencia);
-        if (r.sinCaja) avisos.push('⚠️ Black Wuuff Friday: pagó cuando ya no quedaban cajas (había apartado la #' + r.apartada + '). Escríbele: devolver el dinero o enviarle el combo.');
-        else if (r.cambio) avisos.push('⚠️ Black Wuuff Friday: la caja #' + r.cambio + ' que apartó ya estaba pagada; quedó con la caja #' + r.n + '. Revisa el regalo (el pedido trae los datos de la #' + r.cambio + ').');
-      } catch (err) {
-        console.error('No se pudo confirmar la caja del Black Wuuff Friday', err.message);
-        avisos.push('⚠️ Black Wuuff Friday: no se pudo marcar la caja #' + guardado.bwf.n + ' como pagada. Revísala.');
-      }
-    }
     // Código del concurso: se marca como usado solo ahora que el pago quedó APROBADO
     if (guardado.codigo && guardado.codigo.tipo === 'concurso') {
       try {
@@ -131,6 +119,15 @@ exports.handler = async function (event) {
         }
       } catch (err) {
         console.error('No se pudo marcar el código como usado', err.message);
+      }
+    }
+    // Black Wuuff Friday: el primer pedido APROBADO con la promo se lleva un regalo sorpresa
+    if (guardado.promo && referencia) {
+      try {
+        guardado.regaloSorpresa = await tienda.marcarPrimerPedido(getStore('promo-marcas'), guardado.promo, referencia);
+        if (guardado.regaloSorpresa) avisos.unshift(guardado.lineaPrimerPedido || ('🎁 PRIMER PEDIDO · regalo sorpresa · ' + (guardado.ciudad || ciudad) + ' · $' + Math.round(monto / 100).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')));
+      } catch (err) {
+        console.error('No se pudo revisar el primer pedido de la promo', err.message);
       }
     }
     // Pago aprobado: unos días después se le pide la reseña (función programada resenas-invitar)
@@ -176,7 +173,8 @@ exports.handler = async function (event) {
       referencia: referencia || String(transaction.id || ''), nombre, telefono, correo, direccion, ciudad, mascota,
       producto: nombreProducto, totalCents: monto, avisos,
       codigo: guardado && guardado.codigo, descuentoCents: guardado && guardado.descuentoCents,
-      inv: guardado && guardado.inv
+      inv: guardado && guardado.inv,
+      promo: guardado && guardado.promo, regaloSorpresa: !!(guardado && guardado.regaloSorpresa)
     });
   } catch (err) {
     console.error('No se pudo guardar el pedido en el panel', err.message);
