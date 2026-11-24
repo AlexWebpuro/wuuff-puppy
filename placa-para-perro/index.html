@@ -49,11 +49,21 @@
    },
    "offers": {
     "@type": "Offer",
-    "hasMerchantReturnPolicy": {"@type": "MerchantReturnPolicy", "applicableCountry": "CO", "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted", "merchantReturnLink": "https://wuuffpuppy.co/politica-de-devoluciones.html"},
+    "hasMerchantReturnPolicy": {"@type": "MerchantReturnPolicy", "applicableCountry": "CO", "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted", "merchantReturnLink": "https://wuuffpuppy.co/politica-de-devoluciones"},
     "url": "https://wuuffpuppy.co/placa-para-perro/",
     "priceCurrency": "COP",
     "price": "29900",
-    "priceValidUntil": "2026-12-31",
+    "priceValidUntil": "2027-12-31",
+    "shippingDetails": {
+     "@type": "OfferShippingDetails",
+     "shippingDestination": {"@type": "DefinedRegion", "addressCountry": "CO"},
+     "shippingRate": {"@type": "MonetaryAmount", "value": "18500", "currency": "COP"},
+     "deliveryTime": {
+      "@type": "ShippingDeliveryTime",
+      "handlingTime": {"@type": "QuantitativeValue", "minValue": 1, "maxValue": 3, "unitCode": "DAY"},
+      "transitTime": {"@type": "QuantitativeValue", "minValue": 2, "maxValue": 5, "unitCode": "DAY"}
+     }
+    },
     "availability": "https://schema.org/InStock",
     "itemCondition": "https://schema.org/NewCondition",
     "seller": {
@@ -658,7 +668,7 @@ footer a:hover { opacity: 1; text-decoration: underline; }
     <a href="/correa-impermeable-perro/">Correa impermeable para perro</a>
     <a href="/blog/como-medir-a-tu-perro/">Cómo medir a tu perro</a>
     <a href="/blog/">Blog</a>
-    <a href="/politica-de-devoluciones.html">Cambios y devoluciones</a>
+    <a href="/politica-de-devoluciones">Cambios y devoluciones</a>
   </div>
   <div class="footer-copy">Bogotá, Colombia · 2026 · Wuuff Puppy ❤️</div>
 </footer>
