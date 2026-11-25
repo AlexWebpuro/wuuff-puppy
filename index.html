@@ -3164,7 +3164,10 @@ function liberarFondoPago(){
 }
 // ¿Pagar en la página de Wompi? En celulares y tabletas (pantalla táctil); en computador sigue la ventanita.
 function pagoEnPaginaWompi(){
-  try { if(/[?&]wompi=ventana/.test(location.search)) return false; return window.matchMedia('(pointer:coarse)').matches || window.innerWidth < 820; } catch(e){ return false; }
+  // ?wompi=ventana fuerza la ventanita (para revisarla o en las pruebas); se recuerda en la pestaña
+  try { if(/[?&]wompi=ventana/.test(location.search)) sessionStorage.setItem('wuuff_wompi', 'ventana'); } catch(e){}
+  try { if(sessionStorage.getItem('wuuff_wompi') === 'ventana') return false; } catch(e){}
+  try { return window.matchMedia('(pointer:coarse)').matches || window.innerWidth < 820; } catch(e){ return false; }
 }
 // Web Checkout de Wompi: formulario GET a checkout.wompi.co/p/ con los datos firmados. Al terminar vuelve a la web con ?id=…
 function irAPaginaWompi(data, amountInCents, reference, customerData, shippingAddress){
