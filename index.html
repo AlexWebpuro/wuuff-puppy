@@ -2701,6 +2701,7 @@ function actualizarResumen(){
   clearTimeout(rpTimer);
   rpTimer = setTimeout(function(){
     var n = ++rpPedido, compra = pendingPurchase;
+    if(!compra || !compra.carrito){ if(box) box.classList.remove('rp-cargando'); return; }
     var f = document.getElementById('datos-envio-form');
     var forma = f && f.querySelector('input[name="regalo_forma"]:checked'), color = f && f.querySelector('input[name="regalo_color"]:checked');
     var regalo = { nombre: ((document.getElementById('regalo-nombre') || {}).value || '').trim(), forma: forma ? forma.value : '', color: color ? color.value : '' };
