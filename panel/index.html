@@ -663,7 +663,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
         <span class="pill e-${esc(p.estado)}">${e.i} ${esc(e.n)}</span>
         <span class="pill ${p.pagado ? 'p-si' : 'p-no'}">${p.pagado ? '✓ Pagado' : (p.pago === 'contraentrega' ? '💵 Cobrar al entregar' : '✗ Sin pagar')}</span>
         ${atrasado(p) ? `<span class="pill atraso">⚠️ ${diasHabiles(p.creado)} días hábiles</span>` : ''}
-        ${p.guia && p.guia.numero ? `<span class="pill">Guía ${esc(p.guia.numero)}</span>` : ''}
+        ${p.guia && p.guia.numero ? `<a class="pill" href="${esc(rastreoUrl(p.guia))}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Rastrear envío" style="text-decoration:none;color:inherit">🔎 Guía ${esc(p.guia.numero)}</a>` : ''}
         ${p.resenaPedida ? '<span class="pill p-si">⭐ Reseña pedida</span>' : ''}
         ${p.regaloSorpresa ? '<span class="pill sorpresa">🎁 PRIMER PEDIDO · regalo sorpresa</span>' : (p.promo ? '<span class="pill bwf">🖤 Black Wuuff</span>' : '')}
         ${p.tipo && p.tipo !== 'venta' ? `<span class="pill t-${esc(p.tipo)}">${esc(TIPOS[p.tipo] || '')}</span>` : ''}
@@ -725,10 +725,20 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
     return `¡Hola ${n}! Te escribo de Wuuff Puppy por tu pedido 🐾`;
   }
   // Mensaje al cliente con la guía (y lo que debe pagar si es contraentrega)
+  // Enlace para rastrear la guía: el que guardó Envia o el que escribiste; si no hay, se arma con la transportadora y el número
+  function rastreoUrl(g) {
+    g = g || {};
+    if (/^https?:\/\//.test(g.url || '')) return g.url;
+    const num = String(g.numero || '').trim(), t = String(g.transportadora || '').toLowerCase();
+    if (!num) return '';
+    if (g.pdf) return 'https://envia.com/es-CO/rastreo?label=' + encodeURIComponent(num); // guía hecha con Envia
+    if (/coordinadora/.test(t)) return 'https://coordinadora.com/rastreo/rastreo-de-guia/detalle-de-rastreo-de-guia/?guia=' + encodeURIComponent(num);
+    return 'https://www.google.com/search?q=' + encodeURIComponent('rastrear guía ' + (g.transportadora || '') + ' ' + num);
+  }
   function waRastreo(p) {
-    const g = p.guia || {}, n = primerNombre(p.cliente && p.cliente.nombre);
+    const g = p.guia || {}, n = primerNombre(p.cliente && p.cliente.nombre), url = /google\.com\/search/.test(rastreoUrl(g)) ? '' : rastreoUrl(g);
     const t = `¡Hola${n ? ' ' + n : ''}! 🐾 Tu pedido de Wuuff Puppy ya va en camino con ${g.transportadora || 'la transportadora'}.\nNúmero de guía: ${g.numero}` +
-      (g.url ? `\nRastréalo aquí: ${g.url}` : '') + (!p.pagado ? `\nRecuerda tener listos ${pesos(p.totalCents)} para pagar al recibir 💵` : '');
+      (url ? `\nRastréalo aquí: ${url}` : '') + (!p.pagado ? `\nRecuerda tener listos ${pesos(p.totalCents)} para pagar al recibir 💵` : '');
     return waLink(p, t);
   }
   function waUrl(p) { return waLink(p, mensajeWa(p)); }
@@ -887,7 +897,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
         <button class="btn claro" type="button" id="btnEtiqueta">🏷️ Etiqueta para el paquete</button>
         ${!g.numero && /bogot|soacha/i.test(c.ciudad || '') ? `<button class="btn azul" type="button" id="btnEnvia">📦 Crear guía con Envia</button>` : ''}
         ${g.numero && c.telefono ? `<a class="btn verde" href="${esc(waRastreo(p))}" target="_blank" rel="noopener">📲 Enviarle la guía por WhatsApp</a>` : ''}
-        ${g.url ? `<a class="btn claro" href="${esc(g.url)}" target="_blank" rel="noopener">🔎 Rastrear envío</a>` : ''}
+        ${rastreoUrl(g) ? `<a class="btn claro" href="${esc(rastreoUrl(g))}" target="_blank" rel="noopener">🔎 Rastrear envío</a>` : ''}
         ${g.pdf ? `<a class="btn claro" href="${esc(g.pdf)}" target="_blank" rel="noopener">🖨 PDF de la guía</a>` : ''}
       </div>
 
