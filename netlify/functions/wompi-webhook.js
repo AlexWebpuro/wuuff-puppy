@@ -76,10 +76,10 @@ exports.handler = async function (event) {
   const customer = transaction.customer_data || transaction.customerData || {};
   const shipping = transaction.shipping_address || transaction.shippingAddress || {};
 
-  const nombre = firstDefined(shipping.name, customer.full_name, customer.fullName);
-  const telefono = firstDefined(shipping.phone_number, shipping.phoneNumber, customer.phone_number, customer.phoneNumber);
-  const direccion = firstDefined(shipping.address_line_1, shipping.addressLine1);
-  const ciudad = firstDefined(shipping.city);
+  let nombre = firstDefined(shipping.name, customer.full_name, customer.fullName);
+  let telefono = firstDefined(shipping.phone_number, shipping.phoneNumber, customer.phone_number, customer.phoneNumber);
+  let direccion = firstDefined(shipping.address_line_1, shipping.addressLine1);
+  let ciudad = firstDefined(shipping.city);
 
   // "Correo: X | Mascota: Y | Producto: Z" fue guardado en addressLine2 al crear la transacción
   const addressLine2 = firstDefined(shipping.address_line_2, shipping.addressLine2);
@@ -105,6 +105,12 @@ exports.handler = async function (event) {
   const monto = transaction.amount_in_cents || transaction.amountInCents || 0;
   let avisos = [];
   if (guardado) {
+    // Datos del cliente guardados al crear el pago (en el celular se paga en la página completa de Wompi,
+    // que no lleva la línea "Correo | Mascota | Producto"): completan lo que no traiga Wompi
+    const cl = guardado.cliente || {};
+    nombre = firstDefined(nombre, cl.nombre); telefono = firstDefined(telefono, cl.telefono);
+    direccion = firstDefined(direccion, cl.direccion); ciudad = firstDefined(ciudad, cl.ciudad);
+    correo = firstDefined(correo, cl.correo); mascota = firstDefined(mascota, cl.mascota);
     if (guardado.nombreProducto) nombreProducto = guardado.nombreProducto;
     avisos = Array.isArray(guardado.avisos) ? guardado.avisos.slice() : [];
     if (guardado.amountInCents && monto && guardado.amountInCents !== monto) {

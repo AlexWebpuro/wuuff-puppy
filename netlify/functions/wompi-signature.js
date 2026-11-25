@@ -13,6 +13,13 @@ function json(status, body) {
   return { statusCode: status, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }, body: JSON.stringify(body) };
 }
 
+// Datos de envío del cliente (para el aviso del pedido si Wompi no los devuelve completos)
+function clienteValido(c) {
+  if (!c || typeof c !== 'object') return undefined;
+  const t = (v, n) => String(v == null ? '' : v).replace(/[<>]/g, '').trim().slice(0, n);
+  return { nombre: t(c.nombre, 120), mascota: t(c.mascota, 80), telefono: t(c.telefono, 30), correo: t(c.correo, 160), direccion: t(c.direccion, 250), ciudad: t(c.ciudad, 80) };
+}
+
 exports.handler = async function (event) {
   if (event.httpMethod !== 'POST') return json(405, { error: 'Método no permitido' });
 
@@ -51,7 +58,8 @@ exports.handler = async function (event) {
         avisos: tienda.lineasAviso(calc), promo: calc.promo || undefined,
         lineaPrimerPedido: calc.promo ? tienda.lineaPrimerPedido(calc, body.ciudad, amountInCents) : undefined,
         inv: tienda.invDeCarrito(body.carrito, calc),
-        productos: resenas.productosDeCarrito(body.carrito, calc.regalo), ciudad: String(body.ciudad || '').slice(0, 80)
+        productos: resenas.productosDeCarrito(body.carrito, calc.regalo), ciudad: String(body.ciudad || '').slice(0, 80),
+        cliente: clienteValido(body.cliente)
       });
     } catch (err) { console.error('No se pudo guardar el pedido de Wompi', err.message); }
   }

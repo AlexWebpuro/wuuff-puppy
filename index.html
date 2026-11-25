@@ -2948,6 +2948,7 @@ document.addEventListener('submit', function(e){
   // Lo que el servidor necesita para calcular el total: carrito, ciudad, código y placa de regalo
   var pedidoServidor = {
     carrito: pendingPurchase.carrito, ciudad: ciudadNombre, codigo: aplicado ? aplicado.codigo : '', regalo: regalo, simular: simularPromo(),
+    cliente: { nombre: nombre, mascota: mascota, telefono: telefono, correo: correo, direccion: direccion, ciudad: ciudadNombre },
     perfil: perfiles.map(function(p){ return p.pendiente || p.id || ''; }).join(', ')
   };
 
@@ -3161,6 +3162,35 @@ function liberarFondoPago(){
   document.removeEventListener('touchmove', sinDeslizar, { passive: false });
   document.removeEventListener('wheel', sinDeslizar, { passive: false });
 }
+// ¿Pagar en la página de Wompi? En celulares y tabletas (pantalla táctil); en computador sigue la ventanita.
+function pagoEnPaginaWompi(){
+  try { if(/[?&]wompi=ventana/.test(location.search)) return false; return window.matchMedia('(pointer:coarse)').matches || window.innerWidth < 820; } catch(e){ return false; }
+}
+// Web Checkout de Wompi: formulario GET a checkout.wompi.co/p/ con los datos firmados. Al terminar vuelve a la web con ?id=…
+function irAPaginaWompi(data, amountInCents, reference, customerData, shippingAddress){
+  var campos = {
+    'public-key': WOMPI_PUBLIC_KEY, 'currency': 'COP', 'amount-in-cents': amountInCents, 'reference': reference,
+    'signature:integrity': data.signature, 'redirect-url': window.location.origin + '/'
+  };
+  if(customerData){
+    if(customerData.email) campos['customer-data:email'] = customerData.email;
+    if(customerData.fullName) campos['customer-data:full-name'] = customerData.fullName;
+    if(customerData.phoneNumber) campos['customer-data:phone-number'] = customerData.phoneNumber;
+  }
+  if(shippingAddress && shippingAddress.addressLine1 && shippingAddress.city){
+    campos['shipping-address:address-line-1'] = shippingAddress.addressLine1;
+    campos['shipping-address:country'] = 'CO';
+    campos['shipping-address:city'] = shippingAddress.city;
+    campos['shipping-address:region'] = shippingAddress.region || 'Colombia';
+    if(shippingAddress.phoneNumber) campos['shipping-address:phone-number'] = shippingAddress.phoneNumber;
+  }
+  var f = document.createElement('form');
+  f.method = 'GET'; f.action = 'https://checkout.wompi.co/p/';
+  Object.keys(campos).forEach(function(k){ var i = document.createElement('input'); i.type = 'hidden'; i.name = k; i.value = String(campos[k]); f.appendChild(i); });
+  document.body.appendChild(f);
+  var btn = document.getElementById('envio-submit'); if(btn){ btn.disabled = true; btn.textContent = 'Abriendo el pago seguro de Wompi…'; }
+  f.submit();
+}
 function pagarConWompi(estimadoCents, nombreProducto, customerData, shippingAddress, pedidoServidor, alListo){
   if(!pedidoServidor || !pedidoServidor.carrito){
     alert('Selecciona al menos un producto antes de continuar.');
@@ -3189,10 +3219,13 @@ function pagarConWompi(estimadoCents, nombreProducto, customerData, shippingAddr
     if(shippingAddress) shippingAddress.addressLine2 = shippingAddress.addressLine2.replace(/Producto: [\s\S]*$/, 'Producto: ' + data.nombreProducto);
     if(alListo) alListo();
     guardarDatosResena(reference, customerData && customerData.email);
+    // Celular: se paga en la página completa de Wompi (la ventanita no se dejaba deslizar bien en iPhone)
+    if(pagoEnPaginaWompi()){ irAPaginaWompi(data, amountInCents, reference, customerData, shippingAddress); return null; }
     // espera el widget de Wompi si todavía no terminó de descargarse
     return window.cargarWompi().then(function(){ return data; }, function(){ return data; });
   })
   .then(function(data){
+    if(!data) return;
     var config = {
       currency: 'COP',
       amountInCents: amountInCents,
