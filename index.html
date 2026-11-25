@@ -634,6 +634,27 @@ body{font-family:'Nunito',sans-serif;background:var(--white);color:var(--navy);o
 .codigo-panel{margin-top:6px;}
 .promo-resumen{background:#1b1b1b;color:#fff;border-radius:14px;padding:10px 14px;margin:0 0 8px;text-align:left;font-size:14px;line-height:1.45}
 .promo-resumen b{color:#d5d50c}.promo-resumen p{margin:2px 0}
+/* Pasarela: en iPhone, las casillas con letra menor a 16px hacen que Safari acerque la pantalla y la deje así (Wompi se veía corrido) */
+.shipping-modal input,.shipping-modal select,.shipping-modal textarea{font-size:16px!important;}
+#shipping-talla-display,#envio-gratis-aviso,#envio-costo,#codigo-resumen{display:none!important;}
+/* Resumen del pedido antes de pagar */
+.resumen-pedido{text-align:left;background:#f4f8ff;border:2px solid var(--lblue);border-radius:16px;padding:12px 14px;margin:4px 0 12px;}
+.resumen-pedido h4{font-family:'Fredoka One',cursive;font-size:17px;margin:0 0 6px;color:var(--navy);}
+.rp-linea{padding:8px 0;border-bottom:1px dashed #c9d3ea;}
+.rp-fila{display:flex;justify-content:space-between;gap:10px;font-size:14px;font-weight:800;color:var(--navy);line-height:1.35;}
+.rp-fila span:last-child{white-space:nowrap;}
+.rp-det{font-size:12.5px;font-weight:700;opacity:.75;margin-top:2px;}
+.rp-letras{display:flex;flex-wrap:wrap;gap:3px;margin-top:6px;}
+.rp-letras b{min-width:24px;height:28px;padding:0 3px;border-radius:7px;display:inline-flex;align-items:center;justify-content:center;font-family:'Fredoka One',cursive;font-size:17px;font-weight:400;color:#fff;background:var(--c);border:2px solid var(--e);}
+.rp-letras b.claro{color:#2d4375;}
+.rp-placa{display:flex;align-items:center;gap:10px;margin-top:6px;}
+.rp-placa svg{flex:0 0 auto;}
+.rp-tot{padding-top:8px;}
+.rp-tot .rp-fila{font-weight:700;padding:2px 0;}
+.rp-tot .rp-gratis{color:#1f8a4c;font-weight:900;}
+.rp-total{font-size:17px!important;font-weight:900!important;border-top:2px solid var(--lblue);margin-top:6px;padding-top:8px!important;}
+.resumen-pedido .envio-despacho{margin:10px 0 0;opacity:1;background:#fff;border-radius:12px;padding:8px 10px;font-size:13px;}
+.rp-cargando{opacity:.5;}
 .codigo-resumen{background:#f4f8ff;border:2px solid var(--lblue);border-radius:14px;padding:10px 14px;margin:0 0 4px;text-align:left;}
 .codigo-resumen[hidden],.regalo-placa[hidden]{display:none;}
 .cr-fila{display:flex;justify-content:space-between;gap:10px;margin:3px 0;font-size:13px;font-weight:700;color:var(--navy);}
@@ -2591,7 +2612,110 @@ function quitarCodigo(){
   mostrarRegalo(false);
   pintarResumenCodigo();
 }
+// ── Resumen del pedido antes de pagar ("🧾 Tu pedido") ──
+// Productos con su vista previa (letras con sus colores y la placa), descuento, envío y total.
+// Los valores los calcula el servidor (/.netlify/functions/cotizar, sin guardar nada) con la ciudad y la forma de pago elegidas.
+var rpCfg = null, rpTimer = null, rpPedido = 0, rpUltimo = null;
+function rpColores(){
+  if(!rpCfg) rpCfg = fetch('/assets/collar-nombre.json').then(function(r){ return r.json(); }).catch(function(){ return { colores: [] }; });
+  return rpCfg;
+}
+function rpEsc(t){ return String(t == null ? '' : t).replace(/[&<>"]/g, function(c){ return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+function rpClaro(hex){ var h = String(hex || '#000').replace('#', ''); var r = parseInt(h.substr(0, 2), 16), g = parseInt(h.substr(2, 2), 16), b = parseInt(h.substr(4, 2), 16); return (0.299 * r + 0.587 * g + 0.114 * b) > 170; }
+var RP_PLACA = { Morado: '#7b5cc4', Azul: '#4964af', Blanco: '#f5f5f2', Rojo: '#d64545' };
+function rpColorNombre(cfg, n){
+  if(RP_PLACA[n]) return { main: RP_PLACA[n], edge: n === 'Blanco' ? '#cfcfc8' : RP_PLACA[n] };
+  var c = (cfg.colores || []).filter(function(x){ return x.nombre === n; })[0];
+  return c || { main: '#cccccc', edge: '#999999' };
+}
+// Letras del collar o la correa: cada pieza con su color (mezcla), como en la vista previa de la ficha
+function rpLetras(cfg, nombre){
+  var piezas = Array.from(String(nombre.texto || '').toUpperCase()).map(function(ch){ return (ch === '♥' || ch === '★') ? ch : ch.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); })
+    .filter(function(ch){ return /^[A-Z]$/.test(ch) || ch === '♥' || ch === '★'; });
+  var mez = Array.isArray(nombre.mezcla) ? nombre.mezcla : String(nombre.mezcla || '').split(',');
+  var porId = function(id){ return (cfg.colores || []).filter(function(c){ return c.id === id; })[0]; };
+  var base = porId(nombre.color) || { main: '#f6a7c9', edge: '#d97fa6', nombre: '' };
+  var usados = [];
+  var html = piezas.map(function(ch, i){
+    var c = porId(mez[i]) || base;
+    if(c.nombre && usados.indexOf(c.nombre) < 0) usados.push(c.nombre);
+    return '<b class="' + (rpClaro(c.main) ? 'claro' : '') + '" style="--c:' + c.main + ';--e:' + (c.edge || c.main) + '">' + rpEsc(ch) + '</b>';
+  }).join('');
+  return '<div class="rp-letras" aria-label="Nombre: ' + rpEsc(piezas.join('')) + '">' + html + '</div><div class="rp-det">Letras ' + rpEsc(usados.join(', ').toLowerCase()) + '</div>';
+}
+// Placa Inteligente: forma, color de la placa, nombre y color de las letras
+function rpPlaca(cfg, p){
+  var bc = rpColorNombre(cfg, p.base), lc = rpColorNombre(cfg, p.letras || 'Blanco');
+  var n = String(p.nombre || ''), fs = Math.max(9, Math.min(17, Math.round(100 / Math.max(n.length, 1))));
+  var borde = p.base === 'Blanco' ? '#cfcfc8' : 'rgba(0,0,0,.15)', fig;
+  if(p.forma === 'Gato') fig = '<polygon points="15,31 19,4 36,20" fill="' + bc.main + '" stroke="' + borde + '"/><polygon points="65,31 61,4 44,20" fill="' + bc.main + '" stroke="' + borde + '"/><circle cx="40" cy="45" r="29" fill="' + bc.main + '" stroke="' + borde + '"/>';
+  else if(p.forma === 'Nombre') fig = '<rect x="3" y="25" width="74" height="32" rx="16" fill="' + bc.main + '" stroke="' + borde + '"/>';
+  else fig = '<circle cx="18" cy="29" r="9" fill="' + bc.main + '" stroke="' + borde + '"/><circle cx="31" cy="17" r="9" fill="' + bc.main + '" stroke="' + borde + '"/><circle cx="49" cy="17" r="9" fill="' + bc.main + '" stroke="' + borde + '"/><circle cx="62" cy="29" r="9" fill="' + bc.main + '" stroke="' + borde + '"/><ellipse cx="40" cy="53" rx="25" ry="21" fill="' + bc.main + '" stroke="' + borde + '"/>';
+  var ty = p.forma === 'Gato' ? 49 : p.forma === 'Nombre' ? 42 : 56;
+  var svg = '<svg viewBox="0 0 80 80" width="58" height="58" aria-hidden="true">' + fig + '<text x="40" y="' + ty + '" text-anchor="middle" dominant-baseline="middle" font-family="Fredoka One,Nunito,sans-serif" font-size="' + fs + '" fill="' + lc.main + '"' + (rpClaro(lc.main) && rpClaro(bc.main) ? ' stroke="#888" stroke-width=".5"' : '') + '>' + rpEsc(n) + '</text></svg>';
+  return '<div class="rp-placa">' + svg + '<div class="rp-det">' + rpEsc(p.forma) + ' · "' + rpEsc(n) + '"<br>Placa ' + rpEsc(String(p.base || '').toLowerCase()) + ', letras ' + rpEsc(String(p.letras || 'blanco').toLowerCase()) + (p.telefono ? '<br>📞 Atrás: ' + rpEsc(p.telefono) : '') + '</div></div>';
+}
+function rpTitulo(l){
+  if(l.tipo === 'placa') return 'Placa Inteligente Wuuff' + (l.regalo ? ' 🎁' : '');
+  var n = String(l.nombre || '').replace(/ · nombre gratis \(Black Wuuff\)/, '');
+  var talla = (/\((Talla [^)]+)\)/.exec(n) || [])[1] || '';
+  var t = n.split(' "')[0].replace(/\s*\(Talla [^)]+\)/, '');
+  return t + (talla ? ' · ' + talla : '');
+}
+function rpPrecio(l){ return l.cents === 0 ? '<span class="rp-gratis">' + (l.regalo || l.tipo === 'regalo' ? 'Regalo' : 'Gratis') + '</span>' : formatoPesos(l.cents); }
+function pintarResumenPedido(r){
+  var lin = document.getElementById('rp-lineas'), tot = document.getElementById('rp-totales');
+  if(!lin || !tot || !pendingPurchase) return;
+  var c = pendingPurchase.carrito || {};
+  var items = (c.items || []).slice(0, 6), placas = (c.placas && c.placas.length) ? c.placas.slice(0, 6) : (c.placa ? [c.placa] : []);
+  rpColores().then(function(cfg){
+    if(!r){ // sin respuesta del servidor: lo que se sabe en la página
+      lin.innerHTML = '<div class="rp-linea"><div class="rp-fila"><span>' + rpEsc(productoCliente(pendingPurchase.nombreProducto)) + '</span><span>' + formatoPesos(pendingPurchase.baseAmountInCents) + '</span></div></div>';
+      tot.innerHTML = '';
+      return;
+    }
+    var ip = 0, ipl = 0;
+    lin.innerHTML = r.lineas.map(function(l){
+      var extra = '';
+      if(l.tipo === 'producto'){ var it = items[ip++]; if(it && it.nombre && it.nombre.texto) extra = rpLetras(cfg, it.nombre); }
+      else if(l.tipo === 'placa' && !l.regalo){ var pl = placas[ipl++]; if(pl) extra = rpPlaca(cfg, pl); }
+      else if(l.tipo === 'placa' && l.regalo){ extra = '<div class="rp-det">Placa de regalo con tu código</div>'; }
+      return '<div class="rp-linea"><div class="rp-fila"><span>' + rpEsc(rpTitulo(l)) + '</span><span>' + rpPrecio(l) + '</span></div>' + extra + '</div>';
+    }).join('');
+    var ciudad = (document.getElementById('envio-ciudad-nombre') || {}).value || '';
+    var metodo = metodoPagoElegido();
+    var envio = !ciudad ? '<span style="opacity:.7">Elige tu ciudad</span>' : (r.envioCents === 0 ? '<span class="rp-gratis">GRATIS 🎉</span>' : formatoPesos(r.envioCents));
+    var dEnvio = !ciudad ? '' : (/bogot/i.test(ciudad) && !/soacha/i.test(ciudad) ? (metodo === 'contraentrega' ? ' (Bogotá, pago al recibir)' : ' (Bogotá)') : ' (' + rpEsc(ciudad.split(',')[0]) + ')');
+    tot.innerHTML = (r.descuentoCents || r.regaloCents ? '<div class="rp-fila"><span>Productos</span><span>' + formatoPesos(r.subtotalCents) + '</span></div>' : '') +
+      (r.descuentoCents ? '<div class="rp-fila"><span>Descuento' + (r.codigo ? ' ' + rpEsc(r.codigo) : '') + '</span><span class="rp-gratis">−' + formatoPesos(r.descuentoCents) + '</span></div>' : '') +
+      (r.regaloCents ? '<div class="rp-fila"><span>Placa de regalo</span><span class="rp-gratis">−' + formatoPesos(r.regaloCents) + '</span></div>' : '') +
+      '<div class="rp-fila"><span>Envío' + dEnvio + '</span><span>' + envio + '</span></div>' +
+      '<div class="rp-fila rp-total"><span>Total' + (metodo === 'contraentrega' ? ' a pagar al recibir' : '') + '</span><span>' + formatoPesos(r.totalCents) + '</span></div>';
+    var btn = document.getElementById('envio-submit');
+    if(btn && !btn.disabled && ciudad) btn.textContent = metodo === 'contraentrega' ? 'Confirmar pedido · ' + formatoPesos(r.totalCents) + ' 🐾' : 'Pagar ' + formatoPesos(r.totalCents) + ' 💳';
+  });
+}
+function actualizarResumen(){
+  if(!pendingPurchase || !pendingPurchase.carrito){ pintarResumenPedido(null); return; }
+  var box = document.getElementById('resumen-pedido'); if(box) box.classList.add('rp-cargando');
+  clearTimeout(rpTimer);
+  rpTimer = setTimeout(function(){
+    var n = ++rpPedido, compra = pendingPurchase;
+    var f = document.getElementById('datos-envio-form');
+    var forma = f && f.querySelector('input[name="regalo_forma"]:checked'), color = f && f.querySelector('input[name="regalo_color"]:checked');
+    var regalo = { nombre: ((document.getElementById('regalo-nombre') || {}).value || '').trim(), forma: forma ? forma.value : '', color: color ? color.value : '' };
+    fetch('/.netlify/functions/cotizar', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
+      carrito: compra.carrito, ciudad: (document.getElementById('envio-ciudad-nombre') || {}).value || '', metodo: metodoPagoElegido(),
+      codigo: compra.codigo ? compra.codigo.codigo : '', regalo: regalo, simular: simularPromo() }) })
+      .then(function(r){ return r.json(); })
+      .then(function(j){ if(n !== rpPedido || pendingPurchase !== compra) return; rpUltimo = j && j.ok ? j : null; pintarResumenPedido(rpUltimo); })
+      .catch(function(){ if(n === rpPedido) pintarResumenPedido(null); })
+      .then(function(){ if(n === rpPedido && box) box.classList.remove('rp-cargando'); });
+  }, 200);
+}
+document.addEventListener('change', function(e){ if(e.target && /^regalo_/.test(e.target.name || '')) actualizarResumen(); });
 function pintarResumenCodigo(){
+  actualizarResumen();
   var box = document.getElementById('codigo-resumen');
   if(!box) return;
   var c = pendingPurchase && pendingPurchase.codigo;
@@ -2982,6 +3106,15 @@ function generarReferenciaWompi(){
 }
 
 // estimadoCents y nombreProducto solo sirven para la medición; el monto real lo calcula el servidor
+// iPhone: si la página quedó ampliada al escribir, Wompi se abría corrido. Se devuelve el zoom a 100 % antes de abrirlo.
+function quitarZoom(){
+  try { if(document.activeElement && document.activeElement.blur) document.activeElement.blur(); } catch(e){}
+  var vp = document.querySelector('meta[name="viewport"]');
+  if(!vp) return;
+  var orig = vp.getAttribute('content');
+  vp.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0');
+  setTimeout(function(){ vp.setAttribute('content', orig); }, 600);
+}
 function pagarConWompi(estimadoCents, nombreProducto, customerData, shippingAddress, pedidoServidor, alListo){
   if(!pedidoServidor || !pedidoServidor.carrito){
     alert('Selecciona al menos un producto antes de continuar.');
@@ -3028,6 +3161,7 @@ function pagarConWompi(estimadoCents, nombreProducto, customerData, shippingAddr
       alert('El pago aún está cargando. Espera un segundo e inténtalo de nuevo.');
       return;
     }
+    quitarZoom();
     var checkout = new WidgetCheckout(config);
     checkout.open(function(result){
       // El registro del pedido y el correo de confirmación los maneja
@@ -3128,11 +3262,10 @@ function pagarConWompi(estimadoCents, nombreProducto, customerData, shippingAddr
       <fieldset class="metodo-pago-box" id="metodo-pago-box" hidden>
         <legend>¿Cómo quieres pagar?</legend>
         <label class="metodo-pago-op"><input type="radio" name="metodo_pago" value="wompi" checked>
-          <span><strong>💳 Pagar ahora en línea · envío gratis</strong><small>Tarjeta, PSE, Nequi, Daviplata o Bancolombia con Wompi.</small></span></label>
+          <span><strong>💳 Pagar en línea · envío GRATIS en Bogotá</strong><small>Tarjeta, PSE, Nequi, Daviplata o Bancolombia con Wompi.</small></span></label>
         <label class="metodo-pago-op"><input type="radio" name="metodo_pago" value="contraentrega">
-          <span><strong>💵 Pago contraentrega · envío $8.500</strong><small>Pagas en efectivo cuando recibes tu pedido (el envío va sumado). Te confirmamos por WhatsApp antes de enviarlo.</small></span></label>
+          <span><strong>💵 Pagar al recibir (contraentrega) · envío $8.500</strong><small>Pagas en efectivo cuando recibes tu pedido (el envío va sumado). Te confirmamos por WhatsApp antes de enviarlo.</small></span></label>
       </fieldset>
-      <p class="envio-despacho" id="envio-entrega">🚀 Despachamos tu pedido en <strong>1–2 días hábiles</strong>. Entrega de 2 a 5 días según tu ciudad.</p>
       <div class="promo-resumen" id="promo-resumen" hidden>
         <p><b>🖤 Black Wuuff Friday</b></p>
         <p>✏️ Nombre: <b>gratis</b> (Black Wuuff)</p>
@@ -3176,6 +3309,12 @@ function pagarConWompi(estimadoCents, nombreProducto, customerData, shippingAddr
       </fieldset>
       <input type="hidden" name="producto" id="envio-producto" value="">
       <input type="hidden" name="total" id="envio-total" value="">
+      <section class="resumen-pedido" id="resumen-pedido" aria-live="polite">
+        <h4>🧾 Tu pedido</h4>
+        <div id="rp-lineas"></div>
+        <div class="rp-tot" id="rp-totales"></div>
+        <p class="envio-despacho" id="envio-entrega">🚀 Despachamos tu pedido en <strong>1–2 días hábiles</strong>. Elige tu ciudad para ver cuándo te llega.</p>
+      </section>
       <button type="submit" class="btn-buy" id="envio-submit">Continuar al pago 💳</button>
     </form>
     <button class="shipping-modal-cancel" id="shipping-modal-cancel">Cancelar</button>
