@@ -655,6 +655,16 @@ body{font-family:'Nunito',sans-serif;background:var(--white);color:var(--navy);o
 .rp-total{font-size:17px!important;font-weight:900!important;border-top:2px solid var(--lblue);margin-top:6px;padding-top:8px!important;}
 .resumen-pedido .envio-despacho{margin:10px 0 0;opacity:1;background:#fff;border-radius:12px;padding:8px 10px;font-size:13px;}
 .rp-cargando{opacity:.5;}
+@media (min-width:900px){
+  .shipping-modal:not(.pedido-ok){max-width:880px;padding:30px 34px;}
+  .shipping-modal:not(.pedido-ok) #datos-envio-form{display:grid;grid-template-columns:minmax(0,1fr) 360px;column-gap:30px;align-items:start;}
+  .shipping-modal:not(.pedido-ok) #datos-envio-form > *:not(.pago-col){grid-column:1;}
+  .shipping-modal:not(.pedido-ok) .pago-col{grid-column:2;grid-row:1 / span 60;position:sticky;top:0;}
+  .shipping-modal:not(.pedido-ok) .resumen-pedido{margin-top:0;}
+}
+/* Mientras Wompi está abierto, la página de atrás no se mueve (en iPhone, deslizar dentro de Wompi movía la página y lo descuadraba) */
+html.pago-abierto,html.pago-abierto body{overscroll-behavior:none;}
+html.pago-abierto body{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 .codigo-resumen{background:#f4f8ff;border:2px solid var(--lblue);border-radius:14px;padding:10px 14px;margin:0 0 4px;text-align:left;}
 .codigo-resumen[hidden],.regalo-placa[hidden]{display:none;}
 .cr-fila{display:flex;justify-content:space-between;gap:10px;margin:3px 0;font-size:13px;font-weight:700;color:var(--navy);}
@@ -3011,7 +3021,14 @@ function mostrarPedidoRecibido(pedido, referencia){
     '• A nombre de: ' + pedido.nombre;
   document.getElementById('pedido-ok-total').textContent = total;
   document.getElementById('pedido-ok-ref').textContent = referencia;
-  document.getElementById('pedido-ok-whatsapp').href = 'https://wa.me/' + WHATSAPP_TIENDA + '?text=' + encodeURIComponent(texto);
+  // Mismo rango de entrega que el resumen del pedido (assets/entrega.js); si no cargó, 2 a 5 días hábiles
+  var ent = document.getElementById('pedido-ok-entrega');
+  if(ent){
+    var conPlaca = /Placa Inteligente|Placa NFC/.test(pedido.producto || '');
+    ent.innerHTML = window.wuuffEntrega ? 'Si lo confirmas hoy, te llega <strong>' + wuuffEntrega.textoRango(wuuffEntrega.rango('contraentrega', conPlaca ? wuuffEntrega.config.produccionPlaca : 0)) + '</strong>.' : 'Te llega en <strong>2 a 5 días hábiles</strong>.';
+  }
+  // api.whatsapp.com (con wa.me algunos celulares dañan los emojis del mensaje)
+  document.getElementById('pedido-ok-whatsapp').href = 'https://api.whatsapp.com/send?phone=' + WHATSAPP_TIENDA + '&text=' + encodeURIComponent(texto);
   document.getElementById('pedido-ok-overlay').classList.add('open');
 }
 document.addEventListener('click', function(e){
@@ -3116,6 +3133,33 @@ function quitarZoom(){
   vp.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0');
   setTimeout(function(){ vp.setAttribute('content', orig); }, 600);
 }
+// El fondo queda quieto mientras se ve la ventana de Wompi; se libera cuando Wompi la cierra (o al terminar el pago)
+var fondoPago = null;
+function wompiVisible(){
+  var f = document.querySelectorAll('iframe[src*="wompi"]');
+  for(var i = 0; i < f.length; i++){ var r = f[i].getBoundingClientRect(); if(r.width > 0 && r.height > 0 && getComputedStyle(f[i]).visibility !== 'hidden') return true; }
+  return false;
+}
+function bloquearFondoPago(){
+  if(fondoPago) return;
+  var y = window.scrollY || window.pageYOffset || 0, visto = false, inicio = Date.now();
+  document.documentElement.style.scrollBehavior = 'auto';
+  document.body.style.top = (-y) + 'px';
+  document.documentElement.classList.add('pago-abierto');
+  fondoPago = { y: y, t: setInterval(function(){
+    if(wompiVisible()) { visto = true; return; }
+    if(visto || Date.now() - inicio > 20000) liberarFondoPago();
+  }, 400) };
+}
+function liberarFondoPago(){
+  if(!fondoPago) return;
+  clearInterval(fondoPago.t);
+  var y = fondoPago.y; fondoPago = null;
+  document.documentElement.classList.remove('pago-abierto');
+  document.body.style.top = '';
+  window.scrollTo(0, y);
+  document.documentElement.style.scrollBehavior = '';
+}
 function pagarConWompi(estimadoCents, nombreProducto, customerData, shippingAddress, pedidoServidor, alListo){
   if(!pedidoServidor || !pedidoServidor.carrito){
     alert('Selecciona al menos un producto antes de continuar.');
@@ -3163,8 +3207,10 @@ function pagarConWompi(estimadoCents, nombreProducto, customerData, shippingAddr
       return;
     }
     quitarZoom();
+    bloquearFondoPago();
     var checkout = new WidgetCheckout(config);
     checkout.open(function(result){
+      liberarFondoPago();
       // El registro del pedido y el correo de confirmación los maneja
       // el webhook de Wompi (más confiable que depender de que el
       // cliente vuelva a esta página). Aquí solo damos aviso inmediato.
@@ -3310,6 +3356,7 @@ function pagarConWompi(estimadoCents, nombreProducto, customerData, shippingAddr
       </fieldset>
       <input type="hidden" name="producto" id="envio-producto" value="">
       <input type="hidden" name="total" id="envio-total" value="">
+      <div class="pago-col">
       <section class="resumen-pedido" id="resumen-pedido" aria-live="polite">
         <h4>🧾 Tu pedido</h4>
         <div id="rp-lineas"></div>
@@ -3317,6 +3364,7 @@ function pagarConWompi(estimadoCents, nombreProducto, customerData, shippingAddr
         <p class="envio-despacho" id="envio-entrega">🚀 Despachamos tu pedido en <strong>1–2 días hábiles</strong>. Elige tu ciudad para ver cuándo te llega.</p>
       </section>
       <button type="submit" class="btn-buy" id="envio-submit">Continuar al pago 💳</button>
+      </div>
     </form>
     <button class="shipping-modal-cancel" id="shipping-modal-cancel">Cancelar</button>
   </div>
@@ -3326,7 +3374,7 @@ function pagarConWompi(estimadoCents, nombreProducto, customerData, shippingAddr
   <div class="shipping-modal pedido-ok" role="dialog" aria-labelledby="pedido-ok-titulo">
     <h3 id="pedido-ok-titulo">¡Recibimos tu pedido! 🎉</h3>
     <p class="shipping-modal-sub">Pagas <strong id="pedido-ok-total"></strong> en efectivo cuando lo recibas. Referencia: <strong id="pedido-ok-ref"></strong></p>
-    <p class="pedido-ok-paso"><strong>Último paso:</strong> confírmalo por WhatsApp para que lo despachemos. Te llega al día hábil siguiente.</p>
+    <p class="pedido-ok-paso"><strong>Último paso:</strong> confírmalo por WhatsApp para que lo despachemos. <span id="pedido-ok-entrega">Te llega en 2 a 5 días hábiles.</span></p>
     <a class="btn-buy pedido-ok-wa" id="pedido-ok-whatsapp" href="#" target="_blank" rel="noopener">Confirmar por WhatsApp 💬</a>
     <button type="button" class="shipping-modal-cancel" id="pedido-ok-cerrar">Cerrar</button>
   </div>
