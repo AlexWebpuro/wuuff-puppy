@@ -84,11 +84,13 @@ function aplicarCambios(p, d, ahora) {
   if (d.total !== undefined) p.totalCents = centavos(d.total);
   if (d.costoEnvio !== undefined) p.costoEnvioCents = centavos(d.costoEnvio);
   if (d.guia && typeof d.guia === 'object') {
-    p.guia = Object.assign({}, p.guia, {
-      transportadora: limpio(d.guia.transportadora, 60),
-      numero: limpio(d.guia.numero, 60),
-      url: /^https?:\/\//.test(d.guia.url || '') ? limpio(d.guia.url, 400) : ''
-    });
+    const numero = limpio(d.guia.numero, 60), antes = p.guia || {};
+    let url = limpio(d.guia.url, 400);
+    if (url && !/^https?:\/\//.test(url) && /^[a-z0-9.-]+\.[a-z]{2,}(\/|$)/i.test(url)) url = 'https://' + url; // "envia.com/rastreo…" sin https
+    if (!/^https?:\/\//.test(url)) url = '';
+    // Si el enlace viene vacío pero es la misma guía, se conserva el que había (por ejemplo, el que guardó Envia)
+    if (!url && numero && numero === antes.numero && /^https?:\/\//.test(antes.url || '')) url = antes.url;
+    p.guia = Object.assign({}, p.guia, { transportadora: limpio(d.guia.transportadora, 60), numero, url });
   }
   if (d.pagado !== undefined && !!d.pagado !== !!p.pagado) {
     p.pagado = !!d.pagado;
