@@ -117,6 +117,11 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
 .items{margin:8px 0 0;padding:0;list-style:none}
 .items li{display:flex;align-items:center;gap:8px;padding:6px 0;border-top:1px dashed var(--borde);font-size:14px}
 .items li span{flex:1}.items li.con-nombre{flex-wrap:wrap}
+.nom-mezcla{width:100%;margin-top:6px}.nom-mezcla .pzs{display:flex;flex-wrap:wrap;gap:5px;margin:4px 0}
+.nom-mezcla .pz{width:34px;height:38px;border-radius:9px;border:2px solid var(--e,#999);background:var(--c,#ccc);color:#fff;font-weight:900;font-size:17px;cursor:pointer;padding:0}
+.nom-mezcla .pz.claro{color:#2d4375}.nom-mezcla .pin{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px;font-weight:700}
+.nom-mezcla .pin button{width:26px;height:26px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1.5px #bbb;background:var(--c);cursor:pointer;padding:0}
+.nom-mezcla .pin button.activo{box-shadow:0 0 0 3px #2d4375}.nom-mezcla .lnk{background:none;border:0;color:#4964af;font-weight:800;text-decoration:underline;cursor:pointer;width:auto;height:auto;padding:0 4px;font-size:13px}
 .nom-fila{display:flex;gap:6px;width:100%;margin-top:4px}.nom-fila .nom-ico{width:36px;height:auto;min-height:36px;font-size:18px;color:#d9338f;background:#fff;border:1.5px solid var(--borde)}.nom-fila input{flex:1;min-width:0;padding:8px 10px;font-size:15px;text-transform:uppercase}.nom-fila select{width:auto;padding:8px;font-size:14px}.items button{border:0;background:#f3eee6;border-radius:8px;width:28px;height:28px;cursor:pointer;font-weight:800}
 .aviso-extras{margin-top:10px;background:#fff4e0;border:1.5px solid #ffd59a;border-radius:12px;padding:10px 12px;font-size:14px}.aviso-extras.oculto{display:none}
 .tallas{display:flex;gap:6px;align-items:center;font-size:13px;font-weight:800;margin-top:4px}
@@ -273,11 +278,17 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
   const contarLetras = t => Array.from(String(t || '').toUpperCase()).map(ch => (ch === '♥' || ch === '★') ? ch : ch.normalize('NFD').replace(/[\u0300-\u036f]/g, '')).filter(ch => /^[A-Z]$/.test(ch) || ch === '♥' || ch === '★').length;
   function editorInv(cont, inicial, alCambiar, alUsarTotal) {
     let talla = 'S';
-    const items = (inicial || []).map(it => ({ id: it.p, talla: it.talla || '', q: it.q || 1, nombre: it.nombre ? { texto: it.nombre.texto || '', color: it.nombre.color || 'rosado' } : null, regalo: !!it.regalo }));
+    const items = (inicial || []).map(it => ({ id: it.p, talla: it.talla || '', q: it.q || 1, nombre: it.nombre ? { texto: it.nombre.texto || '', color: it.nombre.color || 'rosado', mezcla: Array.isArray(it.nombre.mezcla) ? it.nombre.mezcla.slice() : [] } : null, regalo: !!it.regalo }));
+    // Combinar colores (como en la web): mezcla[i] = color de la pieza i (letra, ♥ o ★); vacío = el color de las letras
+    const piezasDe = t => Array.from(String(t || '').toUpperCase()).map(ch => (ch === '♥' || ch === '★') ? ch : ch.normalize('NFD').replace(/[\u0300-\u036f]/g, '')).filter(ch => /^[A-Z]$/.test(ch) || ch === '♥' || ch === '★');
+    const colorDe = id => CN_COLORES.find(c => c.id === id) || { id, nombre: id, main: '#ccc', edge: '#999' };
+    const coloresDe = it => piezasDe(it.nombre.texto).map((ch, k) => colorDe((it.nombre.mezcla || [])[k] || it.nombre.color));
+    const usadosDe = it => coloresDe(it).map(c => c.nombre).filter((n, k, a) => a.indexOf(n) === k);
+    const mezclaLimpia = it => { const m = piezasDe(it.nombre.texto).map((ch, k) => { const c = (it.nombre.mezcla || [])[k] || ''; return c === it.nombre.color ? '' : c; }); return m.some(Boolean) ? m : []; };
     const cat = id => CATALOGO.find(c => c.id === id) || { n: id, p: 0, talla: false };
     const extrasDe = it => (it.nombre && it.nombre.texto) ? Math.max(0, contarLetras(it.nombre.texto) - LETRAS_INCLUIDAS) : 0; // por unidad
     const precioLinea = it => (cat(it.id).p + extrasDe(it) * PRECIO_LETRA_EXTRA) * it.q;
-    const linea = it => cat(it.id).n + (it.talla ? ' (Talla ' + it.talla + ')' : '') + (it.nombre && it.nombre.texto ? ' · "' + it.nombre.texto.toUpperCase() + '" letras ' + ((CN_COLORES.find(c => c.id === it.nombre.color) || {}).nombre || it.nombre.color) + (extrasDe(it) ? ' · ' + extrasDe(it) + (extrasDe(it) === 1 ? ' letra extra' : ' letras extra') : '') : '') + (it.regalo ? ' [REGALO]' : '') + (it.q > 1 ? ' x' + it.q : '');
+    const linea = it => cat(it.id).n + (it.talla ? ' (Talla ' + it.talla + ')' : '') + (it.nombre && it.nombre.texto ? ' · "' + it.nombre.texto.toUpperCase() + '" letras ' + (usadosDe(it).length > 1 ? 'combinadas (' + usadosDe(it).join(', ') + ')' : (usadosDe(it)[0] || colorDe(it.nombre.color).nombre)) + (extrasDe(it) ? ' · ' + extrasDe(it) + (extrasDe(it) === 1 ? ' letra extra' : ' letras extra') : '') : '') + (it.regalo ? ' [REGALO]' : '') + (it.q > 1 ? ' x' + it.q : '');
     cont.innerHTML = `<div class="tallas">Talla: <button type="button" class="chip activo" data-etalla="S">S</button><button type="button" class="chip" data-etalla="M">M</button></div>
       <div class="catalogo">${CATALOGO.map(x => `<button type="button" class="chip" data-ep="${x.id}">＋ ${esc(x.n)} · ${pesos(x.p * 100)}</button>`).join('')}</div>
       <ul class="items" data-elista></ul>
@@ -292,9 +303,29 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
       aviso.innerHTML = `✏️ <b>${n} ${n === 1 ? 'letra extra' : 'letras extra'}</b> × ${pesos(PRECIO_LETRA_EXTRA * 100)} = <b>${pesos(n * PRECIO_LETRA_EXTRA * 100)}</b> por cobrar. Total con las letras: <b>${pesos(tot * 100)}</b>` + (alUsarTotal ? ` <button type="button" class="btn azul" data-eusar style="padding:6px 10px;margin-top:6px">Poner este total</button>` : '');
       const b = aviso.querySelector('[data-eusar]'); if (b) b.onclick = () => alUsarTotal(tot);
     };
+    // Las piezas del nombre: elige un color (pincel) y toca las letras o figuras para pintarlas
+    const pintarMezcla = i => {
+      const d = lista.querySelector('[data-emez="' + i + '"]'), it = items[i];
+      if (!d || !it || !it.nombre) return;
+      const pzs = piezasDe(it.nombre.texto);
+      if (!pzs.length) { d.innerHTML = ''; return; }
+      if (!it.pincel || it.pincel === it.nombre.color) it.pincel = (CN_COLORES.find(c => c.id !== it.nombre.color && !c.oculto) || CN_COLORES[0]).id;
+      const cols = coloresDe(it);
+      d.innerHTML = `<div class="pin">🎨 Combinar: elige un color y toca las letras ${CN_COLORES.map(c => `<button type="button" data-pin="${c.id}" class="${it.pincel === c.id ? 'activo' : ''}" style="--c:${esc(c.main)}" title="${esc(c.nombre)}${c.oculto ? ' (no se ofrece en la web)' : ''}" aria-label="${esc(c.nombre)}"></button>`).join('')}</div>
+        <div class="pzs">${pzs.map((ch, k) => `<button type="button" class="pz${claro(cols[k].main) ? ' claro' : ''}" data-pz="${k}" style="--c:${esc(cols[k].main)};--e:${esc(cols[k].edge || cols[k].main)}" title="${k + 1}. ${esc(ch)} · ${esc(cols[k].nombre)}">${esc(ch)}</button>`).join('')}</div>
+        ${usadosDe(it).length > 1 ? `<button type="button" class="lnk" data-todas>Todas del color de las letras</button>` : ''}`;
+      d.querySelectorAll('[data-pin]').forEach(b => b.onclick = () => { it.pincel = b.dataset.pin; pintarMezcla(i); });
+      d.querySelectorAll('[data-pz]').forEach(b => b.onclick = () => {
+        const k = +b.dataset.pz, m = it.nombre.mezcla = (it.nombre.mezcla || []).slice();
+        m[k] = (m[k] || it.nombre.color) === it.pincel ? '' : it.pincel;
+        actualizarLinea(i);
+      });
+      const t = d.querySelector('[data-todas]'); if (t) t.onclick = () => { it.nombre.mezcla = []; actualizarLinea(i); };
+    };
+    const actualizarLinea = i => { const li = lista.querySelectorAll('li')[i], it = items[i]; li.querySelector('span').textContent = linea(it); pintarMezcla(i); if (alCambiar) alCambiar(); };
     const pintar = () => {
       lista.innerHTML = items.map((it, i) => `<li class="${CON_NOMBRE.includes(it.id) ? 'con-nombre' : ''}"><span>${esc(linea(it))}</span><b>${pesos(precioLinea(it) * 100)}</b><button type="button" data-emenos="${i}" aria-label="Quitar uno">−</button><button type="button" data-emas="${i}" aria-label="Agregar uno">＋</button>
-        ${CON_NOMBRE.includes(it.id) ? `<div class="nom-fila"><input data-enom="${i}" maxlength="8" placeholder="Nombre (ej. OLIVER)" value="${esc(it.nombre ? it.nombre.texto : '')}" autocomplete="off"><button type="button" class="nom-ico" data-eico="${i}" data-ch="♥" title="Agregar corazón" aria-label="Agregar corazón">♥</button><button type="button" class="nom-ico" data-eico="${i}" data-ch="★" title="Agregar estrella" aria-label="Agregar estrella">★</button><select data-ecol="${i}">${CN_COLORES.map(c => `<option value="${c.id}"${it.nombre && it.nombre.color === c.id ? ' selected' : ''}>${esc(c.nombre)}</option>`).join('')}</select></div>` : ''}</li>`).join('')
+        ${CON_NOMBRE.includes(it.id) ? `<div class="nom-fila"><input data-enom="${i}" maxlength="8" placeholder="Nombre (ej. OLIVER)" value="${esc(it.nombre ? it.nombre.texto : '')}" autocomplete="off"><button type="button" class="nom-ico" data-eico="${i}" data-ch="♥" title="Agregar corazón" aria-label="Agregar corazón">♥</button><button type="button" class="nom-ico" data-eico="${i}" data-ch="★" title="Agregar estrella" aria-label="Agregar estrella">★</button><select data-ecol="${i}">${CN_COLORES.map(c => `<option value="${c.id}"${it.nombre && it.nombre.color === c.id ? ' selected' : ''}>${esc(c.nombre)}</option>`).join('')}</select></div><div class="nom-mezcla" data-emez="${i}"></div>` : ''}</li>`).join('')
         || '<li class="nota-chica" style="border:0">Toca los productos que lleva (elige primero la talla).</li>';
       lista.querySelectorAll('[data-emenos]').forEach(b => b.onclick = () => { const it = items[b.dataset.emenos]; it.q--; if (it.q < 1) items.splice(b.dataset.emenos, 1); pintar(); });
       lista.querySelectorAll('[data-emas]').forEach(b => b.onclick = () => { items[b.dataset.emas].q++; pintar(); });
@@ -304,8 +335,9 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
         if (Array.from(inp.value).length >= 8) { toast('Máximo 8 letras o figuras'); return; }
         inp.value += b.dataset.ch; inp.oninput(); inp.focus();
       });
-      lista.querySelectorAll('[data-enom]').forEach(inp => inp.oninput = () => { const it = items[inp.dataset.enom]; it.nombre = it.nombre || { color: 'rosado' }; it.nombre.texto = inp.value.toUpperCase(); const li = lista.querySelectorAll('li')[inp.dataset.enom]; li.querySelector('span').textContent = linea(it); li.querySelector('b').textContent = pesos(precioLinea(it) * 100); avisar(); if (alCambiar) alCambiar(); });
-      lista.querySelectorAll('[data-ecol]').forEach(sel => sel.onchange = () => { const it = items[sel.dataset.ecol]; it.nombre = it.nombre || { texto: '' }; it.nombre.color = sel.value; pintar(); });
+      lista.querySelectorAll('[data-enom]').forEach(inp => inp.oninput = () => { const it = items[inp.dataset.enom]; it.nombre = it.nombre || { color: 'rosado', mezcla: [] }; it.nombre.texto = inp.value.toUpperCase(); const li = lista.querySelectorAll('li')[inp.dataset.enom]; li.querySelector('span').textContent = linea(it); li.querySelector('b').textContent = pesos(precioLinea(it) * 100); pintarMezcla(+inp.dataset.enom); avisar(); if (alCambiar) alCambiar(); });
+      lista.querySelectorAll('[data-emez]').forEach(d => pintarMezcla(+d.dataset.emez));
+      lista.querySelectorAll('[data-ecol]').forEach(sel => sel.onchange = () => { const it = items[sel.dataset.ecol]; it.nombre = it.nombre || { texto: '', mezcla: [] }; it.nombre.color = sel.value; pintar(); });
       avisar();
       if (alCambiar) alCambiar();
     };
@@ -313,12 +345,12 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
     cont.querySelectorAll('[data-ep]').forEach(b => b.onclick = () => {
       const x = cat(b.dataset.ep), t = x.talla ? talla : '';
       const ya = items.find(it => it.id === x.id && it.talla === t && !CON_NOMBRE.includes(x.id));
-      if (ya) ya.q++; else items.push({ id: x.id, talla: t, q: 1, nombre: CON_NOMBRE.includes(x.id) ? { texto: '', color: 'rosado' } : null });
+      if (ya) ya.q++; else items.push({ id: x.id, talla: t, q: 1, nombre: CON_NOMBRE.includes(x.id) ? { texto: '', color: 'rosado', mezcla: [] } : null });
       pintar();
     });
     pintar();
     return {
-      items: () => items.map(it => Object.assign({ p: it.id, talla: it.talla, q: it.q }, it.nombre && it.nombre.texto ? { nombre: { texto: it.nombre.texto, color: it.nombre.color } } : {}, it.regalo ? { regalo: true } : {})),
+      items: () => items.map(it => Object.assign({ p: it.id, talla: it.talla, q: it.q }, it.nombre && it.nombre.texto ? { nombre: Object.assign({ texto: it.nombre.texto, color: it.nombre.color }, mezclaLimpia(it).length ? { mezcla: mezclaLimpia(it) } : {}) } : {}, it.regalo ? { regalo: true } : {})),
       texto: () => items.map(linea).join('\n'),
       total: () => items.reduce((n, it) => n + precioLinea(it), 0)
     };
