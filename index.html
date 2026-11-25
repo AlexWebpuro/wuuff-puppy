@@ -662,9 +662,9 @@ body{font-family:'Nunito',sans-serif;background:var(--white);color:var(--navy);o
   .shipping-modal:not(.pedido-ok) .pago-col{grid-column:2;grid-row:1 / span 60;position:sticky;top:0;}
   .shipping-modal:not(.pedido-ok) .resumen-pedido{margin-top:0;}
 }
-/* Mientras Wompi está abierto, la página de atrás no se mueve (en iPhone, deslizar dentro de Wompi movía la página y lo descuadraba) */
-html.pago-abierto,html.pago-abierto body{overscroll-behavior:none;}
-html.pago-abierto body{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
+/* Mientras Wompi está abierto, la página de atrás no se desliza (en iPhone, deslizar dentro de Wompi movía la página y lo descuadraba).
+   Ojo: no se cambia la posición del body, porque la ventana de Wompi se ubica según el scroll de la página. */
+html.pago-abierto{overflow:hidden!important;overscroll-behavior:none;}
 .codigo-resumen{background:#f4f8ff;border:2px solid var(--lblue);border-radius:14px;padding:10px 14px;margin:0 0 4px;text-align:left;}
 .codigo-resumen[hidden],.regalo-placa[hidden]{display:none;}
 .cr-fila{display:flex;justify-content:space-between;gap:10px;margin:3px 0;font-size:13px;font-weight:700;color:var(--navy);}
@@ -3140,13 +3140,15 @@ function wompiVisible(){
   for(var i = 0; i < f.length; i++){ var r = f[i].getBoundingClientRect(); if(r.width > 0 && r.height > 0 && getComputedStyle(f[i]).visibility !== 'hidden') return true; }
   return false;
 }
+// Los toques fuera de Wompi no deslizan la página (los de adentro son del iframe de Wompi y no pasan por aquí)
+function sinDeslizar(e){ e.preventDefault(); }
 function bloquearFondoPago(){
   if(fondoPago) return;
-  var y = window.scrollY || window.pageYOffset || 0, visto = false, inicio = Date.now();
-  document.documentElement.style.scrollBehavior = 'auto';
-  document.body.style.top = (-y) + 'px';
+  var visto = false, inicio = Date.now();
   document.documentElement.classList.add('pago-abierto');
-  fondoPago = { y: y, t: setInterval(function(){
+  document.addEventListener('touchmove', sinDeslizar, { passive: false });
+  document.addEventListener('wheel', sinDeslizar, { passive: false });
+  fondoPago = { t: setInterval(function(){
     if(wompiVisible()) { visto = true; return; }
     if(visto || Date.now() - inicio > 20000) liberarFondoPago();
   }, 400) };
@@ -3154,11 +3156,10 @@ function bloquearFondoPago(){
 function liberarFondoPago(){
   if(!fondoPago) return;
   clearInterval(fondoPago.t);
-  var y = fondoPago.y; fondoPago = null;
+  fondoPago = null;
   document.documentElement.classList.remove('pago-abierto');
-  document.body.style.top = '';
-  window.scrollTo(0, y);
-  document.documentElement.style.scrollBehavior = '';
+  document.removeEventListener('touchmove', sinDeslizar, { passive: false });
+  document.removeEventListener('wheel', sinDeslizar, { passive: false });
 }
 function pagarConWompi(estimadoCents, nombreProducto, customerData, shippingAddress, pedidoServidor, alListo){
   if(!pedidoServidor || !pedidoServidor.carrito){
