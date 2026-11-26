@@ -137,9 +137,11 @@ function nombreCollar(n, precioBase) {
 }
 
 // carrito = { items: [{ p: 'collar', talla: 'S', qty: 1, nombre: { texto, color, peso } }], placa: { nombre, forma, base, letras } }
-function armar(carrito, ahora) {
+// cuposNombre: cuántos nombres gratis quedan en la promo (Infinity si no hay límite o no se pudo revisar)
+function armar(carrito, ahora, cuposNombre) {
   const c = carrito && typeof carrito === 'object' ? carrito : {};
   const promo = promoActiva(ahora);
+  let libres = cuposNombre == null ? Infinity : cuposNombre;
   const items = Array.isArray(c.items) ? c.items.slice(0, 6) : [];
   const lineas = [];
   for (const it of items) {
@@ -152,7 +154,8 @@ function armar(carrito, ahora) {
     if (CN.combos[it.p] && it.nombre) {
       const cb = CN.combos[it.p];
       // Black Wuuff Friday: el nombre va gratis (se paga el combo sin nombre + las letras extra)
-      const gratis = !!(promo && promo.nombreGratisEn.indexOf(it.p) > -1);
+      const gratis = !!(promo && promo.nombreGratisEn.indexOf(it.p) > -1 && libres > 0);
+      if (gratis) libres--;
       const cn = nombreCollar(it.nombre, gratis ? cb.precioSinNombre : cb.precio);
       if (!cn || cn.error) return { error: (cn && cn.error) || 'Revisa el nombre del collar' };
       if (!talla) return { error: 'Elige la talla' };
@@ -201,7 +204,9 @@ function armar(carrito, ahora) {
   // Placa de regalo del concurso: con arnés + correa (combo o por separado) o combo completo
   const conRegalo = claves.indexOf('combo') > -1 || claves.indexOf('arnes-correa') > -1 ||
     (claves.indexOf('arnes') > -1 && claves.indexOf('correa') > -1);
-  return { lineas, placa, placas, subtotalCents, conRegalo, promo: lineas.some(l => l.promo) ? promo : null };
+  // Con el 10 % la promo aplica a todo pedido mientras esté activa (con o sin nombre gratis)
+  const conPromo = !!promo && (promo.descuento > 0 || lineas.some(l => l.promo));
+  return { lineas, placa, placas, subtotalCents, conRegalo, promo: conPromo ? promo : null, nombresGratis: lineas.filter(l => l.promo).length };
 }
 
 function esBogota(ciudad) { return /bogot|soacha/i.test(String(ciudad || '')); }
@@ -282,7 +287,7 @@ async function revisarCodigo(texto, armado, opciones) {
 // datos = { carrito, ciudad, codigo, regalo: { nombre, forma, color }, metodo: 'wompi' | 'contraentrega' }
 async function calcular(datos, opciones) {
   const o = opciones || {};
-  const armado = armar(datos && datos.carrito, o.ahora);
+  const armado = armar(datos && datos.carrito, o.ahora, o.cuposNombre);
   if (armado.error) return { ok: false, error: armado.error };
   const soloLinea = soloCollarOPlaca(armado);
   const envio = envioCents(armado.subtotalCents, datos.ciudad, soloLinea, datos.metodo);
@@ -293,7 +298,10 @@ async function calcular(datos, opciones) {
     cod = await revisarCodigo(datos.codigo, armado, opciones);
     if (!cod.valido) return { ok: false, error: cod.mensaje, codigoInvalido: true };
   }
-  const descuento = cod ? cod.descuentoCents : 0;
+  // Black Wuuff Friday: % de descuento sobre los productos (redondeado a $100). El envío se calcula con el subtotal sin descuento.
+  const descuentoPromo = !cod && armado.promo && armado.promo.descuento > 0
+    ? Math.round(armado.subtotalCents * armado.promo.descuento / 100 / 10000) * 10000 : 0;
+  const descuento = cod ? cod.descuentoCents : descuentoPromo;
   let regaloCents = 0, regaloPlaca = null, regaloTexto = '';
   if (cod && cod.regalo) {
     const placaPagada = armado.lineas.find(l => l.tipo === 'placa');
@@ -313,7 +321,8 @@ async function calcular(datos, opciones) {
   if (armado.promo && armado.promo.regaloStickers) armado.lineas.push({ tipo: 'regalo', clave: 'stickers', nombre: 'Stickers pandilla Wuuff (regalo)', cents: 0 });
   const totalCents = armado.subtotalCents - descuento - regaloCents + envio;
   const nombreProducto = armado.lineas.map(l => l.nombre + (l.regalo ? ' [REGALO]' : '')).join(' + ') +
-    (cod ? ' [Código ' + cod.codigo + (cod.participante ? ' ' + cod.participante : '') + ': -' + pesos(descuento) + ']' : '');
+    (cod ? ' [Código ' + cod.codigo + (cod.participante ? ' ' + cod.participante : '') + ': -' + pesos(descuento) + ']' : '') +
+    (descuentoPromo ? ' [Black Wuuff -' + armado.promo.descuento + ' %: -' + pesos(descuentoPromo) + ']' : '');
   return {
     ok: true,
     lineas: armado.lineas,
@@ -327,6 +336,8 @@ async function calcular(datos, opciones) {
     regalo: regaloPlaca ? { texto: regaloTexto, placa: regaloPlaca } : null,
     contraentrega: contraentregaPermitida(armado.subtotalCents, datos.ciudad, soloLinea),
     promo: armado.promo ? armado.promo.id : null,
+    descuentoPromo: descuentoPromo ? armado.promo.descuento : 0,
+    nombresGratis: armado.nombresGratis || 0,
     avisoCodigo
   };
 }
@@ -336,7 +347,13 @@ function lineasAviso(calc) {
   if (!calc) return [];
   const nombres = (calc.lineas || []).filter(x => x.personal).map(x => '✏️ Nombre: ' + x.personal.texto + ' · Letras: ' + (x.personal.detalle ? 'combinadas → ' + x.personal.detalle : x.personal.color) +
     ' · Talla ' + x.personal.talla + (x.personal.peso ? ' (' + x.personal.peso.toLowerCase() + ')' : '') + ' · Extras: ' + x.personal.extras + (x.promo ? ' · Nombre: gratis (Black Wuuff)' : ''));
-  if (calc.promo) nombres.push('🖤 Black Wuuff Friday: nombre gratis · 🎁 Stickers pandilla Wuuff (regalo)' + (calc.avisoCodigo ? ' · código ignorado (no se acumula)' : ''));
+  if (calc.promo) {
+    const partes = [];
+    if (calc.descuentoPromo) partes.push('−' + calc.descuentoPromo + ' % (−' + pesos(calc.descuentoCents) + ')');
+    if (calc.nombresGratis) partes.push('nombre gratis');
+    if (PROMO && PROMO.regaloStickers) partes.push('🎁 Stickers pandilla Wuuff (regalo)');
+    nombres.push('🖤 Black Wuuff Friday' + (partes.length ? ': ' + partes.join(' · ') : '') + (calc.avisoCodigo ? ' · código ignorado (no se acumula)' : ''));
+  }
   if (!calc.codigo) return nombres;
   if (calc.codigo.tipo === 'colaboracion') {
     const base = calc.subtotalCents - calc.descuentoCents;
@@ -364,6 +381,26 @@ async function marcarPrimerPedido(store, promoId, referencia, espera) {
   await new Promise(r => setTimeout(r, espera == null ? 400 : espera));
   const quedo = await store.get(clave, { type: 'json' });
   return !!quedo && quedo.referencia === referencia;
+}
+// ── Nombres gratis con cupo (Black Wuuff: solo los primeros N pedidos) ──
+// Cada nombre gratis usado deja una marca "nombre-gratis-<promo>/<referencia>-<i>" en el almacén "promo-marcas".
+// Se marca cuando el pedido queda confirmado (Wompi APROBADO o contraentrega creada); los pagos que no se terminan no gastan cupo.
+// Si dos pedidos llegan exactamente a la vez con el último cupo, puede pasar uno de más (se honra igual).
+function prefijoNombreGratis() { return 'nombre-gratis-' + (PROMO && PROMO.id) + '/'; }
+async function cuposNombreLibres(store) {
+  if (!PROMO || !(PROMO.nombreGratisCupos > 0)) return Infinity;
+  if (!store) return PROMO.nombreGratisCupos;
+  try {
+    const { blobs } = await store.list({ prefix: prefijoNombreGratis() });
+    return Math.max(0, PROMO.nombreGratisCupos - (blobs || []).length);
+  } catch (err) {
+    console.error('No se pudieron contar los nombres gratis', err.message);
+    return PROMO.nombreGratisCupos;
+  }
+}
+async function marcarNombresGratis(store, promoId, referencia, cantidad) {
+  if (!store || !PROMO || promoId !== PROMO.id || !referencia || !(cantidad > 0)) return;
+  for (let i = 0; i < cantidad; i++) await store.setJSON(prefijoNombreGratis() + referencia + '-' + i, { referencia, fecha: new Date().toISOString() });
 }
 const TITULO_CORTO = { combo: 'Combo completo', 'collar-correa': 'Collar + correa' };
 // "🎁 PRIMER PEDIDO · regalo sorpresa · Combo completo · Nombre: LUNA (rosado) · Bogotá · $149.900"
@@ -412,4 +449,4 @@ function perfilesValidos(texto) {
   return partes.map(p => p.trim()).filter(p => /^[A-Z0-9]{6,16}$/.test(p) || /^pendiente \([^()|<>\[\]]{1,90}\)$/.test(p)).slice(0, 6);
 }
 
-module.exports = { marcarPrimerPedido, lineaPrimerPedido, promoActiva, fasePromo, ahoraDe, PROMO, AVISO_PROMO_CODIGO, ENVIO_CONTRAENTREGA, invDeCarrito, nombreCollar, perfilesDeTexto, perfilesValidos, PRODUCTOS, MENSAJES, armar, calcular, revisarCodigo, envioCents, contraentregaPermitida, normalizarCodigo, lineasAviso, pesos, placaValida };
+module.exports = { cuposNombreLibres, marcarNombresGratis, marcarPrimerPedido, lineaPrimerPedido, promoActiva, fasePromo, ahoraDe, PROMO, AVISO_PROMO_CODIGO, ENVIO_CONTRAENTREGA, invDeCarrito, nombreCollar, perfilesDeTexto, perfilesValidos, PRODUCTOS, MENSAJES, armar, calcular, revisarCodigo, envioCents, contraentregaPermitida, normalizarCodigo, lineasAviso, pesos, placaValida };

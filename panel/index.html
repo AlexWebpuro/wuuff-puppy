@@ -688,7 +688,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
     return `¡Hola${n ? ' ' + n : ''}! 🐾 Te escribo de Wuuff Puppy para confirmar tu pedido${p.numero ? ' #' + p.numero : ''}:\n\n` +
       `🛍️ ${productos.length > 1 ? 'Productos:\n' + productos.map(l => '• ' + l).join('\n') : (productos[0] || 'Tu pedido')}\n` +
       (p.mascota ? `🐶 Para: ${p.mascota}\n` : '') +
-      (p.promo ? `🖤 Black Wuuff Friday: el nombre fue por nuestra cuenta y te llevas stickers de la pandilla Wuuff de regalo\n` : '') +
+      (p.promo ? `🖤 Black Wuuff Friday: 10 % de descuento${/nombre gratis/i.test(String(p.productos || '')) ? ' y el nombre fue por nuestra cuenta' : ''}\n` : '') +
       (p.regaloSorpresa ? `🎁 ¡Y fuiste el primer pedido del Black Wuuff: te llevas un regalo sorpresa!\n` : '') +
       `💰 Total: ${pesos(p.totalCents)}\n${pago}\n` +
       (dir ? `📍 Envío a: ${dir}\n` : '') +
@@ -863,8 +863,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
   function cajaRegalo(p) {
     if (p.regaloSorpresa) return `<div class="caja sorpresa"><h3>🎁 Regalo sorpresa</h3><p style="margin:0">${esc(lineaSorpresa(p))}</p>
       <p class="nota-chica" style="margin:8px 0 0;color:#ddd">Mete el regalo sorpresa en este paquete (además de los stickers). Si este pedido se cancela, abre el siguiente pedido del Black Wuuff y toca "Mover el regalo sorpresa aquí".</p></div>`;
-    if (p.promo) return `<div class="caja"><h3>🖤 Black Wuuff Friday</h3><p class="nota-chica" style="margin:0 0 8px">Nombre gratis · incluye stickers de la pandilla Wuuff de regalo.</p>
-      <button class="btn claro" type="button" id="btnMoverRegalo">🎁 Mover el regalo sorpresa aquí</button></div>`;
+    if (p.promo) return `<div class="caja"><h3>🖤 Black Wuuff Friday</h3><p class="nota-chica" style="margin:0">10 % de descuento${/nombre gratis/i.test(String(p.productos || '')) ? ' · nombre gratis (uno de los 10 cupos)' : ''}.</p></div>`;
     return '';
   }
 

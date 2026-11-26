@@ -127,6 +127,11 @@ exports.handler = async function (event) {
         console.error('No se pudo marcar el código como usado', err.message);
       }
     }
+    // Black Wuuff Friday: los nombres gratis tienen cupo; se gasta solo con el pago APROBADO
+    if (guardado.promo && guardado.nombresGratis && referencia) {
+      try { await tienda.marcarNombresGratis(getStore('promo-marcas'), guardado.promo, referencia, guardado.nombresGratis); }
+      catch (err) { console.error('No se pudo marcar el nombre gratis', err.message); }
+    }
     // Black Wuuff Friday: el primer pedido APROBADO con la promo se lleva un regalo sorpresa
     if (guardado.promo && referencia) {
       try {
