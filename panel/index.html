@@ -462,11 +462,26 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
   $('btnSalir').onclick = salir;
 
   // ── Cargar y pintar ──
+  // ── Cambios recientes ──
+  // Netlify Blobs tarda hasta ~1 minuto en mostrar un cambio en la lista. Por eso el panel recuerda lo que
+  // cambió, creó o borró en los últimos 3 minutos y lo antepone a lo que trae la lista (así un cancelado no vuelve a sumar).
+  const RECIENTES_MS = 3 * 60 * 1000;
+  function leerRecientes() { try { const r = JSON.parse(localStorage.getItem('wuuffPanelRecientes') || '{}'); const ahora = Date.now(); Object.keys(r).forEach(k => { if (ahora - r[k].t > RECIENTES_MS) delete r[k]; }); return r; } catch (e) { return {}; } }
+  function recordar(p, borrado) { if (!p || !p.id) return; const r = leerRecientes(); r[p.id] = { t: Date.now(), p: borrado ? null : p, borrado: !!borrado }; try { localStorage.setItem('wuuffPanelRecientes', JSON.stringify(r)); } catch (e) {} }
+  function conRecientes(lista) {
+    const r = leerRecientes(), porId = new Map(lista.map(p => [p.id, p]));
+    Object.keys(r).forEach(id => {
+      const x = r[id], srv = porId.get(id);
+      if (x.borrado) { porId.delete(id); return; }
+      if (!srv || String(x.p.actualizado || x.p.creado || '') > String(srv.actualizado || srv.creado || '')) porId.set(id, x.p);
+    });
+    return Array.from(porId.values()).sort((a, b) => (a.creado < b.creado ? 1 : -1));
+  }
   async function cargar() {
     $('actualizado').textContent = 'Cargando…';
     try {
       const j = await api('GET');
-      pedidos = j.pedidos || [];
+      pedidos = conRecientes(j.pedidos || []);
       $('actualizado').textContent = 'Actualizado ' + new Date().toLocaleTimeString('es-CO', { hour: 'numeric', minute: '2-digit' });
       pintar();
     } catch (err) { $('actualizado').textContent = err.message; }
@@ -649,7 +664,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
     const p = pedidos.find(x => x.id === id); if (!p) return;
     const quien = (p.cliente && p.cliente.nombre) || 'sin nombre';
     if (!confirm('¿Borrar el pedido de ' + quien + ' (' + pesos(p.totalCents) + ')?\n\nNo se puede deshacer. Si es una venta que no se dio, mejor márcalo como Cancelado.')) return;
-    try { await api('POST', { accion: 'borrar', id: id }); pedidos = pedidos.filter(x => x.id !== id); cerrarHoja(); pintar(); toast('Pedido borrado'); } catch (err) { toast(err.message); }
+    try { await api('POST', { accion: 'borrar', id: id }); recordar({ id }, true); pedidos = pedidos.filter(x => x.id !== id); cerrarHoja(); pintar(); toast('Pedido borrado'); } catch (err) { toast(err.message); }
   }
   function tarjeta(p) {
     const e = EST[p.estado] || EST.confirmado, sig = siguienteEstado(p), c = p.cliente || {};
@@ -744,8 +759,10 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
   function waUrl(p) { return waLink(p, mensajeWa(p)); }
 
   async function cambiar(id, cambios, msg) {
-    const j = await api('POST', { accion: 'actualizar', id, cambios });
+    const base = pedidos.find(p => p.id === id);
+    const j = await api('POST', { accion: 'actualizar', id, cambios, base });
     const i = pedidos.findIndex(p => p.id === id); if (i > -1) pedidos[i] = j.pedido;
+    recordar(j.pedido);
     pintar(); if (msg) toast(msg);
     if (pestana === 'inventario') cargarInventario();
     return j.pedido;
@@ -1018,7 +1035,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
       const b = $('btnCrearGuia'); b.disabled = true; b.textContent = 'Creando guía…';
       try {
         const r = await api('POST', { accion: 'crear-guia', id: p.id, opcion: op.value, destino: datosEnvio() });
-        pedidos = pedidos.map(x => x.id === p.id ? r.pedido : x); pintar(); abrirDetalle(p.id); toast('✅ Guía ' + r.pedido.guia.numero + ' creada');
+        pedidos = pedidos.map(x => x.id === p.id ? r.pedido : x); recordar(r.pedido); pintar(); abrirDetalle(p.id); toast('✅ Guía ' + r.pedido.guia.numero + ' creada');
       } catch (err) { toast(err.message); b.disabled = false; b.textContent = 'Crear guía'; }
     };
     if (enfocarGuia) { h.dataset.pendiente = enfocarGuia; setTimeout(() => { $('cajaGuia').scrollIntoView({ block: 'center' }); $('dTransp').focus(); toast('Escribe la guía y guarda para marcarlo enviado'); }, 100); }
@@ -1102,7 +1119,7 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
           estado: $('nEstado').value, pagado: $('nPagado').checked, fecha: $('nFecha').value, mascota: $('nMascota').value, notas: $('nNotas').value,
           cliente: { nombre: $('nNombre').value, telefono: $('nTel').value, direccion: $('nDir').value, ciudad: $('nCiudad').value }
         } });
-        pedidos.unshift(j.pedido); cerrarHoja(); filtro = 'activos'; pintar(); toast(j.pedido.numero ? 'Pedido #' + j.pedido.numero + ' guardado 🐾' : 'Pedido guardado 🐾');
+        pedidos.unshift(j.pedido); recordar(j.pedido); cerrarHoja(); filtro = 'activos'; pintar(); toast(j.pedido.numero ? 'Pedido #' + j.pedido.numero + ' guardado 🐾' : 'Pedido guardado 🐾');
       } catch (err) { toast(err.message); btn.disabled = false; }
     };
   };

@@ -114,7 +114,11 @@ async function atender(event) {
   // ── Actualizar / borrar ──
   if (b.accion === 'actualizar' || b.accion === 'borrar') {
     if (!P.idValido(b.id)) return json(400, { error: 'Pedido no válido' });
-    const p = await store.get(b.id, { type: 'json' });
+    let p = await store.get(b.id, { type: 'json' });
+    // Netlify Blobs puede devolver por unos segundos la versión anterior de un pedido recién cambiado.
+    // El panel manda la versión que tiene (base): si es más nueva que la leída, se parte de ella para no deshacer el cambio anterior.
+    const base = b.base && typeof b.base === 'object' && b.base.id === b.id ? b.base : null;
+    if (p && !p.borrado && base && String(base.actualizado || '') > String(p.actualizado || '')) p = base;
     if (!p || p.borrado) return json(404, { error: 'El pedido no existe' });
     if (b.accion === 'borrar') {
       // Se deja una marca para que un contraentrega de la web no se vuelva a importar
