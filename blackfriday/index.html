@@ -90,8 +90,8 @@ main{position:relative;z-index:1}
 
 /* Caja */
 .visual{position:relative;display:grid;place-items:center;min-height:300px}
-.foto{width:min(330px,82vw);aspect-ratio:1;border-radius:28px;overflow:hidden;background:#fff;box-shadow:0 30px 60px rgba(0,0,0,.6);animation:flotaCaja 4s ease-in-out infinite;position:relative}
-.foto img{width:100%;height:100%;object-fit:cover}
+.foto{width:min(330px,82vw);aspect-ratio:4/5;border-radius:28px;overflow:hidden;background:#fff;box-shadow:0 30px 60px rgba(0,0,0,.6);animation:flotaCaja 4s ease-in-out infinite;position:relative}
+.foto img,.foto video{width:100%;height:100%;object-fit:cover;display:block}
 @keyframes flotaCaja{50%{transform:translateY(-10px) rotate(-1deg)}}
 .sello{position:absolute;top:-6px;right:max(4px,calc(50% - 190px));width:104px;height:104px;border-radius:50%;background:var(--lima);color:#0b0b0f;display:grid;place-items:center;text-align:center;font-weight:900;font-size:14px;line-height:1.05;animation:gira 12s linear infinite;box-shadow:0 8px 20px rgba(0,0,0,.4)}
 @keyframes gira{to{transform:rotate(360deg)}}
@@ -103,6 +103,15 @@ section.bloque{padding:34px 0;border-top:1px solid #1d1d25}
 section.bloque h3{margin:0 0 6px;font-size:clamp(24px,6vw,34px);font-weight:900;text-align:center}
 section.bloque h3 em{font-style:normal;color:var(--azul)}
 section.bloque p.sub{margin:0 auto 22px;text-align:center;color:var(--gris);font-weight:700;max-width:560px}
+
+/* Galería */
+.galeria{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.galeria figure{margin:0;border-radius:20px;overflow:hidden;background:#15151c;position:relative}
+.galeria img,.galeria video{width:100%;height:100%;object-fit:cover;display:block;aspect-ratio:4/5}
+.galeria figure.ancha{grid-column:span 2}
+.galeria figure.ancha img{aspect-ratio:16/10;background:#fff;object-fit:contain}
+.galeria figcaption{position:absolute;left:10px;bottom:10px;background:rgba(11,11,15,.75);color:#fff;font-weight:800;font-size:13px;padding:5px 10px;border-radius:999px}
+@media (min-width:900px){.galeria{grid-template-columns:repeat(4,1fr)}.galeria figure.ancha{grid-column:span 2}}
 
 /* Cupos */
 .contador{text-align:center;font-weight:900;font-size:20px;margin:0 0 16px}
@@ -148,7 +157,7 @@ footer{padding:30px 18px 60px;text-align:center;color:var(--gris);font-size:13px
   .oferta,.cuenta{justify-items:start}
   .etiquetas,.precio{justify-content:flex-start}
   .visual{min-height:460px}
-  .foto{width:420px}
+  .foto{width:400px}
   .sello{right:calc(50% - 250px)}
 }
 @media (prefers-reduced-motion:reduce){
@@ -190,11 +199,25 @@ footer{padding:30px 18px 60px;text-align:center;color:var(--gris);font-size:13px
       <a class="btn" id="cta" href="/combo-collar-arnes-correa/?modo=nombre&utm_source=web&utm_medium=landing&utm_campaign=black-wuuff-2026">Quiero mi combo con nombre 🖤</a>
     </div>
     <div class="visual">
-      <div class="foto"><img src="/images/opt/productos/collar-nombre/collar-nombre-leia-correa-nuevo.webp" alt="Collar con nombre LEIA en letras rosadas y correa de goma azul" width="800" height="800" fetchpriority="high"></div>
+      <div class="foto"><video src="/images/black-friday/collar-cielo.mp4" poster="/images/black-friday/collar-cielo.jpg" autoplay muted loop playsinline aria-label="Collar con el nombre SERI en letras rosadas frente al cielo"></video></div>
       <div class="sello" aria-hidden="true">NOMBRE<br>GRATIS<br>✏️</div>
       <img class="emo e1" src="/images/ilustraciones/emo-perro.webp" alt="" aria-hidden="true">
       <img class="emo e2" src="/images/ilustraciones/emo-hueso.webp" alt="" aria-hidden="true">
       <img class="emo e3" src="/images/ilustraciones/emo-lazo.webp" alt="" aria-hidden="true">
+    </div>
+  </section>
+
+  <section class="bloque">
+    <h3>Así se ven <em>en la calle</em></h3>
+    <p class="sub">Goma impermeable en azul cielo, y su nombre en letras de colores.</p>
+    <div class="galeria">
+      <figure><video src="/images/black-friday/pastor-parque.mp4" poster="/images/black-friday/pastor-parque.jpg" muted loop playsinline preload="none" data-auto aria-label="Pastor alemán con collar con nombre en el parque"></video><figcaption>Collar con nombre</figcaption></figure>
+      <figure><img src="/images/black-friday/schnauzer-sala.webp" alt="Schnauzer con arnés tipo H y correa azul en la sala" loading="lazy"><figcaption>Arnés H + correa</figcaption></figure>
+      <figure class="ancha"><img src="/images/black-friday/mia-melo.webp" alt="Collares con los nombres MIA y MELO en letras de colores" loading="lazy"><figcaption>Elige el color de cada letra</figcaption></figure>
+      <figure><img src="/images/black-friday/golden-estudio.webp" alt="Golden retriever con collar y correa azul" loading="lazy"><figcaption>Collar + correa</figcaption></figure>
+      <figure><video src="/images/black-friday/labrador-parque.mp4" poster="/images/black-friday/labrador-parque.jpg" muted loop playsinline preload="none" data-auto aria-label="Labrador negro con collar con nombre y correa en el parque"></video><figcaption>Del parque a la casa</figcaption></figure>
+      <figure><img src="/images/black-friday/schnauzer-parque.webp" alt="Detalle del arnés tipo H con gancho metálico" loading="lazy"><figcaption>Costuras dobles</figcaption></figure>
+      <figure><img src="/images/black-friday/dos-perritos.webp" alt="Schnauzer con arnés y correa caminando en casa" loading="lazy"><figcaption>Tallas S y M</figcaption></figure>
     </div>
   </section>
 
@@ -211,7 +234,7 @@ footer{padding:30px 18px 60px;text-align:center;color:var(--gris);font-size:13px
     <div class="incluye">
       <figure><img src="/images/opt/set-completo-nuevo.webp" alt="Combo completo: collar, arnés tipo H y correa azul cielo" width="800" height="800" loading="lazy"><figcaption>Collar + arnés H + correa</figcaption></figure>
       <span class="mas" aria-hidden="true">+</span>
-      <figure><img src="/images/opt/productos/collar-nombre/collar-nombre-tres-nombres-nuevo.webp" alt="Collares con los nombres SERI, LEIA y NALA" width="800" height="800" loading="lazy"><figcaption>Su nombre, gratis ✏️</figcaption></figure>
+      <figure><img src="/images/black-friday/mia-melo-2.webp" alt="Collares con los nombres MIA y MELO" width="800" height="800" loading="lazy"><figcaption>Su nombre, gratis ✏️</figcaption></figure>
     </div>
     <ul class="lista">
       <li>Hasta 5 letras incluidas (cada letra extra $5.000)</li>
@@ -256,8 +279,8 @@ footer{padding:30px 18px 60px;text-align:center;color:var(--gris);font-size:13px
   function menos10(n){ return n - Math.round(n * 0.10 / 100) * 100; }
   var PRODUCTOS = [
     ['Combo completo', 149900, '/combo-collar-arnes-correa/', '/images/opt/set-completo-nuevo.webp'],
-    ['Arnés + correa', 109900, '/arnes-y-correa-impermeable-perro/', '/images/opt/productos/reales/schnauzer-arnes-correa-estudio-1.webp'],
-    ['Collar + correa', 89900, '/collar-y-correa-impermeable-perro/', '/images/opt/productos/collar-nombre/collar-nombre-labrador-leia.webp'],
+    ['Arnés + correa', 109900, '/arnes-y-correa-impermeable-perro/', '/images/black-friday/schnauzer-sala.webp'],
+    ['Collar + correa', 89900, '/collar-y-correa-impermeable-perro/', '/images/black-friday/golden-retrato.webp'],
     ['Arnés tipo H', 69900, '/arnes-tipo-h-impermeable-perro/', '/images/opt/productos/reales/shihtzu-arnes-estudio-1.webp'],
     ['Correa', 59900, '/correa-impermeable-perro/', '/images/opt/productos/correa-3.webp'],
     ['Collar', 44900, '/collar-impermeable-perro/', '/images/opt/productos/collar-3.webp'],
@@ -315,6 +338,14 @@ footer{padding:30px 18px 60px;text-align:center;color:var(--gris);font-size:13px
       if (p.cupos) pintarCupos(p.nombresLibres, p.cupos);
     });
   });
+
+  // Videos de la galería: se reproducen solo cuando se ven
+  var vids = document.querySelectorAll('video[data-auto]');
+  if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    var io = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting) { e.target.preload = 'auto'; e.target.play().catch(function(){}); } else e.target.pause(); }); }, { threshold: .4 });
+    vids.forEach(function(v){ io.observe(v); });
+  }
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) { var hv = document.querySelector('.foto video'); if (hv) { hv.removeAttribute('autoplay'); hv.pause(); } }
 
   // Medición
   try { if (window.gtag) gtag('event', 'view_promotion', { promotion_id: 'black-wuuff-2026', promotion_name: 'Black Wuuff Friday' }); } catch (e) {}
