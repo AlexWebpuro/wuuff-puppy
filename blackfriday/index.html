@@ -290,9 +290,9 @@ footer{padding:30px 18px 60px;text-align:center;color:var(--gris);font-size:13px
     else { cta.textContent = 'El Black Wuuff Friday terminó · Ver tienda'; cta.href = '/#productos'; cta.removeAttribute('target'); cuenta.hidden = true; document.querySelector('.etiquetas').hidden = true; }
   }
   var actual = fase(Date.now()); aplicar(actual);
-  var previos = {};
+  var previos = {}, forzada = null; // forzada: lo que dice el servidor si el reloj del celular está corrido
   function tic(){
-    var ahora = Date.now(), f = fase(ahora);
+    var ahora = Date.now(), f = forzada || fase(ahora);
     if (f !== actual) { actual = f; aplicar(f); }
     var meta = f === 'antes' ? INICIO : FIN, r = Math.max(0, meta - ahora) / 1000;
     var v = { d: Math.floor(r / 86400), h: Math.floor(r % 86400 / 3600), m: Math.floor(r % 3600 / 60), s: Math.floor(r % 60) };
@@ -311,7 +311,7 @@ footer{padding:30px 18px 60px;text-align:center;color:var(--gris);font-size:13px
   cuandoListo(function(){
     estado().then(function(p){
       if (!p) return;
-      if (p.fase === 'activa') { actual = 'activa'; aplicar('activa'); }
+      if (p.fase === 'activa') { forzada = 'activa'; actual = 'activa'; aplicar('activa'); tic(); }
       if (p.cupos) pintarCupos(p.nombresLibres, p.cupos);
     });
   });
