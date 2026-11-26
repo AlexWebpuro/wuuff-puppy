@@ -16,9 +16,10 @@ exports.handler = async function (event) {
   const esc = v => String(v == null ? '' : v).replace(/[<>&"]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]));
   // Código del concurso y placa de regalo: el cliente los ve en palabras, sin las marcas internas del pedido
   // Black Wuuff Friday: el "nombre gratis" y los stickers se muestran aparte, en sus propias líneas
-  const promo = !!body.promo || /nombre gratis \(Black Wuuff\)/.test(String(body.nombreProducto || ''));
+  const promo = !!body.promo || /Black Wuuff/.test(String(body.nombreProducto || ''));
+  const nombreGratis = /nombre gratis \(Black Wuuff\)/.test(String(body.nombreProducto || ''));
   const nombreProducto = String(body.nombreProducto || '').replace(/\s*\[Código[^\]]*\]/g, '').replace(/\s*\[REGALO\]/g, ' (de regalo 🎁)')
-    .replace(/ · nombre gratis \(Black Wuuff\)/g, '').replace(/ \+ Stickers pandilla Wuuff \(regalo\)/g, '');
+    .replace(/ · nombre gratis \(Black Wuuff\)/g, '').replace(/ \+ Stickers pandilla Wuuff \(regalo\)/g, '').replace(/\s*\[Black Wuuff[^\]]*\]/g, '');
   const codigo = esc(body.codigo).slice(0, 40), descuento = esc(body.descuento).slice(0, 20), regalo = esc(body.regalo).slice(0, 120);
   const enlaceOk = u => /^https:\/\/[a-z0-9.-]+\/placa-nfc\/perfil\/#id=[A-Z0-9]+&clave=[a-f0-9]+$/.test(u || '');
   const enlacePerfil = enlaceOk(perfilEditar) ? perfilEditar : '';
@@ -58,7 +59,8 @@ exports.handler = async function (event) {
         ${direccion ? `<p style="margin:4px 0;"><strong>Dirección:</strong> ${direccion}${ciudad ? ', ' + ciudad : ''}</p>` : ''}
         ${codigo && descuento ? `<p style="margin:4px 0;"><strong>🎃 Código ${codigo}:</strong> −${descuento}</p>` : ''}
         ${regalo ? `<p style="margin:4px 0;"><strong>🎁 Placa Inteligente Wuuff de regalo:</strong> ${regalo}</p>` : ''}
-        ${promo ? `<p style="margin:4px 0;"><strong>✏️ Nombre:</strong> gratis (Black Wuuff)</p><p style="margin:4px 0;"><strong>🎁 Stickers:</strong> regalo</p>` : ''}
+        ${promo ? `<p style="margin:4px 0;"><strong>🖤 Black Wuuff Friday:</strong> 10 % de descuento</p>` : ''}
+        ${nombreGratis ? `<p style="margin:4px 0;"><strong>✏️ Nombre:</strong> gratis (Black Wuuff)</p>` : ''}
         ${total ? `<p style="margin:4px 0;"><strong>Total:</strong> ${total}${contraentrega ? ' · se paga al recibir' : ''}</p>` : ''}
       </div>
       ${perfiles.length > 1 ? `<div style="background:#fff4ef;border:2px solid #f17d57;border-radius:12px;padding:16px 20px;margin:20px 0;">
