@@ -93,8 +93,8 @@ main{position:relative;z-index:1}
 .foto{width:min(330px,82vw);aspect-ratio:4/5;border-radius:28px;overflow:hidden;background:#fff;box-shadow:0 30px 60px rgba(0,0,0,.6);animation:flotaCaja 4s ease-in-out infinite;position:relative}
 .foto img,.foto video{width:100%;height:100%;object-fit:cover;display:block}
 @keyframes flotaCaja{50%{transform:translateY(-10px) rotate(-1deg)}}
-.sello{position:absolute;top:-6px;right:max(4px,calc(50% - 190px));width:104px;height:104px;border-radius:50%;background:var(--lima);color:#0b0b0f;display:grid;place-items:center;text-align:center;font-weight:900;font-size:14px;line-height:1.05;animation:gira 12s linear infinite;box-shadow:0 8px 20px rgba(0,0,0,.4)}
-@keyframes gira{to{transform:rotate(360deg)}}
+.sello{position:absolute;top:-18px;right:max(0px,calc(50% - 215px));width:150px;height:auto;animation:sellito 2.4s ease-in-out infinite;filter:drop-shadow(0 8px 16px rgba(0,0,0,.45))}
+@keyframes sellito{0%,100%{transform:rotate(8deg) scale(1)}50%{transform:rotate(-4deg) scale(1.08)}}
 .emo{position:absolute;width:52px;animation:flota 3.5s ease-in-out infinite}
 .emo.e1{left:4%;top:18%}.emo.e2{right:6%;bottom:10%;animation-delay:-1s}.emo.e3{left:10%;bottom:4%;animation-delay:-2s}
 
@@ -158,7 +158,7 @@ footer{padding:30px 18px 60px;text-align:center;color:var(--gris);font-size:13px
   .etiquetas,.precio{justify-content:flex-start}
   .visual{min-height:460px}
   .foto{width:400px}
-  .sello{right:calc(50% - 250px)}
+  .sello{right:calc(50% - 270px);width:200px}
 }
 @media (prefers-reduced-motion:reduce){
   .cinta div{padding-left:18px}
@@ -200,7 +200,7 @@ footer{padding:30px 18px 60px;text-align:center;color:var(--gris);font-size:13px
     </div>
     <div class="visual">
       <div class="foto"><video src="/images/black-friday/collar-cielo.mp4" poster="/images/black-friday/collar-cielo.jpg" autoplay muted loop playsinline aria-label="Collar con el nombre SERI en letras rosadas frente al cielo"></video></div>
-      <div class="sello" aria-hidden="true">NOMBRE<br>GRATIS<br>✏️</div>
+      <img class="sello" src="/images/black-friday/sello-nombre-gratis.webp" alt="" aria-hidden="true" width="420" height="420">
       <img class="emo e1" src="/images/ilustraciones/emo-perro.webp" alt="" aria-hidden="true">
       <img class="emo e2" src="/images/ilustraciones/emo-hueso.webp" alt="" aria-hidden="true">
       <img class="emo e3" src="/images/ilustraciones/emo-lazo.webp" alt="" aria-hidden="true">
@@ -216,6 +216,7 @@ footer{padding:30px 18px 60px;text-align:center;color:var(--gris);font-size:13px
       <figure class="ancha"><img src="/images/black-friday/mia-melo.webp" alt="Collares con los nombres MIA y MELO en letras de colores" loading="lazy"><figcaption>Elige el color de cada letra</figcaption></figure>
       <figure><img src="/images/black-friday/golden-estudio.webp" alt="Golden retriever con collar y correa azul" loading="lazy"><figcaption>Collar + correa</figcaption></figure>
       <figure><video src="/images/black-friday/labrador-parque.mp4" poster="/images/black-friday/labrador-parque.jpg" muted loop playsinline preload="none" data-auto aria-label="Labrador negro con collar con nombre y correa en el parque"></video><figcaption>Del parque a la casa</figcaption></figure>
+      <figure><video src="/images/black-friday/armando-nombre.mp4" poster="/images/black-friday/armando-nombre.jpg" muted loop playsinline preload="none" data-auto aria-label="Manos deslizando letras de colores en un collar azul"></video><figcaption>Letra por letra</figcaption></figure>
       <figure><img src="/images/black-friday/schnauzer-parque.webp" alt="Detalle del arnés tipo H con gancho metálico" loading="lazy"><figcaption>Costuras dobles</figcaption></figure>
       <figure><img src="/images/black-friday/dos-perritos.webp" alt="Schnauzer con arnés y correa caminando en casa" loading="lazy"><figcaption>Tallas S y M</figcaption></figure>
     </div>
