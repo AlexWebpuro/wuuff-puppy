@@ -862,8 +862,9 @@ label.interruptor{text-transform:none;letter-spacing:0;font-size:14px;color:var(
   }
   function cajaRegalo(p) {
     if (p.regaloSorpresa) return `<div class="caja sorpresa"><h3>🎁 Regalo sorpresa</h3><p style="margin:0">${esc(lineaSorpresa(p))}</p>
-      <p class="nota-chica" style="margin:8px 0 0;color:#ddd">Mete el regalo sorpresa en este paquete (además de los stickers). Si este pedido se cancela, abre el siguiente pedido del Black Wuuff y toca "Mover el regalo sorpresa aquí".</p></div>`;
-    if (p.promo) return `<div class="caja"><h3>🖤 Black Wuuff Friday</h3><p class="nota-chica" style="margin:0">10 % de descuento${/nombre gratis/i.test(String(p.productos || '')) ? ' · nombre gratis (uno de los 10 cupos)' : ''}.</p></div>`;
+      <p class="nota-chica" style="margin:8px 0 0;color:#ddd">Mete el regalo sorpresa en este paquete. Si este pedido se cancela, abre el siguiente pedido del Black Wuuff y toca "Mover el regalo sorpresa aquí".</p></div>`;
+    if (p.promo) return `<div class="caja"><h3>🖤 Black Wuuff Friday</h3><p class="nota-chica" style="margin:0">10 % de descuento${/nombre gratis/i.test(String(p.productos || '')) ? ' · nombre gratis (uno de los 10 cupos)' : ''}.</p>
+      <button class="btn claro" type="button" id="btnMoverRegalo" style="margin-top:8px">🎁 Mover el regalo sorpresa aquí</button></div>`;
     return '';
   }
 

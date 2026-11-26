@@ -14,7 +14,7 @@
 <meta name="theme-color" content="#0b0b0f">
 <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
 <link rel="preload" href="/assets/fonts/malaka-cournt.ttf" as="font" type="font/ttf" crossorigin>
-<script src="/assets/promo.js?v=2" defer></script>
+<script src="/assets/promo.js?v=3" defer></script>
 <style>
 @font-face{font-family:'Malaka';src:url('/assets/fonts/malaka-cournt.ttf') format('truetype');font-display:swap}
 @font-face{font-family:'Nunito';src:url('/assets/fonts/nunito-latin-700-normal.woff2') format('woff2');font-weight:700;font-display:swap}
@@ -148,7 +148,8 @@ section.bloque p.sub{margin:0 auto 22px;text-align:center;color:var(--gris);font
 .confianza{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
 .confianza div{background:#15151c;border:1px solid #2a2a35;border-radius:16px;padding:14px 16px;font-weight:700;font-size:15px;line-height:1.4}
 .confianza b{color:var(--azul)}
-.reglas{max-width:640px;margin:20px auto 0;color:var(--gris);font-size:13px;line-height:1.5;font-weight:700}
+.reglas{max-width:720px;margin:24px auto 0;color:var(--gris);font-size:14px;line-height:1.5;font-weight:700;background:#15151c;border:1px solid #2a2a35;border-radius:16px;padding:18px 20px;scroll-margin-top:20px}
+.reglas b{color:#fff}
 footer{padding:30px 18px 60px;text-align:center;color:var(--gris);font-size:13px}
 
 @media (min-width:900px){
@@ -182,11 +183,12 @@ footer{padding:30px 18px 60px;text-align:center;color:var(--gris);font-size:13px
         <span class="letras wuuff" aria-label="Wuuff"><span style="animation-delay:.05s,0s">W</span><span style="animation-delay:.12s,-.4s">U</span><span style="animation-delay:.19s,-.8s">U</span><span style="animation-delay:.26s,-1.2s">F</span><span style="animation-delay:.33s,-1.6s">F</span></span>
         <span class="letras friday" aria-label="Friday"><span style="animation-delay:.45s,-.2s">F</span><span style="animation-delay:.52s,-.6s">R</span><span style="animation-delay:.59s,-1s">I</span><span style="animation-delay:.66s,-1.4s">D</span><span style="animation-delay:.73s,-1.8s">A</span><span style="animation-delay:.8s,-2.2s">Y</span></span>
       </h1>
-      <div class="etiquetas"><span class="etq azul">−10 % EN TODO</span><span class="etq lima">NOMBRE GRATIS · SOLO 10</span></div>
+      <div class="etiquetas"><span class="etq azul">−10 % EN TODO</span><span class="etq lima">NOMBRE GRATIS · SOLO 10</span><span class="etq azul" style="animation-delay:-.8s">🎁 REGALO 1.ª COMPRA</span></div>
       <h2>Combo completo <b>con el nombre de tu perrito</b></h2>
       <div class="precio"><s>$169.900</s><strong>$134.900</strong></div>
       <p class="precio-nota">✏️ El nombre va por nuestra cuenta + 10 % menos · solo los primeros 10 pedidos</p>
-      <p class="aviso">🐾 Collar, arnés tipo H y correa de goma impermeables · tallas S y M</p>
+      <p class="precio-nota" style="color:#fff">🎁 La primera compra lleva un regalo sorpresa</p>
+      <p class="aviso">🐾 Collar, arnés tipo H y correa de goma impermeables · tallas S y M · <a href="#terminos" style="color:inherit">T&amp;C</a></p>
       <div class="cuenta" id="cuenta" hidden>
         <small id="cuentaTxt">EMPIEZA EN</small>
         <div class="reloj" role="timer" aria-live="off">
@@ -259,7 +261,18 @@ footer{padding:30px 18px 60px;text-align:center;color:var(--gris);font-size:13px
       <div>📦 <b>Despacho en 3 días hábiles</b> después de confirmar tu pedido.</div>
       <div>💬 <b>¿Dudas con la talla?</b> Escríbenos al <a href="https://wa.me/573176431286?text=Hola%20Wuuff%2C%20tengo%20una%20duda%20del%20Black%20Wuuff%20Friday%20%F0%9F%96%A4" target="_blank" rel="noopener">+57 317 6431286</a>.</div>
     </div>
-    <p class="reglas">Promo válida del 27 de noviembre (12:00 a. m.) al 30 de noviembre de 2026 (11:59 p. m.), hora de Colombia. El 10 % aplica a todos los productos de wuuffpuppy.co y no se acumula con otros códigos. El nombre gratis aplica solo al combo completo (collar + arnés + correa) y solo para los primeros 10 pedidos confirmados; las letras extra se cobran. Del pedido 11 en adelante sigue el 10 % de descuento.</p>
+    <div class="reglas" id="terminos">
+      <h4 style="color:#fff;font-size:18px;margin:0 0 10px">Términos y condiciones · Black Wuuff Friday 2026</h4>
+      <ol style="margin:0;padding-left:20px;display:grid;gap:6px">
+        <li><b>Vigencia:</b> del 27 de noviembre de 2026 a las 12:00 a. m. al 30 de noviembre de 2026 a las 11:59 p. m., hora de Colombia.</li>
+        <li><b>10 % de descuento:</b> aplica a todos los productos de wuuffpuppy.co y se descuenta solo al pagar. Se calcula sobre el valor de los productos, no sobre el envío.</li>
+        <li><b>Nombre gratis:</b> aplica solo al collar del combo completo (collar + arnés tipo H + correa), con hasta 5 letras incluidas; cada letra extra cuesta $5.000. Es solo para los primeros 10 pedidos confirmados, en el orden en que se confirman (pago aprobado o pedido contraentrega registrado). Desde el pedido 11, el combo mantiene el 10 % de descuento y el nombre se cobra a su precio normal.</li>
+        <li><b>Regalo sorpresa:</b> el primer pedido confirmado durante la promoción recibe un regalo sorpresa elegido por Wuuff Puppy. No es canjeable por dinero ni por otro producto. Te avisamos por WhatsApp.</li>
+        <li><b>No acumulable</b> con otros códigos ni descuentos.</li>
+        <li><b>Envío:</b> se calcula al pagar con las condiciones habituales de la tienda. Despachamos en 3 días hábiles después de confirmar el pedido.</li>
+        <li><b>Dudas:</b> escríbenos por WhatsApp al +57 317 6431286.</li>
+      </ol>
+    </div>
   </section>
 </main>
 
