@@ -346,9 +346,13 @@
     // Collar con nombre solo: no entra en la promo, pero se le cuenta que con el collar + correa sí
     if (bwf && !EN_COMBO) {
       bwf.hidden = modo !== 'nombre';
-      bwf.innerHTML = '🖤 ¿Sabías? Con el <a href="/collar-y-correa-impermeable-perro/?modo=nombre' + (state.texto ? '&nombre=' + encodeURIComponent(state.texto) : '') + '&utm_source=web&utm_medium=ficha&utm_campaign=black-wuuff-2026">collar + correa</a> el nombre te sale gratis hasta el lunes';
+      bwf.innerHTML = '🖤 Black Wuuff Friday: ' + (PROMO.descuento || 10) + ' % de descuento al pagar' + ((PROMO.nombreGratisEn || []).length ? '. Y con el <a href="/combo-collar-arnes-correa/?modo=nombre' + (state.texto ? '&nombre=' + encodeURIComponent(state.texto) : '') + '&utm_source=web&utm_medium=ficha&utm_campaign=black-wuuff-2026">combo completo</a> el nombre va gratis (solo los primeros 10)' : '');
     }
-    if (!GRATIS) return;
+    if (!GRATIS) {
+      // Combo sin nombre gratis (collar + correa, o se acabaron los cupos): solo el 10 % al pagar
+      if (EN_COMBO && bwf) { bwf.hidden = false; bwf.innerHTML = '🖤 Black Wuuff Friday: ' + (PROMO.descuento || 10) + ' % de descuento al pagar (hasta el lun 30)'; }
+      return;
+    }
     var boton = document.querySelector('.modo-collar [data-modo=nombre] span');
     if (boton) boton.innerHTML = '<s>' + cop(preciosNormales().precio) + '</s> ' + cop(precios().precio) + ' · nombre <s>+' + cop(preciosNormales().precio - preciosNormales().precioSinNombre) + '</s> GRATIS';
     var nota = document.getElementById('bwf-nota');
@@ -358,8 +362,8 @@
       comprar.parentNode.insertBefore(nota, comprar.nextSibling);
     }
     if (nota) nota.innerHTML = modo === 'nombre'
-      ? '🎁 Incluye stickers de la pandilla Wuuff. El primer pedido se lleva un regalo sorpresa.'
-      : '🖤 Black Wuuff Friday: elige <b>con su nombre</b> y el nombre va por nuestra cuenta (hasta el lun 30).';
+      ? '🖤 Nombre gratis' + (PROMO.nombresLibres > 0 ? ': quedan <b>' + PROMO.nombresLibres + ' de ' + PROMO.cupos + '</b>' : '') + ' · y <b>' + (PROMO.descuento || 10) + ' % menos</b> al pagar.'
+      : '🖤 Black Wuuff Friday: elige <b>con su nombre</b> y el nombre va por nuestra cuenta (solo los primeros ' + (PROMO.cupos || 10) + '), más ' + (PROMO.descuento || 10) + ' % al pagar.';
   }
 
   // Va directo al pago con el collar ya armado; el servidor vuelve a calcular el total

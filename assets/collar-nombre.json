@@ -32,13 +32,15 @@
   ],
   "tallas": { "S": "cuello 25–33 cm", "M": "cuello 33–42 cm" },
   "promo": {
-    "_nota": "Black Wuuff Friday: el nombre del collar va gratis en estos combos (las letras extra sí se cobran). Las fechas las revisa el servidor con su propia hora; el 1 de diciembre todo vuelve solo a la normalidad.",
+    "_nota": "Black Wuuff Friday (decidido el 26 nov): 10 % de descuento en toda la tienda y el nombre del collar gratis en el combo completo, solo en los primeros 10 pedidos (las letras extra sí se cobran). Sin stickers ni regalo sorpresa. Las fechas las revisa el servidor con su propia hora; el 1 de diciembre todo vuelve solo a la normalidad.",
     "id": "black-wuuff-2026",
     "inicio": "2026-11-27T00:00:00-05:00",
     "fin": "2026-11-30T23:59:59-05:00",
-    "nombreGratisEn": ["combo", "collar-correa"],
-    "regaloStickers": true,
-    "regaloPrimerPedido": true,
+    "descuento": 10,
+    "nombreGratisEn": ["combo"],
+    "nombreGratisCupos": 10,
+    "regaloStickers": false,
+    "regaloPrimerPedido": false,
     "acumulaConCodigos": false
   }
 }

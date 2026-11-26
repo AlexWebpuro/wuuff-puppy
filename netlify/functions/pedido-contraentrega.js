@@ -53,8 +53,11 @@ exports.handler = async function (event) {
   // El total se calcula aquí (precios, envío y código); nunca se usa el que manda el navegador
   let usados = null;
   try { connectLambda(event); usados = getStore('codigos-usados'); } catch (err) { console.error('Blobs no disponible', err.message); }
+  const ahora = tienda.ahoraDe(event, b.simular);
+  let cuposNombre = Infinity;
+  if (tienda.promoActiva(ahora)) { try { cuposNombre = await tienda.cuposNombreLibres(getStore('promo-marcas')); } catch (err) { console.error('Blobs no disponible', err.message); } }
   const calc = await tienda.calcular({ carrito: b.carrito, ciudad: pedido.ciudad, codigo: b.codigo, regalo: b.regalo, metodo: 'contraentrega' }, {
-    ahora: tienda.ahoraDe(event, b.simular),
+    ahora, cuposNombre,
     usado: async (c) => !!(usados && await usados.get(c))
   });
   if (!calc.ok) {
@@ -71,6 +74,11 @@ exports.handler = async function (event) {
   const referencia = 'CE-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).slice(2, 5).toUpperCase();
   const total = pesos(totalCents);
 
+  // Black Wuuff Friday: los nombres gratis tienen cupo (la contraentrega lo gasta al crear el pedido)
+  if (calc.promo && calc.nombresGratis) {
+    try { await tienda.marcarNombresGratis(getStore('promo-marcas'), calc.promo, referencia, calc.nombresGratis); }
+    catch (err) { console.error('No se pudo marcar el nombre gratis', err.message); }
+  }
   // Black Wuuff Friday: el primer pedido con la promo se lleva un regalo sorpresa
   let regaloSorpresa = false;
   if (calc.promo) {

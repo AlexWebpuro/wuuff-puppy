@@ -13,9 +13,11 @@ exports.handler = async function (event) {
   if (event.httpMethod !== 'POST') return json(405, { ok: false, error: 'Método no permitido' });
   let b;
   try { b = JSON.parse(event.body || '{}'); } catch (err) { return json(400, { ok: false, error: 'JSON inválido' }); }
-  let usados = null;
-  try { connectLambda(event); usados = getStore('codigos-usados'); } catch (err) { /* sin Blobs: no se revisa si el código ya se usó */ }
-  const opciones = { ahora: tienda.ahoraDe(event, b.simular), usado: async (c) => !!(usados && await usados.get(c)) };
+  let usados = null, marcas = null;
+  try { connectLambda(event); usados = getStore('codigos-usados'); marcas = getStore('promo-marcas'); } catch (err) { /* sin Blobs: no se revisa si el código ya se usó */ }
+  const ahora = tienda.ahoraDe(event, b.simular);
+  const cuposNombre = tienda.promoActiva(ahora) ? await tienda.cuposNombreLibres(marcas) : Infinity;
+  const opciones = { ahora, cuposNombre, usado: async (c) => !!(usados && await usados.get(c)) };
   const datos = { carrito: b.carrito, ciudad: String(b.ciudad || '').slice(0, 80), codigo: b.codigo, regalo: b.regalo, metodo: b.metodo === 'contraentrega' ? 'contraentrega' : 'wompi' };
   let calc = await tienda.calcular(datos, opciones);
   if (!calc.ok && calc.faltaRegalo) calc = await tienda.calcular(Object.assign({}, datos, { regalo: { nombre: 'Regalo', forma: 'Huella', color: 'Morado' } }), opciones);
@@ -24,6 +26,7 @@ exports.handler = async function (event) {
     ok: true,
     lineas: calc.lineas.map(l => ({ nombre: l.nombre, cents: l.cents, tipo: l.tipo, clave: l.clave || '', regalo: !!l.regalo, promo: !!l.promo })),
     subtotalCents: calc.subtotalCents, envioCents: calc.envioCents, descuentoCents: calc.descuentoCents, regaloCents: calc.regaloCents,
-    totalCents: calc.totalCents, contraentrega: calc.contraentrega, promo: calc.promo, codigo: calc.codigo ? calc.codigo.codigo : ''
+    totalCents: calc.totalCents, contraentrega: calc.contraentrega, promo: calc.promo, descuentoPromo: calc.descuentoPromo || 0, nombresGratis: calc.nombresGratis || 0,
+    codigo: calc.codigo ? calc.codigo.codigo : ''
   });
 };

@@ -1,4 +1,4 @@
-// Black Wuuff Friday (27 al 30 de nov de 2026): "El nombre de tu perrito va por nuestra cuenta".
+// Black Wuuff Friday (27 al 30 de nov de 2026): 10 % en toda la tienda + nombre gratis en el combo (solo 10 pedidos).
 // La fecha la decide el servidor (/.netlify/functions/promo); aquí solo se muestra:
 //   - la franja lima arriba de todas las páginas (el jueves 26, el anuncio de "Este viernes…")
 //   - window.wuuffPromoEstado(): promesa con { fase, ... } para la ficha del collar y el pago.
@@ -23,7 +23,7 @@
     };
   }
   window.wuuffSimular = simular;
-  if (/^\/panel\//.test(location.pathname)) return;
+  if (/^\/(panel|blackfriday)\//.test(location.pathname)) return;
   var UTM = 'utm_source=web&utm_medium=banner&utm_campaign=black-wuuff-2026';
   window.wuuffPromoEstado().then(function (p) {
     if (!p || !p.fase) return;
@@ -34,10 +34,11 @@
     document.head.appendChild(css);
     var a = document.createElement('a');
     a.className = 'bwf-franja';
-    a.href = '/combo-collar-arnes-correa/?modo=nombre&' + UTM;
+    a.href = '/blackfriday/?' + UTM;
+    var nombre = p.cupos && p.nombresLibres > 0 ? ' + nombre gratis en el combo (quedan ' + p.nombresLibres + ')' : (p.cupos ? '' : ' + nombre gratis en el combo');
     a.innerHTML = p.fase === 'activa'
-      ? '🖤 <b>BLACK WUUFF FRIDAY</b> · El nombre de tu perrito va por nuestra cuenta · Hasta el lun 30 →'
-      : '🖤 Este viernes: el nombre de tu perrito va por nuestra cuenta';
+      ? '🖤 <b>BLACK WUUFF FRIDAY</b> · ' + (p.descuento || 10) + ' % en toda la tienda' + nombre + ' · Hasta el lun 30 →'
+      : '🖤 Este viernes: ' + (p.descuento || 10) + ' % en toda la tienda y el nombre gratis en el combo (solo 10) →';
     a.addEventListener('click', function () { try { if (window.gtag) gtag('event', 'promo_franja', { fase: p.fase, campaign: 'black-wuuff-2026' }); } catch (e) {} });
     document.body.insertBefore(a, document.body.firstChild);
     // Menús fijos arriba (como el del inicio): se corren debajo de la franja mientras se ve, para no taparla

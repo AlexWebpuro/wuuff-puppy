@@ -2559,8 +2559,17 @@ function estadoPromo(){
 function carritoConPromo(carrito, p){
   return !!(p && p.fase === 'activa' && carrito && Array.isArray(carrito.items) && carrito.items.some(function(it){ return it && it.nombre && (p.nombreGratisEn || []).indexOf(it.p) > -1; }));
 }
-function mostrarPromoPago(on){
+// Black Wuuff Friday: mientras está activa, aplica a todo pedido (10 %), así que no se usan códigos
+function promoEnPago(p){ return !!(p && p.fase === 'activa' && (p.descuento > 0)); }
+function mostrarPromoPago(on, p, carrito){
   var box = document.getElementById('promo-resumen'), cod = document.getElementById('codigo-box');
+  if(box && on){
+    var nombre = carritoConPromo(carrito, p);
+    box.innerHTML = '<p><b>🖤 Black Wuuff Friday</b></p>' +
+      (p && p.descuento ? '<p>🏷️ <b>' + p.descuento + ' % de descuento</b> en tu pedido</p>' : '') +
+      (nombre ? '<p>✏️ Nombre del collar: <b>gratis</b> (solo los primeros ' + (p.cupos || 10) + ' pedidos)</p>' : '') +
+      '<p style="opacity:.85">Los códigos de descuento no se acumulan con la promo.</p>';
+  }
   if(box) box.hidden = !on;
   if(cod) cod.hidden = !!on;
   if(on && pendingPurchase && pendingPurchase.codigo){ quitarCodigo(); mostrarCodigo(null); }
@@ -2697,7 +2706,7 @@ function pintarResumenPedido(r){
     var envio = !ciudad ? '<span style="opacity:.7">Elige tu ciudad</span>' : (r.envioCents === 0 ? '<span class="rp-gratis">GRATIS 🎉</span>' : formatoPesos(r.envioCents));
     var dEnvio = !ciudad ? '' : (/bogot/i.test(ciudad) && !/soacha/i.test(ciudad) ? (metodo === 'contraentrega' ? ' (Bogotá, pago al recibir)' : ' (Bogotá)') : ' (' + rpEsc(ciudad.split(',')[0]) + ')');
     tot.innerHTML = (r.descuentoCents || r.regaloCents ? '<div class="rp-fila"><span>Productos</span><span>' + formatoPesos(r.subtotalCents) + '</span></div>' : '') +
-      (r.descuentoCents ? '<div class="rp-fila"><span>Descuento' + (r.codigo ? ' ' + rpEsc(r.codigo) : '') + '</span><span class="rp-gratis">−' + formatoPesos(r.descuentoCents) + '</span></div>' : '') +
+      (r.descuentoCents ? '<div class="rp-fila"><span>' + (r.descuentoPromo ? '🖤 Black Wuuff −' + r.descuentoPromo + ' %' : 'Descuento' + (r.codigo ? ' ' + rpEsc(r.codigo) : '')) + '</span><span class="rp-gratis">−' + formatoPesos(r.descuentoCents) + '</span></div>' : '') +
       (r.regaloCents ? '<div class="rp-fila"><span>Placa de regalo</span><span class="rp-gratis">−' + formatoPesos(r.regaloCents) + '</span></div>' : '') +
       '<div class="rp-fila"><span>Envío' + dEnvio + '</span><span>' + envio + '</span></div>' +
       '<div class="rp-fila rp-total"><span>Total' + (metodo === 'contraentrega' ? ' a pagar al recibir' : '') + '</span><span>' + formatoPesos(r.totalCents) + '</span></div>';
@@ -2832,8 +2841,8 @@ function iniciarCompra(baseAmountInCents, nombreProducto, talla, carrito){
   var compra = pendingPurchase;
   estadoPromo().then(function(p){
     if(pendingPurchase !== compra) return;
-    compra.promo = carritoConPromo(compra.carrito, p);
-    if(compra.promo){ mostrarPromoPago(true); return; }
+    compra.promo = promoEnPago(p) || carritoConPromo(compra.carrito, p);
+    if(compra.promo){ mostrarPromoPago(true, p, compra.carrito); return; }
     var guardado = leerCodigoSesion();
     if(guardado && campoCod){ abrirCodigo(); campoCod.value = guardado; aplicarCodigo(); }
   });
@@ -3352,9 +3361,6 @@ function pagarConWompi(estimadoCents, nombreProducto, customerData, shippingAddr
       </fieldset>
       <div class="promo-resumen" id="promo-resumen" hidden>
         <p><b>🖤 Black Wuuff Friday</b></p>
-        <p>✏️ Nombre: <b>gratis</b> (Black Wuuff)</p>
-        <p>🎁 Stickers de la pandilla Wuuff: <b>regalo</b></p>
-        <p style="opacity:.85">El primer pedido se lleva un regalo sorpresa. Los códigos de descuento no se acumulan con la promo.</p>
       </div>
       <div class="codigo-box" id="codigo-box">
         <button type="button" class="codigo-toggle" id="codigo-toggle" aria-expanded="false" aria-controls="codigo-panel">¿Tienes un código de descuento?</button>
@@ -4085,6 +4091,6 @@ document.addEventListener('click', function(e){
   }, {passive:true});
 })();
 </script>
-<script src="/assets/promo.js?v=1" defer></script>
+<script src="/assets/promo.js?v=2" defer></script>
 </body>
 </html>
