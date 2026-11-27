@@ -48,6 +48,7 @@ main{position:relative;z-index:1}
 .hero{display:grid;gap:22px;padding:18px 0 34px;text-align:center}
 .titulo{margin:0;line-height:.9}
 .titulo .black{display:block;font-weight:900;font-size:clamp(54px,15vw,104px);letter-spacing:.02em}
+.logo-bwf{display:block;width:min(520px,90vw);height:auto;margin:0 auto;animation:cae .9s cubic-bezier(.3,1.6,.5,1) both,flota 4s ease-in-out .9s infinite;filter:drop-shadow(0 10px 24px rgba(98,167,244,.25))}
 .letras{display:flex;justify-content:center;gap:2px;flex-wrap:nowrap}
 .letras span{font-family:'Malaka','Nunito',sans-serif;font-size:clamp(44px,12.5vw,86px);line-height:1;display:inline-block;animation:cae .9s cubic-bezier(.3,1.6,.5,1) both,flota 3.2s ease-in-out infinite}
 .letras.wuuff span{color:var(--rosaL);-webkit-text-stroke:2px var(--rosaB);text-shadow:0 5px 0 var(--rosaB)}
@@ -165,6 +166,7 @@ footer{padding:30px 18px 60px;text-align:center;color:var(--gris);font-size:13px
 @media (min-width:900px){
   .hero{grid-template-columns:1.1fr 1fr;align-items:center;text-align:left;padding:40px 0 60px}
   .letras{justify-content:flex-start}
+  .logo-bwf{margin:0;width:min(560px,100%)}
   .oferta,.cuenta{justify-items:start}
   .etiquetas,.precio{justify-content:flex-start}
   .visual{min-height:460px}
@@ -188,11 +190,7 @@ footer{padding:30px 18px 60px;text-align:center;color:var(--gris);font-size:13px
 <main class="wrap">
   <section class="hero">
     <div class="oferta">
-      <h1 class="titulo">
-        <span class="black">BLACK</span>
-        <span class="letras wuuff" aria-label="Wuuff"><span style="animation-delay:.05s,0s">W</span><span style="animation-delay:.12s,-.4s">U</span><span style="animation-delay:.19s,-.8s">U</span><span style="animation-delay:.26s,-1.2s">F</span><span style="animation-delay:.33s,-1.6s">F</span></span>
-        <span class="letras friday" aria-label="Friday"><span style="animation-delay:.45s,-.2s">F</span><span style="animation-delay:.52s,-.6s">R</span><span style="animation-delay:.59s,-1s">I</span><span style="animation-delay:.66s,-1.4s">D</span><span style="animation-delay:.73s,-1.8s">A</span><span style="animation-delay:.8s,-2.2s">Y</span></span>
-      </h1>
+      <h1 class="titulo"><img class="logo-bwf" src="/images/black-friday/logo-black-wuuff-friday.webp" alt="Black Wuuff Friday" width="1100" height="688" fetchpriority="high"></h1>
       <div class="etiquetas"><span class="etq azul">−10 % EN TODO</span><span class="etq lima">NOMBRE GRATIS · SOLO 10</span><span class="etq azul" style="animation-delay:-.8s">🎁 REGALO 1.ª COMPRA</span></div>
       <h2>Combo completo <b>con el nombre de tu perrito</b></h2>
       <div class="precio"><s>$169.900</s><strong>$134.900</strong></div>
