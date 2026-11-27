@@ -131,6 +131,16 @@ section.bloque p.sub{margin:0 auto 22px;text-align:center;color:var(--gris);font
 .incluye figure img{width:100%;height:auto;aspect-ratio:1;object-fit:cover}
 .incluye figcaption{font-weight:900;font-size:14px;padding:8px 10px;text-align:center}
 .incluye .mas{font-weight:900;font-size:34px;color:var(--azul)}
+/* Solo las letras del nombre (sin collar): así se entiende que no es otro collar, son las letras para el del combo */
+.solo-letras .nombres{aspect-ratio:1;container-type:inline-size;display:grid;align-content:center;justify-items:center;gap:0;
+  background:radial-gradient(circle at 50% 42%,#ffffff 0,#fbf6ef 62%,#f3ebe0 100%)}
+.nombres .fila{display:flex;align-items:center;justify-content:center;gap:1cqw}
+.nombres .p{--c:#d9338f;--e:#a81b69;font-family:'Malaka','Nunito',sans-serif;font-size:23cqw;line-height:1;color:var(--c);display:inline-block;
+  text-shadow:0 .6cqw 0 var(--e),0 1.2cqw 0 var(--e),0 1.8cqw 0 var(--e),0 4cqw 4cqw rgba(60,30,40,.22);animation:flota 3.4s ease-in-out infinite}
+.nombres .p svg{width:17cqw;height:17cqw;display:block;fill:var(--c);filter:drop-shadow(0 1.4cqw 0 var(--e)) drop-shadow(0 3cqw 2.5cqw rgba(60,30,40,.22))}
+.nombres .fila + .fila .p{font-size:20cqw}
+.nombres .fila + .fila .p svg{width:15cqw;height:15cqw}
+.nombres .nota{font-weight:800;font-size:4.6cqw;color:#8a7a72;margin:5cqw 0 0;letter-spacing:.02em}
 .lista{list-style:none;padding:0;margin:20px auto 0;max-width:520px;display:grid;gap:8px;font-weight:700}
 .lista li::before{content:"🐾 ";}
 
@@ -237,7 +247,21 @@ footer{padding:30px 18px 60px;text-align:center;color:var(--gris);font-size:13px
     <div class="incluye">
       <figure><img src="/images/opt/set-completo-nuevo.webp" alt="Combo completo: collar, arnés tipo H y correa azul cielo" width="800" height="800" loading="lazy"><figcaption>Collar + arnés H + correa</figcaption></figure>
       <span class="mas" aria-hidden="true">+</span>
-      <figure><img src="/images/black-friday/mia-melo-2.webp" alt="Collares con los nombres MIA y MELO" width="800" height="800" loading="lazy"><figcaption>Su nombre, gratis ✏️</figcaption></figure>
+      <figure class="solo-letras">
+        <div class="nombres" role="img" aria-label="Letras de goma con los nombres MIA y MELO, para poner en el collar del combo">
+          <div class="fila" aria-hidden="true">
+            <span class="p" style="--c:#f6a7c9;--e:#d97fa6;animation-delay:0s"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 2.7 4.5 6.4 4.5c2.1 0 3.8 1.2 5.6 3.3 1.8-2.1 3.5-3.3 5.6-3.3 3.7 0 5.5 3.9 4 7.3C19.5 16.4 12 21 12 21z"/></svg></span>
+            <span class="p" style="animation-delay:.15s">M</span><span class="p" style="animation-delay:.3s">I</span><span class="p" style="animation-delay:.45s">A</span>
+            <span class="p" style="--c:#f6a7c9;--e:#d97fa6;animation-delay:.6s"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 2.7 4.5 6.4 4.5c2.1 0 3.8 1.2 5.6 3.3 1.8-2.1 3.5-3.3 5.6-3.3 3.7 0 5.5 3.9 4 7.3C19.5 16.4 12 21 12 21z"/></svg></span>
+          </div>
+          <div class="fila" aria-hidden="true">
+            <span class="p" style="--c:#7a4a33;--e:#52301f;animation-delay:.2s">M</span><span class="p" style="--c:#7a4a33;--e:#52301f;animation-delay:.35s">E</span><span class="p" style="--c:#7a4a33;--e:#52301f;animation-delay:.5s">L</span><span class="p" style="--c:#7a4a33;--e:#52301f;animation-delay:.65s">O</span>
+            <span class="p" style="--c:#2f55c8;--e:#1d3a96;animation-delay:.8s"><svg viewBox="0 0 24 24"><path d="M12 2.6l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.2 1.2-6.5L2.5 9.5l6.6-.9z"/></svg></span>
+          </div>
+          <p class="nota" aria-hidden="true">Letras de goma para su collar</p>
+        </div>
+        <figcaption>Su nombre, gratis ✏️</figcaption>
+      </figure>
     </div>
     <ul class="lista">
       <li>Hasta 5 letras incluidas (cada letra extra $5.000)</li>
