@@ -389,13 +389,14 @@ async function marcarPrimerPedido(store, promoId, referencia, espera) {
 function prefijoNombreGratis() { return 'nombre-gratis-' + (PROMO && PROMO.id) + '/'; }
 async function cuposNombreLibres(store) {
   if (!PROMO || !(PROMO.nombreGratisCupos > 0)) return Infinity;
-  if (!store) return PROMO.nombreGratisCupos;
+  if (!store) return Math.max(0, PROMO.nombreGratisCupos - (parseInt(PROMO.nombreGratisVendidosAparte, 10) || 0));
   try {
     const { blobs } = await store.list({ prefix: prefijoNombreGratis() });
-    return Math.max(0, PROMO.nombreGratisCupos - (blobs || []).length);
+    // nombreGratisVendidosAparte: combos con nombre gratis vendidos fuera de la web (WhatsApp, Instagram…), que no dejan marca
+    return Math.max(0, PROMO.nombreGratisCupos - (blobs || []).length - (parseInt(PROMO.nombreGratisVendidosAparte, 10) || 0));
   } catch (err) {
     console.error('No se pudieron contar los nombres gratis', err.message);
-    return PROMO.nombreGratisCupos;
+    return Math.max(0, PROMO.nombreGratisCupos - (parseInt(PROMO.nombreGratisVendidosAparte, 10) || 0));
   }
 }
 async function marcarNombresGratis(store, promoId, referencia, cantidad) {

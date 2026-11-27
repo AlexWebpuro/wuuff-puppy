@@ -39,6 +39,7 @@
     "descuento": 10,
     "nombreGratisEn": ["combo"],
     "nombreGratisCupos": 10,
+    "nombreGratisVendidosAparte": 1,
     "regaloStickers": false,
     "regaloPrimerPedido": true,
     "acumulaConCodigos": false
