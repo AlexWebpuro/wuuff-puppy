@@ -11,7 +11,7 @@ exports.handler = async (event) => {
   let nombresLibres = null;
   if (fase && p.nombreGratisCupos > 0) {
     try { connectLambda(event); nombresLibres = await tienda.cuposNombreLibres(getStore('promo-marcas')); }
-    catch (err) { nombresLibres = p.nombreGratisCupos; }
+    catch (err) { nombresLibres = Math.max(0, p.nombreGratisCupos - (parseInt(p.nombreGratisVendidosAparte, 10) || 0)); }
   }
   const cuerpo = fase ? { fase, id: p.id, inicio: p.inicio, fin: p.fin, descuento: p.descuento || 0, nombreGratisEn: nombresLibres === 0 ? [] : p.nombreGratisEn,
     cupos: p.nombreGratisCupos || null, nombresLibres, regaloStickers: !!p.regaloStickers, regaloPrimerPedido: !!p.regaloPrimerPedido } : { fase: null };
